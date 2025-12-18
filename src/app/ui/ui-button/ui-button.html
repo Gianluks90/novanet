@@ -1,0 +1,6 @@
+<button class="ui-standard-btn" [class.icon-button]="icon()">
+    @if (icon() != null) {
+        <span class="material-symbols-rounded">{{ icon() }}</span>
+    }
+    <span>{{ text() }}</span>
+</button>

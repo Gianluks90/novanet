@@ -1,0 +1,14 @@
+.header-main-container {
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    // background-color: var(--bg-container-color);
+    padding: 0 16px;
+    position: relative;
+
+    .logo {
+        width: 24px;
+        height: 24px;
+    }
+}

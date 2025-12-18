@@ -1,0 +1,32 @@
+.diagonal-line, .diagonal-line-overlay {
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    z-index: 0;
+}
+.diagonal-line-overlay {
+    z-index: 1;
+}
+
+.top-right {
+    top: -2px;
+    right: -2px;
+}
+
+.bottom-right {
+    bottom: -2px;
+    right: -2px;
+    transform: rotate(90deg);
+}
+
+.top-left {
+    top: -2px;
+    left: -2px;
+    transform: rotate(-90deg);
+}
+
+.bottom-left {
+    bottom: -2px;
+    left: -2px;
+    transform: rotate(180deg);
+}

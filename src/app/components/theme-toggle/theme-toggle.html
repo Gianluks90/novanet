@@ -1,0 +1,3 @@
+<div class="theme-toggle-main-container" [style.color]="'var(--accent-color)'">
+    <span class="material-symbols-rounded" (click)="toggleTheme()">{{(currentTheme | async) === 'light' ? 'bedtime' : 'sunny'}}</span>
+</div>

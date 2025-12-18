@@ -1,1 +1,57 @@
 /* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Genos:ital,wght@0,100..900;1,100..900&display=swap');
+
+* {
+    font-family: 'Genos', sans-serif;
+    box-sizing: border-box;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+
+    background-color: var(--bg-color);
+    color: var(--fg-color);
+    font-size: 16px;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+    margin: 0;
+    padding: 0;
+}
+
+.material-symbols-rounded {
+  font-variation-settings:
+  'FILL' 1,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 20
+}
+
+:root {
+    --fg-color: #ffffff;
+    --bg-color: #212121;
+    --accent-color: #FCF552;
+    
+    --bg-container-color: #272931;
+
+    --warn-color: orange;
+    --error-color: crimson;
+}
+
+.light {
+    --fg-color: #000000;
+    --bg-color: #f0f0f0;
+    --accent-color: #000;
+    --bg-container-color: #e1e1e1;
+}
+
+.dark {
+    --fg-color: #ffffff;
+    --bg-color: #272931;
+    --accent-color: #FCF552;
+    --bg-container-color: #1B1C21;
+}

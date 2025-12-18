@@ -1,0 +1,22 @@
+.ui-standard-btn {
+    border: 1px solid var(--accent-color);
+    color: var(--fg-color);
+    background-color: var(--bg-container-color);
+    text-transform: uppercase;
+    padding: 8px 16px;
+    font-size: 1rem;
+    width: 100%;
+
+    &:hover {
+        background-color: var(--accent-color);
+        color: var(--bg-color);
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+    }
+}
+
+.icon-button {
+    display: flex; 
+    align-items: center; 
+    gap: 8px;
+}

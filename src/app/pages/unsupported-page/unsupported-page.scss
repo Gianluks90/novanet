@@ -1,0 +1,32 @@
+.unsupported-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: var(--bg-color);
+    color: var(--fg-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 9999;
+    gap: 8px;
+    padding: 24px;
+
+    .logo {
+        width: 128px;
+        height: 128px;
+    }
+
+    p, .logo {
+        opacity: 0;
+        animation: fadeIn 3s forwards;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
