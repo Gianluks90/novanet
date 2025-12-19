@@ -1,4 +1,4 @@
-<button class="ui-standard-btn" [class.icon-button]="icon()">
+<button class="ui-standard-btn" [class.icon-button]="icon()" [disabled]="disabled()">
     @if (icon() != null) {
         <span class="material-symbols-rounded">{{ icon() }}</span>
     }

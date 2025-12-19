@@ -2,31 +2,27 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
     gap: 12px;
     height: 100%;
     width: 100%;
     padding: 16px;
+
+    .home-page-container {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
 }
 
 .welcome-container {
-    width: 80%;
-    height: 60%;
+    width: 100%;
+    height: 100%;
     max-width: 600px;
     border: 1px solid var(--accent-color);
     display: flex;
     background-color: var(--bg-container-color);
     position: relative;
-
-    .side-line {
-        width: 20px;
-        background-color: var(--accent-color);
-        height: 100%;
-        background: repeating-linear-gradient(to right,
-                var(--accent-color) 1px,
-                var(--accent-color) 1px,
-                transparent 4px,
-                transparent 4px)
-    }
 
     .content {
         flex: 1;
@@ -55,17 +51,6 @@
     background-color: var(--bg-container-color);
     position: relative;
 
-    .side-line {
-        width: 20px;
-        background-color: var(--accent-color);
-        height: 100%;
-        background: repeating-linear-gradient(to right,
-                var(--accent-color) 1px,
-                var(--accent-color) 1px,
-                transparent 4px,
-                transparent 4px)
-    }
-
     .content {
         flex: 1;
         // width: calc(100% - 16px);
@@ -75,12 +60,74 @@
         flex-direction: column;
         gap: 12px;
 
+        &>.title-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            &>.menu-icon {
+                font-size: 1rem;
+                cursor: pointer;
+                border: 1px solid var(--accent-color);
+                padding: 4px;
+                border-radius: 4px;
+                color: var(--accent-color);
+
+                &:hover {
+                    background-color: var(--accent-color);
+                    color: var(--bg-color);
+                    transition: background-color 0.3s, color 0.3s;
+                }
+            }
+
+        }
+
         &>.version {
             font-size: 0.75rem;
             opacity: .9;
             position: absolute;
             bottom: 8px;
             right: 24px;
+        }
+    }
+}
+
+.side-line {
+    width: 20px;
+    background-color: var(--accent-color);
+    height: 100%;
+    background: repeating-linear-gradient(to right,
+            var(--accent-color) 1px,
+            var(--accent-color) 1px,
+            transparent 4px,
+            transparent 4px)
+}
+
+.home-page-user-container {
+    width: 50%;
+    height: 128px;
+    border: 1px solid var(--accent-color);
+    display: flex;
+    align-items: center;
+    background-color: var(--bg-container-color);
+    position: relative;
+
+    .user-content {
+        flex: 1;
+        width: calc(100% - 16px);
+        position: relative;
+        display: flex;
+
+        &>img {
+            height: 124px;
+            width: 124px;
+            object-fit: cover;
+        }
+
+        .user-info {
+            padding: 16px;
+            height: 100%;
+            width: calc(100% - 16px);
         }
     }
 }

@@ -1,7 +1,11 @@
 import { Component, HostListener, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { NavigationEnd, NavigationStart, Router, RouterOutlet } from '@angular/router';
 import { Header } from './components/header/header';
 import { UnsupportedPage } from './pages/unsupported-page/unsupported-page';
+import { initializeApp } from 'firebase/app';
+import { FIREBASE_CONFIG } from './environment/firebaseConfig';
+import { FirebaseService } from './services/firebase-service';
+import { getFirestore } from 'firebase/firestore';
 
 @Component({
   selector: 'app-root',
@@ -12,6 +16,18 @@ import { UnsupportedPage } from './pages/unsupported-page/unsupported-page';
 export class App {
   protected readonly title = signal('novanet');
   protected isUnsupported = false;
+  protected loadingRoot = false;
+
+  constructor(private firebaseService: FirebaseService, private router: Router) {
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        this.loadingRoot = true;
+      }
+      if (event instanceof NavigationEnd) {
+        this.loadingRoot = false;
+      }
+    });
+  }
 
   ngOnInit() {
     this.checkScreenSize();

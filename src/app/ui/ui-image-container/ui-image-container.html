@@ -1,0 +1,7 @@
+<div class="image-container" [style.width.px]="width()" [style.height.px]="height()">
+    <div class="image-overlay"></div>
+    @if (notAvailable()) {
+        <div class="not-available-overlay"></div>
+    }
+    <img [src]="url()" alt="">
+</div>

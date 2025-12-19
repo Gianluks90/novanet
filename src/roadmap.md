@@ -3,9 +3,9 @@
 - [x] Nuova app angular 21
 - [x] home page
 - [ ] home page (mobile)
-- [ ] login page
-- [ ] implementare firebase auth
-- [ ] implementare firestore
+- [x] login page
+- [x] implementare firebase auth
+- [x] implementare firestore
 - [ ] implementare NetrunnerDB API
 - [ ] cards browser page
 - [ ] card component
