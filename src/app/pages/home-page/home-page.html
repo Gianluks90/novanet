@@ -1,6 +1,6 @@
 <div class="home-page-main-container">
     <div class="home-page-container">
-        <div class="welcome-container">
+        <div class="welcome-container animation-fade-in" [style.animation-delay]="'.5s'">
             <div class="side-line"></div>
             <div class="content">
                 <h1>Welcome {{firebase.$user() ? 'back' : ''}} to <u>NovaNet</u></h1>
@@ -26,14 +26,14 @@
             </div>
             <app-ui-diagonal-line position="bottom-right"></app-ui-diagonal-line>
         </div>
-        <div class="menu-container">
+        <div class="menu-container animation-fade-in" [style.animation-delay]="'1s'">
             <div class="side-line"></div>
             <div class="content">
                 <div class="title-container">
                     <h2>Menu</h2>
                     <div class="material-symbols-rounded menu-icon" (click)="openDialog()">settings</div>
                 </div>
-                <app-ui-button text="database" [disabled]="true" icon="cards_stack"></app-ui-button>
+                <app-ui-button text="cards" [disabled]="true" icon="cards_stack"></app-ui-button>
                 <app-ui-button text="deck builder" [disabled]="true" icon="stack_hexagon"></app-ui-button>
                 <app-ui-button text="play" [disabled]="true" icon="group"></app-ui-button>
                 <app-ui-button [text]="firebase.$user() ? 'logout' : 'login/register'"
@@ -44,7 +44,7 @@
         </div>
     </div>
     @if(firebase.$user()) {
-    <div class="home-page-user-container">
+    <div class="home-page-user-container animation-fade-in" [style.animation-delay]="'2s'">
         <div class="side-line"></div>
         <div class="user-content">
             <app-ui-image-container [width]="124" [height]="124"

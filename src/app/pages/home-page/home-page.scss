@@ -16,6 +16,7 @@
 }
 
 .welcome-container {
+    opacity: 0;
     width: 100%;
     height: 100%;
     max-width: 600px;
@@ -42,6 +43,7 @@
 }
 
 .menu-container {
+    opacity: 0;
     width: 100%;
     height: 200px;
     min-height: 300px;
@@ -104,6 +106,7 @@
 }
 
 .home-page-user-container {
+    opacity: 0;
     width: 50%;
     height: 128px;
     border: 1px solid var(--accent-color);
@@ -129,5 +132,22 @@
             height: 100%;
             width: calc(100% - 16px);
         }
+    }
+}
+
+.animation-fade-in {
+    animation-name: fadeIn;
+    animation-duration: 1s;
+    animation-fill-mode: both;
+}
+
+@keyframes fadeIn {
+    from {
+        scale: 0.95;
+        opacity: 0;
+    }
+    to {
+        scale: 1;
+        opacity: 1;
     }
 }
