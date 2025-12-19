@@ -1,0 +1,30 @@
+<app-ui-dialog-container dialogTitle="Settings">
+    <p class="p-subtitle">App information</p>
+    <p>Version: {{ appVersion }}</p>
+    <p class="p-note">Disclaimer: Novanet is an independent project and is not affiliated with, endorsed by, or
+        associated with Fantasy Flight Games or Wizards of the Coast.
+    </p>
+    <p class="p-subtitle">User options</p>
+    <form class="form-container" [formGroup]="form">
+        <div class="form-group">
+            <label for="nickname">Nickname</label>
+            <input type="text" id="nickname" formControlName="nickname" placeholder="Enter text" autocorrect="off" autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label for="customPhotoURL">Custom Profile Pic (URL)</label>
+            <input type="text" id="customPhotoURL" formControlName="customPhotoURL" placeholder="Enter a valid URL" autocorrect="off" autocomplete="off">
+        </div>
+    </form>
+    <p class="p-subtitle">App options</p>
+    <!-- <p>No app options at the moment.</p> -->
+    <form [formGroup]="form" class="form-container">
+        <div class="form-group">
+            <div class="label-container">Accent Color (click on the color below to change it) <span class="reset-span" (click)="resetColor()">[ Reset ]</span></div>
+            <input type="color" id="customAccentColor" formControlName="customAccentColor" placeholder="Enter a valid color (e.g., #FF0000)" autocorrect="off" autocomplete="off">
+        </div>
+    </form>
+    <div dialog-actions-container>
+        <app-ui-button text="Save changes" icon="save" [disabled]="!form.valid || form.pristine" (click)="onSubmit()"></app-ui-button>
+        <app-ui-button text="Close" icon="close" (click)="dialogRef.close()"></app-ui-button>
+    </div>
+</app-ui-dialog-container>

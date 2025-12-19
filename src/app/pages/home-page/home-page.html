@@ -31,7 +31,7 @@
             <div class="content">
                 <div class="title-container">
                     <h2>Menu</h2>
-                    <div class="material-symbols-rounded menu-icon">settings</div>
+                    <div class="material-symbols-rounded menu-icon" (click)="openDialog()">settings</div>
                 </div>
                 <app-ui-button text="database" [disabled]="true" icon="cards_stack"></app-ui-button>
                 <app-ui-button text="deck builder" [disabled]="true" icon="stack_hexagon"></app-ui-button>
@@ -44,18 +44,17 @@
         </div>
     </div>
     @if(firebase.$user()) {
-        <div class="home-page-user-container">
-            <div class="side-line"></div>
-            <div class="user-content">
-                <!-- <img referrerpolicy="no-referrer" [src]="firebase.$user()?.photoURL" alt=""> -->
-                 <app-ui-image-container [width]="124" [height]="124"
-                    [url]="firebase.$user()?.photoURL"></app-ui-image-container>
-                <div class="user-info">
-                    <h3>{{ firebase.$user()?.displayName }}</h3>
-                    <p>{{ firebase.$user()?.email }}</p>
-                </div>
+    <div class="home-page-user-container">
+        <div class="side-line"></div>
+        <div class="user-content">
+            <app-ui-image-container [width]="124" [height]="124"
+                [url]="(firebase.$user()?.customPhotoURL || firebase.$user()?.photoURL) || './images/logo/novanet.svg'"></app-ui-image-container>
+            <div class="user-info">
+                <h3>{{ firebase.$user()?.nickname || firebase.$user()?.displayName }}</h3>
+                <!-- <p>{{ firebase.$user()?.email }}</p> -->
             </div>
-            <app-ui-diagonal-line position="bottom-right"></app-ui-diagonal-line>
         </div>
+        <app-ui-diagonal-line position="bottom-right"></app-ui-diagonal-line>
+    </div>
     }
 </div>

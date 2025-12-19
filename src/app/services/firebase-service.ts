@@ -3,14 +3,15 @@ import { initializeApp } from "firebase/app";
 import { doc, DocumentData, Firestore, getDoc, getFirestore, onSnapshot, setDoc, Timestamp } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { FIREBASE_CONFIG } from "../environment/firebaseConfig";
+import { NovaUser } from "../models/NovaUser";
 
 @Injectable({
     providedIn: 'root',
 })
 export class FirebaseService {
     public database: Firestore;
-    public $user: WritableSignal<any | null> = signal(null);
-    public user: any | null = null;
+    public $user: WritableSignal<NovaUser | null> = signal(null);
+    public user: NovaUser | null = null;
 
     constructor() {
         const app = initializeApp(FIREBASE_CONFIG);
@@ -25,7 +26,6 @@ export class FirebaseService {
 
         effect(() => {
             this.user = this.$user();
-            console.log('user', this.user);
         });
     }
 
@@ -37,7 +37,13 @@ export class FirebaseService {
                 const user: DocumentData = doc.data();
                 this.$user.set({
                     uid: doc.id,
-                    ...doc.data()
+                    createdAt: user['createdAt'],
+                    displayName: user['displayName'],
+                    email: user['email'],
+                    photoURL: user['photoURL'],
+                    customPhotoURL: user['customPhotoURL'] ?? null,
+                    customAccentColor: user['customAccentColor'] ?? null,
+                    nickname: user['nickname'] ?? null,
                 });
             }
         })

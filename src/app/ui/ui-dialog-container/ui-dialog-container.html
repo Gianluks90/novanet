@@ -1,0 +1,12 @@
+<div dialog-main-container>
+    <div dialog-side-line></div>
+    <div dialog-content-container>
+        <div class="header-title">
+            <h1>{{ dialogTitle() }}</h1>
+        </div>
+        <div class="inner-content">
+            <ng-content></ng-content>
+        </div>
+    </div>
+    <app-ui-diagonal-line position="bottom-right"></app-ui-diagonal-line>
+</div>

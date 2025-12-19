@@ -1,10 +1,12 @@
 import { Component, HostListener, inject } from '@angular/core';
-import { UIDiagonalLine } from '../../ui/ui-diagonal-line/ui-diagonal-line';
-import { UIButton } from '../../ui/ui-button/ui-button';
 import { APP_VERSION } from '../../const/appVersion';
 import { AuthService } from '../../services/auth-service';
 import { FirebaseService } from '../../services/firebase-service';
-import { UiImageContainer } from '../../ui/ui-image-container/ui-image-container';
+import { UIButton, UIDiagonalLine, UiImageContainer } from '../../ui';
+import { Dialog, DialogRef } from '@angular/cdk/dialog';
+import { DialogResult } from '../../models/DialogResult';
+import { HomeSettingsDialog } from '../../components/dialogs/home-settings-dialog/home-settings-dialog';
+import { DIALOGS_CONFIG } from '../../const/dialogConfig';
 
 @Component({
   selector: 'app-home-page',
@@ -15,8 +17,23 @@ import { UiImageContainer } from '../../ui/ui-image-container/ui-image-container
 export class HomePage {
   public appVersion = APP_VERSION;
   public firebase = inject(FirebaseService);
-
+  private dialog = inject(Dialog);
+  private dialogRef: DialogRef<DialogResult, any> | null = null;
+  
   constructor(private authService: AuthService) {}
+
+  public openDialog() {
+    this.dialogRef = this.dialog.open<DialogResult>(HomeSettingsDialog, {
+      ...DIALOGS_CONFIG,
+      data: { user: this.firebase.$user() },
+    });
+
+    this.dialogRef.closed.subscribe((result: DialogResult | undefined) => {
+      if (result?.status === 'confirmed') {
+        // TODO: notification of success
+      }
+    });
+  }
 
   public loginRegister() {
     this.authService.loginWithGoogle();

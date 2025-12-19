@@ -1,0 +1,33 @@
+.header-title {
+    padding: 16px;
+    background-color: var(--bg-color);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 1px solid var(--accent-color);
+}
+
+// hr {
+//     width: 100%;
+//     border: 1px solid var(--fg-color);
+//     margin: 0;
+// }
+
+.inner-content {
+    padding: 16px;
+
+    ::ng-deep p {
+        color: white;
+        font-size: 1.2rem;
+        margin: 0;
+        line-height: 1.5;
+    }
+    
+    ::ng-deep h2,
+    ::ng-deep h3,
+    ::ng-deep h4,
+    ::ng-deep h5,
+    ::ng-deep h6 {
+        margin: 0;
+    }
+}

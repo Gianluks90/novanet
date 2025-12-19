@@ -1,0 +1,9 @@
+.reset-span {
+    display: block;
+    &:hover {
+        text-decoration: underline;
+        cursor: pointer;
+        color: var(--accent-color);
+        transition: color 0.3s;
+    }
+}

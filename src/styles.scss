@@ -5,7 +5,14 @@
     font-family: 'Genos', sans-serif;
     box-sizing: border-box;
     scrollbar-width: none;
+    /* Firefox */
     -ms-overflow-style: none;
+    /* IE and Edge */
+
+    &:focus {
+        outline: none;
+        /* Remove default focus outline from everything */
+    }
 }
 
 html,
@@ -18,24 +25,30 @@ body {
     font-size: 16px;
 }
 
-h1, h2, h3, h4, h5, h6, p {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
     margin: 0;
     padding: 0;
 }
 
 .material-symbols-rounded {
-  font-variation-settings:
-  'FILL' 1,
-  'wght' 400,
-  'GRAD' 0,
-  'opsz' 20
+    font-variation-settings:
+        'FILL' 1,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 20
 }
 
 :root {
     --fg-color: #ffffff;
     --bg-color: #212121;
     --accent-color: #FCF552;
-    
+
     --bg-container-color: #272931;
 
     --warn-color: orange;
@@ -54,4 +67,123 @@ h1, h2, h3, h4, h5, h6, p {
     --bg-color: #272931;
     --accent-color: #FCF552;
     --bg-container-color: #1B1C21;
+}
+
+// Text
+
+p.p-subtitle {
+    font-size: 1.1rem;
+    color: var(--accent-color) !important;
+    text-decoration: underline;
+    margin-bottom: 16px;
+}
+
+p.p-note {
+    font-size: 0.9rem !important;
+    color: var(--fg-color);
+    opacity: 0.7;
+    margin-top: 16px;
+}
+
+// Dialogs
+
+.dialog-container {
+    background-color: var(--bg-color);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    overflow: auto;
+    max-width: 600px !important;
+    max-height: 650px !important;
+}
+
+.dialog-backdrop {
+    backdrop-filter: blur(8px);
+    background-color: rgba(39, 41, 49, 0.4);
+}
+
+div[dialog-main-container] {
+    display: grid;
+    grid-template-columns: 24px auto;
+    position: relative;
+    border: 1px solid var(--accent-color);
+
+    div[dialog-side-line] {
+        width: 100%;
+        background-color: var(--accent-color);
+        height: 100%;
+        background: repeating-linear-gradient(to right,
+                var(--accent-color) 1px,
+                var(--accent-color) 1px,
+                transparent 4px,
+                transparent 4px)
+    }
+
+    div[dialog-content-container] {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        max-height: 550px;
+        overflow-y: auto;
+        position: relative;
+
+        h1 {
+            position: sticky;
+            top: 0;
+            background-color: var(--bg-color);
+        }
+    }
+
+    div[dialog-actions-container] {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        position: sticky;
+        bottom: 16px;
+        margin-top: 16px;
+    }
+}
+
+// Forms
+
+form.form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    &>.form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        &>.label-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    }
+
+
+}
+
+// Input
+
+input[type="text"] {
+    padding: 8px;
+    border: 1px solid var(--accent-color);
+    border-radius: 4px;
+    font-size: 1rem;
+    background-color: var(--bg-container-color);
+    color: var(--fg-color);
+
+    &:focus {
+        border-color: var(--fg-color);
+    }
+}
+
+input[type="color"] {
+    width: 100%;
+    height: 24px;
+    border: none;
+    padding: 0;
+    background-color: transparent;
+    cursor: pointer;
 }
