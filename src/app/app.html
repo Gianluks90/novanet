@@ -1,9 +1,13 @@
 <div class="app-main-container">
-  <app-header></app-header>
+  <app-header [centeredTitle]="title"></app-header>
   <div class="app-page-container">
     <router-outlet />
   </div>
 </div>
+
+<!-- @if(loadingRoot) {
+<app-loading-page></app-loading-page>
+} -->
 
 @if (isUnsupported) {
 <app-unsupported-page></app-unsupported-page>

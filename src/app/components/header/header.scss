@@ -12,3 +12,12 @@
         height: 24px;
     }
 }
+
+.page-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 18px;
+    font-weight: 600;
+    text-transform: uppercase;
+}

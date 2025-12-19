@@ -7,10 +7,11 @@ import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { DialogResult } from '../../models/DialogResult';
 import { HomeSettingsDialog } from '../../components/dialogs/home-settings-dialog/home-settings-dialog';
 import { DIALOGS_CONFIG } from '../../const/dialogConfig';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-home-page',
-  imports: [UIDiagonalLine, UIButton, UiImageContainer],
+  imports: [UIDiagonalLine, UIButton, UiImageContainer, RouterLink],
   templateUrl: './home-page.html',
   styleUrl: './home-page.scss',
 })

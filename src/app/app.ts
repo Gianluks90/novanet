@@ -6,6 +6,7 @@ import { initializeApp } from 'firebase/app';
 import { FIREBASE_CONFIG } from './environment/firebaseConfig';
 import { FirebaseService } from './services/firebase-service';
 import { getFirestore } from 'firebase/firestore';
+import { LoadingPage } from './pages/loading-page/loading-page';
 
 @Component({
   selector: 'app-root',
@@ -14,17 +15,19 @@ import { getFirestore } from 'firebase/firestore';
   styleUrl: './app.scss'
 })
 export class App {
-  protected readonly title = signal('novanet');
+  // protected readonly title = signal('novanet');
+  public title: string = '';
   protected isUnsupported = false;
-  protected loadingRoot = false;
+  // protected loadingRoot = false;
 
   constructor(private firebaseService: FirebaseService, private router: Router) {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
-        this.loadingRoot = true;
+        // this.loadingRoot = true;
       }
       if (event instanceof NavigationEnd) {
-        this.loadingRoot = false;
+        // this.loadingRoot = false;
+        this.title = window?.location?.pathname?.split('/')?.filter(part => part.length > 0)[0] || 'home';
       }
     });
   }

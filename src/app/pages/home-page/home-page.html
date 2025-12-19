@@ -33,7 +33,7 @@
                     <h2>Menu</h2>
                     <div class="material-symbols-rounded menu-icon" (click)="openDialog()">settings</div>
                 </div>
-                <app-ui-button text="cards" [disabled]="true" icon="cards_stack"></app-ui-button>
+                <app-ui-button text="cards" icon="cards_stack" [routerLink]="'/cards'"></app-ui-button>
                 <app-ui-button text="deck builder" [disabled]="true" icon="stack_hexagon"></app-ui-button>
                 <app-ui-button text="play" [disabled]="true" icon="group"></app-ui-button>
                 <app-ui-button [text]="firebase.$user() ? 'logout' : 'login/register'"

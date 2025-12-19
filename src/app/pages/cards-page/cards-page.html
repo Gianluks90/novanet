@@ -1,0 +1,19 @@
+<div class="cards-page-main-container">
+    <div class="filter-container">
+        <div class="side-line"></div>
+        <app-ui-diagonal-line position="bottom-right"></app-ui-diagonal-line>
+    </div>
+    <div class="content-container">
+        <div class="cards-container">
+            @for(card of cards; track card.code) {
+                <div class="card-item">
+                    <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + card.code + '.jpg'" alt="">
+                </div>
+            }
+            <!-- <app-ui-diagonal-line position="bottom-right"></app-ui-diagonal-line> -->
+        </div>
+        <div class="inspector-container">
+            <app-ui-diagonal-line position="bottom-right"></app-ui-diagonal-line>
+        </div>
+    </div>
+</div>
