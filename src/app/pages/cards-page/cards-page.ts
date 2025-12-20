@@ -8,16 +8,19 @@ import { Faction } from '../../models/faction';
 import { Pack } from '../../models/pack';
 import { Side } from '../../models/side';
 import { Type } from '../../models/type';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-cards-page',
-  imports: [UIDiagonalLine],
+  imports: [UIDiagonalLine, FormsModule],
   templateUrl: './cards-page.html',
   styleUrl: './cards-page.scss',
 })
 export class CardsPage {
+  private originalCards: Card[] = [];
   public cards: Card[] = [];
   public zoomLevel: 'small-size' | 'medium-size' | 'large-size' | 'standard-size' = 'standard-size';
+  public sortBy: 'faction' | 'title' | 'type' | 'influence' | 'cost' | 'set number' | 'default' = 'default';
   public showAttribution: boolean = false;
   public selectedCard: any = null;
 
@@ -27,7 +30,7 @@ export class CardsPage {
   public sides: Side[] = [];
   public types: Type[] = [];
 
-  private filters = {
+  public filters = {
     text: '',
     pack: 'all',
     faction: 'all',
@@ -53,11 +56,17 @@ export class CardsPage {
     const db = await nrdbDb;
     const allCards = await db.getAll('cards');
     this.allCards = allCards;
+    this.originalCards = [...allCards]; // snapshot sacra
     this.cards = [...allCards];
 
     const savedZoom = localStorage.getItem('zoomLevel');
     if (savedZoom) {
       this.zoomLevel = savedZoom as 'small-size' | 'medium-size' | 'large-size' | 'standard-size';
+    }
+    const savedSortBy = localStorage.getItem('sortBy');
+    if (savedSortBy) {
+      this.sortBy = savedSortBy as 'faction' | 'title' | 'type' | 'influence' | 'cost' | 'set number';
+      this.applySort();
     }
 
     this.cd.detectChanges();
@@ -79,6 +88,70 @@ export class CardsPage {
     }
 
     localStorage.setItem('zoomLevel', this.zoomLevel);
+  }
+
+  public sortRotation() {
+    if (this.sortBy === 'default' || this.sortBy === 'title') {
+      this.sortBy = 'faction';
+    } else if (this.sortBy === 'faction') {
+      this.sortBy = 'type';
+    } else if (this.sortBy === 'type') {
+      this.sortBy = 'influence';
+    } else if (this.sortBy === 'influence') {
+      this.sortBy = 'cost';
+    } else if (this.sortBy === 'cost') {
+      this.sortBy = 'set number';
+    } else if (this.sortBy === 'set number') {
+      this.sortBy = 'title';
+    }
+
+    localStorage.setItem('sortBy', this.sortBy);
+    this.applySort();
+  }
+
+  private applySort() {
+    const base = [...this.cards]; // oppure [...this.allCards] se senza filtri
+
+    switch (this.sortBy) {
+      case 'faction':
+        this.cards = base.sort((a, b) =>
+          (a.faction_code || '').localeCompare(b.faction_code || '')
+        );
+        break;
+
+      case 'type':
+        this.cards = base.sort((a, b) =>
+          (a.type_code || '').localeCompare(b.type_code || '')
+        );
+        break;
+
+      case 'influence':
+        this.cards = base.sort((a, b) =>
+          (b.influence_limit || 0) - (a.influence_limit || 0)
+        );
+        break;
+
+      case 'cost':
+        this.cards = base.sort((a, b) =>
+          (a.cost || 0) - (b.cost || 0)
+        );
+        break;
+
+      case 'set number':
+        this.cards = base.sort((a, b) =>
+          (a.position || 0) - (b.position || 0)
+        );
+        break;
+
+      case 'title':
+        this.cards = base.sort((a, b) =>
+          a.title.localeCompare(b.title)
+        );
+        break;
+      default:
+        // this.cards = [...this.originalCards];
+        break;
+    }
   }
 
   public onCardClick(card: any) {
@@ -118,8 +191,6 @@ export class CardsPage {
   }
 
   private applyFilters() {
-    console.log(this.filters);
-    
     this.cards = this.allCards.filter(card => {
       if (
         this.filters.text &&
@@ -153,6 +224,8 @@ export class CardsPage {
       }
       return true;
     });
+
+    this.applySort();
   }
 
   public resetFilters() {
@@ -164,6 +237,11 @@ export class CardsPage {
       type: 'all',
     };
 
-    this.cards = [...this.allCards];
+    this.sortBy = 'default';
+    localStorage.removeItem('sortBy');
+
+    this.cards = [...this.originalCards];
+
+    // this.applyFilters()
   }
 }

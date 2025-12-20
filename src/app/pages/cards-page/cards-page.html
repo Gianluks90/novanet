@@ -4,15 +4,15 @@
         <p class="section-title">Filters</p>
         <input type="text" placeholder="Search..." (keyup)="onChangeTextSearch($event)">
         @if (factions.length > 0) {
-            <select name="faction" id="faction-select" (change)="onChangeFactionFilter($event)">
-                <option value="">All Factions</option>
+            <select name="faction" id="faction-select" [(ngModel)]="filters.faction" (change)="onChangeFactionFilter($event)">
+                <option value="all">All Factions</option>
                 @for(faction of factions; track faction.code) {
                     <option [value]="faction.code">{{ faction.name }}</option>
                 }
             </select>
         }
         @if(this.cycles.length > 0 && this.packs.length > 0) {
-            <select name="pack" id="pack-select" (change)="onChangePackFilter($event)">
+            <select name="pack" id="pack-select" [(ngModel)]="filters.pack" (change)="onChangePackFilter($event)">
                 <option value="all">All packs</option>
             
                 @for(cycle of cycles; track cycle.code) {
@@ -30,16 +30,16 @@
             </select>
         }
         @if (sides.length > 0) {
-            <select name="side" id="side-select" (change)="onChangeSideFilter($event)">
-                <option value="">All Sides</option>
+            <select name="side" id="side-select" [(ngModel)]="filters.side" (change)="onChangeSideFilter($event)">
+                <option value="all">All Sides</option>
                 @for(side of sides; track side.code) {
                     <option [value]="side.code">{{ side.name }}</option>
                 }
             </select>
         }
         @if (types.length > 0) {
-            <select name="type" id="type-select" (change)="onChangeTypeFilter($event)">
-                <option value="">All Types</option>
+            <select name="type" id="type-select" [(ngModel)]="filters.type" (change)="onChangeTypeFilter($event)">
+                <option value="all">All Types</option>
                 @for(type of types; track type.code) {
                     <option [value]="type.code">{{ type.name }}</option>
                 }
@@ -59,9 +59,15 @@
                 }
                 <span class="material-symbols-rounded">info</span>
         </div>
-        <div class="zoom-control-container" (click)="zoomRotation()">
-            Zoom: {{ zoomLevel.replace('-', ' ') }}
-            <span class="material-symbols-rounded">zoom_in</span>
+        <div class="action-controls">
+            <div class="control-container" (click)="zoomRotation()">
+                <span class="material-symbols-rounded">zoom_in</span>
+                Zoom: {{ zoomLevel.replace('-', ' ') }}
+            </div>
+            <div class="control-container" (click)="sortRotation()">
+                <span class="material-symbols-rounded">sort</span>
+                Sort by: {{ sortBy }} (found: {{cards.length}})
+            </div>
         </div>
         <div class="cards-container" [class.small-size]="zoomLevel === 'small-size'" [class.medium-size]="zoomLevel === 'medium-size'" [class.large-size]="zoomLevel === 'large-size'" [class.standard-size]="zoomLevel === 'standard-size'">
             @for(card of cards; track card.code) {
@@ -71,6 +77,8 @@
             }
         </div>
         <div class="inspector-container">
+            <p class="section-title">Inspector</p>
+            <p>Select a card.</p>
             <app-ui-diagonal-line position="bottom-right"></app-ui-diagonal-line>
         </div>
     </div>

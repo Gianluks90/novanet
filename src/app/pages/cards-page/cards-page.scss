@@ -19,13 +19,6 @@
         align-items: center;
         gap: 12px;
         padding-right: 16px;
-
-        &>.section-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--fg-color);
-            text-transform: uppercase;
-        }
     }
 
     &>.content-container {
@@ -75,28 +68,31 @@
             }
         }
 
-        &>.zoom-control-container {
+        &>.action-controls {
             position: absolute;
             top: 4px;
             left: 4px;
             border: 1px solid var(--accent-color);
             display: flex;
-            flex-direction: row-reverse;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 4px;
-            background-color: var(--bg-container-color);
-            // padding: 4px 8px;
-            cursor: pointer;
+            gap: 12px;
+            user-select: none;
             font-size: .8rem;
             padding: 4px 8px;
-            width: 140px;
-            user-select: none;
+            background-color: var(--bg-container-color);
 
-            &>.material-symbols-rounded {
-                font-size: 1rem;
+            &>.control-container {
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                gap: 4px;
+                cursor: pointer;
+
+                &>.material-symbols-rounded {
+                    font-size: 1rem;
+                }
             }
         }
+
 
         &>.cards-container {
             display: grid;
@@ -179,6 +175,7 @@ select {
     background-color: var(--bg-color);
     color: var(--fg-color);
     height: 32px;
+    cursor: pointer;
 }
 
 .reset-icon {
@@ -203,4 +200,15 @@ select {
         color: var(--bg-color);
         transition: background-color 0.3s, color 0.3s;
     }
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--fg-color);
+    text-transform: uppercase;
+}
+
+.inspector-container {
+    padding: 16px;
 }
