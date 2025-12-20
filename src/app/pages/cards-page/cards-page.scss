@@ -19,6 +19,12 @@
         align-items: center;
         gap: 12px;
         padding-right: 16px;
+
+        &>.line-divider {
+            border-left: 1px solid var(--accent-color);
+            height: 80%;
+            opacity: .5;
+        }
     }
 
     &>.content-container {
@@ -115,12 +121,34 @@
                 align-items: center;
                 cursor: pointer;
 
+                transition:
+                    filter 150ms ease,
+                    opacity 150ms ease,
+                    box-shadow 150ms ease,
+                    transform 150ms ease;
+
                 &>img {
                     width: 100%;
                     height: 100%;
                     object-fit: cover;
                     border-radius: 8px;
                 }
+            }
+
+            &>:hover {
+                transform: scale(1.03);
+                transition: transform 0.5s;
+            }
+
+            &>.selected-card {
+                filter: saturate(1.15) contrast(1.05);
+                box-shadow: 0 0 6px var(--accent-color);
+                z-index: 1;
+            }
+
+            &>.not-selected-card {
+                opacity: 0.75;
+                filter: saturate(0.7);
             }
         }
 
@@ -185,8 +213,10 @@ select {
     padding: 4px;
     border-radius: 4px;
     color: var(--accent-color);
-    height: 32px;
-    width: 32px;
+    height: 24px;
+    width: 24px;
+    align-self: self-start;
+    margin-top: 8px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -211,4 +241,12 @@ select {
 
 .inspector-container {
     padding: 16px;
+}
+
+.empty-ispector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
