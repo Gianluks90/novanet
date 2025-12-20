@@ -6,7 +6,7 @@
 - [x] login page
 - [x] implementare firebase auth
 - [x] implementare firestore
-- [ ] implementare NetrunnerDB API
+- [x] implementare NetrunnerDB API
 - [ ] cards browser page
 - [ ] card component
 - [ ] card model

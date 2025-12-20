@@ -1,16 +1,74 @@
 <div class="cards-page-main-container">
     <div class="filter-container">
         <div class="side-line"></div>
+        <p class="section-title">Filters</p>
+        <input type="text" placeholder="Search..." (keyup)="onChangeTextSearch($event)">
+        @if (factions.length > 0) {
+            <select name="faction" id="faction-select" (change)="onChangeFactionFilter($event)">
+                <option value="">All Factions</option>
+                @for(faction of factions; track faction.code) {
+                    <option [value]="faction.code">{{ faction.name }}</option>
+                }
+            </select>
+        }
+        @if(this.cycles.length > 0 && this.packs.length > 0) {
+            <select name="pack" id="pack-select" (change)="onChangePackFilter($event)">
+                <option value="all">All packs</option>
+            
+                @for(cycle of cycles; track cycle.code) {
+                <optgroup [label]="cycle.name">
+                    @for (pack of packs; track pack.code) {
+                    @if (pack.cycle_code === cycle.code) {
+                    <option [value]="pack.code">
+                        {{ pack.name }}
+                    </option>
+                    }
+                    }
+                </optgroup>
+                }
+            
+            </select>
+        }
+        @if (sides.length > 0) {
+            <select name="side" id="side-select" (change)="onChangeSideFilter($event)">
+                <option value="">All Sides</option>
+                @for(side of sides; track side.code) {
+                    <option [value]="side.code">{{ side.name }}</option>
+                }
+            </select>
+        }
+        @if (types.length > 0) {
+            <select name="type" id="type-select" (change)="onChangeTypeFilter($event)">
+                <option value="">All Types</option>
+                @for(type of types; track type.code) {
+                    <option [value]="type.code">{{ type.name }}</option>
+                }
+            </select>
+        }
+        <div class="reset-icon" (click)="resetFilters()">
+            <span class="material-symbols-rounded">refresh</span>
+        </div>
         <app-ui-diagonal-line position="bottom-right"></app-ui-diagonal-line>
     </div>
     <div class="content-container">
-        <div class="cards-container">
+        <div class="attribution-container" (click)="toggleAttribution()">
+                @if(showAttribution) {
+                    <div class="attribution-text">
+                        Card images provided by <a href="https://netrunnerdb.com/" target="_blank" rel="noopener noreferrer">NetrunnerDB</a>
+                    </div>
+                }
+                <span class="material-symbols-rounded">info</span>
+        </div>
+        <div class="zoom-control-container" (click)="zoomRotation()">
+            Zoom: {{ zoomLevel.replace('-', ' ') }}
+            <span class="material-symbols-rounded">zoom_in</span>
+        </div>
+        <div class="cards-container" [class.small-size]="zoomLevel === 'small-size'" [class.medium-size]="zoomLevel === 'medium-size'" [class.large-size]="zoomLevel === 'large-size'" [class.standard-size]="zoomLevel === 'standard-size'">
             @for(card of cards; track card.code) {
-                <div class="card-item">
+                <div class="card-item" (click)="onCardClick(card)">
                     <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + card.code + '.jpg'" alt="">
                 </div>
             }
-            <!-- <app-ui-diagonal-line position="bottom-right"></app-ui-diagonal-line> -->
         </div>
         <div class="inspector-container">
             <app-ui-diagonal-line position="bottom-right"></app-ui-diagonal-line>
