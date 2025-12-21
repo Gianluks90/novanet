@@ -9,10 +9,12 @@ import { Pack } from '../../models/pack';
 import { Side } from '../../models/side';
 import { Type } from '../../models/type';
 import { FormsModule } from '@angular/forms';
+import { NrIconsPipe } from '../../pipes/nr-icons-pipe';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-cards-page',
-  imports: [UIDiagonalLine, FormsModule],
+  imports: [UIDiagonalLine, FormsModule, NrIconsPipe],
   templateUrl: './cards-page.html',
   styleUrl: './cards-page.scss',
 })
@@ -22,7 +24,7 @@ export class CardsPage {
   public zoomLevel: 'small-size' | 'medium-size' | 'large-size' | 'standard-size' = 'standard-size';
   public sortBy: 'faction' | 'title' | 'type' | 'influence' | 'cost' | 'set number' | 'default' = 'default';
   public showAttribution: boolean = false;
-  public selectedCard: any = null;
+  public selectedCard: Card | null = null;
 
   public cycles: Cycle[] = [];
   public factions: Faction[] = [];
@@ -38,7 +40,7 @@ export class CardsPage {
     type: 'all',
   };
 
-  constructor(private cd: ChangeDetectorRef, private route: ActivatedRoute) {
+  constructor(private cd: ChangeDetectorRef, private route: ActivatedRoute, private sanitizer: DomSanitizer) {
     this.route.data.subscribe(data => {
       this.cycles = data['configs'].cycles.data;
       this.factions = data['configs'].factions.data;
@@ -154,7 +156,7 @@ export class CardsPage {
     }
   }
 
-  public onCardClick(card: any) {
+  public onCardClick(card: Card) {
     this.selectedCard = card;
     console.log(this.selectedCard);
   }

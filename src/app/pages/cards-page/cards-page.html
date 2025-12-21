@@ -82,8 +82,20 @@
         </div>
         <div class="inspector-container" [class.empty-ispector]="!selectedCard">
             <!-- <p class="section-title">Inspector</p> -->
-            <span class="material-symbols-rounded">trackpad_input</span>
-            <p>Select a card from the grid to inspect detail and actions.</p>
+            @if (!selectedCard) {
+                <span class="material-symbols-rounded">trackpad_input</span>
+                <p>Select a card from the grid to inspect detail and actions.</p>
+            } @else {
+                @let c = selectedCard;
+                @if(c.type_code === 'identity') {
+                    <p class="section-title">{{c.title.split(':')[0]}}</p>
+                    <p>{{c.title.split(':')[1]}}</p>
+                } @else {
+                    <p class="section-title">{{c.title}}</p>
+                }
+                <div class="card-text" [innerHTML]="c.text | nrIcons">
+                </div>
+            }
             <app-ui-diagonal-line position="bottom-right"></app-ui-diagonal-line>
         </div>
     </div>
