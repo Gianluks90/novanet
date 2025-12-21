@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
-import { UIDiagonalLine } from '../../ui';
+import { UIButton, UIDiagonalLine } from '../../ui';
 import { nrdbDb } from '../../db/nrdb-indexed-db';
 import { Card } from '../../models/card';
 import { ActivatedRoute, Route } from '@angular/router';
@@ -12,10 +12,19 @@ import { FormsModule } from '@angular/forms';
 import { NrIconsPipe } from '../../pipes/nr-icons-pipe';
 import { DomSanitizer } from '@angular/platform-browser';
 import { PackCodePipe } from '../../pipes/pack-code-pipe';
+import { GetFactionColorPipe } from '../../pipes/get-faction-color-pipe';
+import { GetFactionNamePipe } from '../../pipes/get-faction-name-pipe';
 
 @Component({
   selector: 'app-cards-page',
-  imports: [UIDiagonalLine, FormsModule, NrIconsPipe, PackCodePipe],
+  imports: [
+    UIDiagonalLine, 
+    UIButton, 
+    FormsModule, 
+    NrIconsPipe, 
+    PackCodePipe,
+    GetFactionColorPipe
+  ],
   templateUrl: './cards-page.html',
   styleUrl: './cards-page.scss',
 })
@@ -23,9 +32,10 @@ export class CardsPage {
   private originalCards: Card[] = [];
   public cards: Card[] = [];
   public zoomLevel: 'small-size' | 'medium-size' | 'large-size' | 'standard-size' = 'standard-size';
-  public sortBy: 'faction' | 'title' | 'type' | 'influence' | 'cost' | 'set number' | 'default' = 'default';
+  public sortBy: 'faction' | 'title' | 'type' | 'faction cost' | 'cost' | 'set number' | 'default' = 'default';
   public showAttribution: boolean = false;
   public selectedCard: Card | null = null;
+  public cardZoomed: boolean = false;
 
   public cycles: Cycle[] = [];
   public factions: Faction[] = [];
@@ -49,9 +59,7 @@ export class CardsPage {
       this.sides = data['configs'].sides.data;
       this.types = data['configs'].types.data;
 
-      console.log(this.packs);
-      
-
+      // console.log(this.packs);
       // console.log(this.cycles, this.factions, this.packs, this.sides, this.types);
     });
   }
@@ -71,7 +79,7 @@ export class CardsPage {
     }
     const savedSortBy = localStorage.getItem('sortBy');
     if (savedSortBy) {
-      this.sortBy = savedSortBy as 'faction' | 'title' | 'type' | 'influence' | 'cost' | 'set number';
+      this.sortBy = savedSortBy as 'faction' | 'title' | 'type' | 'faction cost' | 'cost' | 'set number';
       this.applySort();
     }
 
@@ -102,8 +110,8 @@ export class CardsPage {
     } else if (this.sortBy === 'faction') {
       this.sortBy = 'type';
     } else if (this.sortBy === 'type') {
-      this.sortBy = 'influence';
-    } else if (this.sortBy === 'influence') {
+      this.sortBy = 'faction cost';
+    } else if (this.sortBy === 'faction cost') {
       this.sortBy = 'cost';
     } else if (this.sortBy === 'cost') {
       this.sortBy = 'set number';
@@ -116,7 +124,7 @@ export class CardsPage {
   }
 
   private applySort() {
-    const base = [...this.cards]; // oppure [...this.allCards] se senza filtri
+    const base = [...this.cards];
 
     switch (this.sortBy) {
       case 'faction':
@@ -131,9 +139,9 @@ export class CardsPage {
         );
         break;
 
-      case 'influence':
+      case 'faction cost':
         this.cards = base.sort((a, b) =>
-          (b.influence_limit || 0) - (a.influence_limit || 0)
+          (b.faction_cost || 0) - (a.faction_cost || 0)
         );
         break;
 
@@ -155,14 +163,40 @@ export class CardsPage {
         );
         break;
       default:
-        // this.cards = [...this.originalCards];
         break;
     }
   }
 
+  // CARD SELECTION
+
   public onCardClick(card: Card) {
     this.selectedCard = card;
+    this.scrollToSelected();
+    this.initFactionCostArray();
+    this.cardZoomed = false;
+
     console.log(this.selectedCard);
+  }
+
+  public scrollToSelected() {
+    if (this.selectedCard?.code) {
+      const element = document.getElementById(this.selectedCard.code);
+      element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
+  public factionCostArray: any[] = [];
+  private initFactionCostArray() {
+    const cost = this.selectedCard?.faction_cost || 0;
+    if (cost && cost > 0) {
+      this.factionCostArray = Array(5).fill(false).map((_, i) => i < cost);
+    }
+    console.log(this.factionCostArray);
+    
+  }
+
+  public zoomCard() {
+    this.cardZoomed = true;
   }
 
   // FILTERS
@@ -247,7 +281,5 @@ export class CardsPage {
     localStorage.removeItem('sortBy');
 
     this.cards = [...this.originalCards];
-
-    // this.applyFilters()
   }
 }

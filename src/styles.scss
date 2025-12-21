@@ -44,6 +44,11 @@ p {
     'opsz' 20
 }
 
+.no-fill-icon {
+  font-variation-settings:
+    'FILL' 0,
+}
+
 :root {
   --fg-color: #ffffff;
   --bg-color: #212121;
@@ -195,6 +200,7 @@ input[type="color"] {
   width: 1em;
   height: 1em;
   vertical-align: -0.15em;
+  margin-left: 4px;
 
   background-color: var(--fg-color);
 
@@ -318,7 +324,7 @@ input[type="color"] {
 }
 
 .f-hb {
-  background-image: url('/images/faction-icons/hb.svg');
+  background-image: url('/images/faction-icons/haas-bioroid.svg');
 }
 
 .f-jinteki {
@@ -338,5 +344,5 @@ input[type="color"] {
 }
 
 .f-weyland {
-  background-image: url('/images/faction-icons/weyland.svg');
+  background-image: url('/images/faction-icons/weyland-consortium.svg');
 }

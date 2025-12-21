@@ -17,7 +17,7 @@
         max-width: 1200px;
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 8px;
         padding-right: 16px;
 
         &>.line-divider {
@@ -246,6 +246,16 @@ select {
     display: flex;
     flex-direction: column;
     gap: 12px;
+
+    position: relative;
+
+    .actions-container {
+        position: absolute;
+        bottom: 4px;
+        left: 4px;
+        display: flex;
+        gap: 4px;
+    }
 }
 
 .inspector-header {
@@ -268,8 +278,11 @@ select {
 
 .identity-container {
     display: flex;
-    // align-items: center;
-    justify-content: space-between;
+    align-items: center;
+
+    .material-symbols-rounded {
+        cursor: default;
+    }
 
     .card-cost {
         font-size: 1.5rem;
@@ -294,13 +307,86 @@ select {
 
 .effect-container {
     border-left: 3px solid var(--accent-color);
-    padding: 8px;
+    padding: 0 8px;
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
+.card-text {
+    line-height: 1.5;
+}
+
 .flavor-text {
     font-style: italic;
     opacity: .7;
+}
+
+.zoom-card-container {
+    position: absolute;
+    top: 30%;
+    left: 3%;
+    border: 1px solid var(--accent-color);
+    display: flex;
+    flex-direction: column;
+    z-index: 3;
+    opacity: 0;
+    animation: fadeIn .3s forwards;
+    box-shadow: 0 0 4px rgba(0, 0, 0, .1);
+
+    &>.zoom-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: var(--bg-color);
+        padding: 0 4px;
+        text-transform: uppercase;
+
+        &>p {
+            margin-left: 8px;
+            font-weight: bold;
+        }
+
+        &>.material-symbols-rounded {
+            cursor: pointer;
+        }
+    }
+
+    &>.zoom-card-image {
+        display: flex;
+        background-color: var(--bg-color);
+        padding: 4px;
+
+        img {
+            border: 1px solid var(--accent-color);
+            border-radius: 16px;
+        }
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.faction-influence-container {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    &>img {
+        height: 24px;
+        width: 24px;
+    }
+
+    &>.material-symbols-rounded {
+        font-size: 1rem;
+    }
 }

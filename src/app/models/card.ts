@@ -21,5 +21,5 @@ export interface Card {
     text?: string;
     title: string;
     type_code?: string;
-    uniqueness?: string;
+    uniqueness?: boolean;
 }

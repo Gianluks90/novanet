@@ -10,4 +10,5 @@ export class UIButton {
   public text = input<string>('');
   public icon = input<string>('');
   public disabled = input<boolean>(false);
+  public size = input<'normal' | 'small'>('normal');
 }
