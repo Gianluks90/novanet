@@ -22,8 +22,7 @@ import { GetFactionNamePipe } from '../../pipes/get-faction-name-pipe';
     UIButton, 
     FormsModule, 
     NrIconsPipe, 
-    PackCodePipe,
-    GetFactionColorPipe
+    PackCodePipe
   ],
   templateUrl: './cards-page.html',
   styleUrl: './cards-page.scss',
@@ -58,9 +57,6 @@ export class CardsPage {
       this.packs = data['configs'].packs.data;
       this.sides = data['configs'].sides.data;
       this.types = data['configs'].types.data;
-
-      // console.log(this.packs);
-      // console.log(this.cycles, this.factions, this.packs, this.sides, this.types);
     });
   }
 
@@ -191,8 +187,6 @@ export class CardsPage {
     if (cost && cost > 0) {
       this.factionCostArray = Array(5).fill(false).map((_, i) => i < cost);
     }
-    console.log(this.factionCostArray);
-    
   }
 
   public zoomCard() {
