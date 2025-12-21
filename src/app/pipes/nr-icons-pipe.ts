@@ -16,12 +16,23 @@ export class NrIconsPipe implements PipeTransform {
     link: 'nr-link',
     mu: 'nr-mu',
     rd: 'nr-rd',
-    ['recurring-credit']: 'nr-recurring-credit',
-    ['rez-cost']: 'nr-rez-cost',
+    'recurring-credit': 'nr-recurring-credit',
+    'rez-cost': 'nr-rez-cost',
     subroutine: 'nr-subroutine',
-    trashAbility: 'nr-trash-ability',
-    trashLocal: 'nr-trash-local'
+    'trash-ability': 'nr-trash-ability',
+    'trash-local': 'nr-trash-local',
+    adam: 'f-adam',
+    anarch: 'f-anarch',
+    apex: 'f-apex',
+    criminal: 'f-criminal',
+    'haas-bioroid': 'f-hb',
+    jinteki: 'f-jinteki',
+    nbn: 'f-nbn',
+    shaper: 'f-shaper',
+    sunny: 'f-sunny',
+    'weyland-consortium': 'f-weyland'
   };
+
 
   transform(text: string | undefined | null): string {
     if (!text) return '';
@@ -29,11 +40,20 @@ export class NrIconsPipe implements PipeTransform {
     return text
       .replace(/\r\n|\n|\r|↵/g, '<br />')
       .replace(/\[([^\]]+)\]/g, (match, token) => {
-        const key = token.toLowerCase();
-        const className = this.iconMap[key];
-        if (!className) return match;
+        const trimmed = token.trim();
 
-        return `<span class="nr-icon ${className}" aria-label="${key}"></span>`;
+        // se è un numero, lo trasformiamo in <sup>
+        if (/^\d+$/.test(trimmed)) {
+          return `<sup>${trimmed}</sup>`;
+        }
+
+        // altrimenti cerchiamo nell'iconMap
+        const key = trimmed.toLowerCase();
+        const className = this.iconMap[key];
+
+        return className
+          ? `<span class="nr-icon ${className}" aria-label="${key}"></span>`
+          : match;
       });
   }
 }

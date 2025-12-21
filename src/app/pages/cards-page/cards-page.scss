@@ -243,6 +243,15 @@ select {
 
 .inspector-container {
     padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.inspector-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .empty-ispector {
@@ -251,4 +260,47 @@ select {
     align-items: center;
     justify-content: center;
     text-align: center;
+}
+
+.section-subtitle {
+    text-decoration: underline;
+}
+
+.identity-container {
+    display: flex;
+    // align-items: center;
+    justify-content: space-between;
+
+    .card-cost {
+        font-size: 1.5rem;
+    }
+}
+
+.identity-item {
+    flex-direction: column;
+    align-items: normal;
+    width: 100%;
+
+    hr {
+        width: 100%;
+        color: var(--accent-color);
+    }
+}
+
+.type-label {
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.effect-container {
+    border-left: 3px solid var(--accent-color);
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.flavor-text {
+    font-style: italic;
+    opacity: .7;
 }

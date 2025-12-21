@@ -207,6 +207,30 @@ input[type="color"] {
   -webkit-mask-position: center;
 }
 
+.nr-icon:not([class*="f-"]) {
+  background-color: var(--fg-color);
+
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+}
+
+.nr-icon[class*="f-"] {
+  background-color: transparent;
+  mask: none;
+  -webkit-mask: none;
+  height: 12px;
+  width: 12px;
+
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
 .nr-agenda {
   mask-image: url('/images/game-icons/agenda.svg');
   -webkit-mask-image: url('/images/game-icons/agenda.svg');
@@ -262,7 +286,7 @@ input[type="color"] {
   -webkit-mask-image: url('/images/game-icons/rez-cost.svg');
 }
 
-.nr-subrouting {
+.nr-subroutine {
   mask-image: url('/images/game-icons/subroutine.svg');
   -webkit-mask-image: url('/images/game-icons/subroutine.svg');
 }
@@ -275,4 +299,44 @@ input[type="color"] {
 .nr-trash-local {
   mask-image: url('/images/game-icons/trash-local.svg');
   -webkit-mask-image: url('/images/game-icons/trash-local.svg');
+}
+
+.f-adam {
+  background-image: url('/images/faction-icons/adam.svg');
+}
+
+.f-anarch {
+  background-image: url('/images/faction-icons/anarch.svg');
+}
+
+.f-apex {
+  background-image: url('/images/faction-icons/apex.svg');
+}
+
+.f-criminal {
+  background-image: url('/images/faction-icons/criminal.svg');
+}
+
+.f-hb {
+  background-image: url('/images/faction-icons/hb.svg');
+}
+
+.f-jinteki {
+  background-image: url('/images/faction-icons/jinteki.svg');
+}
+
+.f-nbn {
+  background-image: url('/images/faction-icons/nbn.svg');
+}
+
+.f-shaper {
+  background-image: url('/images/faction-icons/shaper.svg');
+}
+
+.f-sunny {
+  background-image: url('/images/faction-icons/sunny.svg');
+}
+
+.f-weyland {
+  background-image: url('/images/faction-icons/weyland.svg');
 }

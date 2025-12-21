@@ -11,10 +11,11 @@ import { Type } from '../../models/type';
 import { FormsModule } from '@angular/forms';
 import { NrIconsPipe } from '../../pipes/nr-icons-pipe';
 import { DomSanitizer } from '@angular/platform-browser';
+import { PackCodePipe } from '../../pipes/pack-code-pipe';
 
 @Component({
   selector: 'app-cards-page',
-  imports: [UIDiagonalLine, FormsModule, NrIconsPipe],
+  imports: [UIDiagonalLine, FormsModule, NrIconsPipe, PackCodePipe],
   templateUrl: './cards-page.html',
   styleUrl: './cards-page.scss',
 })
@@ -47,6 +48,9 @@ export class CardsPage {
       this.packs = data['configs'].packs.data;
       this.sides = data['configs'].sides.data;
       this.types = data['configs'].types.data;
+
+      console.log(this.packs);
+      
 
       // console.log(this.cycles, this.factions, this.packs, this.sides, this.types);
     });

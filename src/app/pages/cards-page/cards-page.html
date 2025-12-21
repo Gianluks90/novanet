@@ -87,14 +87,48 @@
                 <p>Select a card from the grid to inspect detail and actions.</p>
             } @else {
                 @let c = selectedCard;
-                @if(c.type_code === 'identity') {
-                    <p class="section-title">{{c.title.split(':')[0]}}</p>
-                    <p>{{c.title.split(':')[1]}}</p>
-                } @else {
-                    <p class="section-title">{{c.title}}</p>
-                }
-                <div class="card-text" [innerHTML]="c.text | nrIcons">
+                <div class="inspector-header">
+                    <div class="code-container">{{c.code}}</div>
+                    <div class="set-label">{{c.pack_code | packCode: packs}}</div>
                 </div>
+                @if(c.type_code === 'identity') {
+                    <div class="identity-container identity-item">
+                        <p class="section-title">{{c.title.split(':')[0]}}</p>
+                        <hr>
+                        <p>{{c.title.split(':')[1]}}</p>
+                    </div>
+                } @else {
+                    <div class="identity-container">
+                        <p class="section-title">{{c.title}}</p>
+                    </div>
+                }
+                <p>
+                    <span class="type-label">{{c.type_code}}:</span>
+                    {{c.keywords}}
+                </p>
+                <!-- <p class="section-subtitle">Info</p> -->
+                @if (c.base_link || c.base_link === 0) {
+                    <p>Link: {{c.base_link}} <span class="nr-icon nr-link"></span></p>
+                }
+                @if (c.cost || c.cost === 0) {
+                    <p>Cost: {{c.cost}} <span class="nr-icon nr-credit"></span></p>
+                }
+                @if (c.memory_cost || c.memory_cost === 0) {
+                    <p>Memory cost: {{c.memory_cost}} <span class="nr-icon nr-mu"></span></p>
+                }
+                @if (c.strength || c.strength === 0) {
+                    <p>Strength: {{c.strength}}</p>
+                }
+                
+                
+                <div class="effect-container">
+                    <p class="section-subtitle">Effect</p>
+                    <div class="card-text" [innerHTML]="c.text | nrIcons">
+                    </div>
+                    <div class="flavor-text">{{c.flavor}}</div>
+                </div>
+                <p class="section-subtitle">Illustrator</p>
+                <p>{{c.illustrator}}</p>
             }
             <app-ui-diagonal-line position="bottom-right"></app-ui-diagonal-line>
         </div>
