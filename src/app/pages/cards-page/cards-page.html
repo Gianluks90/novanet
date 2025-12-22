@@ -79,15 +79,18 @@
             [class.medium-size]="zoomLevel === 'medium-size'" [class.large-size]="zoomLevel === 'large-size'"
             [class.standard-size]="zoomLevel === 'standard-size'">
             @for(card of cards; track card.code) {
-            <div class="card-item" (click)="onCardClick(card)"
+            <!-- <div class="card-item" (click)="onCardClick(card)"
                 [class.selected-card]="selectedCard && selectedCard.code === card.code"
                 [class.not-selected-card]="selectedCard && selectedCard.code !== card.code" [id]="card.code">
                 <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + card.code + '.jpg'" alt="">
-            </div>
+            </div> -->
+            <app-card-component (click)="onCardClick(card)" [card]="card" [selectedCard]="selectedCard"
+                [selectedCardClass]="selectedCard && selectedCard.code === card.code"
+                [notSelectedCardClass]="selectedCard && selectedCard.code !== card.code"
+                [id]="card.code"></app-card-component>
             }
         </div>
-        <div class="inspector-container" [class.empty-ispector]="!selectedCard">
-            <!-- <p class="section-title">Inspector</p> -->
+        <!-- <div class="inspector-container" [class.empty-ispector]="!selectedCard">
             @if (!selectedCard) {
             <span class="material-symbols-rounded">trackpad_input</span>
             <p>Select a card from the grid to inspect detail and actions.</p>
@@ -119,7 +122,6 @@
                 <span class="type-label">{{c.type_code}}:</span>
                 {{c.keywords}}
             </p>
-            <!-- <p class="section-subtitle">Info</p> -->
             @if (c.base_link || c.base_link === 0) {
                 <p>Link: {{c.base_link}}<span class="nr-icon nr-link"></span></p>
             }
@@ -138,8 +140,6 @@
             @if (c.strength || c.strength === 0) {
                 <p>Strength: {{c.strength}}</p>
             }
-
-
             <div class="effect-container">
                 <p class="section-subtitle">Effect</p>
                 <div class="card-text" [innerHTML]="c.text | nrIcons">
@@ -179,8 +179,8 @@
                 <app-ui-button text="Translate" icon="translate" [disabled]="true" size="small"></app-ui-button>
                 }
             </div>
-        </div>
-        <!-- <app-ui-diagonal-line position="bottom-right"></app-ui-diagonal-line> -->
+        </div> -->
+        <app-card-detail [selectedCard]="selectedCard" [packs]="packs" (zoomCardEmit)="onCardZoomEmitted($event)"></app-card-detail>
     </div>
 </div>
 

@@ -7,11 +7,13 @@
 - [x] implementare firebase auth
 - [x] implementare firestore
 - [x] implementare NetrunnerDB API
-- [ ] cards browser page
-- [ ] card component
-- [ ] card model
-- [ ] card inspector
+- [x] cards browser page
+- [x] card component
+- [x] card model
+- [x] Notification service e snackbar
+- [ ] card inspector component
 - [ ] implementare i18n
-- [ ] implementare "suggerisci traduzione"
+- [ ] implementare "suggerisci traduzione" (rapida - dialog)
+- [ ] implementare "suggerisci traduzione" (avanzata - route)
 - [ ] implementare strumento admin di validazione traduzioni
 - [ ] deck builder page

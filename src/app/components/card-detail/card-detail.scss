@@ -1,0 +1,126 @@
+:host {
+    height: 100%;
+    min-height: 0; // 🔥 QUESTO È IL PEZZO MANCANTE
+    display: flex;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--fg-color);
+    text-transform: uppercase;
+}
+
+.inspector-container {
+    border: 1px solid var(--accent-color);
+    background-color: var(--bg-container-color);
+    // padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+
+    position: relative;
+
+    section {
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        flex-grow: 1;
+    }
+
+    .actions-container {
+        width: 100%;
+        position: sticky;
+        background-color: var(--bg-container-color);
+        bottom: 0;
+        left: 0;
+        padding: 8px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 4px;
+    }
+}
+
+.inspector-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.empty-ispector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 16px;
+}
+
+.section-subtitle {
+    text-decoration: underline;
+}
+
+.identity-container {
+    display: flex;
+    align-items: center;
+
+    .material-symbols-rounded {
+        cursor: default;
+    }
+
+    .card-cost {
+        font-size: 1.5rem;
+    }
+}
+
+.identity-item {
+    flex-direction: column;
+    align-items: normal;
+    width: 100%;
+
+    hr {
+        width: 100%;
+        color: var(--accent-color);
+    }
+}
+
+.type-label {
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.effect-container {
+    border-left: 3px solid var(--accent-color);
+    padding: 0 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.card-text {
+    line-height: 1.5;
+}
+
+.flavor-text {
+    font-style: italic;
+    opacity: .7;
+}
+
+.faction-influence-container {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    &>img {
+        height: 24px;
+        width: 24px;
+    }
+
+    &>.material-symbols-rounded {
+        font-size: 1rem;
+    }
+}

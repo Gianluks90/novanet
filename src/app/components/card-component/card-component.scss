@@ -1,0 +1,43 @@
+:host {
+    &>:hover {
+        transform: scale(1.03);
+        transition: transform 0.5s;
+    }
+
+    &>.selected-card {
+        filter: saturate(1.15) contrast(1.05);
+        box-shadow: 0 0 6px var(--accent-color);
+        z-index: 1;
+    }
+
+    &>.not-selected-card {
+        opacity: 0.5;
+        filter: saturate(0.5);
+    }
+}
+
+.card-item {
+    width: 100%;
+    aspect-ratio: 2/3;
+    background-color: var(--bg-container-color);
+    border: 1px solid var(--accent-color);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+    transition:
+        filter 150ms ease,
+        opacity 150ms ease,
+        box-shadow 150ms ease,
+        transform 150ms ease;
+
+    &>img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+}

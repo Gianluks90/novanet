@@ -1,0 +1,92 @@
+<div class="inspector-container" [class.empty-ispector]="!selectedCard()">
+    @if (!selectedCard()) {
+    <span class="material-symbols-rounded">trackpad_input</span>
+    <p>Select a card from the grid to inspect detail and actions.</p>
+    } @else {
+    <section>
+        @let c = selectedCard();
+        <div class="inspector-header">
+            <div class="code-container">{{c?.code}}</div>
+            <div class="set-label">{{c?.pack_code | packCode: packs()}} #{{c?.position}}</div>
+        </div>
+        @if(c?.type_code === 'identity') {
+        <div class="identity-container identity-item">
+            @if (c?.uniqueness) {
+            <span title="unique" class="material-symbols-rounded">stat_0</span>
+            }
+            <p class="section-title">{{c?.title!.split(':')[0]}}</p>
+            <hr>
+            <p>{{c?.title!.split(':')[1]}}</p>
+        </div>
+        } @else {
+        <div class="identity-container">
+            @if (c?.uniqueness) {
+            <span class="material-symbols-rounded">stat_0</span>
+            }
+            <p class="section-title">{{c?.title}}</p>
+        </div>
+        }
+        <p>
+            <span class="type-label">{{c?.type_code}}:</span>
+            {{c?.keywords}}
+        </p>
+        <!-- <p class="section-subtitle">Info</p> -->
+        @if (c?.base_link || c?.base_link === 0) {
+        <p>Link: {{c?.base_link}}<span class="nr-icon nr-link"></span></p>
+        }
+        @if (c?.minimum_deck_size && c?.minimum_deck_size! > 0) {
+        <p>Minimum deck size: {{c?.minimum_deck_size}}</p>
+        }
+        @if ((c?.influence_limit && c?.influence_limit! > 0) || c?.influence_limit === null) {
+        <p>{{c?.influence_limit ? 'Influence limit: ' + c?.influence_limit : 'No influence limit'}}</p>
+        }
+        @if (c?.cost || c?.cost === 0) {
+        <p>Cost: {{c?.cost}}<span class="nr-icon nr-credit"></span></p>
+        }
+        @if (c?.memory_cost || c?.memory_cost === 0) {
+        <p>Memory cost: {{c?.memory_cost}}<span class="nr-icon nr-mu"></span></p>
+        }
+        @if (c?.strength || c?.strength === 0) {
+        <p>Strength: {{c?.strength}}</p>
+        }
+        <div class="effect-container">
+            <p class="section-subtitle">Effect</p>
+            <div class="card-text" [innerHTML]="c?.text | nrIcons">
+            </div>
+            <div class="flavor-text">{{c?.flavor}}</div>
+        </div>
+        @if (c?.faction_cost && c?.faction_cost! > 0) {
+        <p class="section-subtitle">Influence cost</p>
+        <div class="faction-influence-container">
+            <img [src]="'images/faction-icons/' + c?.faction_code+ '.svg'" alt="">
+            @for(fi of factionCostArray; track $index) {
+            @if (fi) {
+            <span class="material-symbols-rounded">circle</span>
+            } @else {
+            <span class="material-symbols-rounded no-fill-icon">circle</span>
+            }
+            }
+        </div>
+        }
+        <p class="section-subtitle">Meta</p>
+        @if (c?.side_code) {
+        <p>Side: {{c?.side_code}}</p>
+        }
+        @if (c?.deck_limit && c?.deck_limit! > 0) {
+        <p>Deck limit: {{c?.deck_limit}}</p>
+        }
+        @if (c?.quantity && c?.quantity! > 0) {
+        <p>Quantity per set: {{c?.quantity}}</p>
+        }
+        <p class="section-subtitle">Illustrator</p>
+        <p>{{c?.illustrator}}</p>
+    </section>
+    }
+    <div class="actions-container">
+        @if (selectedCard()) {
+        <app-ui-button text="Focus" icon="recenter" size="small" (click)="scrollToSelected()"></app-ui-button>
+        <app-ui-button text="Zoom img" icon="search" size="small" (click)="zoomCard()"></app-ui-button>
+        <app-ui-button text="Translate" icon="translate" [disabled]="true" size="small"></app-ui-button>
+        }
+    </div>
+</div>

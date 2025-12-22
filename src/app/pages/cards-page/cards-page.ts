@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { UIButton, UIDiagonalLine } from '../../ui';
 import { nrdbDb } from '../../db/nrdb-indexed-db';
 import { Card } from '../../models/card';
@@ -14,15 +14,18 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { PackCodePipe } from '../../pipes/pack-code-pipe';
 import { GetFactionColorPipe } from '../../pipes/get-faction-color-pipe';
 import { GetFactionNamePipe } from '../../pipes/get-faction-name-pipe';
+import { Dialog, DialogRef } from '@angular/cdk/dialog';
+import { DialogResult } from '../../models/DialogResult';
+import { CardComponent } from '../../components/card-component/card-component';
+import { CardDetail } from '../../components/card-detail/card-detail';
 
 @Component({
   selector: 'app-cards-page',
   imports: [
     UIDiagonalLine, 
-    UIButton, 
     FormsModule, 
-    NrIconsPipe, 
-    PackCodePipe
+    CardComponent,
+    CardDetail
   ],
   templateUrl: './cards-page.html',
   styleUrl: './cards-page.scss',
@@ -49,6 +52,9 @@ export class CardsPage {
     side: 'all',
     type: 'all',
   };
+
+  private dialog = inject(Dialog);
+  private dialogRef: DialogRef<DialogResult, any> | null = null;
 
   constructor(private cd: ChangeDetectorRef, private route: ActivatedRoute, private sanitizer: DomSanitizer) {
     this.route.data.subscribe(data => {
@@ -166,11 +172,14 @@ export class CardsPage {
   // CARD SELECTION
 
   public onCardClick(card: Card) {
+
+    if (this.selectedCard && this.selectedCard.code === card.code) {
+      this.cardZoomed = true
+    } else {
+      this.cardZoomed = false
+    }
     this.selectedCard = card;
     this.scrollToSelected();
-    this.initFactionCostArray();
-    this.cardZoomed = false;
-
     console.log(this.selectedCard);
   }
 
@@ -181,16 +190,8 @@ export class CardsPage {
     }
   }
 
-  public factionCostArray: any[] = [];
-  private initFactionCostArray() {
-    const cost = this.selectedCard?.faction_cost || 0;
-    if (cost && cost > 0) {
-      this.factionCostArray = Array(5).fill(false).map((_, i) => i < cost);
-    }
-  }
-
-  public zoomCard() {
-    this.cardZoomed = true;
+  onCardZoomEmitted(event: any) {
+    this.cardZoomed = event;
   }
 
   // FILTERS

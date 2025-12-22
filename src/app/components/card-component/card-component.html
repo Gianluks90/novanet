@@ -1,0 +1,5 @@
+<div class="card-item"
+                [class.selected-card]="selectedCard() && selectedCard()?.code === card()?.code"
+                [class.not-selected-card]="selectedCard() && selectedCard()?.code !== card()?.code" [id]="card()?.code">
+                <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + card()?.code + '.jpg'" alt="">
+            </div>

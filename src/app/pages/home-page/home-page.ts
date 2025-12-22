@@ -1,4 +1,4 @@
-import { Component, HostListener, inject } from '@angular/core';
+import { Component, effect, HostListener, inject } from '@angular/core';
 import { APP_VERSION } from '../../const/appVersion';
 import { AuthService } from '../../services/auth-service';
 import { FirebaseService } from '../../services/firebase-service';
@@ -8,6 +8,7 @@ import { DialogResult } from '../../models/DialogResult';
 import { HomeSettingsDialog } from '../../components/dialogs/home-settings-dialog/home-settings-dialog';
 import { DIALOGS_CONFIG } from '../../const/dialogConfig';
 import { RouterLink } from '@angular/router';
+import { NotificationService } from '../../services/notification-service';
 
 @Component({
   selector: 'app-home-page',
@@ -21,7 +22,8 @@ export class HomePage {
   private dialog = inject(Dialog);
   private dialogRef: DialogRef<DialogResult, any> | null = null;
   
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private notification: NotificationService) {
+}
 
   public openDialog() {
     this.dialogRef = this.dialog.open<DialogResult>(HomeSettingsDialog, {
@@ -31,7 +33,7 @@ export class HomePage {
 
     this.dialogRef.closed.subscribe((result: DialogResult | undefined) => {
       if (result?.status === 'confirmed') {
-        // TODO: notification of success
+        this.notification.notify('Settings updated', 'check')
       }
     });
   }
