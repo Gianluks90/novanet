@@ -10,6 +10,11 @@
     .logo {
         width: 24px;
         height: 24px;
+        cursor: pointer;
+        
+        &:hover {
+            animation: scaleUp .3s forwards
+        }
     }
 }
 
@@ -20,4 +25,17 @@
     font-size: 18px;
     font-weight: 600;
     text-transform: uppercase;
+}
+
+app-theme-toggle:hover {
+    animation: scaleUp .3s forwards
+}
+
+@keyframes scaleUp {
+    from {
+        transform: scale(1);
+    }
+    to {
+        transform: scale(1.2);
+    }
 }

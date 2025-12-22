@@ -104,12 +104,12 @@
 
         &>.cards-container {
             display: grid;
-            // grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
             gap: 16px;
             padding: 16px;
             height: 100%;
             overflow-y: auto;
             padding-top: 40px;
+            align-content: flex-start;
 
             &>.card-item {
                 width: 100%;
@@ -183,7 +183,7 @@
             transparent 4px)
 }
 
-input[type="text"] {
+input[type="text"], input[type="number"] {
     flex-grow: 1;
     padding: 4px 8px;
     border: 1px solid var(--accent-color);
@@ -195,6 +195,10 @@ input[type="text"] {
     &::placeholder {
         color: var(--text-secondary-color);
     }
+}
+
+input[type="number"] {
+    max-width: 100px;
 }
 
 select {

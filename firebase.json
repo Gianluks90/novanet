@@ -13,10 +13,8 @@
       "**/node_modules/**"
     ],
     "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
+      { "source": "/it/**", "destination": "/it/index.html" },
+      { "source": "**", "destination": "/en/index.html" }
     ]
   }
 }

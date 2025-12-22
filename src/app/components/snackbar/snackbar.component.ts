@@ -8,5 +8,5 @@ import { Component, Input } from '@angular/core';
 })
 export class SnackbarComponent {
   @Input() message = '';
-  @Input() icon: 'check' | 'dangerous' | 'warning' | 'info' = 'info';
+  @Input() icon: 'check' | 'dangerous' | 'warning' | 'info' | 'cards_stack' = 'info';
 }

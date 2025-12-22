@@ -1,0 +1,14 @@
+{
+  "locale": "en-US",
+  "translations": {
+    "659689882018025847": "Welcome {$INTERPOLATION} to {$START_UNDERLINED_TEXT}NovaNet{$CLOSE_UNDERLINED_TEXT}",
+    "9002709967897220375": "Step into the digital nexus of {$START_TAG_STRONG}Novacorp{$CLOSE_TAG_STRONG}. {$LINE_BREAK}{$START_TAG_STRONG}NovaNet{$CLOSE_TAG_STRONG} connects Corps and Runners in a single, dynamic space where strategy, cunning, and adaptability define success. Whether you’re building decks, analyzing cards, or testing your tactics against others, Novanet provides the tools and insights you need to dominate the cyber arena.",
+    "1621643999629474552": "Our platform offers an integrated system that brings every aspect of the Android: Netrunner experience together. Track your progress, explore new strategies, and engage in competitive play—all while immersing yourself in a world of high-stakes corporate intrigue and shadowy netrunning operations. ",
+    "7938963241108416008": "Novanet isn’t just a tool—it’s a gateway to a living, evolving environment where the line between Runner and Corp blurs. Your choices have consequences, your strategies shape the meta, and every game is a story waiting to unfold.",
+    "69230654610067321": "Novanet is an independent project and is not affiliated with, endorsed by, or associated with Fantasy Flight Games or Wizards of the Coast.",
+    "8012836828351098527": "settings",
+    "5627072660785451875": "cards",
+    "1689626284706294924": "deck builder",
+    "2352823364476335103": "play"
+  }
+}

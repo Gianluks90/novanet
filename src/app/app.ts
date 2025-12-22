@@ -1,4 +1,4 @@
-import { Component, HostListener, signal } from '@angular/core';
+import { Component, HostListener, inject, LOCALE_ID, signal } from '@angular/core';
 import { NavigationEnd, NavigationStart, Router, RouterOutlet } from '@angular/router';
 import { Header } from './components/header/header';
 import { UnsupportedPage } from './pages/unsupported-page/unsupported-page';
@@ -7,6 +7,7 @@ import { FIREBASE_CONFIG } from './environment/firebaseConfig';
 import { FirebaseService } from './services/firebase-service';
 import { getFirestore } from 'firebase/firestore';
 import { LoadingPage } from './pages/loading-page/loading-page';
+import { NotificationService } from './services/notification-service';
 
 @Component({
   selector: 'app-root',
@@ -15,19 +16,19 @@ import { LoadingPage } from './pages/loading-page/loading-page';
   styleUrl: './app.scss'
 })
 export class App {
-  // protected readonly title = signal('novanet');
-  public title: string = '';
   protected isUnsupported = false;
-  // protected loadingRoot = false;
-
-  constructor(private firebaseService: FirebaseService, private router: Router) {
+  private locale = inject(LOCALE_ID);
+  constructor(private firebaseService: FirebaseService, private router: Router, private notification: NotificationService) {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
-        // this.loadingRoot = true;
+        if (event.url.includes('cards')) {
+          this.notification.notify($localize `Cards loading...`, 'cards_stack')
+        }
       }
       if (event instanceof NavigationEnd) {
-        // this.loadingRoot = false;
-        this.title = window?.location?.pathname?.split('/')?.filter(part => part.length > 0)[0] || 'home';
+        if (event.url.includes('cards')) {
+          this.notification.notify($localize `Cards loaded!`, 'cards_stack')
+        }
       }
     });
   }
@@ -35,8 +36,7 @@ export class App {
   ngOnInit() {
     this.checkScreenSize();
   }
-
-
+  
   @HostListener('window:resize')
   onResize() {
     this.checkScreenSize();

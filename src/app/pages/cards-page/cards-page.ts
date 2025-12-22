@@ -18,6 +18,14 @@ import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { DialogResult } from '../../models/DialogResult';
 import { CardComponent } from '../../components/card-component/card-component';
 import { CardDetail } from '../../components/card-detail/card-detail';
+import { DIALOGS_CONFIG } from '../../const/dialogConfig';
+import { FirebaseService } from '../../services/firebase-service';
+import { NotificationService } from '../../services/notification-service';
+import { TranslateDialog } from '../../components/dialogs/translate-dialog/translate-dialog';
+import { FactionLabelPipe } from '../../pipes/faction-label-pipe';
+import { TypeLabelPipe } from '../../pipes/type-label-pipe';
+import { ZoomLevelLabelPipe } from '../../pipes/zoom-level-label-pipe';
+import { SortByLabelPipe } from '../../pipes/sort-by-label-pipe';
 
 @Component({
   selector: 'app-cards-page',
@@ -25,7 +33,11 @@ import { CardDetail } from '../../components/card-detail/card-detail';
     UIDiagonalLine, 
     FormsModule, 
     CardComponent,
-    CardDetail
+    CardDetail,
+    FactionLabelPipe,
+    TypeLabelPipe,
+    ZoomLevelLabelPipe,
+    SortByLabelPipe
   ],
   templateUrl: './cards-page.html',
   styleUrl: './cards-page.scss',
@@ -51,18 +63,19 @@ export class CardsPage {
     faction: 'all',
     side: 'all',
     type: 'all',
+    cost: null as number | null
   };
 
-  private dialog = inject(Dialog);
-  private dialogRef: DialogRef<DialogResult, any> | null = null;
-
-  constructor(private cd: ChangeDetectorRef, private route: ActivatedRoute, private sanitizer: DomSanitizer) {
+  constructor(private cd: ChangeDetectorRef, private route: ActivatedRoute, private sanitizer: DomSanitizer, private firebase: FirebaseService, private notification: NotificationService) {
     this.route.data.subscribe(data => {
       this.cycles = data['configs'].cycles.data;
       this.factions = data['configs'].factions.data;
       this.packs = data['configs'].packs.data;
       this.sides = data['configs'].sides.data;
+      // this.types = data['configs'].types.data.filter((t:any) => !t.is_subtype);
       this.types = data['configs'].types.data;
+      console.log(this.types);
+      
     });
   }
 
@@ -225,6 +238,13 @@ export class CardsPage {
     this.applyFilters();
   }
 
+  // Cost filter
+  onChangeCostFilter(event: any) {
+  const value = event.target.value;
+  this.filters.cost = value === '' ? null : Number(value);
+  this.applyFilters();
+}
+
   private applyFilters() {
     this.cards = this.allCards.filter(card => {
       if (
@@ -257,6 +277,12 @@ export class CardsPage {
       ) {
         return false;
       }
+      if (
+        this.filters.cost !== null &&
+        card.cost !== this.filters.cost
+      ) {
+        return false;
+      }
       return true;
     });
 
@@ -270,6 +296,7 @@ export class CardsPage {
       faction: 'all',
       side: 'all',
       type: 'all',
+      cost: null
     };
 
     this.sortBy = 'default';

@@ -1,0 +1,12 @@
+<app-ui-dialog-container dialogTitle="Suggest translation EN -> IT">
+    <p class="p-subtitle">Warning</p>
+    <p class="p-note">You are about to suggest a translation in your language for the following card. Pay attention to
+        every detail. The translation will be submitted to an administrator before being validated. Use <strong>advanced mode</strong> if
+        you don't have any pending operations on this page.</p>
+    <div dialog-actions-container>
+        <app-ui-button text="Save changes" icon="save" [disabled]="!form.valid || form.pristine"
+            (click)="onSubmit()"></app-ui-button>
+        <app-ui-button text="Advanced mode" icon="open_in_new" [disabled]="true"></app-ui-button>
+        <app-ui-button text="Close" icon="close" (click)="dialogRef.close()"></app-ui-button>
+    </div>
+</app-ui-dialog-container>

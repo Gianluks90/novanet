@@ -10,7 +10,7 @@ export class NotificationService {
 
     public notify(
     message: string,
-    icon: 'check' | 'dangerous' | 'warning' | 'info' = 'info',
+    icon: 'check' | 'dangerous' | 'warning' | 'info' | 'cards_stack' = 'info',
     duration: number = 3000
   ): void {
     const container = document.getElementById('notificationContainer');

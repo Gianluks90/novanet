@@ -1,6 +1,6 @@
 {
   "name": "novanet",
-  "version": "0.0.7 (2025-12)",
+  "version": "0.0.8 (2025-12)",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -40,6 +40,7 @@
     "@angular/build": "^21.0.3",
     "@angular/cli": "^21.0.3",
     "@angular/compiler-cli": "^21.0.0",
+    "@angular/localize": "^21.0.6",
     "typescript": "~5.9.2"
   }
 }

@@ -1,22 +1,22 @@
 <div class="cards-page-main-container">
     <div class="filter-container">
         <div class="side-line"></div>
-        <p class="section-title">Filters</p>
-        <input type="text" placeholder="Search text..." (keyup)="onChangeTextSearch($event)">
+        <p i18n class="section-title">Filters</p>
+        <input i18n-placeholder="@@searchTextInputPlaceholder" type="text" placeholder="Search text..." (keyup)="onChangeTextSearch($event)">
         <div class="line-divider"></div>
-        <p>Game</p>
+        <p>Info</p>
         @if (factions.length > 0) {
         <select name="faction" id="faction-select" [(ngModel)]="filters.faction"
             (change)="onChangeFactionFilter($event)">
-            <option value="all">All Factions</option>
+            <option i18n value="all">All Factions</option>
             @for(faction of factions; track faction.code) {
-            <option [value]="faction.code">{{ faction.name }}</option>
+            <option [value]="faction.code">{{ faction.code | factionLabel}}</option>
             }
         </select>
         }
         @if (sides.length > 0) {
         <select name="side" id="side-select" [(ngModel)]="filters.side" (change)="onChangeSideFilter($event)">
-            <option value="all">All Sides</option>
+            <option i18n value="all">All Sides</option>
             @for(side of sides; track side.code) {
             <option [value]="side.code">{{ side.name }}</option>
             }
@@ -26,7 +26,7 @@
         <p>Meta</p>
         @if(this.cycles.length > 0 && this.packs.length > 0) {
         <select name="pack" id="pack-select" [(ngModel)]="filters.pack" (change)="onChangePackFilter($event)">
-            <option value="all">All packs</option>
+            <option i18n value="all">All packs</option>
 
             @for(cycle of cycles; track cycle.code) {
             <optgroup [label]="cycle.name">
@@ -44,12 +44,13 @@
         }
         @if (types.length > 0) {
         <select name="type" id="type-select" [(ngModel)]="filters.type" (change)="onChangeTypeFilter($event)">
-            <option value="all">All Types</option>
+            <option i18n value="all">All Types</option>
             @for(type of types; track type.code) {
-            <option [value]="type.code">{{ type.name }}</option>
+            <option [value]="type.code">{{ type.code | typeLabel }}</option>
             }
         </select>
         }
+        <input class="" type="number" inputmode="numeric" placeholder="cost" min="0" (input)="onChangeCostFilter($event)">
         <div class="reset-icon" (click)="resetFilters()">
             <span class="material-symbols-rounded">refresh</span>
         </div>
@@ -58,7 +59,7 @@
     <div class="content-container">
         <div class="attribution-container" (click)="toggleAttribution()">
             @if(showAttribution) {
-            <div class="attribution-text">
+            <div i18n class="attribution-text">
                 Card images and data provided by <a href="https://netrunnerdb.com/" target="_blank"
                     rel="noopener noreferrer">NetrunnerDB</a>
             </div>
@@ -66,13 +67,13 @@
             <span class="material-symbols-rounded">info</span>
         </div>
         <div class="action-controls">
-            <div class="control-container" (click)="zoomRotation()">
+            <div i18n class="control-container" (click)="zoomRotation()">
                 <span class="material-symbols-rounded">grid_view</span>
-                Grid: {{ zoomLevel.replace('-', ' ') }}
+                Grid: {{ zoomLevel | zoomLevelLabel}}
             </div>
-            <div class="control-container" (click)="sortRotation()">
+            <div i18n class="control-container" (click)="sortRotation()">
                 <span class="material-symbols-rounded">sort</span>
-                Sort by: {{ sortBy }} (found: {{cards.length}})
+                Sort by: {{ sortBy | sortByLabel }} (found: {{cards.length}})
             </div>
         </div>
         <div class="cards-container" [class.small-size]="zoomLevel === 'small-size'"
