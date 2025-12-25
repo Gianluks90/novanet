@@ -1,0 +1,7 @@
+<app-ui-dialog-container i18n-dialogTitle dialogTitle="Confirm">
+    <p i18n>Press 'confirm' if you wish to proceed with this operation.</p>
+    <div dialog-actions-container>
+        <app-ui-button i18n-text="@@confirmButton" text="Confirm" icon="check" (click)="confirm()"></app-ui-button>
+        <app-ui-button i18n-text="@@closeButton" text="Close" icon="close" (click)="dialogRef.close()"></app-ui-button>
+    </div>
+</app-ui-dialog-container>

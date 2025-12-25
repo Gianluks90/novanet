@@ -85,7 +85,13 @@
         @if (selectedCard()) {
         <app-ui-button i18n-text text="Focus" icon="recenter" size="small" (click)="scrollToSelected()"></app-ui-button>
         <app-ui-button i18n-text text="Zoom" icon="search" size="small" (click)="zoomCard()"></app-ui-button>
-        <app-ui-button i18n-text text="Translate" icon="translate" [disabled]="!firebase.$user()" (click)="openTranslateDialog()" size="small"></app-ui-button>
+        @if (selectedCard()?.translations && !selectedCard()?.translations?.[locale]?.approved && firebase.$user() && firebase.$user()?.role === 'admin') {
+            <!-- "Gestisci" visibile se sono presenti traduzioni non approvate nel locale attuale e utente autenticato è 'admin' -->
+            <app-ui-button i18n-text text="Approve" icon="translate" size="small" (click)="openConfirmTranslation()"></app-ui-button>
+        } @else {
+            <!-- "Traduci" visibile se non sono presenti traduzioni nel locale attuale, disabilitato se è già stato tradotto o se guest connesso " -->
+            <app-ui-button i18n-text text="Translate" icon="translate" [disabled]="!firebase.$user() || !!(selectedCard()?.translations?.[locale]?.approved)" (click)="openTranslateDialog()" size="small"></app-ui-button>
         }
+    }
     </div>
 </div>

@@ -32,7 +32,7 @@ export interface CardTranslation {
     title: string;
     text: string;
     flavor?: string;
-    translationApproved: boolean;
-    translationReported: boolean;
+    approved: boolean;
+    reported: boolean;
     translatedAt: any; // Timestamp
 }

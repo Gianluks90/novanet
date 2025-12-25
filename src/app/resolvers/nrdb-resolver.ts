@@ -1,16 +1,16 @@
 import { from, Observable, of, switchMap, map, tap } from 'rxjs';
 import { nrdbDb } from '../db/nrdb-indexed-db';
 import { ResolveFn } from '@angular/router';
-import { inject } from '@angular/core';
+import { inject, LOCALE_ID } from '@angular/core';
 import { NetrunnerDbService } from '../db/netrunner-db-service';
 import { CardService } from '../services/card-service';
-import { Timestamp } from 'firebase/firestore';
 
 const API_URL = 'https://netrunnerdb.com/api/2.0/public/cards';
 
 export const nrdbResolver: ResolveFn<boolean> = (): Observable<boolean> => {
   const nrdbService = inject(NetrunnerDbService);
   const cardService = inject(CardService);
+  const locale = inject(LOCALE_ID);
 
   return from(nrdbDb).pipe(
     switchMap(db =>
@@ -34,36 +34,98 @@ export const nrdbResolver: ResolveFn<boolean> = (): Observable<boolean> => {
         }),
         // dopo l'installazione, controlliamo le traduzioni
         switchMap(() => from(cardService.getGlobalTranslationStatus())),
-        switchMap(configSnap => {
-          const globalDate = configSnap.exists()
-            ? configSnap.data()?.translationsLastUpdatedAt?.toDate?.() // timestamp a JS date
-            : null;
+        switchMap(configSnap => 
+          from((async () => {
+            const globalVersion = configSnap.exists()
+              ? configSnap.data()?.version ?? 0
+              : 0;
 
-          const localDate = localStorage.getItem('translationsLastUpdatedAt');
+            // UNICA fonte di verità: localStorage
+            const localVersionStored = localStorage.getItem('translationsVersion');
+            let localVersion = Number(localVersionStored ?? 0);
 
-          if (!globalDate || globalDate.toISOString() !== localDate) {
-            // fetch traduzioni aggiornate da Firebase
-            const lastSyncAt = localDate ? Timestamp.fromDate(new Date(localDate)) : new Timestamp(0, 0);
-            return from(cardService.getUpdatedTranslations(lastSyncAt)).pipe(
-              switchMap(translations => {
+            // Check if IndexedDB is empty
+            const dbCardsCount = await (await nrdbDb).transaction('cards').objectStore('cards').count();
+            if (dbCardsCount === 0) {
+              localVersion = 0;
+            }
+
+            console.log('[translations] localVersionEffective', localVersion, 'globalVersion', globalVersion);
+
+            // 🧱 BOOTSTRAP: DB nuovo / cache vuota
+            if (localVersion === 0 && globalVersion > 0) {
+              console.log('[translations] bootstrap full fetch');
+
+              return cardService.getAllApprovedTranslations(locale).then(translations => {
                 const merge$ = translations.map(tr =>
-                  from(nrdbService.mergeAndSaveTranslations(tr.code, tr.translations))
+                  nrdbService.mergeAndSaveTranslations(tr.code, tr.translations)
                 );
-                return from(Promise.all(merge$)).pipe(
-                  tap(() => {
-                    const newDate = globalDate?.toISOString() ?? new Date().toISOString();
-                    localStorage.setItem('translationsLastUpdatedAt', newDate);
-                    nrdbService.setTranslationsLastUpdatedAt(newDate);
-                  }),
-                  map(() => true)
+                return Promise.all(merge$).then(() => {
+                  localStorage.setItem(
+                    'translationsVersion',
+                    String(globalVersion)
+                  );
+                  nrdbService.setTranslationsVersion(globalVersion);
+                  return true;
+                });
+              });
+            }
+
+            // 🔁 INCREMENTALE with missing cards check
+            if (globalVersion > localVersion) {
+              console.log('[translations] incremental sync with missing cards check', localVersion, '→', globalVersion);
+
+              // First, check for missing cards in IndexedDB
+              return cardService.getApprovedTranslationsSinceVersion(locale, 0).then(async allTranslations => {
+                // Filter translations that are missing in local DB
+                const db = await nrdbDb;
+                const results = await Promise.all(
+                  allTranslations.map(async tr => {
+                    const card = await db.get('cards', tr.code);
+                    return { translation: tr, isMissing: !card };
+                  })
                 );
-              })
-            );
-          } else {
-            // tutto aggiornato
-            return of(true);
-          }
-        })
+                const missingTranslations = results.filter(r => r.isMissing).map(r => r.translation);
+                const translationsToMerge = [...missingTranslations];
+
+                // Also get incremental translations since localVersion
+                const incrementalTranslations = await cardService.getApprovedTranslationsSinceVersion(locale, localVersion);
+                incrementalTranslations.forEach(tr => {
+                  if (!translationsToMerge.find(t => t.code === tr.code)) {
+                    translationsToMerge.push(tr);
+                  }
+                });
+
+                if (translationsToMerge.length === 0) {
+                  // No translations to merge, just update version
+                  localStorage.setItem(
+                    'translationsVersion',
+                    String(globalVersion)
+                  );
+                  nrdbService.setTranslationsVersion(globalVersion);
+                  return true;
+                }
+
+                const merge$ = translationsToMerge.map(tr =>
+                  nrdbService.mergeAndSaveTranslations(tr.code, tr.translations)
+                );
+
+                return Promise.all(merge$).then(() => {
+                  localStorage.setItem(
+                    'translationsVersion',
+                    String(globalVersion)
+                  );
+                  nrdbService.setTranslationsVersion(globalVersion);
+                  return true;
+                });
+              });
+            }
+
+            // ✅ tutto aggiornato
+            return true;
+          })())
+        ),
+        map(result => !!result)
       )
     )
   );

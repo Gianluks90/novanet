@@ -75,6 +75,12 @@
                 <span class="material-symbols-rounded">sort</span>
                 Sort by: {{ sortBy | sortByLabel }} (found: {{cards.length}})
             </div>
+            @if (firebase.$user() && firebase.$user()?.role === 'admin') {
+                <div i18n class="control-container" (click)="showToApprove()">
+                <span class="material-symbols-rounded">translate</span>
+                Show to approve
+            </div>
+            }
         </div>
         <div class="cards-container" [class.small-size]="zoomLevel === 'small-size'"
             [class.medium-size]="zoomLevel === 'medium-size'" [class.large-size]="zoomLevel === 'large-size'"

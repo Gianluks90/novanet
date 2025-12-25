@@ -115,4 +115,11 @@ export class NetrunnerDbService {
     const db = await nrdbDb;
     await db.put('meta', date, 'translationsLastUpdatedAt');
   }
+
+  setTranslationsVersion(globalVersion: any) {
+    const db = nrdbDb;
+    db.then(database => {
+      database.put('meta', globalVersion, 'translationsVersion');
+    });
+  }
 }

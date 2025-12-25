@@ -1,5 +1,5 @@
-import { ChangeDetectorRef, Component, inject } from '@angular/core';
-import { UIButton, UIDiagonalLine } from '../../ui';
+import { ChangeDetectorRef, Component, inject, LOCALE_ID } from '@angular/core';
+import { UIDiagonalLine } from '../../ui';
 import { nrdbDb } from '../../db/nrdb-indexed-db';
 import { Card } from '../../models/card';
 import { ActivatedRoute, Route } from '@angular/router';
@@ -9,29 +9,22 @@ import { Pack } from '../../models/pack';
 import { Side } from '../../models/side';
 import { Type } from '../../models/type';
 import { FormsModule } from '@angular/forms';
-import { NrIconsPipe } from '../../pipes/nr-icons-pipe';
 import { DomSanitizer } from '@angular/platform-browser';
-import { PackCodePipe } from '../../pipes/pack-code-pipe';
-import { GetFactionColorPipe } from '../../pipes/get-faction-color-pipe';
-import { GetFactionNamePipe } from '../../pipes/get-faction-name-pipe';
-import { Dialog, DialogRef } from '@angular/cdk/dialog';
-import { DialogResult } from '../../models/DialogResult';
 import { CardComponent } from '../../components/card-component/card-component';
 import { CardDetail } from '../../components/card-detail/card-detail';
-import { DIALOGS_CONFIG } from '../../const/dialogConfig';
 import { FirebaseService } from '../../services/firebase-service';
 import { NotificationService } from '../../services/notification-service';
-import { TranslateDialog } from '../../components/dialogs/translate-dialog/translate-dialog';
 import { FactionLabelPipe } from '../../pipes/faction-label-pipe';
 import { TypeLabelPipe } from '../../pipes/type-label-pipe';
 import { ZoomLevelLabelPipe } from '../../pipes/zoom-level-label-pipe';
 import { SortByLabelPipe } from '../../pipes/sort-by-label-pipe';
+import { CardService } from '../../services/card-service';
 
 @Component({
   selector: 'app-cards-page',
   imports: [
-    UIDiagonalLine, 
-    FormsModule, 
+    UIDiagonalLine,
+    FormsModule,
     CardComponent,
     CardDetail,
     FactionLabelPipe,
@@ -50,6 +43,7 @@ export class CardsPage {
   public showAttribution: boolean = false;
   public selectedCard: Card | null = null;
   public cardZoomed: boolean = false;
+  private locale = inject(LOCALE_ID);
 
   public cycles: Cycle[] = [];
   public factions: Faction[] = [];
@@ -66,7 +60,13 @@ export class CardsPage {
     cost: null as number | null
   };
 
-  constructor(private cd: ChangeDetectorRef, private route: ActivatedRoute, private sanitizer: DomSanitizer, private firebase: FirebaseService, private notification: NotificationService) {
+  constructor(
+    private cd: ChangeDetectorRef,
+    private route: ActivatedRoute,
+    private sanitizer: DomSanitizer,
+    public firebase: FirebaseService,
+    private notification: NotificationService,
+    private cardService: CardService) {
     this.route.data.subscribe(data => {
       this.cycles = data['configs'].cycles.data;
       this.factions = data['configs'].factions.data;
@@ -238,16 +238,22 @@ export class CardsPage {
 
   // Cost filter
   onChangeCostFilter(event: any) {
-  const value = event.target.value;
-  this.filters.cost = value === '' ? null : Number(value);
-  this.applyFilters();
-}
+    const value = event.target.value;
+    this.filters.cost = value === '' ? null : Number(value);
+    this.applyFilters();
+  }
 
   private applyFilters() {
     this.cards = this.allCards.filter(card => {
       if (
         this.filters.text &&
-        !card.title.toLowerCase().includes(this.filters.text)
+        !card.title.toLowerCase().includes(this.filters.text) &&
+        !(
+          card.translations &&
+          card.translations[this.locale] &&
+          card.translations[this.locale].title &&
+          card.translations[this.locale].title.toLowerCase().includes(this.filters.text)
+        )
       ) {
         return false;
       }
@@ -301,5 +307,49 @@ export class CardsPage {
     localStorage.removeItem('sortBy');
 
     this.cards = [...this.originalCards];
+    this.selectedCard = null;
+    this.cardZoomed = false;
+  }
+
+  public async showToApprove() {
+    // Fetch not approved translations from Firebase
+    const notApprovedTranslations = await this.cardService.getNotApprovedTranslationsCards(this.locale);
+
+    // Create a map for faster lookup by card code
+    const translationMap = new Map<string, any>();
+    notApprovedTranslations.forEach(t => translationMap.set(t.code, t.translations));
+
+    // Merge the translations into the existing cards
+    this.cards = this.allCards.map(card => {
+      const translationsForCard = translationMap.get(card.code);
+      if (translationsForCard) {
+        // Merge only the specific locale info into card.translations
+        card.translations = {
+          ...card.translations,
+          [this.locale]: {
+            ...card.translations?.[this.locale],
+            ...translationsForCard[this.locale]
+          }
+        };
+      }
+      return card;
+    });
+
+    // Optionally, filter to show only cards with not approved translations
+    this.cards = this.cards.filter(card =>
+      card.translations &&
+      card.translations[this.locale] &&
+      card.translations[this.locale].approved === false
+    );
+
+    this.notification.notify($localize`Showing ${this.cards.length} cards with translations to approve.`);
+    this.cd.detectChanges();
   }
 }
+
+// [Error] ERROR – FirebaseError: [code=failed-precondition]: The query requires an index. That index is currently building and cannot be used yet. See its status here: https://console.firebase.google.com/v1/r/project/novanet-2026/firestore/indexes?create_composite=Clxwcm9qZWN0cy9ub3ZhbmV0LTIwMjYvZGF0YWJhc2VzLyhkZWZhdWx0KS9jb2xsZWN0aW9uR3JvdXBzL3RyYW5zbGF0aW9ucy9pbmRleGVzL0NJQ0FnSmlVcG9NSxABGhwKGHRyYW5zbGF0aW9ucy5pdC5hcHByb3ZlZBABGh0KGXRyYW5zbGF0aW9ucy5pdC51cGRhdGVkQXQQAhoMCghfX25hbWVfXxAC
+// FirebaseError: [code=failed-precondition]: The query requires an index. That index is currently building and cannot be used yet. See its status here: https://console.firebase.google.com/v1/r/project/novanet-2026/firestore/indexes?create_composite=Clxwcm9qZWN0cy9ub3ZhbmV0LTIwMjYvZGF0YWJhc2VzLyhkZWZhdWx0KS9jb2xsZWN0aW9uR3JvdXBzL3RyYW5zbGF0aW9ucy9pbmRleGVzL0NJQ0FnSmlVcG9NSxABGhwKGHRyYW5zbGF0aW9ucy5pdC5hcHByb3ZlZBABGh0KGXRyYW5zbGF0aW9ucy5pdC51cGRhdGVkQXQQAhoMCghfX25hbWVfXxAC
+// 	handleError (chunk-MHMOZ42A.js:3149)
+// 	(funzione anonima) (chunk-MHMOZ42A.js:3165)
+// 	(funzione anonima) (chunk-MHMOZ42A.js:3158)
+// 	rejectionListener (chunk-MHMOZ42A.js:3194)
