@@ -8,8 +8,6 @@ export class TypeLabelPipe implements PipeTransform {
   private locale = inject(LOCALE_ID);
 
   transform(code: string): string {
-    console.log(TYPE_LABELS[code]);
-    
     const lang = this.locale.split('-')[0]; // it, en    
     return TYPE_LABELS[code.toLowerCase()]?.[lang] ?? code;
   }

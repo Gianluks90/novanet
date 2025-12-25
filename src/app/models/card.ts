@@ -22,4 +22,17 @@ export interface Card {
     title: string;
     type_code?: string;
     uniqueness?: boolean;
+
+    translations?: {
+        [lang: string]: CardTranslation;
+    };
+}
+
+export interface CardTranslation {
+    title: string;
+    text: string;
+    flavor?: string;
+    translationApproved: boolean;
+    translationReported: boolean;
+    translatedAt: any; // Timestamp
 }

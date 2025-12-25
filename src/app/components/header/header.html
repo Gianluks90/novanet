@@ -2,5 +2,19 @@
     <div class="logo" [routerLink]="'/'" [style.background-color]="'var(--accent-color)'"
         [style.mask]="'url(./images/logo/novanet.svg) no-repeat center / contain'"
         [style.-webkit-mask]="'url(./images/logo/novanet.svg) no-repeat center / contain'"></div>
-    <app-theme-toggle></app-theme-toggle>
+    <section class="action-section">
+        <div class="material-symbols-rounded" [cdkMenuTriggerFor]="menu">translate</div>
+        <app-theme-toggle></app-theme-toggle>
+    </section>
 </div>
+
+<ng-template #menu>
+    <div class="lang-menu-container" cdkMenu>
+        <a href="https://novanet-2026.web.app/en/">
+            <app-ui-button text="English" [icon]="locale === 'en' ? 'arrow_right' : ''"></app-ui-button>
+        </a>
+        <a href="https://novanet-2026.web.app/it/">
+            <app-ui-button text="Italiano" [icon]="locale === 'it' ? 'arrow_right' : ''"></app-ui-button>
+        </a>
+    </div>
+</ng-template>

@@ -10,8 +10,6 @@ export class FactionLabelPipe {
   private locale = inject(LOCALE_ID);
 
   transform(code: string): string {
-    console.log(FACTION_LABELS[code]);
-    
     const lang = this.locale.split('-')[0]; // it, en    
     return FACTION_LABELS[code.toLowerCase()]?.[lang] ?? code;
   }

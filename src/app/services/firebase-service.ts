@@ -44,6 +44,7 @@ export class FirebaseService {
                     customPhotoURL: user['customPhotoURL'] ?? null,
                     customAccentColor: user['customAccentColor'] ?? null,
                     nickname: user['nickname'] ?? null,
+                    role: user['role'] ?? null,
                 });
             }
         })

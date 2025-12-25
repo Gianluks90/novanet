@@ -4,7 +4,7 @@
     <p i18n>Select a card from the grid to inspect detail and actions.</p>
     } @else {
     <section>
-        @let c = selectedCard();
+        @let c = card();
         <div class="inspector-header">
             <div class="code-container">{{c?.code}}</div>
             <div class="set-label">{{c?.pack_code | packCode: packs()}} #{{c?.position}}</div>
@@ -31,7 +31,7 @@
         </p>
         <!-- <p class="section-subtitle">Info</p> -->
         @if (c?.base_link || c?.base_link === 0) {
-        <p>Link: {{c?.base_link}}<span class="nr-icon nr-link"></span></p>
+        <p>Link: {{c?.base_link}} <span class="nr-icon nr-link"></span></p>
         }
         @if (c?.minimum_deck_size && c?.minimum_deck_size! > 0) {
         <p i18n>Minimum deck size: {{c?.minimum_deck_size}}</p>
@@ -85,7 +85,7 @@
         @if (selectedCard()) {
         <app-ui-button i18n-text text="Focus" icon="recenter" size="small" (click)="scrollToSelected()"></app-ui-button>
         <app-ui-button i18n-text text="Zoom" icon="search" size="small" (click)="zoomCard()"></app-ui-button>
-        <app-ui-button i18n-text text="Translate" icon="translate" (click)="openTranslateDialog()" size="small"></app-ui-button>
+        <app-ui-button i18n-text text="Translate" icon="translate" [disabled]="!firebase.$user()" (click)="openTranslateDialog()" size="small"></app-ui-button>
         }
     </div>
 </div>

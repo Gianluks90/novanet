@@ -74,8 +74,6 @@ export class CardsPage {
       this.sides = data['configs'].sides.data;
       // this.types = data['configs'].types.data.filter((t:any) => !t.is_subtype);
       this.types = data['configs'].types.data;
-      console.log(this.types);
-      
     });
   }
 

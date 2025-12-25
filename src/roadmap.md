@@ -11,9 +11,11 @@
 - [x] card component
 - [x] card model
 - [x] Notification service e snackbar
-- [ ] card inspector component
-- [ ] implementare i18n
+- [x] card inspector component
+- [x] implementare i18n
 - [ ] implementare "suggerisci traduzione" (rapida - dialog)
 - [ ] implementare "suggerisci traduzione" (avanzata - route)
 - [ ] implementare strumento admin di validazione traduzioni
 - [ ] deck builder page
+- [x] firebase button in settings dialog home
+- [x] change lang on header (redirect to home/lang)

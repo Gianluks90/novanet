@@ -39,3 +39,29 @@ app-theme-toggle:hover {
         transform: scale(1.2);
     }
 }
+
+.action-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    &>.material-symbols-rounded {
+        cursor: pointer;
+        color: var(--accent-color);
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+
+        &:hover {
+            animation: scaleUp .3s forwards
+        }
+    }
+}
+.lang-menu-container {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-container-color);
+
+    &>.selected {
+        color: var(--bg-color);
+        background-color: var(--accent-color);
+    }
+}

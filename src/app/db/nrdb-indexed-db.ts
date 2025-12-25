@@ -11,9 +11,13 @@ interface NrdbSchema extends DBSchema {
   };
 }
 
-export const nrdbDb = openDB<NrdbSchema>('nrdb', 1, {
-  upgrade(db) {
-    db.createObjectStore('cards');
-    db.createObjectStore('meta');
+export const nrdbDb = openDB<NrdbSchema>('nrdb', 2, {   // versione 2
+  upgrade(db, oldVersion) {
+    if (!db.objectStoreNames.contains('cards')) {
+      db.createObjectStore('cards');
+    }
+    if (!db.objectStoreNames.contains('meta')) {
+      db.createObjectStore('meta');
+    }
   }
 });

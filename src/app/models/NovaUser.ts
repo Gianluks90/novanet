@@ -9,4 +9,5 @@ export interface NovaUser {
   customPhotoURL?: string;
   customAccentColor?: string;
   nickname?: string;
+  role?: string;
 }

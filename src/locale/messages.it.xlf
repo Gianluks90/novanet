@@ -73,6 +73,18 @@
           <context context-type="sourcefile">src/app/components/card-detail/card-detail.html</context>
           <context context-type="linenumber">52,53</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/dialogs/translate-dialog/translate-dialog.html</context>
+          <context context-type="linenumber">29,30</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/dialogs/translate-dialog/translate-dialog.html</context>
+          <context context-type="linenumber">55,56</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/dialogs/translate-dialog/translate-dialog.html</context>
+          <context context-type="linenumber">70,71</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="5859402736243788681" datatype="html">
         <source>Influence cost</source>
@@ -108,7 +120,7 @@
       </trans-unit>
       <trans-unit id="6149933534216500165" datatype="html">
         <source>Illustrator</source>
-        <target>Illustrazione di</target>
+        <target>Illustrazione</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/card-detail/card-detail.html</context>
           <context context-type="linenumber">80,81</context>
@@ -183,7 +195,7 @@
         <target>Inserisci testo</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/dialogs/home-settings-dialog/home-settings-dialog.html</context>
-          <context context-type="linenumber">11</context>
+          <context context-type="linenumber">13</context>
         </context-group>
       </trans-unit>
       <trans-unit id="enterURLValidPlaceholder" datatype="html">
@@ -191,7 +203,15 @@
         <target>Inserisci URL valido</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/dialogs/home-settings-dialog/home-settings-dialog.html</context>
-          <context context-type="linenumber">15</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6239862942461593094" datatype="html">
+        <source>Please log in to change user options.</source>
+        <target>Effettua il login per modificare le opzioni utente.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/dialogs/home-settings-dialog/home-settings-dialog.html</context>
+          <context context-type="linenumber">22,23</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5883896572152817928" datatype="html">
@@ -199,7 +219,7 @@
         <target>Opzioni App</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/dialogs/home-settings-dialog/home-settings-dialog.html</context>
-          <context context-type="linenumber">18,19</context>
+          <context context-type="linenumber">24,25</context>
         </context-group>
       </trans-unit>
       <trans-unit id="9136562503277300102" datatype="html">
@@ -207,7 +227,7 @@
         <target>Colore di accento (si applica solo in modalità scura) <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;reset-span&quot; (click)=&quot;resetColor()&quot;&gt;"/>[ Reset ]<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/dialogs/home-settings-dialog/home-settings-dialog.html</context>
-          <context context-type="linenumber">22,23</context>
+          <context context-type="linenumber">28,29</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3490973516480478726" datatype="html">
@@ -215,7 +235,7 @@
         <target>Inserisci un colore valido (es. #FF0000)</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/dialogs/home-settings-dialog/home-settings-dialog.html</context>
-          <context context-type="linenumber">23</context>
+          <context context-type="linenumber">29</context>
         </context-group>
       </trans-unit>
       <trans-unit id="saveChangesButton" datatype="html">
@@ -223,7 +243,11 @@
         <target>Salva modifiche</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/dialogs/home-settings-dialog/home-settings-dialog.html</context>
-          <context context-type="linenumber">27</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/dialogs/translate-dialog/translate-dialog.html</context>
+          <context context-type="linenumber">81,82</context>
         </context-group>
       </trans-unit>
       <trans-unit id="closeButton" datatype="html">
@@ -231,7 +255,67 @@
         <target>Chiudi</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/dialogs/home-settings-dialog/home-settings-dialog.html</context>
-          <context context-type="linenumber">28</context>
+          <context context-type="linenumber">39</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/dialogs/translate-dialog/translate-dialog.html</context>
+          <context context-type="linenumber">84</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5765897706769536293" datatype="html">
+        <source>Suggest translation EN &gt; IT</source>
+        <target>Suggerisci traduzione EN &gt; IT</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/dialogs/translate-dialog/translate-dialog.html</context>
+          <context context-type="linenumber">1,2</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="warningLabel" datatype="html">
+        <source>Warning</source>
+        <target>Attenzione</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/dialogs/translate-dialog/translate-dialog.html</context>
+          <context context-type="linenumber">2,3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1088338887213227250" datatype="html">
+        <source>You are about to suggest a translation in your language for the following card. Pay attention to every detail. The translation will be submitted to an administrator before being validated. Use <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>advanced mode<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> if you don't have any pending operations on this page.</source>
+        <target>Stai per suggerire una traduzione nella tua lingua per la seguente carta. Presta attenzione a ogni dettaglio. La traduzione sarà inviata a un amministratore prima di essere convalidata. Usa la <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>modalità avanzata<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> se non hai operazioni in sospeso su questa pagina.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/dialogs/translate-dialog/translate-dialog.html</context>
+          <context context-type="linenumber">3,8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8489421629944051795" datatype="html">
+        <source>WARNING: Remember to preserve the original formatting as well as the special characters that display game icons.</source>
+        <target>ATTENZIONE: Ricorda di preservare la formattazione originale così come i caratteri speciali che mostrano le icone di gioco.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/dialogs/translate-dialog/translate-dialog.html</context>
+          <context context-type="linenumber">63,64</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5701618810648052610" datatype="html">
+        <source>Title</source>
+        <target>Titolo</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/dialogs/translate-dialog/translate-dialog.html</context>
+          <context context-type="linenumber">66,67</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="733220785556760297" datatype="html">
+        <source>Flavor</source>
+        <target>Testo descrittivo</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/dialogs/translate-dialog/translate-dialog.html</context>
+          <context context-type="linenumber">74,75</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6159883120617273592" datatype="html">
+        <source>Advanced mode</source>
+        <target>Modalità avanzata</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/dialogs/translate-dialog/translate-dialog.html</context>
+          <context context-type="linenumber">83</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4163272119298020373" datatype="html">
@@ -293,7 +377,6 @@
       <trans-unit id="849052115155808985" datatype="html">
         <source><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;material-symbols-rounded&quot;&gt;"/>grid_view<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/> Grid: <x id="INTERPOLATION" equiv-text="{{ zoomLevel | zoomLevelLabel}}"/> </source>
         <target><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;material-symbols-rounded&quot;&gt;"/>grid_view<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/> Griglia: <x id="INTERPOLATION" equiv-text="{{ zoomLevel | zoomLevelLabel}}"/> </target>
-        <note from="XLIFF Sync" annotates="general" priority="1">Source text has changed. Please review the translation.</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/cards-page/cards-page.html</context>
           <context context-type="linenumber">71,73</context>
@@ -302,7 +385,6 @@
       <trans-unit id="8531716506671539593" datatype="html">
         <source><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;material-symbols-rounded&quot;&gt;"/>sort<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/> Sort by: <x id="INTERPOLATION" equiv-text="{{ sortBy | sortByLabel }}"/> (found: <x id="INTERPOLATION_1" equiv-text="{{cards.length}}"/>) </source>
         <target><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;material-symbols-rounded&quot;&gt;"/>sort<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/> Ordina per: <x id="INTERPOLATION" equiv-text="{{ sortBy | sortByLabel }}"/> (trovate: <x id="INTERPOLATION_1" equiv-text="{{cards.length}}"/>) </target>
-        <note from="XLIFF Sync" annotates="general" priority="1">Source text has changed. Please review the translation.</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/cards-page/cards-page.html</context>
           <context context-type="linenumber">75,78</context>

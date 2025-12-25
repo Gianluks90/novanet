@@ -7,9 +7,7 @@ import { ZOOM_LEVEL_LABELS } from '../const/zoomLevelLabels';
 export class ZoomLevelLabelPipe implements PipeTransform {
   private locale = inject(LOCALE_ID);
 
-  transform(code: string): string {
-    console.log(ZOOM_LEVEL_LABELS[code]);
-    
+  transform(code: string): string { 
     const lang = this.locale.split('-')[0]; // it, en    
     return ZOOM_LEVEL_LABELS[code.toLowerCase()]?.[lang] ?? code;
   }

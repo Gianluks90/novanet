@@ -34,6 +34,7 @@ h6,
 p {
   margin: 0;
   padding: 0;
+  color: var(--fg-color);
 }
 
 .material-symbols-rounded {
@@ -50,8 +51,8 @@ p {
 }
 
 :root {
-  --fg-color: #ffffff;
-  --bg-color: #212121;
+  // --fg-color: #ffffff;
+  // --bg-color: #212121;
   --accent-color: #FCF552;
 
   --bg-container-color: #272931;
@@ -152,7 +153,15 @@ div[dialog-main-container] {
     position: sticky;
     bottom: 16px;
     margin-top: 16px;
+    margin-right: 4px;
   }
+}
+
+// Links
+
+a:has(app-ui-button) {
+  text-decoration: none !important;
+  color: inherit !important;
 }
 
 // Forms
@@ -200,9 +209,9 @@ input[type="number"] {
     margin: 0;
   }
 
-  &[type=number] {
-    -moz-appearance: textfield;
-  }
+  // &[type=number] {
+  //   -moz-appearance: textfield;
+  // }
 }
 
 input[type="color"] {
@@ -214,6 +223,20 @@ input[type="color"] {
   cursor: pointer;
 }
 
+textarea {
+  padding: 8px;
+  border: 1px solid var(--accent-color);
+  border-radius: 4px;
+  font-size: 1rem;
+  background-color: var(--bg-color);
+  color: var(--fg-color);
+  resize: vertical;
+
+  &:focus {
+    border-color: var(--fg-color);
+  }
+}
+
 // NRIcons pipe
 
 .nr-icon {
@@ -221,7 +244,6 @@ input[type="color"] {
   width: 1em;
   height: 1em;
   vertical-align: -0.15em;
-  margin-left: 4px;
 
   background-color: var(--fg-color);
 
@@ -250,8 +272,8 @@ input[type="color"] {
   background-color: transparent;
   mask: none;
   -webkit-mask: none;
-  height: 12px;
-  width: 12px;
+  height: 16px;
+  width: 16px;
 
   background-position: center;
   background-repeat: no-repeat;

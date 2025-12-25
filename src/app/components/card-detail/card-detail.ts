@@ -1,4 +1,4 @@
-import { Component, effect, inject, input, output } from '@angular/core';
+import { Component, effect, inject, input, LOCALE_ID, output, signal } from '@angular/core';
 import { Card } from '../../models/card';
 import { FormsModule } from '@angular/forms';
 import { NrIconsPipe } from '../../pipes/nr-icons-pipe';
@@ -27,13 +27,27 @@ import { TypeLabelPipe } from '../../pipes/type-label-pipe';
 })
 export class CardDetail {
   public selectedCard = input<Card | null>(null);
+  public card = signal<Card | null>(null);
   public packs = input<Pack[]>([]);
   public zoomCardEmit = output<boolean>();
+  private locale = inject(LOCALE_ID);
 
-  constructor(private firebase: FirebaseService, private notification: NotificationService) {
+  constructor(public firebase: FirebaseService, private notification: NotificationService) {
     effect(() => {
       if (this.selectedCard()) {
         this.initFactionCostArray();
+        if (this.selectedCard()?.translations) {
+          const translation = this.selectedCard()?.translations?.[this.locale as string];
+          if (translation) {
+            const translatedCard: Card = {
+              ...this.selectedCard()!,
+              title: translation.title || this.selectedCard()!.title,
+              text: translation.text || this.selectedCard()!.text,
+              flavor: translation.flavor || this.selectedCard()!.flavor,
+            };
+            this.card.set(translatedCard);
+          }
+        }
       }
     })
   }
