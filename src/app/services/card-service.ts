@@ -30,10 +30,9 @@ export class CardService {
   public async submitTranslation(
     card: Pick<Card, 'code' | 'title' | 'text' | 'flavor'>,
     lang: string,
-    approved: boolean,
-    version?: number
+    approved: boolean
   ): Promise<void> {
-    await this.setTranslation(card, lang, approved, version);
+    await this.setTranslation(card, lang, approved);
     await this.updateGlobalTranslationStatus();
   }
 
@@ -41,14 +40,28 @@ export class CardService {
    * Admin approves a translation.
    */
   public async approveTranslation(
-    card: Pick<Card, 'code' | 'title' | 'text' | 'flavor'>,
+    card: Card,
     lang: string
   ): Promise<void> {
     // Atomically increment the global version and get the new value
     const newVersion = await this.incrementGlobalTranslationVersion();
 
     // Use the new version for the translation
-    await this.setTranslation(card, lang, true, newVersion);
+    // await this.setTranslation(card, lang, true, newVersion);
+    const cardDocRef = doc(
+      this.firebaseService.database,
+      'translations',
+      card.code
+    );
+
+    await setDoc(cardDocRef, {
+      translations: {
+        [lang]: {
+          approved: true
+        },
+        updatedAt: Timestamp.now()
+      }
+    }, { merge: true })
   }
 
   /**
@@ -73,10 +86,9 @@ export class CardService {
    * Writes or updates a translation inside translations/cards/{cardCode}
    */
   private async setTranslation(
-    card: Pick<Card, 'code'>,
+    card: Pick<Card, 'code' | 'title' | 'text' | 'flavor'>,
     lang: string,
-    approved: boolean,
-    version?: number
+    approved: boolean
   ): Promise<void> {
     const cardDocRef = doc(
       this.firebaseService.database,
@@ -84,22 +96,23 @@ export class CardService {
       card.code
     );
 
-    const existingDoc = await getDoc(cardDocRef);
-    const existingTranslations = existingDoc.data()?.['translations'] || {};
-    const existingLangTranslation = existingTranslations[lang] || {};
+    const lastVersion = await this.getGlobalTranslationStatus().then(snap => snap.data() || { version: 0 });
 
     await setDoc(
       cardDocRef,
       {
         translations: {
           [lang]: {
-            ...existingLangTranslation,
             approved: approved,
-            reported: existingLangTranslation.reported ?? false,
-            translatedAt: existingLangTranslation.translatedAt ?? Timestamp.now(),
-            version: version ?? existingLangTranslation.version ?? null,
+            reported: false,
+            title: card.title,
+            text: card.text,
+            flavor: card.flavor,
+            translatedAt: Timestamp.now(),
+            version: lastVersion.version
           }
-        }
+        },
+        updatedAt: Timestamp.now()
       },
       { merge: true }
     );

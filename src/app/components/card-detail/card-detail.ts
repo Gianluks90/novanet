@@ -1,5 +1,5 @@
 import { Component, effect, inject, input, LOCALE_ID, output, signal } from '@angular/core';
-import { Card, CardTranslation } from '../../models/card';
+import { Card } from '../../models/card';
 import { FormsModule } from '@angular/forms';
 import { NrIconsPipe } from '../../pipes/nr-icons-pipe';
 import { PackCodePipe } from '../../pipes/pack-code-pipe';
@@ -14,6 +14,7 @@ import { NotificationService } from '../../services/notification-service';
 import { TypeLabelPipe } from '../../pipes/type-label-pipe';
 import { ConfirmDialog } from '../dialogs/confirm-dialog/confirm-dialog';
 import { CardService } from '../../services/card-service';
+import { NetrunnerDbService } from '../../db/netrunner-db-service';
 
 @Component({
   selector: 'app-card-detail',
@@ -34,28 +35,50 @@ export class CardDetail {
   public zoomCardEmit = output<boolean>();
   public locale = inject(LOCALE_ID);
 
-  constructor(public firebase: FirebaseService, private notification: NotificationService, private cardService: CardService) {
+  constructor(
+    public firebase: FirebaseService,
+    private notification: NotificationService,
+    private cardService: CardService,
+    private nrdbService: NetrunnerDbService) {
+    // effect(() => {
+    //   if (this.selectedCard()) {
+    //     this.initFactionCostArray();
+    //     if (this.selectedCard()?.translations) {
+    //       const translation = this.selectedCard()?.translations?.[this.locale as string];
+    //       if (translation) {
+    //         const translatedCard: Card = {
+    //           ...this.selectedCard()!,
+    //           title: translation.title || this.selectedCard()!.title,
+    //           text: translation.text || this.selectedCard()!.text,
+    //           flavor: translation.flavor || this.selectedCard()!.flavor,
+    //         };
+    //         this.card.set(translatedCard);
+    //       }
+    //     } else {
+    //       this.card.set(this.selectedCard());
+    //     }
+    //   }
+    // })
+
     effect(() => {
-      if (this.selectedCard()) {
-        this.initFactionCostArray();
-        if (this.selectedCard()?.translations) {
-          const translation = this.selectedCard()?.translations?.[this.locale as string];
-          if (translation) {
-            console.log('tran', translation);
-            
-            const translatedCard: Card = {
-              ...this.selectedCard()!,
-              title: translation.title || this.selectedCard()!.title,
-              text: translation.text || this.selectedCard()!.text,
-              flavor: translation.flavor || this.selectedCard()!.flavor,
-            };
-            this.card.set(translatedCard);
-          }
-        } else {
-          this.card.set(this.selectedCard());
-        }
+      const card = this.selectedCard();
+      if (!card) return;
+
+      this.initFactionCostArray();
+
+      const translation = card.translations?.[this.locale as string];
+
+      if (translation) {
+        this.card.set({
+          ...card,
+          title: translation.title,
+          text: translation.text,
+          flavor: translation.flavor
+        });
+      } else {
+        this.card.set(card);
       }
-    })
+    });
   }
 
   public factionCostArray: any[] = [];
@@ -97,83 +120,62 @@ export class CardDetail {
     });
   }
 
-  // public openConfirmTranslation() {
-  //   this.dialogRef = this.dialog.open<DialogResult>(ConfirmDialog, {
-  //     ...DIALOGS_CONFIG,
-  //     panelClass: 'dialog-container',
-  //     disableClose: true,
-  //   });
-    
-  //   this.dialogRef.closed.subscribe((result: DialogResult | undefined) => {
-  //     if (result?.status === 'confirmed') {
-  //       this.cardService.approveTranslation(this.selectedCard()!, this.locale as string).then(() => {})
-  //       .then(() => {
-  //         this.notification.notify($localize`Translation confirmed, it's now visibile for everyone.`, 'check', 5000);
-  //         // forziamo refresh della card selezionata
-  //         const prevTranslation = this.selectedCard()!.translations?.[this.locale as string] || {} as CardTranslation;
-  //         const updatedCard = {
-  //           ...this.selectedCard()!,
-  //           translations: {
-  //             ...this.selectedCard()!.translations,
-  //             [this.locale]: {
-  //               ...prevTranslation,
-  //               title: prevTranslation.title ?? this.selectedCard()!.title ?? '',
-  //               text: prevTranslation.text ?? this.selectedCard()!.text ?? '',
-  //               flavor: prevTranslation.flavor ?? this.selectedCard()!.flavor ?? '',
-  //               approved: true,
-  //               reported: prevTranslation.reported ?? false,
-  //               translatedAt: prevTranslation.translatedAt ?? null
-  //             }
-  //           }
-  //         };
-  //         this.card.set(updatedCard);
-  //       })
-  //       .catch(() => {
-  //         this.notification.notify($localize`Error approving translation, please try again later.`, 'dangerous');
-  //       });
-  //     }
-  //   });
-  // }
-
   public openConfirmTranslation() {
-  this.dialogRef = this.dialog.open<DialogResult>(ConfirmDialog, {
-    ...DIALOGS_CONFIG,
-    panelClass: 'dialog-container',
-    disableClose: true,
-  });
-  
-  this.dialogRef.closed.subscribe(async (result: DialogResult | undefined) => {
-    if (result?.status === 'confirmed') {
-      if (!this.selectedCard()) return;
+    this.dialogRef = this.dialog.open<DialogResult>(ConfirmDialog, {
+      ...DIALOGS_CONFIG,
+      panelClass: 'dialog-container',
+      disableClose: true,
+    });
+
+    this.dialogRef.closed.subscribe(async (result: DialogResult | undefined) => {
+      console.log(this.selectedCard())
+
+      if (result?.status !== 'confirmed' || !this.selectedCard()) {
+        return;
+      }
 
       try {
-        // Approve translation via CardService
-        
-        // Merge back the existing translated fields without overwriting with English
-        const prevTranslation = this.selectedCard()!.translations?.[this.locale as string] || {} as CardTranslation;
+
+        const existingTranslation =
+          this.selectedCard()!.translations?.[this.locale as string];
+
+        if (!existingTranslation) {
+          throw new Error('Trying to approve a non-existing translation');
+        }
+
         const updatedCard: Card = {
           ...this.selectedCard()!,
           translations: {
             ...this.selectedCard()!.translations,
             [this.locale]: {
-              ...prevTranslation,
-              approved: true,
-              reported: prevTranslation.reported ?? false,
-              translatedAt: prevTranslation.translatedAt ?? new Date()
+              ...existingTranslation,
+              approved: true
             }
           }
         };
-        await this.cardService.approveTranslation(updatedCard, this.locale as string);
+        await this.cardService.approveTranslation(
+          this.selectedCard()!,
+          this.locale as string
+        );
 
-        // Update the card signal
-        this.card.set(updatedCard);
+        await this.nrdbService.mergeAndSaveTranslations(
+          this.selectedCard()!.code,
+          {
+            [this.locale]: {
+              ...this.selectedCard()!.translations?.[this.locale as string],
+              approved: true,
+            },
+            updatedAt: new Date()
+          }
+        );
 
-        this.notification.notify($localize`Translation confirmed, it's now visible for everyone.`, 'check', 5000);
-      } catch (e) {
+        // this.card.set(updatedCard);
+
+        this.notification.notify($localize`Translation confirmed, soon it will be visible for everyone (or refresh the page to see the changes).`, 'check', 6000);
+      } catch (error) {
         this.notification.notify($localize`Error approving translation, please try again later.`, 'dangerous');
       }
-    }
-  });
-}
+    });
+  }
 
 }

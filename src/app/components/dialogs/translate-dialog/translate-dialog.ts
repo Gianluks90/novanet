@@ -34,12 +34,11 @@ export class TranslateDialog {
     });
   }
   
-
   public onSubmit() {
     if (this.form.valid) {
       this.cardService.submitTranslation(
         {
-          ...this.data.card(),
+          code: this.data.card().code,
           title: this.form.value.title,
           text: this.form.value.text,
           flavor: this.form.value.flavor,

@@ -45,7 +45,7 @@ export const TYPE_LABELS: Record<string, Record<string, string>> = {
     },
     'code-gate': {
         en: 'Code gate',
-        it: 'Code gate'
+        it: 'Portale codificato'
     },
     'sentry': {
         en: 'Sentry',

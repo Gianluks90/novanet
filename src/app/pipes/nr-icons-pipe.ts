@@ -20,7 +20,7 @@ export class NrIconsPipe implements PipeTransform {
     'rez-cost': 'nr-rez-cost',
     subroutine: 'nr-subroutine',
     'trash-ability': 'nr-trash-ability',
-    'trash-local': 'nr-trash-local',
+    trash: 'nr-trash-local',
     adam: 'f-adam',
     anarch: 'f-anarch',
     apex: 'f-apex',
