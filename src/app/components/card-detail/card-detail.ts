@@ -15,6 +15,7 @@ import { TypeLabelPipe } from '../../pipes/type-label-pipe';
 import { ConfirmDialog } from '../dialogs/confirm-dialog/confirm-dialog';
 import { CardService } from '../../services/card-service';
 import { NetrunnerDbService } from '../../db/netrunner-db-service';
+import { KeywordLabelPipe } from '../../pipes/keyword-label-pipe';
 
 @Component({
   selector: 'app-card-detail',
@@ -24,6 +25,7 @@ import { NetrunnerDbService } from '../../db/netrunner-db-service';
     PackCodePipe,
     UIButton,
     TypeLabelPipe,
+    KeywordLabelPipe
   ],
   templateUrl: './card-detail.html',
   styleUrl: './card-detail.scss',
@@ -128,8 +130,6 @@ export class CardDetail {
     });
 
     this.dialogRef.closed.subscribe(async (result: DialogResult | undefined) => {
-      console.log(this.selectedCard())
-
       if (result?.status !== 'confirmed' || !this.selectedCard()) {
         return;
       }

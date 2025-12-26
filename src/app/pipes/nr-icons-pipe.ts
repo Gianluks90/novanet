@@ -21,7 +21,7 @@ export class NrIconsPipe implements PipeTransform {
     'recurring-credit': 'nr-recurring-credit',
     'rez-cost': 'nr-rez-cost',
     subroutine: 'nr-subroutine',
-    'trash-ability': 'nr-trash-ability',
+    'trash_cost': 'nr-trash-cost',
     trash: 'nr-trash-local',
     adam: 'f-adam',
     anarch: 'f-anarch',
@@ -44,12 +44,9 @@ export class NrIconsPipe implements PipeTransform {
       .replace(/\[([^\]]+)\]/g, (match, token) => {
         const trimmed = token.trim();
 
-        // se è un numero, lo trasformiamo in <sup>
         if (/^\d+$/.test(trimmed)) {
           return `<sup>${trimmed}</sup>`;
         }
-
-        // altrimenti cerchiamo nell'iconMap
         const key = trimmed.toLowerCase();
         const className = this.iconMap[key];
         const lang = this.locale.split('-')[0]; // it, en

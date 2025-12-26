@@ -37,7 +37,7 @@ export const TYPE_LABELS: Record<string, Record<string, string>> = {
     },
     'upgrade': {
         en: 'Upgrade',
-        it: 'Upgrade'
+        it: 'Aggiornamento'
     },
     'barrier': {
         en: 'Barrier',

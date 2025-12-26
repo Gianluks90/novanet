@@ -16,6 +16,9 @@ export interface Card {
     quantity?: number;
     side_code?: string;
     strength?: number;
+    agenda_points?: number;
+    advancement_cost?: number;
+    trash_cost?: number;
     stripped_text?: string;
     stripped_title?: string;
     text?: string;

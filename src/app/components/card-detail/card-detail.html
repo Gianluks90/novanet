@@ -28,16 +28,24 @@
         }
         <div class="icons-container">
             @if (c?.uniqueness) {
-                <span i18n-title="@@uniquenessTooltipText" title="Unique" class="material-symbols-rounded">stat_0</span>
+                <span i18n-title="@@uniquenessTooltipText" title="Unique" class="material-symbols-rounded">star</span>
             }
             @if (c?.base_link || c?.base_link === 0) {
                 <p>{{c?.base_link}} <span i18n-title="@@baseLinkTooltipText" title="Base link" class="nr-icon nr-link"></span></p>
             }
             @if (c?.cost || c?.cost === 0) {
-                <p i18n>{{c?.cost}}<span i18n-title="@@costTooltipText" title="Cost" class="nr-icon nr-credit"></span></p>
+                <p>{{c?.cost}} <span i18n-title="@@costTooltipText" title="Cost" class="nr-icon nr-credit"></span></p>
+            }
+            @if (c?.trash_cost || c?.trash_cost === 0) {
+                <p>{{c?.trash_cost}} <span i18n-title="@@trashCostTooltipText" title="Trash Cost" class="nr-icon nr-trash-cost"></span></p>
             }
             @if (c?.memory_cost || c?.memory_cost === 0) {
-                <p i18n>{{c?.memory_cost}} <span i18n-title="@@memoryCostTooltipText" title="Memory Cost" class="nr-icon nr-mu"></span></p>
+                <p>{{c?.memory_cost}} <span i18n-title="@@memoryCostTooltipText" title="Memory Cost" class="nr-icon nr-mu"></span></p>
+            }
+            @if (c?.agenda_points || c?.agenda_points === 0) {
+                <p>
+                    {{c?.advancement_cost}}/{{c?.agenda_points}} <span i18n-title="@@agendaPointsTooltipText" title="Advancement cost / Agenda points" class="nr-icon nr-agenda"></span>
+                </p>
             }
             @if (c?.strength || c?.strength === 0) {
                 <p i18n>Strength: {{c?.strength}}</p>
@@ -45,7 +53,7 @@
         </div>
         <p i18n="@@cardTypeLabel" class="section-label">Type</p>
         <p>
-            <span class="type-label">{{c?.type_code! | typeLabel}}</span>@if (c?.keywords) {: {{c?.keywords}}}
+            <span class="type-label">{{c?.type_code! | typeLabel}}</span>@if (c?.keywords) {: {{c?.keywords | keywordLabel}}}
         </p>
         <!-- <p class="section-subtitle">Info</p> -->
         
@@ -67,7 +75,9 @@
         @if (c?.faction_cost && c?.faction_cost! > 0) {
         <p i18n class="section-label">Influence cost</p>
         <div class="faction-influence-container">
-            <img [src]="'images/faction-icons/' + c?.faction_code+ '.svg'" alt="">
+            @if(c?.faction_code && c?.faction_code !== 'neutral-runner' && c?.faction_code !== 'neutral-corp') {
+                <img [src]="'images/faction-icons/' + c?.faction_code+ '.svg'" alt="">
+            }
             @for(fi of factionCostArray; track $index) {
             @if (fi) {
             <span class="material-symbols-rounded">circle</span>
