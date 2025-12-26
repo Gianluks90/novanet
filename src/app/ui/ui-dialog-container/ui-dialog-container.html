@@ -8,5 +8,7 @@
             <ng-content></ng-content>
         </div>
     </div>
+    @if (!firebase.$user()?.customBackgroundURL) {
     <app-ui-diagonal-line position="bottom-right"></app-ui-diagonal-line>
+    }
 </div>

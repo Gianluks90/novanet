@@ -1,27 +1,20 @@
 <app-ui-dialog-container i18n-dialogTitle dialogTitle="Suggest translation EN > IT">
     <p i18n="@@warningLabel" class="p-subtitle">Warning</p>
     <p i18n class="p-note">You are about to suggest a translation in your language for the following card. Pay attention
-        to
-        every detail. The translation will be submitted to an administrator before being validated. Use <strong>advanced
-            mode</strong> if
-        you don't have any pending operations on this page.</p>
+        to every detail. The translation will be submitted to an administrator before being validated. 
+        Use <strong>advanced mode</strong> if you don't have any pending operations on this page. <strong>Remember to preserve the original formatting as well as the special characters that display game icons.</strong>
+</p>
     <div class="translation-container">
         @let c = data.card();
         <section class="preview-card-container">
             @if(c?.type_code === 'identity') {
             <div class="identity-container identity-item">
-                <!-- @if (c?.uniqueness) {
-                <span title="unique" class="material-symbols-rounded">stat_0</span>
-                } -->
                 <p class="section-title">{{c?.title!.split(':')[0]}}</p>
                 <hr>
                 <p class="identity-subtitle">{{c?.title!.split(':')[1]}}</p>
             </div>
             } @else {
             <div class="identity-container">
-                <!-- @if (c?.uniqueness) {
-                <span class="material-symbols-rounded">stat_0</span>
-                } -->
                 <p class="section-title">{{c?.title}}</p>
             </div>
             }
@@ -60,19 +53,19 @@
         <div></div>
         <section>
             <form [formGroup]="form" class="form-container">
-                <p class="p-note" i18n>WARNING: Remember to preserve the original formatting as well as the special
-                    characters that display game icons.</p>
+                <!-- <p class="p-note" i18n>WARNING: Remember to preserve the original formatting as well as the special
+                    characters that display game icons.</p> -->
                 <div class="form-group">
                     <label i18n for="title">Title</label>
                     <input type="text" id="title" formControlName="title">
                 </div>
                 <div class="form-group">
-                    <label i18n for="text">Effect</label>
+                    <div class="effect-header"><label i18n for="text">Effect</label> <span [cdkMenuTriggerFor]="menu" class="material-symbols-rounded">add</span></div>
                     <textarea id="text" formControlName="text" rows="5"></textarea>
                 </div>
                 <div class="form-group">
                     <label i18n for="flavor">Flavor</label>
-                    <textarea id="flavor" formControlName="flavor" rows="3"></textarea>
+                    <textarea id="flavor" formControlName="flavor" rows="5"></textarea>
                 </div>
             </form>
         </section>
@@ -84,3 +77,12 @@
         <app-ui-button i18n-text="@@closeButton" text="Close" icon="close" (click)="dialogRef.close()"></app-ui-button>
     </div>
 </app-ui-dialog-container>
+
+<ng-template #menu>
+    <div class="lang-menu-container" cdkMenu>
+        <app-ui-button text="Bold text" icon="format_bold" (click)="addSpecialCharacter('bold_text')"></app-ui-button>
+        <app-ui-button text="Credit icon" pipeIcon="[credit]"  (click)="addSpecialCharacter('credit')"></app-ui-button>
+        <app-ui-button text="Click icon" pipeIcon="[click]" (click)="addSpecialCharacter('click')"></app-ui-button>
+        <app-ui-button text="Memory icon" pipeIcon="[mu]" (click)="addSpecialCharacter('mu')"></app-ui-button>
+    </div>
+</ng-template>

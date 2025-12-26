@@ -25,6 +25,7 @@ export class HomeSettingsDialog {
     this.form = this.fb.group({
       nickname: [this.data.user?.nickname],
       customPhotoURL: [this.data.user?.customPhotoURL],
+      customBackgroundURL: [this.data.user?.customBackgroundURL],
       customAccentColor: [this.data.user?.customAccentColor || '#FCF552'],
     })
   }

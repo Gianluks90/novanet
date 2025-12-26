@@ -51,7 +51,7 @@ export class NrIconsPipe implements PipeTransform {
         const className = this.iconMap[key];
         const lang = this.locale.split('-')[0]; // it, en
         const localizedKey = FACTION_LABELS[key]?.[lang] ?? key;
-
+        
         return className
           ? `<span title="${localizedKey}" class="nr-icon ${className}" aria-label="${key}"></span>`
           : match;

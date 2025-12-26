@@ -8,10 +8,11 @@ import { CardService } from '../../../services/card-service';
 import { Card } from '../../../models/card';
 import { CardDetail } from '../../card-detail/card-detail';
 import { NrIconsPipe } from "../../../pipes/nr-icons-pipe";
+import { CdkMenu, CdkMenuTrigger } from '@angular/cdk/menu';
 
 @Component({
   selector: 'app-translate-dialog',
-  imports: [UiDialogContainer, UIButton, FormsModule, ReactiveFormsModule, NrIconsPipe],
+  imports: [UiDialogContainer, UIButton, FormsModule, ReactiveFormsModule, NrIconsPipe, CdkMenuTrigger, CdkMenu],
   templateUrl: './translate-dialog.html',
   styleUrl: './translate-dialog.scss',
 })
@@ -32,6 +33,14 @@ export class TranslateDialog {
       flavor: this.data.card().flavor,
       text: this.data.card().text,
     });
+
+    console.log(this.data.card());
+    
+
+    if(!this.data.card().flavor) {
+      this.form.get('flavor')?.clearValidators();
+      this.form.get('flavor')?.updateValueAndValidity();
+    }
   }
   
   public onSubmit() {
@@ -41,7 +50,7 @@ export class TranslateDialog {
           code: this.data.card().code,
           title: this.form.value.title,
           text: this.form.value.text,
-          flavor: this.form.value.flavor,
+          flavor: this.form.value.flavor || '',
         },
         'it',
         false
@@ -51,6 +60,28 @@ export class TranslateDialog {
         console.error('Error submitting translation:', error);
         this.dialogRef.close({ status: 'cancelled' });
       });
+    }
+  }
+
+  public addSpecialCharacter(id: string) {
+    const currentText = this.form.get('text')?.value || '';
+    switch (id) {
+      case 'bold_text':
+        this.form.get('text')?.setValue(currentText + '<strong>text</strong>');
+        break;
+      case 'credit':
+        this.form.get('text')?.setValue(currentText + '[credit]');
+        break;
+      case 'click':
+        this.form.get('text')?.setValue(currentText + '[click]');
+        break;
+      case 'mu':
+        this.form.get('text')?.setValue(currentText + '[mu]');
+        break;
+
+
+      default:
+        break;
     }
   }
 }

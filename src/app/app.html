@@ -1,4 +1,4 @@
-<div class="app-main-container">
+<div class="app-main-container" [style.backgroundImage]="backgroundImageUrl ? 'url(' + backgroundImageUrl + ')' : 'none'">
   <app-header></app-header>
   <div class="app-page-container">
     <router-outlet />

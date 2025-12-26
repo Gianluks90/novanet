@@ -298,5 +298,9 @@ export const KEYWORD_LABELS: Record<string, Record<string, string>> = {
     'condition': {
         en: 'Condition',
         it: 'Condizione'
+    },
+    'directive': {
+        en: 'Directive',
+        it: 'Direttiva'
     }
 };

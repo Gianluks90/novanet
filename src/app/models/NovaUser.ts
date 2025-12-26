@@ -7,6 +7,7 @@ export interface NovaUser {
   email: string;
   photoURL: string;
   customPhotoURL?: string;
+  customBackgroundURL?: string;
   customAccentColor?: string;
   nickname?: string;
   role?: string;

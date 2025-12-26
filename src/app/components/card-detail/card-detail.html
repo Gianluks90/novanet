@@ -11,25 +11,16 @@
         </div>
         @if(c?.type_code === 'identity') {
         <div class="identity-container identity-item">
-            <!-- @if (c?.uniqueness) {
-            <span title="unique" class="material-symbols-rounded">stat_0</span>
-            } -->
-            <p class="section-title">{{c?.title!.split(':')[0]}}</p>
+            <p class="section-title"><span i18n-title="@@uniquenessTooltipText" title="unique" class="unique-icon">{{c?.uniqueness ? '◆' : ''}}</span> {{c?.title!.split(':')[0]}}</p>
             <hr>
             <p class="identity-subtitle">{{c?.title!.split(':')[1]}}</p>
         </div>
         } @else {
         <div class="identity-container">
-            <!-- @if (c?.uniqueness) {
-            <span class="material-symbols-rounded">stat_0</span>
-            } -->
-            <p class="section-title">{{c?.title}}</p>
+            <p class="section-title"><span i18n-title="@@uniquenessTooltipText" title="unique" class="unique-icon">{{c?.uniqueness ? '◆' : ''}}</span> {{c?.title}}</p>
         </div>
         }
         <div class="icons-container">
-            @if (c?.uniqueness) {
-                <span i18n-title="@@uniquenessTooltipText" title="Unique" class="material-symbols-rounded">star</span>
-            }
             @if (c?.base_link || c?.base_link === 0) {
                 <p>{{c?.base_link}} <span i18n-title="@@baseLinkTooltipText" title="Base link" class="nr-icon nr-link"></span></p>
             }
@@ -55,8 +46,7 @@
         <p>
             <span class="type-label">{{c?.type_code! | typeLabel}}</span>@if (c?.keywords) {: {{c?.keywords | keywordLabel}}}
         </p>
-        <!-- <p class="section-subtitle">Info</p> -->
-        
+
         @if (c?.minimum_deck_size && c?.minimum_deck_size! > 0) {
         <p i18n>Minimum deck size: {{c?.minimum_deck_size}}</p>
         }
@@ -87,9 +77,6 @@
             }
         </div>
         }
-        <!-- @if (c?.side_code) {
-        <p i18n>Side: {{c?.side_code}}</p>
-        } -->
         <p i18n class="section-label">Side</p>
         <div class="side-container">
             <div class="side-item" [class.selected-side]="c?.side_code === 'corp'">Corp</div>

@@ -24,7 +24,9 @@
                 <p class="disclaimer" i18n>Novanet is an independent project and is not affiliated with, endorsed by, or
                     associated with Fantasy Flight Games or Wizards of the Coast.</p>
             </div>
+            @if (!firebase.$user()?.customBackgroundURL) {
             <app-ui-diagonal-line position="bottom-right"></app-ui-diagonal-line>
+        }
         </div>
         <div class="menu-container animation-fade-in" [style.animation-delay]="'1s'">
             <div class="side-line"></div>
@@ -40,7 +42,9 @@
                     [icon]="firebase.$user() ? 'logout' : 'login'" (click)="loginRegister()"></app-ui-button>
                 <p class="version">v {{appVersion}}</p>
             </div>
+            @if (!firebase.$user()?.customBackgroundURL) {
             <app-ui-diagonal-line position="bottom-right"></app-ui-diagonal-line>
+        }
         </div>
     </div>
     @if(firebase.$user()) {
@@ -54,7 +58,9 @@
                 <!-- <p>{{ firebase.$user()?.email }}</p> -->
             </div>
         </div>
-        <app-ui-diagonal-line position="bottom-right"></app-ui-diagonal-line>
+        @if (!firebase.$user()?.customBackgroundURL) {
+            <app-ui-diagonal-line position="bottom-right"></app-ui-diagonal-line>
+        }
     </div>
     }
 </div>

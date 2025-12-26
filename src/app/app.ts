@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, LOCALE_ID, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, effect, HostListener, inject, LOCALE_ID, signal } from '@angular/core';
 import { NavigationEnd, NavigationStart, Router, RouterOutlet } from '@angular/router';
 import { Header } from './components/header/header';
 import { UnsupportedPage } from './pages/unsupported-page/unsupported-page';
@@ -18,7 +18,9 @@ import { NotificationService } from './services/notification-service';
 export class App {
   protected isUnsupported = false;
   private locale = inject(LOCALE_ID);
-  constructor(private firebaseService: FirebaseService, private router: Router, private notification: NotificationService) {
+  public backgroundImageUrl: string | null = null;
+
+  constructor(private firebaseService: FirebaseService, private router: Router, private notification: NotificationService, private cd: ChangeDetectorRef) {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
         if (event.url.includes('cards')) {
@@ -29,6 +31,13 @@ export class App {
         if (event.url.includes('cards')) {
           this.notification.notify($localize `Cards loaded!`, 'cards_stack')
         }
+      }
+    });
+
+    effect(() => {
+      if (this.firebaseService.$user()) {
+        this.backgroundImageUrl = this.firebaseService.$user()!.customBackgroundURL || null;
+        this.cd.detectChanges();
       }
     });
   }

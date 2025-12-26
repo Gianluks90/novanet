@@ -100,6 +100,10 @@
                     font-size: 1rem;
                 }
             }
+
+            &>.admin-control {
+                color: var(--accent-color);
+            }
         }
 
         &>.cards-container {
@@ -202,7 +206,8 @@ input[type="number"] {
 }
 
 select {
-    width: 100px;
+    width: 128px;
+    font-size: 1rem;
     padding: 4px 8px;
     border: 1px solid var(--accent-color);
     border-radius: 4px;

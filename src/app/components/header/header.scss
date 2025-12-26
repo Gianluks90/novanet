@@ -65,3 +65,8 @@ app-theme-toggle:hover {
         background-color: var(--accent-color);
     }
 }
+
+.custom-background-overlay {
+    backdrop-filter: blur(8px);
+    background-color: rgba(#fff, 0.3);
+}

@@ -1,6 +1,6 @@
 .translation-container {
     display: grid;
-    grid-template-columns: 1fr 24px 1fr 24px 1fr;
+    grid-template-columns: 1fr 24px 1fr 0px 1fr;
     align-items: center;
     gap: 8px;
     height: 300px;
@@ -71,4 +71,20 @@
     background-color: var(--bg-container-color);
     padding: 12px;
     padding-bottom: 24px;
+}
+
+.effect-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .material-symbols-rounded {
+        cursor: pointer;
+    }
+}
+
+.lang-menu-container {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-container-color);
 }

@@ -114,6 +114,7 @@
     align-items: center;
     background-color: var(--bg-container-color);
     position: relative;
+    max-width: 500px;
 
     .user-content {
         flex: 1;

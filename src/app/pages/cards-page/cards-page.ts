@@ -57,6 +57,7 @@ export class CardsPage {
     faction: 'all',
     side: 'all',
     type: 'all',
+    translated: 'none' as 'none' | 'only',
     cost: null as number | null
   };
 
@@ -101,6 +102,12 @@ export class CardsPage {
 
   toggleAttribution() {
     this.showAttribution = !this.showAttribution;
+  }
+
+  toggleTranslated() {
+    this.filters.translated =
+      this.filters.translated === 'none' ? 'only' : 'none';
+    this.applyFilters();
   }
 
   zoomRotation() {
@@ -257,6 +264,15 @@ export class CardsPage {
       ) {
         return false;
       }
+      if (this.filters.translated === 'only') {
+        if (
+          !card.translations ||
+          !card.translations[this.locale] ||
+          !card.translations[this.locale].title
+        ) {
+          return false;
+        }
+      }
       if (
         this.filters.pack !== 'all' &&
         card.pack_code !== this.filters.pack
@@ -300,7 +316,8 @@ export class CardsPage {
       faction: 'all',
       side: 'all',
       type: 'all',
-      cost: null
+      cost: null,
+      translated: 'none'
     };
 
     this.sortBy = 'default';
@@ -346,10 +363,3 @@ export class CardsPage {
     this.cd.detectChanges();
   }
 }
-
-// [Error] ERROR – FirebaseError: [code=failed-precondition]: The query requires an index. That index is currently building and cannot be used yet. See its status here: https://console.firebase.google.com/v1/r/project/novanet-2026/firestore/indexes?create_composite=Clxwcm9qZWN0cy9ub3ZhbmV0LTIwMjYvZGF0YWJhc2VzLyhkZWZhdWx0KS9jb2xsZWN0aW9uR3JvdXBzL3RyYW5zbGF0aW9ucy9pbmRleGVzL0NJQ0FnSmlVcG9NSxABGhwKGHRyYW5zbGF0aW9ucy5pdC5hcHByb3ZlZBABGh0KGXRyYW5zbGF0aW9ucy5pdC51cGRhdGVkQXQQAhoMCghfX25hbWVfXxAC
-// FirebaseError: [code=failed-precondition]: The query requires an index. That index is currently building and cannot be used yet. See its status here: https://console.firebase.google.com/v1/r/project/novanet-2026/firestore/indexes?create_composite=Clxwcm9qZWN0cy9ub3ZhbmV0LTIwMjYvZGF0YWJhc2VzLyhkZWZhdWx0KS9jb2xsZWN0aW9uR3JvdXBzL3RyYW5zbGF0aW9ucy9pbmRleGVzL0NJQ0FnSmlVcG9NSxABGhwKGHRyYW5zbGF0aW9ucy5pdC5hcHByb3ZlZBABGh0KGXRyYW5zbGF0aW9ucy5pdC51cGRhdGVkQXQQAhoMCghfX25hbWVfXxAC
-// 	handleError (chunk-MHMOZ42A.js:3149)
-// 	(funzione anonima) (chunk-MHMOZ42A.js:3165)
-// 	(funzione anonima) (chunk-MHMOZ42A.js:3158)
-// 	rejectionListener (chunk-MHMOZ42A.js:3194)
