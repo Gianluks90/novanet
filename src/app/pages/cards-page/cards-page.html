@@ -3,6 +3,7 @@
         <div class="side-line"></div>
         <p i18n class="section-title">Filters</p>
         <input i18n-placeholder="@@searchTextInputPlaceholder" type="text" placeholder="Search text..." (keyup)="onChangeTextSearch($event)">
+        <input i18n-placeholder="@@costInputPlaceholder" type="number" inputmode="numeric" placeholder="cost" min="0" (input)="onChangeCostFilter($event)">
         <div class="line-divider"></div>
         <p>Info</p>
         @if (factions.length > 0) {
@@ -50,7 +51,6 @@
             }
         </select>
         }
-        <input class="" type="number" inputmode="numeric" placeholder="cost" min="0" (input)="onChangeCostFilter($event)">
         <div class="reset-icon" (click)="resetFilters()">
             <span class="material-symbols-rounded">refresh</span>
         </div>

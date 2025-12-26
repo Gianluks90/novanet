@@ -23,46 +23,88 @@
           <context context-type="linenumber">4,5</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="7402235972216722587" datatype="html">
-        <source>Minimum deck size: <x id="INTERPOLATION" equiv-text="{{c?.minimum_deck_size}}"/></source>
+      <trans-unit id="uniquenessTooltipText" datatype="html">
+        <source>Unique</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/card-detail/card-detail.html</context>
-          <context context-type="linenumber">37,39</context>
+          <context context-type="linenumber">31</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="187187500641108332" datatype="html">
-        <source><x id="INTERPOLATION" equiv-text="{{c?.influence_limit ? &apos;Influence limit: &apos; + c?.influence_limit : &apos;No influence limit&apos;}}"/></source>
+      <trans-unit id="baseLinkTooltipText" datatype="html">
+        <source>Base link</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/card-detail/card-detail.html</context>
-          <context context-type="linenumber">40,42</context>
+          <context context-type="linenumber">34</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="331392333317671913" datatype="html">
-        <source>Cost: <x id="INTERPOLATION" equiv-text="{{c?.cost}}"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;nr-icon nr-credit&quot;&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></source>
+      <trans-unit id="4129778729831653153" datatype="html">
+        <source><x id="INTERPOLATION" equiv-text="{{c?.cost}}"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span i18n-title=&quot;@@costTooltipText&quot; title=&quot;Cost&quot; class=&quot;nr-icon nr-credit&quot;&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/card-detail/card-detail.html</context>
-          <context context-type="linenumber">43,45</context>
+          <context context-type="linenumber">37,38</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="2466128432059631169" datatype="html">
-        <source>Memory cost: <x id="INTERPOLATION" equiv-text="{{c?.memory_cost}}"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;nr-icon nr-mu&quot;&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></source>
+      <trans-unit id="costTooltipText" datatype="html">
+        <source>Cost</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/card-detail/card-detail.html</context>
-          <context context-type="linenumber">46,48</context>
+          <context context-type="linenumber">37</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3016841080842209731" datatype="html">
+        <source><x id="INTERPOLATION" equiv-text="{{c?.memory_cost}}"/> <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span i18n-title=&quot;@@memoryCostTooltipText&quot; title=&quot;Memory Cost&quot; class=&quot;nr-icon nr-mu&quot;&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/card-detail/card-detail.html</context>
+          <context context-type="linenumber">40,41</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="memoryCostTooltipText" datatype="html">
+        <source>Memory Cost</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/card-detail/card-detail.html</context>
+          <context context-type="linenumber">40,41</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3518399476190584633" datatype="html">
         <source>Strength: <x id="INTERPOLATION" equiv-text="{{c?.strength}}"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/card-detail/card-detail.html</context>
-          <context context-type="linenumber">49,51</context>
+          <context context-type="linenumber">43,44</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="cardTypeLabel" datatype="html">
+        <source>Type</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/card-detail/card-detail.html</context>
+          <context context-type="linenumber">47,48</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7402235972216722587" datatype="html">
+        <source>Minimum deck size: <x id="INTERPOLATION" equiv-text="{{c?.minimum_deck_size}}"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/card-detail/card-detail.html</context>
+          <context context-type="linenumber">53,55</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2266583455745355441" datatype="html">
+        <source>Influence limit: <x id="INTERPOLATION" equiv-text="{{c?.influence_limit}}"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/card-detail/card-detail.html</context>
+          <context context-type="linenumber">56,58</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1200874007384717372" datatype="html">
+        <source>No influence limit</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/card-detail/card-detail.html</context>
+          <context context-type="linenumber">59,60</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3788161096321650454" datatype="html">
         <source>Effect</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/card-detail/card-detail.html</context>
-          <context context-type="linenumber">52,53</context>
+          <context context-type="linenumber">62,63</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/dialogs/translate-dialog/translate-dialog.html</context>
@@ -81,63 +123,63 @@
         <source>Influence cost</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/card-detail/card-detail.html</context>
-          <context context-type="linenumber">58,59</context>
+          <context context-type="linenumber">68,69</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="4232901564971340925" datatype="html">
-        <source>Side: <x id="INTERPOLATION" equiv-text="{{c?.side_code}}"/></source>
+      <trans-unit id="791950660812381145" datatype="html">
+        <source>Side</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/card-detail/card-detail.html</context>
-          <context context-type="linenumber">72,74</context>
+          <context context-type="linenumber">84</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8774037404255316459" datatype="html">
         <source>Deck limit: <x id="INTERPOLATION" equiv-text="{{c?.deck_limit}}"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/card-detail/card-detail.html</context>
-          <context context-type="linenumber">75,77</context>
+          <context context-type="linenumber">90,92</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3512404258837964323" datatype="html">
         <source>Quantity per set: <x id="INTERPOLATION" equiv-text="{{c?.quantity}}"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/card-detail/card-detail.html</context>
-          <context context-type="linenumber">78,80</context>
+          <context context-type="linenumber">93,95</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6149933534216500165" datatype="html">
         <source>Illustrator</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/card-detail/card-detail.html</context>
-          <context context-type="linenumber">80,81</context>
+          <context context-type="linenumber">95,96</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1454365738147076673" datatype="html">
         <source>Focus</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/card-detail/card-detail.html</context>
-          <context context-type="linenumber">86</context>
+          <context context-type="linenumber">101</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6421460271971606186" datatype="html">
         <source>Zoom</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/card-detail/card-detail.html</context>
-          <context context-type="linenumber">87</context>
+          <context context-type="linenumber">102</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3821661153451769620" datatype="html">
         <source>Approve</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/card-detail/card-detail.html</context>
-          <context context-type="linenumber">90</context>
+          <context context-type="linenumber">105</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1613971242435858090" datatype="html">
         <source>Translate</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/card-detail/card-detail.html</context>
-          <context context-type="linenumber">93</context>
+          <context context-type="linenumber">108</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5217462504379825217" datatype="html">
@@ -348,32 +390,39 @@
           <context context-type="linenumber">5,6</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="costInputPlaceholder" datatype="html">
+        <source>cost</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/cards-page/cards-page.html</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="6107722849916411274" datatype="html">
         <source>All Factions</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/cards-page/cards-page.html</context>
-          <context context-type="linenumber">11,12</context>
+          <context context-type="linenumber">12,13</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5103632384924428849" datatype="html">
         <source>All Sides</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/cards-page/cards-page.html</context>
-          <context context-type="linenumber">19,20</context>
+          <context context-type="linenumber">20,21</context>
         </context-group>
       </trans-unit>
       <trans-unit id="456027006936708153" datatype="html">
         <source>All packs</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/cards-page/cards-page.html</context>
-          <context context-type="linenumber">29,31</context>
+          <context context-type="linenumber">30,32</context>
         </context-group>
       </trans-unit>
       <trans-unit id="565606266379309262" datatype="html">
         <source>All Types</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/cards-page/cards-page.html</context>
-          <context context-type="linenumber">47,48</context>
+          <context context-type="linenumber">48,49</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8563831429165086702" datatype="html">

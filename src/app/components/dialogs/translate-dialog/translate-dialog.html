@@ -10,18 +10,18 @@
         <section class="preview-card-container">
             @if(c?.type_code === 'identity') {
             <div class="identity-container identity-item">
-                @if (c?.uniqueness) {
+                <!-- @if (c?.uniqueness) {
                 <span title="unique" class="material-symbols-rounded">stat_0</span>
-                }
+                } -->
                 <p class="section-title">{{c?.title!.split(':')[0]}}</p>
                 <hr>
                 <p class="identity-subtitle">{{c?.title!.split(':')[1]}}</p>
             </div>
             } @else {
             <div class="identity-container">
-                @if (c?.uniqueness) {
+                <!-- @if (c?.uniqueness) {
                 <span class="material-symbols-rounded">stat_0</span>
-                }
+                } -->
                 <p class="section-title">{{c?.title}}</p>
             </div>
             }

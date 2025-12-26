@@ -23,7 +23,7 @@ import { NetrunnerDbService } from '../../db/netrunner-db-service';
     NrIconsPipe,
     PackCodePipe,
     UIButton,
-    TypeLabelPipe
+    TypeLabelPipe,
   ],
   templateUrl: './card-detail.html',
   styleUrl: './card-detail.scss',

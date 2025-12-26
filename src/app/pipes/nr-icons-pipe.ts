@@ -1,10 +1,12 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { inject, LOCALE_ID, Pipe, PipeTransform } from '@angular/core';
+import { FACTION_LABELS } from '../const/factionLabels';
 
 @Pipe({
   name: 'nrIcons',
   standalone: true
 })
 export class NrIconsPipe implements PipeTransform {
+  private locale = inject(LOCALE_ID);
 
   private iconMap: Record<string, string> = {
     agenda: 'nr-agenda',
@@ -50,9 +52,11 @@ export class NrIconsPipe implements PipeTransform {
         // altrimenti cerchiamo nell'iconMap
         const key = trimmed.toLowerCase();
         const className = this.iconMap[key];
+        const lang = this.locale.split('-')[0]; // it, en
+        const localizedKey = FACTION_LABELS[key]?.[lang] ?? key;
 
         return className
-          ? `<span class="nr-icon ${className}" aria-label="${key}"></span>`
+          ? `<span title="${localizedKey}" class="nr-icon ${className}" aria-label="${key}"></span>`
           : match;
       });
   }

@@ -11,51 +11,61 @@
         </div>
         @if(c?.type_code === 'identity') {
         <div class="identity-container identity-item">
-            @if (c?.uniqueness) {
+            <!-- @if (c?.uniqueness) {
             <span title="unique" class="material-symbols-rounded">stat_0</span>
-            }
+            } -->
             <p class="section-title">{{c?.title!.split(':')[0]}}</p>
             <hr>
             <p class="identity-subtitle">{{c?.title!.split(':')[1]}}</p>
         </div>
         } @else {
         <div class="identity-container">
-            @if (c?.uniqueness) {
+            <!-- @if (c?.uniqueness) {
             <span class="material-symbols-rounded">stat_0</span>
-            }
+            } -->
             <p class="section-title">{{c?.title}}</p>
         </div>
         }
+        <div class="icons-container">
+            @if (c?.uniqueness) {
+                <span i18n-title="@@uniquenessTooltipText" title="Unique" class="material-symbols-rounded">stat_0</span>
+            }
+            @if (c?.base_link || c?.base_link === 0) {
+                <p>{{c?.base_link}} <span i18n-title="@@baseLinkTooltipText" title="Base link" class="nr-icon nr-link"></span></p>
+            }
+            @if (c?.cost || c?.cost === 0) {
+                <p i18n>{{c?.cost}}<span i18n-title="@@costTooltipText" title="Cost" class="nr-icon nr-credit"></span></p>
+            }
+            @if (c?.memory_cost || c?.memory_cost === 0) {
+                <p i18n>{{c?.memory_cost}} <span i18n-title="@@memoryCostTooltipText" title="Memory Cost" class="nr-icon nr-mu"></span></p>
+            }
+            @if (c?.strength || c?.strength === 0) {
+                <p i18n>Strength: {{c?.strength}}</p>
+            }
+        </div>
+        <p i18n="@@cardTypeLabel" class="section-label">Type</p>
         <p>
             <span class="type-label">{{c?.type_code! | typeLabel}}</span>@if (c?.keywords) {: {{c?.keywords}}}
         </p>
         <!-- <p class="section-subtitle">Info</p> -->
-        @if (c?.base_link || c?.base_link === 0) {
-        <p>Link: {{c?.base_link}} <span class="nr-icon nr-link"></span></p>
-        }
+        
         @if (c?.minimum_deck_size && c?.minimum_deck_size! > 0) {
         <p i18n>Minimum deck size: {{c?.minimum_deck_size}}</p>
         }
-        @if ((c?.influence_limit && c?.influence_limit! > 0) || c?.influence_limit === null) {
-        <p i18n>{{c?.influence_limit ? 'Influence limit: ' + c?.influence_limit : 'No influence limit'}}</p>
+        @if (c?.influence_limit && c?.influence_limit! > 0) {
+        <p i18n>Influence limit: {{c?.influence_limit}}</p>
         }
-        @if (c?.cost || c?.cost === 0) {
-        <p i18n>Cost: {{c?.cost}}<span class="nr-icon nr-credit"></span></p>
-        }
-        @if (c?.memory_cost || c?.memory_cost === 0) {
-        <p i18n>Memory cost: {{c?.memory_cost}}<span class="nr-icon nr-mu"></span></p>
-        }
-        @if (c?.strength || c?.strength === 0) {
-        <p i18n>Strength: {{c?.strength}}</p>
+        @if (c?.influence_limit === null) {
+            <p i18n>No influence limit</p>
         }
         <div class="effect-container">
-            <p i18n class="section-subtitle">Effect</p>
+            <p i18n class="section-subtitle effect-subtitle">Effect</p>
             <div class="card-text" [innerHTML]="c?.text | nrIcons">
             </div>
             <div class="flavor-text">{{c?.flavor}}</div>
         </div>
         @if (c?.faction_cost && c?.faction_cost! > 0) {
-        <p i18n class="section-subtitle">Influence cost</p>
+        <p i18n class="section-label">Influence cost</p>
         <div class="faction-influence-container">
             <img [src]="'images/faction-icons/' + c?.faction_code+ '.svg'" alt="">
             @for(fi of factionCostArray; track $index) {
@@ -67,10 +77,15 @@
             }
         </div>
         }
-        <p class="section-subtitle">Meta</p>
-        @if (c?.side_code) {
+        <!-- @if (c?.side_code) {
         <p i18n>Side: {{c?.side_code}}</p>
-        }
+        } -->
+        <p i18n class="section-label">Side</p>
+        <div class="side-container">
+            <div class="side-item" [class.selected-side]="c?.side_code === 'corp'">Corp</div>
+            <div class="side-item" [class.selected-side]="c?.side_code === 'runner'">Runner</div>
+        </div>
+        <p class="section-subtitle">Meta</p>
         @if (c?.deck_limit && c?.deck_limit! > 0) {
         <p i18n>Deck limit: {{c?.deck_limit}}</p>
         }
@@ -78,7 +93,7 @@
         <p i18n>Quantity per set: {{c?.quantity}}</p>
         }
         <p i18n class="section-subtitle">Illustrator</p>
-        <p>{{c?.illustrator}}</p>
+        <p>{{c?.illustrator || '-'}}</p>
     </section>
     }
     <div class="actions-container">
