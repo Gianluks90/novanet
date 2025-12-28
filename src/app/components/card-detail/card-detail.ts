@@ -16,6 +16,7 @@ import { ConfirmDialog } from '../dialogs/confirm-dialog/confirm-dialog';
 import { CardService } from '../../services/card-service';
 import { NetrunnerDbService } from '../../db/netrunner-db-service';
 import { KeywordLabelPipe } from '../../pipes/keyword-label-pipe';
+import { FactionLabelPipe } from "../../pipes/faction-label-pipe";
 
 @Component({
   selector: 'app-card-detail',
@@ -25,8 +26,9 @@ import { KeywordLabelPipe } from '../../pipes/keyword-label-pipe';
     PackCodePipe,
     UIButton,
     TypeLabelPipe,
-    KeywordLabelPipe
-  ],
+    KeywordLabelPipe,
+    FactionLabelPipe
+],
   templateUrl: './card-detail.html',
   styleUrl: './card-detail.scss',
 })

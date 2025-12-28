@@ -113,7 +113,7 @@ export const KEYWORD_LABELS: Record<string, Record<string, string>> = {
     },
     'barrier': {
         en: 'Barrier',
-        it: 'Barriere'
+        it: 'Barriera'
     },
     'bioroid': {
         en: 'Bioroid',

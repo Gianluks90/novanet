@@ -6,7 +6,6 @@ import {
   doc,
   setDoc,
   updateDoc,
-  deleteDoc,
   Timestamp,
   getDoc,
   query,
@@ -14,8 +13,8 @@ import {
   getDocs,
   increment,
   limit,
-  orderBy
 } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
 
 @Injectable({
   providedIn: 'root',
@@ -57,7 +56,8 @@ export class CardService {
     await setDoc(cardDocRef, {
       translations: {
         [lang]: {
-          approved: true
+          approved: true,
+          approvedBy: getAuth().currentUser?.uid
         },
         updatedAt: Timestamp.now()
       }
@@ -109,6 +109,7 @@ export class CardService {
             text: card.text,
             flavor: card.flavor,
             translatedAt: Timestamp.now(),
+            translatedBy: getAuth().currentUser?.uid,
             version: lastVersion.version
           }
         },

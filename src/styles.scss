@@ -91,6 +91,11 @@ p.p-note {
   margin-top: 16px;
 }
 
+p.p-foot-note {
+  text-align: right;
+  padding: 8px 0;
+}
+
 // Dialogs
 
 .dialog-container {
@@ -149,11 +154,13 @@ div[dialog-main-container] {
   div[dialog-actions-container] {
     display: flex;
     justify-content: flex-end;
+    flex-wrap: wrap;
     gap: 12px;
     position: sticky;
     bottom: 16px;
-    margin-top: 16px;
-    margin-right: 4px;
+    padding-top: 16px;
+    background-color: var(--bg-color);
+    border-top: 1px solid var(--accent-color);
   }
 }
 
@@ -341,8 +348,8 @@ textarea {
 }
 
 .nr-trash-cost {
-  mask-image: url('assets/images/game-icons/trash-ability.svg');
-  -webkit-mask-image: url('assets/images/game-icons/trash-ability.svg');
+  mask-image: url('assets/images/game-icons/trash-local-cost.svg');
+  -webkit-mask-image: url('assets/images/game-icons/trash-local-cost.svg');
 }
 
 .nr-trash-local {

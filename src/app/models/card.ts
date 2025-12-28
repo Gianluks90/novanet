@@ -38,4 +38,6 @@ export interface CardTranslation {
     approved: boolean;
     reported: boolean;
     translatedAt: any; // Timestamp
+    translatedBy: string;
+    approvedBy?: string;
 }

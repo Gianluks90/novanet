@@ -8,6 +8,7 @@ import { UserService } from '../../../services/user-service';
 import { getAuth } from 'firebase/auth';
 import { NovaUser } from '../../../models/NovaUser';
 import { CdkObserveContent } from "@angular/cdk/observers";
+import { AdminService } from '../../../services/admin-service';
 
 @Component({
   selector: 'app-home-settings-dialog',
@@ -21,7 +22,7 @@ export class HomeSettingsDialog {
   public data = inject(DIALOG_DATA) as { user: NovaUser | null };
   public form: FormGroup;
 
-  constructor(private fb: FormBuilder, private userService: UserService) {
+  constructor(private fb: FormBuilder, private userService: UserService, private adminService: AdminService) {
     this.form = this.fb.group({
       nickname: [this.data.user?.nickname],
       customPhotoURL: [this.data.user?.customPhotoURL],
@@ -43,5 +44,16 @@ export class HomeSettingsDialog {
         console.error('Error updating user info:', error);
       });
     }
+  }
+
+  // ADMIN CONSOLE
+
+  // Lancia un singolo comando da AdminService
+  public fix() {
+    this.adminService.updateEveryTranslationModel().then(() => {
+      console.log('Translation models updated successfully.');
+    }).catch((error) => {
+      console.error('Error updating translation models:', error);
+    });
   }
 }

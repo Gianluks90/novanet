@@ -13,7 +13,7 @@
 - [x] Notification service e snackbar
 - [x] card inspector component
 - [x] implementare i18n
-- [ ] implementare "suggerisci traduzione" (rapida - dialog)
+- [x] implementare "suggerisci traduzione" (rapida - dialog)
 - [ ] implementare "suggerisci traduzione" (avanzata - route)
 - [ ] implementare strumento admin di validazione traduzioni
 - [ ] deck builder page

@@ -49,6 +49,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    .side-label {
+        text-transform: uppercase;
+        font-weight: bold;
+        color: var(--accent-color);
+    }
 }
 
 .empty-ispector {
@@ -85,6 +91,36 @@
     .card-cost {
         font-size: 1.5rem;
     }
+
+    .strength-container {
+        border: 1px solid var(--fg-color);
+        height: 100%;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        justify-content: center;
+        height: 48px;
+        width: 48px;
+        cursor: default;
+        user-select: none;
+
+        &>.strength-label {
+            background-color: var(--fg-color);
+            color: var(--bg-container-color);
+            width: 100%;
+            text-align: center;
+        }
+
+        &>.strength-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+    }
+}
+
+.ice-header {
+    display: grid;
+    grid-template-columns: 1fr 48px;
 }
 
 .identity-item {
@@ -104,21 +140,36 @@
 }
 
 .effect-container {
-    border-left: 3px solid var(--accent-color);
-    padding: 0 8px;
+    // border-left: 3px solid var(--accent-color);
+    // padding: 0 8px;
     display: flex;
     flex-direction: column;
     gap: 8px;
+    padding-top: 16px;
+
+    &>hr {
+        width: 100%;
+        border: none;
+        border-top: 1px solid var(--accent-color);
+        margin: 0;
+        opacity: .5;
+    }
+
+    &>.card-text {
+        line-height: 1.5;
+        white-space: pre-wrap;
+
+    }
+
+    &>.flavor-text {
+        font-style: italic;
+        opacity: .7;
+        white-space: pre-wrap;
+        padding-bottom: 16px;
+    }
 }
 
-.card-text {
-    line-height: 1.5;
-}
 
-.flavor-text {
-    font-style: italic;
-    opacity: .7;
-}
 
 .faction-influence-container {
     display: flex;
@@ -154,6 +205,28 @@
 
     p {
         font-size: 1.5rem;
+    }
+
+    .faction-icon {
+        height: 32px;
+        width: 32px;
+    }
+
+    .deck-container {
+        display: flex;
+        border: 1px solid var(--accent-color);
+        align-items: center;
+        // height: 32px;
+
+        .deck-item {
+            padding: 4px 8px;
+            text-align: center;
+        }
+
+        .influence-limit {
+            background-color: var(--accent-color);
+            color: var(--bg-container-color);
+        }
     }
 }
 

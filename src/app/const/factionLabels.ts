@@ -16,8 +16,8 @@ export const FACTION_LABELS: Record<string, Record<string, string>> = {
         it: 'Neutrali (runner)'
     },
     'haas-bioroid': {
-        en: 'Haas-bioroid',
-        it: 'Haas-bioroid'
+        en: 'Haas-Bioroid',
+        it: 'Haas-Bioroide'
     },
     'jinteki': {
         en: 'Jinteki',

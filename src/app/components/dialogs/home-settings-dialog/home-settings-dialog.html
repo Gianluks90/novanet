@@ -23,6 +23,7 @@
                     formControlName="customBackgroundURL" placeholder="Enter a valid URL" autocorrect="off" autocomplete="off">
             </div>
         </form>
+        <p class="p-note p-foot-note">ID: {{data.user.uid || 'N/A'}} Ruolo: {{data.user.role || 'base user'}}</p>
     } @else {
         <p i18n>Please log in to change user options.</p>   
     }
@@ -37,8 +38,9 @@
     <div dialog-actions-container>
         @if(data.user && data.user.role === 'admin') {
             <a href="https://console.firebase.google.com/project/novanet-2026/overview" target="_blank" rel="noopener">
-                <app-ui-button text="Firebase" icon="admin_panel_settings"></app-ui-button>
+                <app-ui-button text="Firebase" icon="local_fire_department"></app-ui-button>
             </a>
+            <app-ui-button text="Fix" [disabled]="true" icon="bomb" (click)="fix()"></app-ui-button>
         }
         <app-ui-button i18n-text="@@saveChangesButton" text="Save changes" icon="save" [disabled]="!form.valid || form.pristine" (click)="onSubmit()"></app-ui-button>
         <app-ui-button i18n-text="@@closeButton" text="Close" icon="close" (click)="dialogRef.close()"></app-ui-button>

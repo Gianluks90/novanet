@@ -17,7 +17,7 @@ export const TYPE_LABELS: Record<string, Record<string, string>> = {
     },
     'ice': {
         en: 'Ice',
-        it: 'Ice'
+        it: 'Ghiaccio'
     },
     'identity': {
         en: 'Identity',

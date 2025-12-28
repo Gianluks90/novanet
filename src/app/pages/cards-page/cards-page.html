@@ -59,14 +59,22 @@
         }
     </div>
     <div class="content-container">
-        <div class="attribution-container" (click)="toggleAttribution()">
-            @if(showAttribution) {
-            <div i18n class="attribution-text">
-                Card images and data provided by <a href="https://netrunnerdb.com/" target="_blank"
-                    rel="noopener noreferrer">NetrunnerDB</a>
+        <div class="footer-container">
+            <div class="attribution-container" (click)="toggleAttribution()">
+                @if(showAttribution) {
+                <div i18n class="attribution-text">
+                    Card images and data provided by <a href="https://netrunnerdb.com/" target="_blank"
+                        rel="noopener noreferrer">NetrunnerDB</a>
+                </div>
+                }
+                <span class="material-symbols-rounded">info</span>
             </div>
+            @if(selectedCard) {
+                <div class="deselect-card" (click)="selectedCard = null">
+                    <span i18n> Deselect card </span>
+                    <span class="material-symbols-rounded">close</span>
+                </div>
             }
-            <span class="material-symbols-rounded">info</span>
         </div>
         <div class="action-controls">
             <div i18n class="control-container" (click)="zoomRotation()">
