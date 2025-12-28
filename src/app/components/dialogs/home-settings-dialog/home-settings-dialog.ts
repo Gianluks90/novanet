@@ -9,17 +9,19 @@ import { getAuth } from 'firebase/auth';
 import { NovaUser } from '../../../models/NovaUser';
 import { CdkObserveContent } from "@angular/cdk/observers";
 import { AdminService } from '../../../services/admin-service';
+import { Faction } from '../../../models/faction';
+import { FactionLabelPipe } from "../../../pipes/faction-label-pipe";
 
 @Component({
   selector: 'app-home-settings-dialog',
-  imports: [UiDialogContainer, UIButton, FormsModule, ReactiveFormsModule],
+  imports: [UiDialogContainer, UIButton, FormsModule, ReactiveFormsModule, FactionLabelPipe],
   templateUrl: './home-settings-dialog.html',
   styleUrl: './home-settings-dialog.scss',
 })
 export class HomeSettingsDialog {
   public appVersion = APP_VERSION;
   public dialogRef = inject<DialogRef<DialogResult,HomeSettingsDialog>>(DialogRef);
-  public data = inject(DIALOG_DATA) as { user: NovaUser | null };
+  public data = inject(DIALOG_DATA) as { user: NovaUser | null, factions: Faction[] };
   public form: FormGroup;
 
   constructor(private fb: FormBuilder, private userService: UserService, private adminService: AdminService) {
@@ -27,6 +29,7 @@ export class HomeSettingsDialog {
       nickname: [this.data.user?.nickname],
       customPhotoURL: [this.data.user?.customPhotoURL],
       customBackgroundURL: [this.data.user?.customBackgroundURL],
+      favoriteFaction: [this.data.user?.favoriteFaction || ''],
       customAccentColor: [this.data.user?.customAccentColor || '#FCF552'],
     })
   }

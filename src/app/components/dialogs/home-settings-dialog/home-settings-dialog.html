@@ -12,6 +12,19 @@
                 <input i18n-placeholder="@@enterTextPlaceholder" type="text" id="nickname" formControlName="nickname"
                     placeholder="Enter text" autocorrect="off" autocomplete="off">
             </div>
+            @let factions = data.factions;
+            @if (factions.length > 0) {
+                
+                <div class="form-group">
+                    <label i18n for="faction-select">Favorite Faction</label>
+                    <select name="faction" id="faction-select" formControlName="favoriteFaction">
+                        <option i18n value="">None</option>
+                        @for(faction of factions; track faction.code) {
+                        <option [value]="faction.code">{{ faction.code | factionLabel}}</option>
+                        }
+                    </select>
+                </div>
+            }
             <div class="form-group">
                 <label for="customPhotoURL">Custom Profile Pic (URL)</label>
                 <input i18n-placeholder="@@enterURLValidPlaceholder" type="text" id="customPhotoURL"

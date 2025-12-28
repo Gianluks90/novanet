@@ -45,6 +45,8 @@ export class FirebaseService {
                     customAccentColor: user['customAccentColor'] ?? null,
                     customBackgroundURL: user['customBackgroundURL'] ?? null,
                     nickname: user['nickname'] ?? null,
+                    favoriteCaption: user['favoriteCaption'] ?? null,
+                    favoriteFaction: user['favoriteFaction'] ?? null,
                     role: user['role'] ?? null,
                 });
             }

@@ -37,7 +37,7 @@
         <div class="icons-container">
             @if (c?.type_code === 'identity' && c?.faction_code !== 'neutral-runner' && c?.faction_code !== 'neutral-corp') {
                 <!-- <img  [src]="'/images/faction-icons/' + c?.faction_code+ '.svg'" alt=""> -->
-                <img class="faction-icon" [src]="'/images/faction-icons/' + c?.faction_code+ '.svg'" alt="">
+                <img class="faction-icon" [src]="'./images/faction-icons/' + c?.faction_code+ '.svg'" alt="">
 
             }
             @if (c?.base_link || c?.base_link === 0) {
@@ -91,12 +91,15 @@
             <div class="card-text" [innerHTML]="c?.text | nrIcons"></div>
             <hr>
             <div class="flavor-text">{{c?.flavor}}</div>
+            @if(firebase.$user() && c?.flavor) {
+                <div class="add-caption" (click)="updateUserFavoriteCaption(c?.flavor!)">Add caption to profile</div>
+            }
         </div>
         @if (c?.faction_cost && c?.faction_cost! > 0) {
         <p i18n class="section-label">Influence cost ({{c?.faction_code! | factionLabel}})</p>
         <div class="faction-influence-container">
             @if(c?.faction_code && c?.faction_code !== 'neutral-runner' && c?.faction_code !== 'neutral-corp') {
-                <img [src]="'/images/faction-icons/' + c?.faction_code+ '.svg'" alt="">
+                <img [src]="'./images/faction-icons/' + c?.faction_code+ '.svg'" alt="">
             }
             @for(fi of factionCostArray; track $index) {
             @if (fi) {

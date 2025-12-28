@@ -128,10 +128,34 @@
             object-fit: cover;
         }
 
-        .user-info {
-            padding: 16px;
-            height: 100%;
-            width: calc(100% - 16px);
+        &>.inner-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 8px;
+
+            p.p-note {
+                margin: 0 !important;
+                font-style: italic;
+                max-height: 48px;
+                overflow-y: auto;
+            }
+
+            &>.user-info {
+                // padding: 4px 16px;
+                // height: 100%;
+                // width: calc(100% - 16px);
+
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                // gap: 12px;
+
+                &>img {
+                    height: 48px;
+                    width: 48px;
+                }
+            }
         }
     }
 }
@@ -147,6 +171,7 @@
         scale: 0.95;
         opacity: 0;
     }
+
     to {
         scale: 1;
         opacity: 1;

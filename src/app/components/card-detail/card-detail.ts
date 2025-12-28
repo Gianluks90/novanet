@@ -17,6 +17,7 @@ import { CardService } from '../../services/card-service';
 import { NetrunnerDbService } from '../../db/netrunner-db-service';
 import { KeywordLabelPipe } from '../../pipes/keyword-label-pipe';
 import { FactionLabelPipe } from "../../pipes/faction-label-pipe";
+import { UserService } from '../../services/user-service';
 
 @Component({
   selector: 'app-card-detail',
@@ -28,7 +29,7 @@ import { FactionLabelPipe } from "../../pipes/faction-label-pipe";
     TypeLabelPipe,
     KeywordLabelPipe,
     FactionLabelPipe
-],
+  ],
   templateUrl: './card-detail.html',
   styleUrl: './card-detail.scss',
 })
@@ -43,7 +44,8 @@ export class CardDetail {
     public firebase: FirebaseService,
     private notification: NotificationService,
     private cardService: CardService,
-    private nrdbService: NetrunnerDbService) {
+    private nrdbService: NetrunnerDbService,
+    private userService: UserService) {
     // effect(() => {
     //   if (this.selectedCard()) {
     //     this.initFactionCostArray();
@@ -177,6 +179,16 @@ export class CardDetail {
       } catch (error) {
         this.notification.notify($localize`Error approving translation, please try again later.`, 'dangerous');
       }
+    });
+  }
+
+  public updateUserFavoriteCaption(caption: string) {
+    if (!this.firebase.$user()) return;
+    this.userService.updateUserInfo(this.firebase.$user()!.uid, { favoriteCaption: caption }).then(() => {
+      this.notification.notify($localize`Favorite caption updated.`, 'check');
+    }).catch((error) => {
+      console.error('Error updating favorite caption:', error);
+      this.notification.notify($localize`Error updating favorite caption, please try again later.`, 'dangerous');
     });
   }
 

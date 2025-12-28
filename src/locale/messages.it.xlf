@@ -10,9 +10,9 @@
           <context context-type="linenumber">27</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="5981618411664434592" datatype="html">
-        <source>Cards loaded!</source>
-        <target>Carte pronte!</target>
+      <trans-unit id="7048202308593342415" datatype="html">
+        <source>Cards loaded! Wait for image rendering...</source>
+        <target>Carte caricate! Attendi il rendering delle immagini...</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.ts</context>
           <context context-type="linenumber">32</context>
@@ -127,7 +127,7 @@
         <target>Costo di influenza (<x id="INTERPOLATION" equiv-text="{{c?.faction_code! | factionLabel}}"/>)</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/card-detail/card-detail.html</context>
-          <context context-type="linenumber">96,97</context>
+          <context context-type="linenumber">99,100</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8774037404255316459" datatype="html">
@@ -135,7 +135,7 @@
         <target>Limite nel mazzo: <x id="INTERPOLATION" equiv-text="{{c?.deck_limit}}"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/card-detail/card-detail.html</context>
-          <context context-type="linenumber">117,119</context>
+          <context context-type="linenumber">120,122</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3512404258837964323" datatype="html">
@@ -143,7 +143,7 @@
         <target>Copie per set: <x id="INTERPOLATION" equiv-text="{{c?.quantity}}"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/card-detail/card-detail.html</context>
-          <context context-type="linenumber">120,122</context>
+          <context context-type="linenumber">123,125</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6149933534216500165" datatype="html">
@@ -151,7 +151,7 @@
         <target>Illustrazione</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/card-detail/card-detail.html</context>
-          <context context-type="linenumber">122,123</context>
+          <context context-type="linenumber">125,126</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1454365738147076673" datatype="html">
@@ -159,7 +159,7 @@
         <target>Centra</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/card-detail/card-detail.html</context>
-          <context context-type="linenumber">128</context>
+          <context context-type="linenumber">131</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6421460271971606186" datatype="html">
@@ -167,7 +167,7 @@
         <target>Zoom</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/card-detail/card-detail.html</context>
-          <context context-type="linenumber">129</context>
+          <context context-type="linenumber">132</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3821661153451769620" datatype="html">
@@ -175,7 +175,7 @@
         <target>Approva</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/card-detail/card-detail.html</context>
-          <context context-type="linenumber">132</context>
+          <context context-type="linenumber">135</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1613971242435858090" datatype="html">
@@ -183,7 +183,7 @@
         <target>Traduci</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/card-detail/card-detail.html</context>
-          <context context-type="linenumber">135</context>
+          <context context-type="linenumber">138</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5217462504379825217" datatype="html">
@@ -191,7 +191,7 @@
         <target>Traduzione inviata. Grazie.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/card-detail/card-detail.ts</context>
-          <context context-type="linenumber">122</context>
+          <context context-type="linenumber">124</context>
         </context-group>
       </trans-unit>
       <trans-unit id="2925564988695917694" datatype="html">
@@ -199,7 +199,7 @@
         <target>Traduzione confermata, presto sarà visibile a tutti (o aggiorna la pagina per vedere le modifiche).</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/card-detail/card-detail.ts</context>
-          <context context-type="linenumber">176</context>
+          <context context-type="linenumber">178</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4770080942037656501" datatype="html">
@@ -207,7 +207,23 @@
         <target>Errore durante l'approvazione della traduzione, riprova più tardi.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/card-detail/card-detail.ts</context>
-          <context context-type="linenumber">178</context>
+          <context context-type="linenumber">180</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4688685575187644863" datatype="html">
+        <source>Favorite caption updated.</source>
+        <target>Didascalia preferita aggiornata.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/card-detail/card-detail.ts</context>
+          <context context-type="linenumber">188</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4421831921910460464" datatype="html">
+        <source>Error updating favorite caption, please try again later.</source>
+        <target>Errore durante l'aggiornamento della didascalia preferita, riprova più tardi.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/card-detail/card-detail.ts</context>
+          <context context-type="linenumber">191</context>
         </context-group>
       </trans-unit>
       <trans-unit id="9178182467454450952" datatype="html">
@@ -243,7 +259,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/dialogs/home-settings-dialog/home-settings-dialog.html</context>
-          <context context-type="linenumber">46</context>
+          <context context-type="linenumber">59</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/dialogs/translate-dialog/translate-dialog.html</context>
@@ -298,16 +314,32 @@
           <context context-type="linenumber">13</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="4801343738652376557" datatype="html">
+        <source>Favorite Faction</source>
+        <target>Fazione preferita</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/dialogs/home-settings-dialog/home-settings-dialog.html</context>
+          <context context-type="linenumber">19,20</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6252070156626006029" datatype="html">
+        <source>None</source>
+        <target>Nessuna</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/dialogs/home-settings-dialog/home-settings-dialog.html</context>
+          <context context-type="linenumber">21,22</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="enterURLValidPlaceholder" datatype="html">
         <source>Enter a valid URL</source>
         <target>Inserisci URL valido</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/dialogs/home-settings-dialog/home-settings-dialog.html</context>
-          <context context-type="linenumber">18</context>
+          <context context-type="linenumber">31</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/dialogs/home-settings-dialog/home-settings-dialog.html</context>
-          <context context-type="linenumber">23</context>
+          <context context-type="linenumber">36</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6239862942461593094" datatype="html">
@@ -315,7 +347,7 @@
         <target>Effettua il login per modificare le opzioni utente.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/dialogs/home-settings-dialog/home-settings-dialog.html</context>
-          <context context-type="linenumber">28,29</context>
+          <context context-type="linenumber">41,42</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5883896572152817928" datatype="html">
@@ -323,7 +355,7 @@
         <target>Opzioni App</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/dialogs/home-settings-dialog/home-settings-dialog.html</context>
-          <context context-type="linenumber">30,31</context>
+          <context context-type="linenumber">43,44</context>
         </context-group>
       </trans-unit>
       <trans-unit id="9136562503277300102" datatype="html">
@@ -331,7 +363,7 @@
         <target>Colore di accento (si applica solo in modalità scura) <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;reset-span&quot; (click)=&quot;resetColor()&quot;&gt;"/>[ Reset ]<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/dialogs/home-settings-dialog/home-settings-dialog.html</context>
-          <context context-type="linenumber">34,35</context>
+          <context context-type="linenumber">47,48</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3490973516480478726" datatype="html">
@@ -339,7 +371,7 @@
         <target>Inserisci un colore valido (es. #FF0000)</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/dialogs/home-settings-dialog/home-settings-dialog.html</context>
-          <context context-type="linenumber">35</context>
+          <context context-type="linenumber">48</context>
         </context-group>
       </trans-unit>
       <trans-unit id="saveChangesButton" datatype="html">
@@ -347,7 +379,7 @@
         <target>Salva modifiche</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/dialogs/home-settings-dialog/home-settings-dialog.html</context>
-          <context context-type="linenumber">45</context>
+          <context context-type="linenumber">58</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/dialogs/translate-dialog/translate-dialog.html</context>
@@ -576,6 +608,14 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/home-page/home-page.html</context>
           <context context-type="linenumber">40</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="187187500641108332" datatype="html">
+        <source><x id="INTERPOLATION" equiv-text="{{ firebase.$user()?.favoriteCaption || 'No favorite caption' }}"/></source>
+        <target><x id="INTERPOLATION" equiv-text="{{ firebase.$user()?.favoriteCaption || 'Nessuna didascalia preferita' }}"/></target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/home-page/home-page.html</context>
+          <context context-type="linenumber">65,66</context>
         </context-group>
       </trans-unit>
     </body>

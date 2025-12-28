@@ -53,9 +53,16 @@
         <div class="user-content">
             <app-ui-image-container [width]="124" [height]="124"
                 [url]="(firebase.$user()?.customPhotoURL || firebase.$user()?.photoURL) || './images/logo/novanet.svg'"></app-ui-image-container>
-            <div class="user-info">
-                <h3>{{ firebase.$user()?.nickname || firebase.$user()?.displayName }}</h3>
-                <!-- <p>{{ firebase.$user()?.email }}</p> -->
+            <div class="inner-container">
+                <div class="user-info">
+                    <h3>{{ firebase.$user()?.nickname || firebase.$user()?.displayName }}</h3>
+                    @if (firebase.$user()?.favoriteFaction) {
+                    <img src="./images/faction-icons/{{firebase.$user()?.favoriteFaction}}.svg"
+                        alt="{{firebase.$user()?.favoriteFaction! | factionLabel}}">
+                    }
+                    <!-- <p>{{ firebase.$user()?.email }}</p> -->
+                </div>
+                <p i18n class="p-note">{{ firebase.$user()?.favoriteCaption || 'No favorite caption' }}</p>
             </div>
         </div>
         @if (!firebase.$user()?.customBackgroundURL) {

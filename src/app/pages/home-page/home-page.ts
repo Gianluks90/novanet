@@ -7,12 +7,14 @@ import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { DialogResult } from '../../models/DialogResult';
 import { HomeSettingsDialog } from '../../components/dialogs/home-settings-dialog/home-settings-dialog';
 import { DIALOGS_CONFIG } from '../../const/dialogConfig';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { NotificationService } from '../../services/notification-service';
+import { Faction } from '../../models/faction';
+import { FactionLabelPipe } from "../../pipes/faction-label-pipe";
 
 @Component({
   selector: 'app-home-page',
-  imports: [UIDiagonalLine, UIButton, UiImageContainer, RouterLink],
+  imports: [UIDiagonalLine, UIButton, UiImageContainer, RouterLink, FactionLabelPipe],
   templateUrl: './home-page.html',
   styleUrl: './home-page.scss',
 })
@@ -21,14 +23,18 @@ export class HomePage {
   public firebase = inject(FirebaseService);
   private dialog = inject(Dialog);
   private dialogRef: DialogRef<DialogResult, any> | null = null;
-  
-  constructor(private authService: AuthService, private notification: NotificationService) {
-}
+  public factions: Faction[] = [];
+
+  constructor(private authService: AuthService, private notification: NotificationService, private route: ActivatedRoute) {
+    this.route.data.subscribe(data => {
+      this.factions = data['configs'].factions.data;
+    });
+  }
 
   public openDialog() {
     this.dialogRef = this.dialog.open<DialogResult>(HomeSettingsDialog, {
       ...DIALOGS_CONFIG,
-      data: { user: this.firebase.$user() },
+      data: { user: this.firebase.$user(), factions: this.factions },
     });
 
     this.dialogRef.closed.subscribe((result: DialogResult | undefined) => {

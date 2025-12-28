@@ -29,7 +29,7 @@ export class App {
       }
       if (event instanceof NavigationEnd) {
         if (event.url.includes('cards')) {
-          this.notification.notify($localize `Cards loaded!`, 'cards_stack')
+          this.notification.notify($localize `Cards loaded! Wait for image rendering...`, 'cards_stack', 5000);
         }
       }
     });

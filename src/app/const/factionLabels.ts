@@ -43,7 +43,7 @@ export const FACTION_LABELS: Record<string, Record<string, string>> = {
         en: 'Adam',
         it: 'Adam'
     },
-    'sunny labeau': {
+    'sunny-lebeau': {
         en: 'Sunny Labeau',
         it: 'Sunny Labeau'
     }
