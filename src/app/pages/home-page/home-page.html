@@ -62,7 +62,7 @@
                     }
                     <!-- <p>{{ firebase.$user()?.email }}</p> -->
                 </div>
-                <p i18n class="p-note">{{ firebase.$user()?.favoriteCaption || 'No favorite caption' }}</p>
+                <p i18n class="p-note">{{ firebase.$user()?.favoriteCaption?.[locale] || 'No favorite caption' }}</p>
             </div>
         </div>
         @if (!firebase.$user()?.customBackgroundURL) {

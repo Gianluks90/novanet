@@ -1,7 +1,7 @@
 .ui-standard-btn {
     border: 1px solid var(--accent-color);
     color: var(--fg-color);
-    background-color: var(--bg-container-color);
+    background-color: var(--bg-color);
     text-transform: uppercase;
     padding: 8px 16px;
     font-size: 1rem;
@@ -15,11 +15,12 @@
     }
 
     &:disabled {
-        background-color: var(--bg-container-color);
-        color: var(--fg-color);
+        // background-color: var(--bg-color);
+        background-color: var(--bg-color-muted);
+        color: var(--fg-color-muted);
         border-color: var(--fg-color);
         cursor: not-allowed;
-        opacity: 0.3;
+        // opacity: 0.3;
     }
 }
 

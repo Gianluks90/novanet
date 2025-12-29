@@ -14,7 +14,6 @@
 .inspector-container {
     border: 1px solid var(--accent-color);
     background-color: var(--bg-container-color);
-    // padding: 16px;
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -32,18 +31,43 @@
         flex-grow: 1;
     }
 
-    .actions-container {
-        width: 100%;
+    // .actions-container {
+    //     width: 100%;
+    //     position: sticky;
+    //     background-color: var(--bg-container-color);
+    //     bottom: 0;
+    //     left: 0;
+    //     padding: 8px;
+    //     display: grid;
+    //     grid-template-columns: repeat(3, 1fr);
+    //     gap: 4px;
+    // }
+
+    &>.card-menu-button {
         position: sticky;
-        background-color: var(--bg-container-color);
         bottom: 0;
-        left: 0;
-        padding: 8px;
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 4px;
+        padding: 8px 16px;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: var(--bg-container-color);
+        border-top: 1px solid var(--accent-color);
+
+        &>.actions-icons {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            &>.material-symbols-rounded {
+                // font-size: 1.5rem;
+                cursor: pointer;
+            }
+        }
     }
 }
+
+
 
 .inspector-header {
     display: flex;

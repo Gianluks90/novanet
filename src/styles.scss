@@ -51,14 +51,14 @@ p {
 }
 
 :root {
-  // --fg-color: #ffffff;
-  // --bg-color: #212121;
   --accent-color: #FCF552;
 
   --bg-container-color: #272931;
 
   --warn-color: orange;
   --error-color: crimson;
+  --fg-color-muted: rgb(184, 184, 184);
+  --bg-color-muted: rgb(77, 77, 77);
 }
 
 .light {
@@ -66,6 +66,9 @@ p {
   --bg-color: #f0f0f0;
   --accent-color: #000;
   --bg-container-color: #e1e1e1;
+
+  --fg-color-muted: rgb(100, 100, 100);
+  --bg-color-muted: rgb(200, 200, 200);
 }
 
 .dark {
@@ -157,10 +160,11 @@ div[dialog-main-container] {
     flex-wrap: wrap;
     gap: 12px;
     position: sticky;
-    bottom: 16px;
+    bottom: 0;
     padding-top: 16px;
     background-color: var(--bg-color);
     border-top: 1px solid var(--accent-color);
+    padding-bottom: 16px;
   }
 }
 

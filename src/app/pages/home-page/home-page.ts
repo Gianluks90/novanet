@@ -1,4 +1,4 @@
-import { Component, effect, HostListener, inject } from '@angular/core';
+import { Component, effect, HostListener, inject, LOCALE_ID } from '@angular/core';
 import { APP_VERSION } from '../../const/appVersion';
 import { AuthService } from '../../services/auth-service';
 import { FirebaseService } from '../../services/firebase-service';
@@ -24,6 +24,7 @@ export class HomePage {
   private dialog = inject(Dialog);
   private dialogRef: DialogRef<DialogResult, any> | null = null;
   public factions: Faction[] = [];
+  public locale = inject(LOCALE_ID);
 
   constructor(private authService: AuthService, private notification: NotificationService, private route: ActivatedRoute) {
     this.route.data.subscribe(data => {

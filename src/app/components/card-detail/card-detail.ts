@@ -18,6 +18,7 @@ import { NetrunnerDbService } from '../../db/netrunner-db-service';
 import { KeywordLabelPipe } from '../../pipes/keyword-label-pipe';
 import { FactionLabelPipe } from "../../pipes/faction-label-pipe";
 import { UserService } from '../../services/user-service';
+import { CdkMenu, CdkMenuTrigger } from '@angular/cdk/menu';
 
 @Component({
   selector: 'app-card-detail',
@@ -28,7 +29,9 @@ import { UserService } from '../../services/user-service';
     UIButton,
     TypeLabelPipe,
     KeywordLabelPipe,
-    FactionLabelPipe
+    FactionLabelPipe,
+    CdkMenuTrigger, 
+    CdkMenu
   ],
   templateUrl: './card-detail.html',
   styleUrl: './card-detail.scss',
@@ -182,7 +185,12 @@ export class CardDetail {
     });
   }
 
-  public updateUserFavoriteCaption(caption: string) {
+  public updateUserFavoriteCaption() {
+
+    const caption = {
+      en: this.selectedCard()?.flavor || '',
+      [this.locale]: this.selectedCard()?.translations?.[this.locale]?.flavor || ''
+    }
     if (!this.firebase.$user()) return;
     this.userService.updateUserInfo(this.firebase.$user()!.uid, { favoriteCaption: caption }).then(() => {
       this.notification.notify($localize`Favorite caption updated.`, 'check');

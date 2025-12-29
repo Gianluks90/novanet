@@ -10,7 +10,9 @@ export interface NovaUser {
   customBackgroundURL?: string;
   customAccentColor?: string;
   nickname?: string;
-  favoriteCaption?: string;
+  favoriteCaption?: {
+    [lang: string]: string;
+  };
   favoriteFaction?: string;
   role?: string;
 }

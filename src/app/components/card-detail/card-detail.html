@@ -8,98 +8,89 @@
         <div class="inspector-header">
             <div class="side-label">{{c?.side_code}}</div>
             <div class="set-label">{{c?.pack_code | packCode: packs()}} #{{c?.position}}</div>
-            <div class="code-container">{{c?.code}}</div>
         </div>
         @if(c?.type_code === 'identity') {
         <div class="identity-container identity-item">
-            <p class="section-title"><span i18n-title="@@uniquenessTooltipText" title="unique" class="unique-icon">{{c?.uniqueness ? '◆' : ''}}</span> {{c?.title!.split(':')[0]}}</p>
+            <p class="section-title"><span i18n-title="@@uniquenessTooltipText" title="unique"
+                    class="unique-icon">{{c?.uniqueness ? '◆' : ''}}</span> {{c?.title!.split(':')[0]}}</p>
             <hr>
             <p class="identity-subtitle">{{c?.title!.split(':')[1]}}</p>
         </div>
         } @else {
         <div class="identity-container" [class.ice-header]="c?.strength || c?.strength === 0">
-            <p class="section-title"><span i18n-title="@@uniquenessTooltipText" title="unique" class="unique-icon">{{c?.uniqueness ? '◆' : ''}}</span> {{c?.title}}</p>
+            <p class="section-title"><span i18n-title="@@uniquenessTooltipText" title="unique"
+                    class="unique-icon">{{c?.uniqueness ? '◆' : ''}}</span> {{c?.title}}</p>
             @if (c?.strength || c?.strength === 0) {
-                <div class="strength-container">
-                    <span i18n i18n-title="@@strengthTooltipText" title="Strength" class="strength-label">STR</span>
-                    <span class="strength-value">{{c?.strength}}</span>
-                </div>
+            <div class="strength-container">
+                <span i18n i18n-title="@@strengthTooltipText" title="Strength" class="strength-label">STR</span>
+                <span class="strength-value">{{c?.strength}}</span>
+            </div>
             }
         </div>
         }
         <p>
             <span class="type-label">{{c?.type_code! | typeLabel}}</span>
             @if (c?.keywords) {
-                <br>
-                {{c?.keywords | keywordLabel}}
+            <br>
+            {{c?.keywords | keywordLabel}}
             }
         </p>
         <div class="icons-container">
-            @if (c?.type_code === 'identity' && c?.faction_code !== 'neutral-runner' && c?.faction_code !== 'neutral-corp') {
-                <!-- <img  [src]="'/images/faction-icons/' + c?.faction_code+ '.svg'" alt=""> -->
-                <img class="faction-icon" [src]="'./images/faction-icons/' + c?.faction_code+ '.svg'" alt="">
+            @if (c?.type_code === 'identity' && c?.faction_code !== 'neutral-runner' && c?.faction_code !==
+            'neutral-corp') {
+            <!-- <img  [src]="'/images/faction-icons/' + c?.faction_code+ '.svg'" alt=""> -->
+            <img class="faction-icon" [src]="'./images/faction-icons/' + c?.faction_code+ '.svg'" alt="">
 
             }
             @if (c?.base_link || c?.base_link === 0) {
-                <p>{{c?.base_link}} <span i18n-title="@@baseLinkTooltipText" title="Base link" class="nr-icon nr-link"></span></p>
+            <p>{{c?.base_link}} <span i18n-title="@@baseLinkTooltipText" title="Base link"
+                    class="nr-icon nr-link"></span></p>
             }
             @if (c?.type_code === 'identity' && c?.side_code === 'runner') {
-                <p>4 <span i18n-title="@@baseMemoryAvailableTooltipText" title="Base memory available" class="nr-icon nr-mu"></span></p>
+            <p>4 <span i18n-title="@@baseMemoryAvailableTooltipText" title="Base memory available"
+                    class="nr-icon nr-mu"></span></p>
             }
             @if (c?.minimum_deck_size && c?.minimum_deck_size! > 0) {
-                <div class="deck-container">
-                    <div class="deck-item">
-                        {{c?.minimum_deck_size}}
-                    </div>
-                    <div class="deck-item influence-limit">
-                        {{c?.influence_limit === null ? '∞' : c?.influence_limit}}
-                    </div>
+            <div class="deck-container">
+                <div class="deck-item">
+                    {{c?.minimum_deck_size}}
                 </div>
+                <div class="deck-item influence-limit">
+                    {{c?.influence_limit === null ? '∞' : c?.influence_limit}}
+                </div>
+            </div>
             }
             @if (c?.cost || c?.cost === 0) {
-                <p>{{c?.cost}} <span i18n-title="@@costTooltipText" title="Cost" class="nr-icon" [class.nr-credit]="c?.side_code === 'runner'" [class.nr-rez-cost]="c?.side_code === 'corp'"></span></p>
+            <p>{{c?.cost}} <span i18n-title="@@costTooltipText" title="Cost" class="nr-icon"
+                    [class.nr-credit]="c?.side_code === 'runner' || c?.type_code === 'operation'"
+                    [class.nr-rez-cost]="c?.side_code === 'corp' && c?.type_code !== 'operation'"></span></p>
             }
             @if (c?.trash_cost || c?.trash_cost === 0) {
-                <p>{{c?.trash_cost}} <span i18n-title="@@trashCostTooltipText" title="Trash Cost" class="nr-icon nr-trash-cost"></span></p>
+            <p>{{c?.trash_cost}} <span i18n-title="@@trashCostTooltipText" title="Trash Cost"
+                    class="nr-icon nr-trash-cost"></span></p>
             }
             @if (c?.memory_cost || c?.memory_cost === 0) {
-                <p>{{c?.memory_cost}} <span i18n-title="@@memoryCostTooltipText" title="Memory Cost" class="nr-icon nr-mu"></span></p>
+            <p>{{c?.memory_cost}} <span i18n-title="@@memoryCostTooltipText" title="Memory Cost"
+                    class="nr-icon nr-mu"></span></p>
             }
             @if (c?.agenda_points || c?.agenda_points === 0) {
-                <p>
-                    {{c?.advancement_cost}}/{{c?.agenda_points}} <span i18n-title="@@agendaPointsTooltipText" title="Advancement cost / Agenda points" class="nr-icon nr-agenda"></span>
-                </p>
+            <p>
+                {{c?.advancement_cost}}/{{c?.agenda_points}} <span i18n-title="@@agendaPointsTooltipText"
+                    title="Advancement cost / Agenda points" class="nr-icon nr-agenda"></span>
+            </p>
             }
-            <!-- @if (c?.strength || c?.strength === 0) {
-                <p i18n>Strength: {{c?.strength}}</p>
-            } -->
         </div>
-        <!-- <p i18n="@@cardTypeLabel" class="section-label">Type</p> -->
-        
-
-        <!-- @if (c?.minimum_deck_size && c?.minimum_deck_size! > 0) {
-        <p i18n>Minimum deck size: {{c?.minimum_deck_size}}</p>
-        } -->
-        <!-- @if (c?.influence_limit && c?.influence_limit! > 0) {
-        <p i18n>Influence limit: {{c?.influence_limit}}</p>
-        } -->
-        <!-- @if (c?.influence_limit === null) {
-            <p i18n>No influence limit</p>
-        } -->
         <div class="effect-container">
             <p i18n class="section-subtitle effect-subtitle">Effect</p>
             <div class="card-text" [innerHTML]="c?.text | nrIcons"></div>
             <hr>
             <div class="flavor-text">{{c?.flavor}}</div>
-            @if(firebase.$user() && c?.flavor) {
-                <div class="add-caption" (click)="updateUserFavoriteCaption(c?.flavor!)">Add caption to profile</div>
-            }
         </div>
         @if (c?.faction_cost && c?.faction_cost! > 0) {
         <p i18n class="section-label">Influence cost ({{c?.faction_code! | factionLabel}})</p>
         <div class="faction-influence-container">
             @if(c?.faction_code && c?.faction_code !== 'neutral-runner' && c?.faction_code !== 'neutral-corp') {
-                <img [src]="'./images/faction-icons/' + c?.faction_code+ '.svg'" alt="">
+            <img [src]="'./images/faction-icons/' + c?.faction_code+ '.svg'" alt="">
             }
             @for(fi of factionCostArray; track $index) {
             @if (fi) {
@@ -110,11 +101,6 @@
             }
         </div>
         }
-        <!-- <p i18n class="section-label">Side</p>
-        <div class="side-container">
-            <div class="side-item" [class.selected-side]="c?.side_code === 'corp'">Corp</div>
-            <div class="side-item" [class.selected-side]="c?.side_code === 'runner'">Runner</div>
-        </div> -->
         <p class="section-subtitle">Meta</p>
         @if (c?.deck_limit && c?.deck_limit! > 0) {
         <p i18n>Deck limit: {{c?.deck_limit}}</p>
@@ -126,17 +112,34 @@
         <p>{{c?.illustrator || '-'}}</p>
     </section>
     }
-    <div class="actions-container">
+    <!-- <div class="actions-container">
         @if (selectedCard()) {
         <app-ui-button i18n-text text="Focus" icon="recenter" size="small" (click)="scrollToSelected()"></app-ui-button>
         <app-ui-button i18n-text text="Zoom" icon="search" size="small" (click)="zoomCard()"></app-ui-button>
-        @if (selectedCard()?.translations && !selectedCard()?.translations?.[locale]?.approved && firebase.$user() && firebase.$user()?.role === 'admin') {
-            <!-- "Gestisci" visibile se sono presenti traduzioni non approvate nel locale attuale e utente autenticato è 'admin' -->
-            <app-ui-button i18n-text text="Approve" icon="translate" size="small" (click)="openConfirmTranslation()"></app-ui-button>
-        } @else {
-            <!-- "Traduci" visibile se non sono presenti traduzioni nel locale attuale, disabilitato se è già stato tradotto o se guest connesso " -->
-            <app-ui-button i18n-text text="Translate" icon="translate" [disabled]="!firebase.$user() || !!(selectedCard()?.translations?.[locale]?.approved)" (click)="openTranslateDialog()" size="small"></app-ui-button>
-        }
+
     }
+    </div> -->
+    @if (selectedCard()) {
+        <div class="card-menu-button">
+        <div class="code-container">{{card()?.code}}</div>
+        <div class="actions-icons">
+            <span class="material-symbols-rounded" (click)="zoomCard()">search</span>
+        <span class="material-symbols-rounded" (click)="scrollToSelected()">recenter</span>
+        <span class="material-symbols-rounded" [cdkMenuTriggerFor]="menu">menu</span>
+        </div>
     </div>
+    }
 </div>
+
+<ng-template #menu>
+    <div class="lang-menu-container" cdkMenu>
+        @if (selectedCard()?.translations && !selectedCard()?.translations?.[locale]?.approved && firebase.$user() && firebase.$user()?.role === 'admin') {
+            <app-ui-button i18n-text text="Approve" icon="translate" (click)="openConfirmTranslation()"></app-ui-button>
+        } @else {
+            <app-ui-button i18n-text text="Translate" icon="translate" [disabled]="!firebase.$user() || !!(selectedCard()?.translations?.[locale]?.approved)" (click)="openTranslateDialog()"></app-ui-button>
+        }
+        @if(firebase.$user() && card()?.flavor) {
+             <app-ui-button i18n-text text="Add caption to profile" icon="format_quote" (click)="updateUserFavoriteCaption()"></app-ui-button>
+        }
+    </div>
+</ng-template>
