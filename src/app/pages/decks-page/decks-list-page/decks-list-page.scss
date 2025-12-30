@@ -1,0 +1,186 @@
+.decks-list-page-main-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    &>.filter-container {
+        border: 1px solid var(--accent-color);
+        background-color: var(--bg-container-color);
+        height: 50px;
+        flex-shrink: 0;
+        margin-bottom: 16px;
+        position: relative;
+        width: 100%;
+        max-width: 1200px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding-right: 16px;
+
+        &>.line-divider {
+            border-left: 1px solid var(--accent-color);
+            height: 80%;
+            opacity: .5;
+        }
+    }
+
+    &>.content-container {
+        flex-grow: 1;
+        width: 100%;
+        border: 1px solid var(--accent-color);
+        background-color: var(--bg-container-color);
+
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        padding: 16px;
+
+        .deck-column {
+            border: 1px solid var(--accent-color);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+
+            &>.column-header {
+                background-color: var(--bg-color);
+                border-bottom: 1px solid var(--accent-color);
+                font-weight: bold;
+                text-align: center;
+                text-transform: uppercase;
+                display: flex;
+                position: relative;
+
+                &>p {
+                    flex-grow: 1;
+                    padding: 8px;
+                }
+
+                &>.material-symbols-rounded {
+                    position: absolute;
+                    right: 8px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    cursor: pointer;
+                }
+            }
+
+            &>.decks-list {
+                flex-grow: 1;
+                overflow-y: auto;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                padding: 16px;
+            }
+
+        }
+
+        &>.empty-message-container {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+    }
+}
+
+.side-line {
+    width: 20px;
+    background-color: var(--accent-color);
+    height: 100%;
+    background: repeating-linear-gradient(to right,
+            var(--accent-color) 1px,
+            var(--accent-color) 1px,
+            transparent 4px,
+            transparent 4px)
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--fg-color);
+    text-transform: uppercase;
+    padding: 0 8px;
+
+}
+
+input[type="text"],
+input[type="number"] {
+    flex-grow: 1;
+    padding: 4px 8px;
+    border: 1px solid var(--accent-color);
+    border-radius: 4px;
+    background-color: var(--bg-color);
+    color: var(--fg-color);
+    height: 32px;
+
+    &::placeholder {
+        color: var(--text-secondary-color);
+    }
+}
+
+input[type="number"] {
+    max-width: 100px;
+}
+
+.reset-icon {
+    font-size: 1rem;
+    cursor: pointer;
+    border: 1px solid var(--accent-color);
+    padding: 4px;
+    border-radius: 4px;
+    color: var(--accent-color);
+    height: 24px;
+    width: 24px;
+    align-self: self-start;
+    margin-top: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &>.material-symbols-rounded {
+        font-size: 1.2rem;
+    }
+
+    &:hover {
+        background-color: var(--accent-color);
+        color: var(--bg-color);
+        transition: background-color 0.3s, color 0.3s;
+    }
+}
+
+.empty-list {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.deck-container {
+    border: 1px solid var(--fg-color);
+    border-left: 8px solid var(--fg-color);
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    user-select: none;
+
+    &>.deck-actions {
+        display: flex;
+        gap: 8px;
+
+        &>.material-symbols-rounded {
+            cursor: pointer;
+        }
+    }
+    
+    &:hover {
+        background-color: var(--bg-color);
+        border: 1px solid var(--accent-color);
+        border-left: 8px solid var(--accent-color);
+        transition: background-color 0.3s, border 0.3s;
+        // cursor: pointer;
+    }
+}

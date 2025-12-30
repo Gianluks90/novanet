@@ -9,7 +9,6 @@ import { Pack } from '../../models/pack';
 import { Side } from '../../models/side';
 import { Type } from '../../models/type';
 import { FormsModule } from '@angular/forms';
-import { DomSanitizer } from '@angular/platform-browser';
 import { CardComponent } from '../../components/card-component/card-component';
 import { CardDetail } from '../../components/card-detail/card-detail';
 import { FirebaseService } from '../../services/firebase-service';
@@ -64,7 +63,6 @@ export class CardsPage {
   constructor(
     private cd: ChangeDetectorRef,
     private route: ActivatedRoute,
-    private sanitizer: DomSanitizer,
     public firebase: FirebaseService,
     private notification: NotificationService,
     private cardService: CardService) {

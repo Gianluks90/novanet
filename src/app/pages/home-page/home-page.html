@@ -3,8 +3,14 @@
         <div class="welcome-container animation-fade-in" [style.animation-delay]="'.5s'">
             <div class="side-line"></div>
             <div class="content">
-                <h1 i18n>Welcome {{firebase.$user() ? 'back' : ''}} to <u>NovaNet</u></h1>
-                <p i18n>Step into the digital nexus of <strong>Novacorp</strong>. <br><strong>NovaNet</strong> connects Corps
+                <!-- <h1 i18n>Welcome {{firebase.$user() ? 'back' : ''}} to <u>NovaNet</u></h1> -->
+                @if (firebase.$user()) {
+                    <h1 i18n>Welcome back to <u>NovaNet</u></h1>
+                } @else {
+                    <h1 i18n>Welcome to <u>NovaNet</u></h1>
+                }
+                <p i18n>Step into the digital nexus of <strong>Novacorp</strong>. <br><strong>NovaNet</strong> connects
+                    Corps
                     and
                     Runners in a single, dynamic space where strategy, cunning, and adaptability define success. Whether
                     you’re building decks, analyzing cards, or testing your tactics against others, Novanet provides the
@@ -16,7 +22,8 @@
                     immersing yourself in a world of high-stakes corporate intrigue and shadowy netrunning operations.
                 </p>
 
-                <p i18n>Novanet isn’t just a tool—it’s a gateway to a living, evolving environment where the line between
+                <p i18n>Novanet isn’t just a tool—it’s a gateway to a living, evolving environment where the line
+                    between
                     Runner
                     and Corp blurs. Your choices have consequences, your strategies shape the meta, and every game is a
                     story waiting to unfold.</p>
@@ -26,7 +33,7 @@
             </div>
             @if (!firebase.$user()?.customBackgroundURL) {
             <app-ui-diagonal-line position="bottom-right"></app-ui-diagonal-line>
-        }
+            }
         </div>
         <div class="menu-container animation-fade-in" [style.animation-delay]="'1s'">
             <div class="side-line"></div>
@@ -36,7 +43,8 @@
                     <div class="material-symbols-rounded menu-icon" (click)="openDialog()">settings</div>
                 </div>
                 <app-ui-button i18n-text text="cards" icon="cards_stack" [routerLink]="'/cards'"></app-ui-button>
-                <app-ui-button i18n-text text="deck builder" [disabled]="true" icon="stack_hexagon"></app-ui-button>
+                <app-ui-button i18n-text text="deck builder" icon="stack_hexagon"
+                    [routerLink]="'/decks/list'"></app-ui-button>
                 <app-ui-button i18n-text text="play" [disabled]="true" icon="group"></app-ui-button>
                 <app-ui-button [text]="firebase.$user() ? 'logout' : 'login/register'"
                     [icon]="firebase.$user() ? 'logout' : 'login'" (click)="loginRegister()"></app-ui-button>
@@ -44,7 +52,7 @@
             </div>
             @if (!firebase.$user()?.customBackgroundURL) {
             <app-ui-diagonal-line position="bottom-right"></app-ui-diagonal-line>
-        }
+            }
         </div>
     </div>
     @if(firebase.$user()) {
@@ -66,7 +74,7 @@
             </div>
         </div>
         @if (!firebase.$user()?.customBackgroundURL) {
-            <app-ui-diagonal-line position="bottom-right"></app-ui-diagonal-line>
+        <app-ui-diagonal-line position="bottom-right"></app-ui-diagonal-line>
         }
     </div>
     }

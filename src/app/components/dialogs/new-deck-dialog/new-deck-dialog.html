@@ -1,0 +1,28 @@
+<app-ui-dialog-container i18n-dialogTitle dialogTitle="New Deck">
+    <p i18n>Fill in the fields below to create a new deck. Once done, the page will reload and you will find the new deck in the list. Some parameters can be modified later.</p>
+    <br>
+    <form [formGroup]="form" class="form-container">
+        <div class="form-group">
+            <label i18n="@@sideLabel" for="side">Side</label>
+            <select name="side" id="side-select" formControlName="side">
+            <!-- <option i18n value="all">All Sides</option> -->
+            @for(side of sides; track side.code) {
+            <option [value]="side.code">{{ side.name }}</option>
+            }
+        </select>
+        </div>
+        <div class="form-group">
+            <label i18n="@@nameLabel" for="name">Deck name</label>
+            <input i18n-placeholder="@@enterTextPlaceholder" type="text" id="name" formControlName="name" placeholder="Enter text" autocorrect="off" autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label i18n="@@customBackImageURLLabel" for="customBackImageURL">Custom Back Image URL</label>
+            <input i18n-placeholder="@@enterURLValidPlaceholder" type="text" id="customBackImageURL" formControlName="customBackImageURL" placeholder="Enter a valid URL" autocorrect="off" autocomplete="off">
+            <p i18n class="form-hint">If you leave this field empty, the default back image will be used. The linked image will be used as the back of the deck, make sure it is of an appropriate size and rectangular to avoid losing details. Also, any offensive or inappropriate image may be reported.</p>
+        </div>
+    </form>
+    <div dialog-actions-container>
+        <app-ui-button i18n-text="@@confirmButton" text="Save changes" icon="save" [disabled]="!form.valid || form.pristine" (click)="onSubmit()"></app-ui-button>
+        <app-ui-button i18n-text="@@closeButton" text="Close" icon="close" (click)="dialogRef.close()"></app-ui-button>
+    </div>
+</app-ui-dialog-container>

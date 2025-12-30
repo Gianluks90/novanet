@@ -192,9 +192,14 @@ form.form-container {
       justify-content: space-between;
       align-items: center;
     }
+
+    &>.form-hint {
+      font-size: 0.9rem;
+      color: var(--fg-color);
+      opacity: 0.7;
+      margin-bottom: 12px;
+    }
   }
-
-
 }
 
 // Input
@@ -246,6 +251,18 @@ textarea {
   &:focus {
     border-color: var(--fg-color);
   }
+}
+
+select {
+    width: 128px;
+    font-size: 1rem;
+    padding: 4px 8px;
+    border: 1px solid var(--accent-color);
+    border-radius: 4px;
+    background-color: var(--bg-color);
+    color: var(--fg-color);
+    height: 32px;
+    cursor: pointer;
 }
 
 // NRIcons pipe

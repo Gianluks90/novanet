@@ -183,14 +183,14 @@
         <source>Favorite caption updated.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/card-detail/card-detail.ts</context>
-          <context context-type="linenumber">191</context>
+          <context context-type="linenumber">196</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4421831921910460464" datatype="html">
         <source>Error updating favorite caption, please try again later.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/card-detail/card-detail.ts</context>
-          <context context-type="linenumber">194</context>
+          <context context-type="linenumber">199</context>
         </context-group>
       </trans-unit>
       <trans-unit id="9178182467454450952" datatype="html">
@@ -213,6 +213,10 @@
           <context context-type="sourcefile">src/app/components/dialogs/confirm-dialog/confirm-dialog.html</context>
           <context context-type="linenumber">4</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/dialogs/new-deck-dialog/new-deck-dialog.html</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="closeButton" datatype="html">
         <source>Close</source>
@@ -223,6 +227,10 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/dialogs/home-settings-dialog/home-settings-dialog.html</context>
           <context context-type="linenumber">59</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/dialogs/new-deck-dialog/new-deck-dialog.html</context>
+          <context context-type="linenumber">26</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/dialogs/translate-dialog/translate-dialog.html</context>
@@ -270,6 +278,10 @@
           <context context-type="sourcefile">src/app/components/dialogs/home-settings-dialog/home-settings-dialog.html</context>
           <context context-type="linenumber">13</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/dialogs/new-deck-dialog/new-deck-dialog.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="4801343738652376557" datatype="html">
         <source>Favorite Faction</source>
@@ -294,6 +306,10 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/dialogs/home-settings-dialog/home-settings-dialog.html</context>
           <context context-type="linenumber">36</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/dialogs/new-deck-dialog/new-deck-dialog.html</context>
+          <context context-type="linenumber">20</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6239862942461593094" datatype="html">
@@ -333,6 +349,48 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/dialogs/translate-dialog/translate-dialog.html</context>
           <context context-type="linenumber">74,75</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1811764741143746732" datatype="html">
+        <source>New Deck</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/dialogs/new-deck-dialog/new-deck-dialog.html</context>
+          <context context-type="linenumber">1,2</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1726022124181300784" datatype="html">
+        <source>Fill in the fields below to create a new deck. Once done, the page will reload and you will find the new deck in the list. Some parameters can be modified later.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/dialogs/new-deck-dialog/new-deck-dialog.html</context>
+          <context context-type="linenumber">2,3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="sideLabel" datatype="html">
+        <source>Side</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/dialogs/new-deck-dialog/new-deck-dialog.html</context>
+          <context context-type="linenumber">6,7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="nameLabel" datatype="html">
+        <source>Deck name</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/dialogs/new-deck-dialog/new-deck-dialog.html</context>
+          <context context-type="linenumber">15,16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="customBackImageURLLabel" datatype="html">
+        <source>Custom Back Image URL</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/dialogs/new-deck-dialog/new-deck-dialog.html</context>
+          <context context-type="linenumber">19,20</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6227947820983956214" datatype="html">
+        <source>If you leave this field empty, the default back image will be used. The linked image will be used as the back of the deck, make sure it is of an appropriate size and rectangular to avoid losing details. Also, any offensive or inappropriate image may be reported.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/dialogs/new-deck-dialog/new-deck-dialog.html</context>
+          <context context-type="linenumber">21,22</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5765897706769536293" datatype="html">
@@ -377,10 +435,14 @@
           <context context-type="linenumber">76</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="4163272119298020373" datatype="html">
+      <trans-unit id="filtersSectionTitle" datatype="html">
         <source>Filters</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/cards-page/cards-page.html</context>
+          <context context-type="linenumber">4,5</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/decks-page/decks-list-page/decks-list-page.html</context>
           <context context-type="linenumber">4,5</context>
         </context-group>
       </trans-unit>
@@ -388,6 +450,10 @@
         <source>Search text...</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/cards-page/cards-page.html</context>
+          <context context-type="linenumber">5,6</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/decks-page/decks-list-page/decks-list-page.html</context>
           <context context-type="linenumber">5,6</context>
         </context-group>
       </trans-unit>
@@ -410,6 +476,10 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/cards-page/cards-page.html</context>
           <context context-type="linenumber">20,21</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/decks-page/decks-list-page/decks-list-page.html</context>
+          <context context-type="linenumber">8,9</context>
         </context-group>
       </trans-unit>
       <trans-unit id="456027006936708153" datatype="html">
@@ -473,70 +543,140 @@
         <source>Showing <x id="PH" equiv-text="this.cards.length"/> cards with translations to approve.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/cards-page/cards-page.ts</context>
-          <context context-type="linenumber">362</context>
+          <context context-type="linenumber">360</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="659689882018025847" datatype="html">
-        <source>Welcome <x id="INTERPOLATION" equiv-text="{{firebase.$user() ? &apos;back&apos; : &apos;&apos;}}"/> to <x id="START_UNDERLINED_TEXT" ctype="x-u" equiv-text="&lt;u&gt;"/>NovaNet<x id="CLOSE_UNDERLINED_TEXT" ctype="x-u" equiv-text="&lt;/u&gt;"/></source>
+      <trans-unit id="runnerDecksColumnTitle" datatype="html">
+        <source>Runner Decks</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/decks-page/decks-list-page/decks-list-page.html</context>
+          <context context-type="linenumber">23,25</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="noRunnerDecksMessage" datatype="html">
+        <source>No <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>Runner<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> decks found.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/decks-page/decks-list-page/decks-list-page.html</context>
+          <context context-type="linenumber">29,30</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="corpDecksColumnTitle" datatype="html">
+        <source>Corp Decks</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/decks-page/decks-list-page/decks-list-page.html</context>
+          <context context-type="linenumber">36,38</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="noCorpDecksMessage" datatype="html">
+        <source>No <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>Corp<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> decks found.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/decks-page/decks-list-page/decks-list-page.html</context>
+          <context context-type="linenumber">42,43</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="noDecksMessage" datatype="html">
+        <source>No decks available. It&apos;s time to create a new one, no?</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/decks-page/decks-list-page/decks-list-page.html</context>
+          <context context-type="linenumber">48,49</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1181801085045296643" datatype="html">
+        <source>New deck</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/decks-page/decks-list-page/decks-list-page.html</context>
+          <context context-type="linenumber">49</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6218040842656713716" datatype="html">
+        <source>New deck created.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/decks-page/decks-list-page/decks-list-page.ts</context>
+          <context context-type="linenumber">131</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4833003869809472511" datatype="html">
+        <source>Error creating deck: <x id="PH" equiv-text="err.message"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/decks-page/decks-list-page/decks-list-page.ts</context>
+          <context context-type="linenumber">133</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5621559041957339760" datatype="html">
+        <source>Welcome back to <x id="START_UNDERLINED_TEXT" ctype="x-u" equiv-text="&lt;u&gt;"/>NovaNet<x id="CLOSE_UNDERLINED_TEXT" ctype="x-u" equiv-text="&lt;/u&gt;"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/home-page/home-page.html</context>
-          <context context-type="linenumber">6,7</context>
+          <context context-type="linenumber">8,9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6739772521950882476" datatype="html">
+        <source>Welcome to <x id="START_UNDERLINED_TEXT" ctype="x-u" equiv-text="&lt;u&gt;"/>NovaNet<x id="CLOSE_UNDERLINED_TEXT" ctype="x-u" equiv-text="&lt;/u&gt;"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/home-page/home-page.html</context>
+          <context context-type="linenumber">10,12</context>
         </context-group>
       </trans-unit>
       <trans-unit id="9002709967897220375" datatype="html">
         <source>Step into the digital nexus of <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>Novacorp<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/>. <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br&gt;"/><x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>NovaNet<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> connects Corps and Runners in a single, dynamic space where strategy, cunning, and adaptability define success. Whether you’re building decks, analyzing cards, or testing your tactics against others, Novanet provides the tools and insights you need to dominate the cyber arena.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/home-page/home-page.html</context>
-          <context context-type="linenumber">7,11</context>
+          <context context-type="linenumber">12,16</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1621643999629474552" datatype="html">
         <source>Our platform offers an integrated system that brings every aspect of the Android: Netrunner experience together. Track your progress, explore new strategies, and engage in competitive play—all while immersing yourself in a world of high-stakes corporate intrigue and shadowy netrunning operations. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/home-page/home-page.html</context>
-          <context context-type="linenumber">13,16</context>
+          <context context-type="linenumber">19,22</context>
         </context-group>
       </trans-unit>
       <trans-unit id="7938963241108416008" datatype="html">
         <source>Novanet isn’t just a tool—it’s a gateway to a living, evolving environment where the line between Runner and Corp blurs. Your choices have consequences, your strategies shape the meta, and every game is a story waiting to unfold.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/home-page/home-page.html</context>
-          <context context-type="linenumber">19,21</context>
+          <context context-type="linenumber">25,28</context>
         </context-group>
       </trans-unit>
       <trans-unit id="69230654610067321" datatype="html">
         <source>Novanet is an independent project and is not affiliated with, endorsed by, or associated with Fantasy Flight Games or Wizards of the Coast.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/home-page/home-page.html</context>
-          <context context-type="linenumber">24,25</context>
+          <context context-type="linenumber">31,32</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5627072660785451875" datatype="html">
         <source>cards</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/home-page/home-page.html</context>
-          <context context-type="linenumber">38</context>
+          <context context-type="linenumber">45</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1689626284706294924" datatype="html">
         <source>deck builder</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/home-page/home-page.html</context>
-          <context context-type="linenumber">39</context>
+          <context context-type="linenumber">46</context>
         </context-group>
       </trans-unit>
       <trans-unit id="2352823364476335103" datatype="html">
         <source>play</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/home-page/home-page.html</context>
-          <context context-type="linenumber">40</context>
+          <context context-type="linenumber">48</context>
         </context-group>
       </trans-unit>
       <trans-unit id="187187500641108332" datatype="html">
-        <source><x id="INTERPOLATION" equiv-text="{{ firebase.$user()?.favoriteCaption || &apos;No favorite caption&apos; }}"/></source>
+        <source><x id="INTERPOLATION" equiv-text="{{ firebase.$user()?.favoriteCaption?.[locale] || &apos;No favorite caption&apos; }}"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/home-page/home-page.html</context>
-          <context context-type="linenumber">65,66</context>
+          <context context-type="linenumber">73,74</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2264352383042646653" datatype="html">
+        <source>Settings updated</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/home-page/home-page.ts</context>
+          <context context-type="linenumber">43</context>
         </context-group>
       </trans-unit>
     </body>

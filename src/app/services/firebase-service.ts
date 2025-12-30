@@ -48,6 +48,7 @@ export class FirebaseService {
                     favoriteCaption: user['favoriteCaption'] ?? null,
                     favoriteFaction: user['favoriteFaction'] ?? null,
                     role: user['role'] ?? null,
+                    deckIds: user['deckIds'] ?? [],
                 });
             }
         })
@@ -55,9 +56,7 @@ export class FirebaseService {
 
     public async ensureUserExists(user: any) {
         const docRef = doc(this.database, 'users', user.uid);
-
         const snap = await getDoc(docRef);
-
         if (!snap.exists()) {
             await setDoc(docRef, {
                 uid: user.uid,

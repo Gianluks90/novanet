@@ -1,0 +1,71 @@
+<div class="decks-list-page-main-container">
+    <div class="filter-container">
+        <div class="side-line"></div>
+        <p i18n="@@filtersSectionTitle" class="section-title">Filters</p>
+        <input i18n-placeholder="@@searchTextInputPlaceholder" type="text" placeholder="Search text..." (keyup)="onChangeTextSearch($event)">
+        @if (sides.length > 0) {
+        <select name="side" id="side-select" [(ngModel)]="filters.side" (change)="onChangeSideFilter($event)">
+            <option i18n value="all">All Sides</option>
+            @for(side of sides; track side.code) {
+            <option [value]="side.code">{{ side.name }}</option>
+            }
+        </select>
+        }
+        <div class="reset-icon" (click)="resetFilters()">
+            <span class="material-symbols-rounded">refresh</span>
+        </div>
+    </div>
+    <div class="content-container" [class.empty-list]="decks.length <= 0">
+            @if (decks.length > 0) {
+                <div class="deck-column">
+                    <div class="column-header">
+                        <div class="side-line"></div>
+                        <p i18n="@@runnerDecksColumnTitle" class="column-title">Runner Decks</p>
+                        @if (decks.length > 0) {
+                            <span class="material-symbols-rounded" (click)="openNewDeckDialog('runner')">add</span>
+                        }
+                    </div>
+                    <div class="decks-list" [class.empty-list]="(decks | filterDecksBySide:'runner').length <= 0">
+                        @for(d of decks | filterDecksBySide:'runner'; track d.id) {
+                            <div class="deck-container">
+                                <p>{{d.name}}</p>
+                                <div class="deck-actions">
+                                    <span class="material-symbols-rounded">edit</span>
+                                    <span class="material-symbols-rounded">delete</span>
+                                </div>
+                            </div>
+                        } @empty {
+                            <p i18n="@@noRunnerDecksMessage" class="empty-column-message">No <strong>Runner</strong> decks found.</p>
+                        }
+                    </div>
+                </div>
+                <div class="deck-column">
+                    <div class="column-header">
+                        <div class="side-line"></div>
+                        <p i18n="@@corpDecksColumnTitle" class="column-title">Corp Decks</p>
+                        @if (decks.length > 0) {
+                            <span class="material-symbols-rounded" (click)="openNewDeckDialog('corp')">add</span>
+                        }
+                    </div>
+                    <div class="decks-list" [class.empty-list]="(decks | filterDecksBySide:'corp').length <= 0">
+                        @for(d of decks | filterDecksBySide:'corp'; track d.id) {
+                            <div class="deck-container">
+                                <p>{{d.name}}</p>
+                                <div class="deck-actions">
+                                    <span class="material-symbols-rounded">edit</span>
+                                    <span class="material-symbols-rounded">delete</span>
+                                </div>
+                            </div>
+                        } @empty {
+                            <p i18n="@@noCorpDecksMessage" class="empty-column-message">No <strong>Corp</strong> decks found.</p>
+                        }
+                    </div>
+                </div>
+            } @else {
+                <div class="empty-message-container">
+                <p i18n="@@noDecksMessage">No decks available. It's time to create a new one, no?</p>   
+                <app-ui-button i18n-text text="New deck" icon="add_notes" (click)="openNewDeckDialog()"></app-ui-button>
+            </div>
+            }
+    </div>
+</div>

@@ -40,7 +40,7 @@ export class HomePage {
 
     this.dialogRef.closed.subscribe((result: DialogResult | undefined) => {
       if (result?.status === 'confirmed') {
-        this.notification.notify('Settings updated', 'check')
+        this.notification.notify($localize`Settings updated`, 'check')
       }
     });
   }

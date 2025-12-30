@@ -15,4 +15,5 @@ export interface NovaUser {
   };
   favoriteFaction?: string;
   role?: string;
+  deckIds?: string[];
 }
