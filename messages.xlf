@@ -215,7 +215,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/dialogs/new-deck-dialog/new-deck-dialog.html</context>
-          <context context-type="linenumber">25</context>
+          <context context-type="linenumber">38</context>
         </context-group>
       </trans-unit>
       <trans-unit id="closeButton" datatype="html">
@@ -230,7 +230,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/dialogs/new-deck-dialog/new-deck-dialog.html</context>
-          <context context-type="linenumber">26</context>
+          <context context-type="linenumber">39</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/dialogs/translate-dialog/translate-dialog.html</context>
@@ -280,7 +280,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/dialogs/new-deck-dialog/new-deck-dialog.html</context>
-          <context context-type="linenumber">16</context>
+          <context context-type="linenumber">28</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4801343738652376557" datatype="html">
@@ -309,7 +309,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/dialogs/new-deck-dialog/new-deck-dialog.html</context>
-          <context context-type="linenumber">20</context>
+          <context context-type="linenumber">32</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6239862942461593094" datatype="html">
@@ -369,28 +369,42 @@
         <source>Side</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/dialogs/new-deck-dialog/new-deck-dialog.html</context>
-          <context context-type="linenumber">6,7</context>
+          <context context-type="linenumber">9,10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="identityLabel" datatype="html">
+        <source>Identity</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/dialogs/new-deck-dialog/new-deck-dialog.html</context>
+          <context context-type="linenumber">18,19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="selectIdentityOption" datatype="html">
+        <source>Select an identity</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/dialogs/new-deck-dialog/new-deck-dialog.html</context>
+          <context context-type="linenumber">20,21</context>
         </context-group>
       </trans-unit>
       <trans-unit id="nameLabel" datatype="html">
         <source>Deck name</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/dialogs/new-deck-dialog/new-deck-dialog.html</context>
-          <context context-type="linenumber">15,16</context>
+          <context context-type="linenumber">27,28</context>
         </context-group>
       </trans-unit>
       <trans-unit id="customBackImageURLLabel" datatype="html">
         <source>Custom Back Image URL</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/dialogs/new-deck-dialog/new-deck-dialog.html</context>
-          <context context-type="linenumber">19,20</context>
+          <context context-type="linenumber">31,32</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6227947820983956214" datatype="html">
         <source>If you leave this field empty, the default back image will be used. The linked image will be used as the back of the deck, make sure it is of an appropriate size and rectangular to avoid losing details. Also, any offensive or inappropriate image may be reported.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/dialogs/new-deck-dialog/new-deck-dialog.html</context>
-          <context context-type="linenumber">21,22</context>
+          <context context-type="linenumber">33,34</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5765897706769536293" datatype="html">
@@ -550,56 +564,56 @@
         <source>Runner Decks</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/decks-page/decks-list-page/decks-list-page.html</context>
-          <context context-type="linenumber">23,25</context>
+          <context context-type="linenumber">23,24</context>
         </context-group>
       </trans-unit>
       <trans-unit id="noRunnerDecksMessage" datatype="html">
         <source>No <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>Runner<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> decks found.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/decks-page/decks-list-page/decks-list-page.html</context>
-          <context context-type="linenumber">29,30</context>
+          <context context-type="linenumber">38,39</context>
         </context-group>
       </trans-unit>
       <trans-unit id="corpDecksColumnTitle" datatype="html">
         <source>Corp Decks</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/decks-page/decks-list-page/decks-list-page.html</context>
-          <context context-type="linenumber">36,38</context>
+          <context context-type="linenumber">45,46</context>
         </context-group>
       </trans-unit>
       <trans-unit id="noCorpDecksMessage" datatype="html">
         <source>No <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>Corp<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> decks found.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/decks-page/decks-list-page/decks-list-page.html</context>
-          <context context-type="linenumber">42,43</context>
+          <context context-type="linenumber">60,61</context>
         </context-group>
       </trans-unit>
       <trans-unit id="noDecksMessage" datatype="html">
         <source>No decks available. It&apos;s time to create a new one, no?</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/decks-page/decks-list-page/decks-list-page.html</context>
-          <context context-type="linenumber">48,49</context>
+          <context context-type="linenumber">66,67</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1181801085045296643" datatype="html">
         <source>New deck</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/decks-page/decks-list-page/decks-list-page.html</context>
-          <context context-type="linenumber">49</context>
+          <context context-type="linenumber">67</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6218040842656713716" datatype="html">
         <source>New deck created.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/decks-page/decks-list-page/decks-list-page.ts</context>
-          <context context-type="linenumber">131</context>
+          <context context-type="linenumber">132</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4833003869809472511" datatype="html">
         <source>Error creating deck: <x id="PH" equiv-text="err.message"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/decks-page/decks-list-page/decks-list-page.ts</context>
-          <context context-type="linenumber">133</context>
+          <context context-type="linenumber">134</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5621559041957339760" datatype="html">

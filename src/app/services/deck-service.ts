@@ -34,7 +34,7 @@ export class DeckService {
         ...deckData 
       }, { merge: true }),
       setDoc(userRef, {
-        deckIdsdecks: arrayUnion(deckData.id)
+        deckIds: arrayUnion(deckData.id)
       }, { merge: true })
     ])
   }

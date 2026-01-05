@@ -16,6 +16,8 @@
 - [x] implementare "suggerisci traduzione" (rapida - dialog)
 - [ ] implementare "suggerisci traduzione" (avanzata - route)
 - [ ] implementare strumento admin di validazione traduzioni
+- [x] deck builder home page
 - [ ] deck builder page
 - [x] firebase button in settings dialog home
 - [x] change lang on header (redirect to home/lang)
+- [ ] Implementare o aggiornare pipe sostituizione parole chiave in inglese

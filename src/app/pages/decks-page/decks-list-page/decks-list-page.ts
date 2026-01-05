@@ -12,10 +12,13 @@ import { NotificationService } from '../../../services/notification-service';
 import { DeckService } from '../../../services/deck-service';
 import { FirebaseService } from '../../../services/firebase-service';
 import { FilterDecksBySidePipe } from "../../../pipes/filter-decks-by-side-pipe";
+import { CheckAgendaPointsPipe } from '../../../pipes/check-agenda-points-pipe';
+import { CheckInfluencePipe } from '../../../pipes/check-influence-pipe';
+import { CardService } from '../../../services/card-service';
 
 @Component({
   selector: 'app-decks-list-page',
-  imports: [FormsModule, UIButton, FilterDecksBySidePipe],
+  imports: [FormsModule, UIButton, FilterDecksBySidePipe, CheckInfluencePipe, CheckAgendaPointsPipe],
   templateUrl: './decks-list-page.html',
   styleUrl: './decks-list-page.scss',
 })
@@ -25,34 +28,59 @@ export class DecksListPage {
   public originalDecks: Deck[] = [];
   public allDesks: Deck[] = [];
   public decks: Deck[] = [];
+  public cardsMap: Map<string, any> = new Map();
 
   constructor(
     private cd: ChangeDetectorRef,
     private route: ActivatedRoute,
     private notification: NotificationService,
     private deckService: DeckService,
+    private cardService: CardService,
     private firebase: FirebaseService
   ) {
     this.route.parent?.data.subscribe(data => {
       this.sides = data['configs'].sides.data;
     });
 
-    effect(() => {
-      if (this.firebase.$user()) {
-        this.deckService.getDecksByUser();
-      }
-    })
+    // effect(() => {
+    //   if (this.firebase.$user()) {
+    //     this.deckService.getDecksByUser();
+    //   }
+    // })
+
+    // effect(() => {
+    //   this.allDesks = this.deckService.$decks();
+    //   console.log(this.allDesks);
+
+    //   this.originalDecks = [...this.allDesks];
+    //   this.decks = [...this.allDesks];
+
+    //   this.cd.detectChanges();
+
+    // });
 
     effect(() => {
-      this.allDesks = this.deckService.$decks();
-      console.log(this.allDesks);
+    if (this.firebase.$user()) {
+      this.cardService.loadCards();
+      this.deckService.getDecksByUser();
+    }
+  });
 
-      this.originalDecks = [...this.allDesks];
-      this.decks = [...this.allDesks];
+  // effect(() => {
+  //   this.cardsMap = this.cardService.$cardsMap();
+  //   this.decks = this.deckService.$decks();
+  // });
 
-      this.cd.detectChanges();
+  effect(() => {
+  const decks = this.deckService.$decks();
+  this.cardsMap = this.cardService.$cardsMap();
 
-    });
+  this.allDesks = decks;
+  this.originalDecks = [...decks];
+  this.decks = [...decks];
+
+  this.cd.detectChanges();
+});
   }
 
   public filters = {

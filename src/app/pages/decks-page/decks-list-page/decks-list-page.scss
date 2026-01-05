@@ -153,7 +153,7 @@ input[type="number"] {
 }
 
 .empty-list {
-    display: flex;
+    display: flex !important;
     justify-content: center;
     align-items: center;
 }
@@ -161,7 +161,7 @@ input[type="number"] {
 .deck-container {
     border: 1px solid var(--fg-color);
     border-left: 8px solid var(--fg-color);
-    padding: 12px;
+    padding: 8px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -182,5 +182,28 @@ input[type="number"] {
         border-left: 8px solid var(--accent-color);
         transition: background-color 0.3s, border 0.3s;
         // cursor: pointer;
+    }
+
+    .info-container {
+        flex-grow: 1;
+
+        &>.info-line {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .validity-icon {
+            font-size: .8rem;
+            vertical-align: middle;
+        }
+
+    }
+
+    img {
+        height: 52px;
+        margin-right: 12px;
     }
 }

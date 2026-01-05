@@ -28,7 +28,11 @@
                     <div class="decks-list" [class.empty-list]="(decks | filterDecksBySide:'runner').length <= 0">
                         @for(d of decks | filterDecksBySide:'runner'; track d.id) {
                             <div class="deck-container">
-                                <p>{{d.name}}</p>
+                                <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + d.identity.code + '.jpg'" alt="">
+                                <div class="info-container">
+                                    <p>{{d.name}} <span class="material-symbols-rounded validity-icon" [title]="d.cards.length < d.identity.minimum_deck_size! ? 'Deck is too small' : 'Deck size is valid'">{{d.cards.length < d.identity.minimum_deck_size! ? 'close' : 'check'}}</span></p>
+                                    <p i18n class="info-line">Influence limit: {{d.cards | checkInfluence:cardsMap:d.identity.faction_code! }}/{{d.identity.influence_limit}} Agenda points: {{ d.cards | checkAgendaPoints:cardsMap }}</p>
+                                </div>
                                 <div class="deck-actions">
                                     <span class="material-symbols-rounded">edit</span>
                                     <span class="material-symbols-rounded">delete</span>
@@ -50,7 +54,11 @@
                     <div class="decks-list" [class.empty-list]="(decks | filterDecksBySide:'corp').length <= 0">
                         @for(d of decks | filterDecksBySide:'corp'; track d.id) {
                             <div class="deck-container">
-                                <p>{{d.name}}</p>
+                                <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + d.identity.code + '.jpg'" alt="">
+                                <div class="info-container">
+                                    <p>{{d.name}} <span class="material-symbols-rounded validity-icon" [title]="d.cards.length < d.identity.minimum_deck_size! ? 'Deck is too small' : 'Deck size is valid'">{{d.cards.length < d.identity.minimum_deck_size! ? 'close' : 'check'}}</span></p>
+                                    <p i18n class="info-line">Influence limit: {{d.cards | checkInfluence:cardsMap:d.identity.faction_code! }}/{{d.identity.influence_limit}} Agenda points: {{ d.cards | checkAgendaPoints:cardsMap }}</p>
+                                </div>
                                 <div class="deck-actions">
                                     <span class="material-symbols-rounded">edit</span>
                                     <span class="material-symbols-rounded">delete</span>

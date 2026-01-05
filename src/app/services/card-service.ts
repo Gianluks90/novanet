@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { FirebaseService } from './firebase-service';
 import { Card } from '../models/card';
 import {
@@ -15,12 +15,26 @@ import {
   limit,
 } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { nrdbDb } from '../db/nrdb-indexed-db';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CardService {
   constructor(private firebaseService: FirebaseService) { }
+
+
+  public $cardsMap = signal<Map<string, Card>>(new Map());
+
+  async loadCards(): Promise<void> {
+    const db = await nrdbDb;
+    const cards = await db.getAll('cards') as Card[];
+
+    const map = new Map<string, Card>();
+    cards.forEach(c => map.set(c.code, c));
+
+    this.$cardsMap.set(map);
+  }
 
   /**
    * User submits a translation.
