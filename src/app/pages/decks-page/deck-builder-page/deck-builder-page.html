@@ -1,1 +1,67 @@
-<p>deck-builder-page works!</p>
+<div class="deck-builder-page-main-container">
+    <section class="deck-view-container">
+        <div class="section-header">
+            <div class="side-line"></div>
+            <div class="header-content">
+                <h1 i18n>Deck View "{{form.get('name')?.value}}"</h1>
+                <div class="actions-container">
+                    <p i18n>{{mode === 'edit' ? '[ Edit mode ]' : '[ View only ]'}}</p>
+                </div>
+            </div>
+        </div>
+        @if (deck) {
+        <div class="section-content view-content">
+            @if (deck.identity) {
+            <div class="identity-container" (click)="onCardClick(deck.identity)">
+                <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + deck.identity.code + '.jpg'" alt="">
+                <div class="identity-info">
+                    <div class="identity-title">
+                        @let identity = deck.identity;
+                        @if (identity?.type_code === 'identity' && identity?.faction_code !== 'neutral-runner' && identity?.faction_code !== 'neutral-corp') {
+                            <img class="faction-icon" [src]="'./images/faction-icons/' + identity?.faction_code+ '.svg'" alt="">
+                        }
+                        {{deck.identity.translations?.[locale]?.title!.split(':')[0] || deck.identity.title.split(':')[0]}}
+                    </div>
+                    <hr>
+                    <div class="identity-subtitle">
+                        {{deck.identity.translations?.[locale]?.title!.split(':')[1] || deck.identity.title.split(':')[1]}}
+                    </div>  
+                </div>
+            </div>
+            <app-card-detail [selectedCard]="selectedCard" [disableMenu]="true" [disableCenter]="true" [packs]="packs" (zoomCardEmit)="onCardZoomEmitted($event)"></app-card-detail>
+            }
+        </div>
+        }
+    </section>
+    <section class="deck-form-container">
+        <div class="section-header">
+            <div class="side-line"></div>
+            <div class="header-content">
+                <h1 i18n>Deck Builder</h1>
+                <div class="actions-container">
+                    <span class="material-symbols-rounded">save</span>
+                </div>
+            </div>
+        </div>
+        <div class="section-content">
+            <form class="form-container" [formGroup]="form">
+                <div class="form-group">
+                    <label for="name">Deck name</label>
+                    <input i18n-placeholder="@@enterTextPlaceholder" type="text" name="name" id="name" formControlName="name" placeholder="Enter text" autocorrect="off" autocomplete="off">
+                </div>
+            </form>
+        </div>
+    </section>
+</div>
+
+@if(selectedCard && cardZoomed) {
+<div class="zoom-card-container">
+    <div class="zoom-card-header">
+        <p>Zoom</p>
+        <span class="material-symbols-rounded" (click)="cardZoomed = false">close</span>
+    </div>
+    <div class="zoom-card-image">
+        <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + selectedCard.code + '.jpg'" alt="">
+    </div>
+</div>
+}

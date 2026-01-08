@@ -1,7 +1,7 @@
 <div class="inspector-container" [class.empty-ispector]="!selectedCard()">
     @if (!selectedCard()) {
     <span class="material-symbols-rounded">trackpad_input</span>
-    <p i18n>Select a card from the grid to inspect detail and actions.</p>
+    <p i18n>Select a card to inspect detail and actions.</p>
     } @else {
     <section>
         @let c = card();
@@ -123,10 +123,16 @@
         <div class="card-menu-button">
         <div class="code-container">{{card()?.code}}</div>
         <div class="actions-icons">
-            <span class="material-symbols-rounded" (click)="zoomCard()">search</span>
-        <span class="material-symbols-rounded" (click)="scrollToSelected()">recenter</span>
-        <span class="material-symbols-rounded" [cdkMenuTriggerFor]="menu">menu</span>
-        </div>
+            @if (!disableZoom()) {
+                <span class="material-symbols-rounded" (click)="zoomCard()">search</span>
+            }
+            @if (!disableCenter()) {
+                <span class="material-symbols-rounded" (click)="scrollToSelected()">recenter</span>
+            }
+            @if (!disableMenu()) {
+                <span class="material-symbols-rounded" [cdkMenuTriggerFor]="menu">menu</span>
+            }
+            </div>
     </div>
     }
 </div>

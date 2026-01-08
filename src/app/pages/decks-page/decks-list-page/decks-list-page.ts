@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, effect, inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Deck } from '../../../models/deck';
 import { FormsModule } from '@angular/forms';
 import { Side } from '../../../models/side';
@@ -15,10 +15,11 @@ import { FilterDecksBySidePipe } from "../../../pipes/filter-decks-by-side-pipe"
 import { CheckAgendaPointsPipe } from '../../../pipes/check-agenda-points-pipe';
 import { CheckInfluencePipe } from '../../../pipes/check-influence-pipe';
 import { CardService } from '../../../services/card-service';
+import { ConfirmDialog } from '../../../components/dialogs/confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-decks-list-page',
-  imports: [FormsModule, UIButton, FilterDecksBySidePipe, CheckInfluencePipe, CheckAgendaPointsPipe],
+  imports: [FormsModule, UIButton, FilterDecksBySidePipe, CheckInfluencePipe, CheckAgendaPointsPipe, RouterLink],
   templateUrl: './decks-list-page.html',
   styleUrl: './decks-list-page.scss',
 })
@@ -42,59 +43,29 @@ export class DecksListPage {
       this.sides = data['configs'].sides.data;
     });
 
-    // effect(() => {
-    //   if (this.firebase.$user()) {
-    //     this.deckService.getDecksByUser();
-    //   }
-    // })
-
-    // effect(() => {
-    //   this.allDesks = this.deckService.$decks();
-    //   console.log(this.allDesks);
-
-    //   this.originalDecks = [...this.allDesks];
-    //   this.decks = [...this.allDesks];
-
-    //   this.cd.detectChanges();
-
-    // });
+    effect(() => {
+      if (this.firebase.$user()) {
+        this.cardService.loadCards();
+        this.deckService.getDecksByUser();
+      }
+    });
 
     effect(() => {
-    if (this.firebase.$user()) {
-      this.cardService.loadCards();
-      this.deckService.getDecksByUser();
-    }
-  });
+      const decks = this.deckService.$decks();
+      this.cardsMap = this.cardService.$cardsMap();
 
-  // effect(() => {
-  //   this.cardsMap = this.cardService.$cardsMap();
-  //   this.decks = this.deckService.$decks();
-  // });
+      this.allDesks = decks;
+      this.originalDecks = [...decks];
+      this.decks = [...decks];
 
-  effect(() => {
-  const decks = this.deckService.$decks();
-  this.cardsMap = this.cardService.$cardsMap();
-
-  this.allDesks = decks;
-  this.originalDecks = [...decks];
-  this.decks = [...decks];
-
-  this.cd.detectChanges();
-});
+      this.cd.detectChanges();
+    });
   }
 
   public filters = {
     text: '',
     side: 'all',
   };
-
-  // ngOnInit() {
-  //   this.allDesks = [];
-  //   this.originalDecks = [...this.allDesks];
-  //   this.decks = [...this.allDesks];
-
-  //   this.cd.detectChanges();
-  // }
 
   // FILTERS
   // Text filter
@@ -160,6 +131,23 @@ export class DecksListPage {
           this.notification.notify($localize`New deck created.`, 'check');
         }).catch(err => {
           this.notification.notify($localize`Error creating deck: ${err.message}`, 'dangerous');
+        });
+      }
+    })
+  }
+
+  public openConfirmDeleteDeckDialog(deck: Deck): void {
+    this.dialogRef = this.dialog.open<DialogResult>(ConfirmDialog, {
+      ...DIALOGS_CONFIG,
+      disableClose: true,
+    });
+
+    this.dialogRef?.closed.subscribe((result: DialogResult | undefined) => {
+      if (result?.status === 'confirmed') {
+        this.deckService.deckRemove(deck.id).then(() => {
+          this.notification.notify($localize`Deck deleted.`, 'check');
+        }).catch(err => {
+          this.notification.notify($localize`Error deleting deck: ${err.message}`, 'dangerous');
         });
       }
     })

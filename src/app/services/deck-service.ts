@@ -26,6 +26,17 @@ export class DeckService {
      });
   }
 
+  public async getDeckById(deckId: string): Promise<Deck | null> {
+    const docRef = doc(this.firebase.database, 'decks', deckId);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      return docSnap.data() as Deck;
+    } else {
+      return null;
+    }
+  }
+
   public async newDeck(deckData: Deck): Promise<void> {
     const docRef = doc(this.firebase.database, 'decks', deckData.id);
     const userRef = doc(this.firebase.database, 'users', this.firebase.$user()!.uid);

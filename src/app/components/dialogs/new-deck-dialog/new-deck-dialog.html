@@ -35,7 +35,7 @@
     </form>
     }
     <div dialog-actions-container>
-        <app-ui-button i18n-text="@@confirmButton" text="Save changes" icon="save" [disabled]="!form.valid || form.pristine" (click)="onSubmit()"></app-ui-button>
+        <app-ui-button i18n-text="@@saveChangesButton" text="Save changes" icon="save" [disabled]="!form.valid || form.pristine" (click)="onSubmit()"></app-ui-button>
         <app-ui-button i18n-text="@@closeButton" text="Close" icon="close" (click)="dialogRef.close()"></app-ui-button>
     </div>
 </app-ui-dialog-container>

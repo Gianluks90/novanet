@@ -3,14 +3,14 @@
         <div class="side-line"></div>
         <p i18n="@@filtersSectionTitle" class="section-title">Filters</p>
         <input i18n-placeholder="@@searchTextInputPlaceholder" type="text" placeholder="Search text..." (keyup)="onChangeTextSearch($event)">
-        @if (sides.length > 0) {
+        <!-- @if (sides.length > 0) {
         <select name="side" id="side-select" [(ngModel)]="filters.side" (change)="onChangeSideFilter($event)">
             <option i18n value="all">All Sides</option>
             @for(side of sides; track side.code) {
             <option [value]="side.code">{{ side.name }}</option>
             }
         </select>
-        }
+        } -->
         <div class="reset-icon" (click)="resetFilters()">
             <span class="material-symbols-rounded">refresh</span>
         </div>
@@ -34,8 +34,8 @@
                                     <p i18n class="info-line">Influence limit: {{d.cards | checkInfluence:cardsMap:d.identity.faction_code! }}/{{d.identity.influence_limit}} Agenda points: {{ d.cards | checkAgendaPoints:cardsMap }}</p>
                                 </div>
                                 <div class="deck-actions">
-                                    <span class="material-symbols-rounded">edit</span>
-                                    <span class="material-symbols-rounded">delete</span>
+                                    <span class="material-symbols-rounded" [routerLink]="['/decks/builder', d.id]">edit</span>
+                                    <span class="material-symbols-rounded" (click)="openConfirmDeleteDeckDialog(d)">delete</span>
                                 </div>
                             </div>
                         } @empty {
@@ -60,8 +60,8 @@
                                     <p i18n class="info-line">Influence limit: {{d.cards | checkInfluence:cardsMap:d.identity.faction_code! }}/{{d.identity.influence_limit}} Agenda points: {{ d.cards | checkAgendaPoints:cardsMap }}</p>
                                 </div>
                                 <div class="deck-actions">
-                                    <span class="material-symbols-rounded">edit</span>
-                                    <span class="material-symbols-rounded">delete</span>
+                                    <span class="material-symbols-rounded" [routerLink]="['/decks/builder', d.id]">edit</span>
+                                    <span class="material-symbols-rounded" (click)="openConfirmDeleteDeckDialog(d)">delete</span>
                                 </div>
                             </div>
                         } @empty {

@@ -42,6 +42,9 @@ export class CardDetail {
   public packs = input<Pack[]>([]);
   public zoomCardEmit = output<boolean>();
   public locale = inject(LOCALE_ID);
+  public disableZoom = input<boolean>(false);
+  public disableCenter = input<boolean>(false);
+  public disableMenu = input<boolean>(false);
 
   constructor(
     public firebase: FirebaseService,
@@ -49,25 +52,6 @@ export class CardDetail {
     private cardService: CardService,
     private nrdbService: NetrunnerDbService,
     private userService: UserService) {
-    // effect(() => {
-    //   if (this.selectedCard()) {
-    //     this.initFactionCostArray();
-    //     if (this.selectedCard()?.translations) {
-    //       const translation = this.selectedCard()?.translations?.[this.locale as string];
-    //       if (translation) {
-    //         const translatedCard: Card = {
-    //           ...this.selectedCard()!,
-    //           title: translation.title || this.selectedCard()!.title,
-    //           text: translation.text || this.selectedCard()!.text,
-    //           flavor: translation.flavor || this.selectedCard()!.flavor,
-    //         };
-    //         this.card.set(translatedCard);
-    //       }
-    //     } else {
-    //       this.card.set(this.selectedCard());
-    //     }
-    //   }
-    // })
 
     effect(() => {
       const card = this.selectedCard();
