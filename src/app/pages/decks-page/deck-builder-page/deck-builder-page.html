@@ -39,6 +39,7 @@
             <div class="header-content">
                 <h1 i18n>Deck Builder</h1>
                 <div class="actions-container">
+                    <span class="material-symbols-rounded">bottom_panel_close</span>
                     <span class="material-symbols-rounded">save</span>
                 </div>
             </div>
@@ -49,7 +50,78 @@
                     <label for="name">Deck name</label>
                     <input i18n-placeholder="@@enterTextPlaceholder" type="text" name="name" id="name" formControlName="name" placeholder="Enter text" autocorrect="off" autocomplete="off">
                 </div>
+                <div class="form-group">
+                    <label for="format-select">Format</label>
+                    <select name="format" id="format-select" formControlName="format">
+                        <option value="">Select format</option>
+                        @for (f of formats; track $index) {
+                            <option  [value]="f">{{f}}</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="identity-select">Identity</label>
+                    <select name="identity" id="identity-select" formControlName="identity">
+                        <option value="">Select identity</option>
+                        @for (identity of identities; track $index) {
+                            <option  [value]="identity.code">{{identity.translations?.[locale]?.title || identity.title}}</option>
+                        }
+                    </select>
+                </div>
             </form>
+            <form class="form-container card-form" [formGroup]="cardForm">
+                <div class="form-group">
+                    <label for="card-input">Add Card</label>
+                    <input #cardInputEl type="text" 
+                        formControlName="cardInput" 
+                        placeholder="Enter card name or code" 
+                        autocorrect="off" 
+                        autocomplete="off"
+                        >
+                </div>
+                <span class="material-symbols-rounded" (click)="resetFilters()">refresh</span>
+            </form>
+            <div class="filters-container" [formGroup]="filtersForm">
+                <select id="faction-select" formControlName="faction">
+                    <option i18n value="all">All Factions</option>
+                    @for (f of factions; track $index) {
+                        <option  [value]="f.code">{{f.code | factionLabel}}</option>
+                    }
+                </select>
+                <select id="pack-select" formControlName="pack">
+                    <option i18n value="all">All packs</option>
+                    @for(cycle of cycles; track cycle.code) {
+                    <optgroup [label]="cycle.name">
+                        @for (pack of packs; track pack.code) {
+                        @if (pack.cycle_code === cycle.code) {
+                        <option [value]="pack.code">
+                            {{ pack.name }}
+                        </option>
+                        }
+                        }
+                    </optgroup>
+                    }
+                </select>
+                <select id="type-select" formControlName="type">
+                    <option i18n value="all">All Types</option>
+                    @for (t of types; track $index) {
+                        <option  [value]="t.code">{{t.name! | typeLabel }}</option>
+                    }
+                </select>
+            </div>
+            <div class="cards-container">
+                @for (c of filteredCards; track c.code) {
+                    <div class="card-item" [class.even-item]="$even" (click)="selectCard(c)">
+                        <span>{{c.translations?.[locale]?.title || c.title}}</span>
+                        <section>
+                            <span [innerHTML]="c | dots: factions"></span>
+                            @if (c?.faction_code !== 'neutral-runner' && c?.faction_code !== 'neutral-corp') {
+                                <img class="faction-icon" [src]="'./images/faction-icons/' + c?.faction_code+ '.svg'" alt="">
+                            }
+                        </section>
+                    </div>
+                }
+            </div>
         </div>
     </section>
 </div>
