@@ -411,9 +411,35 @@ select {
 }
 
 .f-sunny {
-  background-image: url('assets/images/faction-icons/sunny.svg');
+  background-image: url('assets/images/faction-icons/sunny-lebeau.svg');
 }
 
 .f-weyland {
   background-image: url('assets/images/faction-icons/weyland-consortium.svg');
+}
+
+// PROGRESS BAR Override
+
+progress {
+    width: 100%;
+    height: 6px;
+    appearance: none;
+    -webkit-appearance: none;
+    border: 1px solid var(--accent-color);
+    background-color: var(--bg-container-color);
+ 
+    &::-webkit-progress-bar {
+        background-color: var(--bg-color);
+        border-radius: 8px;
+    }
+
+    &::-webkit-progress-value {
+        background-color: var(--accent-color);
+        border-radius: 8px;
+    }
+
+    &::-moz-progress-bar {
+        background-color: var(--accent-color);
+        border-radius: 8px;
+    }
 }

@@ -12,22 +12,67 @@
         @if (deck) {
         <div class="section-content view-content">
             @if (deck.identity) {
-            <div class="identity-container" (click)="onCardClick(deck.identity)">
-                <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + deck.identity.code + '.jpg'" alt="">
-                <div class="identity-info">
-                    <div class="identity-title">
-                        @let identity = deck.identity;
-                        @if (identity?.type_code === 'identity' && identity?.faction_code !== 'neutral-runner' && identity?.faction_code !== 'neutral-corp') {
-                            <img class="faction-icon" [src]="'./images/faction-icons/' + identity?.faction_code+ '.svg'" alt="">
-                        }
-                        {{deck.identity.translations?.[locale]?.title!.split(':')[0] || deck.identity.title.split(':')[0]}}
+            <section>
+                <div class="identity-container" (click)="onCardClick(deck.identity)">
+                    <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + deck.identity.code + '.jpg'" alt="">
+                    <div class="identity-info">
+                        <div class="identity-title">
+                            @let identity = deck.identity;
+                            @if (identity?.type_code === 'identity' && identity?.faction_code !== 'neutral-runner' && identity?.faction_code !== 'neutral-corp') {
+                                <img class="faction-icon" [src]="'./images/faction-icons/' + identity?.faction_code+ '.svg'" alt="">
+                            }
+                            {{deck.identity.translations?.[locale]?.title!.split(':')[0] || deck.identity.title.split(':')[0]}}
+                        </div>
+                        <hr>
+                        <div class="identity-subtitle">
+                            {{deck.identity.translations?.[locale]?.title!.split(':')[1] || deck.identity.title.split(':')[1]}}
+                        </div> 
+
+                        <div class="progress-container">
+                            <div class="progress-labels">
+                                <p>Deck size / minimum deck size</p>
+                                <p>{{totalCards}} / {{deck.identity.minimum_deck_size}}</p>
+                            </div>
+                            <progress [value]="totalCards" [max]="deck.identity.minimum_deck_size" min="0"></progress>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-labels">
+                                <p>Influence / influence limit</p>
+                                <!-- <p>{{totalInfluence}} / {{deck.identity.influence_limit}}</p> -->
+                                <p>
+                                    {{ selectedCards | checkInfluence: cardsMap : deck.identity.faction_code! }}
+                                    /
+                                    {{ deck.identity.influence_limit }}
+                                </p>
+                            </div>
+                            <progress [value]="totalInfluence" [max]="deck.identity.influence_limit" min="0"></progress>
+                        </div>
+                        <p>
+                            Agenda points: {{ selectedCards | checkAgendaPoints: cardsMap }}
+                        </p>
                     </div>
-                    <hr>
-                    <div class="identity-subtitle">
-                        {{deck.identity.translations?.[locale]?.title!.split(':')[1] || deck.identity.title.split(':')[1]}}
-                    </div>  
                 </div>
-            </div>
+                <p class="cards-container-title">Cards</p>
+                <div class="cards-container">
+                    @for (entry of selectedCardsList; track entry.card.code) {
+                        <div class="card-item" [class.even-item]="$even">
+                            <p class="card-item-title">
+                                <span class="material-symbols-rounded" (click)="removeCard(entry.card.code)">remove</span>
+                                <span (click)="selectCard(entry.card)">x{{entry.qty}} {{entry.card.translations?.[locale]?.title || entry.card.title}}</span>
+                                <span>({{entry.card.type_code! | typeLabel}})</span>
+                            </p>
+                            <section>
+                                @if (entry.card.faction_code !== 'neutral-runner' && entry.card.faction_code !== 'neutral-corp' && entry.card.faction_code !== deck.identity.faction_code) {
+                                    <span [innerHTML]="entry.card | dots: factions"></span>
+                                    <img class="faction-icon" [src]="'./images/faction-icons/' + entry.card.faction_code+ '.svg'" alt="">
+                                }
+                            </section>
+                        </div>
+                    } @empty {
+                        <p i18n>No cards added yet.</p>
+                    }
+                </div>
+            </section>
             <app-card-detail [selectedCard]="selectedCard" [disableMenu]="true" [disableCenter]="true" [packs]="packs" (zoomCardEmit)="onCardZoomEmitted($event)"></app-card-detail>
             }
         </div>
@@ -40,18 +85,18 @@
                 <h1 i18n>Deck Builder</h1>
                 <div class="actions-container">
                     <span class="material-symbols-rounded">bottom_panel_close</span>
-                    <span class="material-symbols-rounded">save</span>
+                    <span class="material-symbols-rounded" (click)="saveDeck()">save</span>
                 </div>
             </div>
         </div>
         <div class="section-content">
             <form class="form-container" [formGroup]="form">
                 <div class="form-group">
-                    <label for="name">Deck name</label>
+                    <label i18n for="name">Deck name</label>
                     <input i18n-placeholder="@@enterTextPlaceholder" type="text" name="name" id="name" formControlName="name" placeholder="Enter text" autocorrect="off" autocomplete="off">
                 </div>
                 <div class="form-group">
-                    <label for="format-select">Format</label>
+                    <label i18n for="format-select">Format</label>
                     <select name="format" id="format-select" formControlName="format">
                         <option value="">Select format</option>
                         @for (f of formats; track $index) {
@@ -60,7 +105,7 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="identity-select">Identity</label>
+                    <label i18n="@@identityLabel" for="identity-select">Identity</label>
                     <select name="identity" id="identity-select" formControlName="identity">
                         <option value="">Select identity</option>
                         @for (identity of identities; track $index) {
@@ -71,7 +116,7 @@
             </form>
             <form class="form-container card-form" [formGroup]="cardForm">
                 <div class="form-group">
-                    <label for="card-input">Add Card</label>
+                    <label i18n for="card-input">Search Card</label>
                     <input #cardInputEl type="text" 
                         formControlName="cardInput" 
                         placeholder="Enter card name or code" 
@@ -111,8 +156,11 @@
             </div>
             <div class="cards-container">
                 @for (c of filteredCards; track c.code) {
-                    <div class="card-item" [class.even-item]="$even" (click)="selectCard(c)">
-                        <span>{{c.translations?.[locale]?.title || c.title}}</span>
+                    <div class="card-item" [class.even-item]="$even">
+                        <p class="card-item-title">
+                            <span (click)="openAddCardDialog(c)" class="material-symbols-rounded">add</span>
+                            <span (click)="selectCard(c)">{{c.translations?.[locale]?.title || c.title}}</span>
+                        </p>
                         <section>
                             <span [innerHTML]="c | dots: factions"></span>
                             @if (c?.faction_code !== 'neutral-runner' && c?.faction_code !== 'neutral-corp') {

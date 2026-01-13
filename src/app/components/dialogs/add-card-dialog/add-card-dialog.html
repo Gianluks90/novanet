@@ -1,0 +1,22 @@
+<app-ui-dialog-container i18n-dialogTitle dialogTitle="Add card">
+    @let c = data.card;
+    @if (c) {
+        <div class="add-card-main-container">
+            <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + c.code + '.jpg'" alt="">
+            <div class="card-detail-container">
+                <app-card-detail [selectedCard]="c" [packs]="data.packs" [disableMenu]="true" [disableZoom]="true" [disableCenter]="true"></app-card-detail>
+            </div>
+        </div>
+    }
+    <div dialog-actions-container>
+        <!-- <app-ui-button i18n-text="@@saveChangesButton" text="Save changes" icon="save" [disabled]="!form.valid || form.pristine" (click)="onSubmit()"></app-ui-button> -->
+        <app-ui-button text="1" icon="add" (click)="addCard(1)"></app-ui-button> 
+        @if (c.deck_limit && c.deck_limit > 1) {
+            <app-ui-button text="2" icon="add" (click)="addCard(2)"></app-ui-button> 
+        }
+        @if (c.deck_limit && c.deck_limit > 2) {
+            <app-ui-button text="3" icon="add" (click)="addCard(3)"></app-ui-button> 
+        }
+        <app-ui-button i18n-text="@@closeButton" text="Close" icon="close" (click)="dialogRef.close()"></app-ui-button>
+    </div>
+</app-ui-dialog-container>

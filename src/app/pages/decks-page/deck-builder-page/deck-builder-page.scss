@@ -73,6 +73,13 @@
             display: grid;
             grid-template-columns: 1fr 300px;
             gap: 16px;
+
+            &>section {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                min-height: 0;
+            }
         }
     }
 }
@@ -80,7 +87,7 @@
 .identity-container {
     width: 100%;
     display: grid;
-    grid-template-columns: 100px 1fr;
+    grid-template-columns: 130px 1fr;
     gap: 16px;
 
     img {
@@ -229,6 +236,19 @@ select {
             align-items: center;
             gap: 8px;
         }
+
+        &>.card-item-title {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin: 0;
+
+            &>.material-symbols-rounded:hover {
+                color: var(--accent-color);
+                transform: scale(1.2);
+                transition: color 0.3s, transform 0.3s;
+            }
+        }
     }
 
     &>.even-item {
@@ -279,4 +299,23 @@ select {
 .influence-dot {
     margin-right: 4px;
   font-size: 0.9em;
+}
+
+.progress-container {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    .progress-labels {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.9em;
+    }
+}
+
+.cards-container-title {
+    font-weight: bold;
+    padding: 8px 0;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--accent-color);
 }

@@ -12,10 +12,18 @@ import { FactionLabelPipe } from "../../../pipes/faction-label-pipe";
 import { TypeLabelPipe } from "../../../pipes/type-label-pipe";
 import { Cycle } from '../../../models/cycle';
 import { DotsPipe } from "../../../pipes/dots-pipe";
+import { AddCardDialog } from '../../../components/dialogs/add-card-dialog/add-card-dialog';
+import { Dialog, DialogRef } from '@angular/cdk/dialog';
+import { DialogResult } from '../../../models/DialogResult';
+import { DIALOGS_CONFIG } from '../../../const/dialogConfig';
+import { CheckAgendaPointsPipe } from "../../../pipes/check-agenda-points-pipe";
+import { CheckInfluencePipe } from "../../../pipes/check-influence-pipe";
+import { Timestamp } from 'firebase/firestore';
+import { DeckService } from '../../../services/deck-service';
 
 @Component({
   selector: 'app-deck-builder-page',
-  imports: [CardDetail, FormsModule, ReactiveFormsModule, FactionLabelPipe, TypeLabelPipe, DotsPipe],
+  imports: [CardDetail, FormsModule, ReactiveFormsModule, FactionLabelPipe, TypeLabelPipe, DotsPipe, CheckAgendaPointsPipe, CheckInfluencePipe],
   templateUrl: './deck-builder-page.html',
   styleUrl: './deck-builder-page.scss',
 })
@@ -26,8 +34,8 @@ export class DeckBuilderPage {
   public form: FormGroup;
   public cardForm: FormGroup;
   public filtersForm!: FormGroup;
-    public cycles: Cycle[] = [];
-  
+  public cycles: Cycle[] = [];
+
   public packs: Pack[] = [];
   public factions: Faction[] = [];
   public types: Type[] = [];
@@ -46,19 +54,19 @@ export class DeckBuilderPage {
   public cardsMap: Map<string, Card> = new Map();
   public filteredCards: Card[] = [];
   public identities: Card[] = [];
+  public selectedCards = new Map<string, number>();
 
   constructor(
     private route: ActivatedRoute,
     private fb: FormBuilder,
     private cardService: CardService,
     private cd: ChangeDetectorRef,
+    private deckService: DeckService
   ) {
     this.route.parent?.data.subscribe(data => {
       this.cycles = data['configs'].cycles.data || [];
       this.packs = data['configs'].packs.data || [];
       this.factions = data['configs'].factions.data || [];
-      console.log(this.factions);
-      
       this.types = data['configs'].types.data || [];
     });
 
@@ -95,6 +103,7 @@ export class DeckBuilderPage {
       this.cardsMap = this.cardService.$cardsMap();
       this.identities = Array.from(this.cardsMap.values()).filter(c => c.type_code === 'identity' && c.side_code === this.deck?.side);
       this.applyFilters();
+      this.parseCards();
       this.cd.detectChanges();
     });
 
@@ -122,8 +131,6 @@ export class DeckBuilderPage {
       identity: this.deck?.identity.code || '',
       notes: this.deck?.notes || ''
     });
-
-    console.log(this.deck);
   }
 
   public onCardClick(card: Card) {
@@ -133,7 +140,6 @@ export class DeckBuilderPage {
       this.cardZoomed = false
     }
     this.selectedCard = card;
-    console.log(this.selectedCard);
   }
 
   onCardZoomEmitted(event: any) {
@@ -196,5 +202,113 @@ export class DeckBuilderPage {
     setTimeout(() => {
       this.cardInputEl.nativeElement.focus();
     }, 0);
+  }
+
+  private dialog = inject(Dialog);
+  private dialogRef: DialogRef<DialogResult, any> | null = null;
+
+  public openAddCardDialog(card: Card) {
+    this.dialogRef = this.dialog.open<DialogResult>(AddCardDialog, {
+      ...DIALOGS_CONFIG,
+      disableClose: true,
+      data: { card: card, packs: this.packs }
+    });
+
+    this.dialogRef?.closed.subscribe((result: DialogResult | undefined) => {
+      this.selectCard(card);
+      if (result?.status === 'confirmed') {
+        console.log('entra qui_');
+
+        // const current = this.selectedCards.get(card.code) || 0;
+        // this.selectedCards.set(card.code, (current + result.data.quantity > 3 ? 3 : current + result.data.quantity));
+
+        const next = new Map(this.selectedCards);
+
+        const current = next.get(card.code) || 0;
+        next.set(
+          card.code,
+          Math.min(3, current + result.data.quantity)
+        );
+
+        this.selectedCards = next;
+        this.cd.detectChanges();
+      }
+    });
+  }
+
+  public get totalCards(): number {
+    let total = 0;
+    this.selectedCards.forEach(qty => total += qty);
+    return total;
+  }
+
+  public get totalInfluence(): number {
+    let influence = 0;
+
+    this.selectedCards.forEach((qty, code) => {
+      const card = this.cardsMap.get(code);
+      if (!card) return;
+
+      if (card.faction_code !== this.deck?.identity.faction_code &&
+        !card.faction_code!.startsWith('neutral')) {
+        influence += (card.faction_cost ?? 0) * qty;
+      }
+    });
+
+    return influence;
+  }
+
+  // public removeCard(code: string) {
+  //   this.selectedCards.delete(code);
+  // }
+
+  public removeCard(code: string) {
+    const next = new Map(this.selectedCards);
+    next.delete(code);
+    this.selectedCards = next;
+  }
+
+  public get selectedCardsList(): { card: Card; qty: number }[] {
+    return Array.from(this.selectedCards.entries())
+      .map(([code, qty]) => ({
+        card: this.cardsMap.get(code)!,
+        qty
+      }))
+      .filter(e => !!e.card);
+  }
+
+  public saveDeck() {
+    if (!this.deck) return;
+
+    const cardsPayload: Record<string, number> = {};
+    this.selectedCards.forEach((qty, code) => {
+      cardsPayload[code] = qty;
+    });
+
+    const updatedDeck: Deck = {
+      ...this.deck,
+      name: this.form.get('name')?.value,
+      format: this.form.get('format')?.value,
+      identity: this.deck.identity,
+      notes: this.form.get('notes')?.value,
+      cards: cardsPayload,
+      updatedAt: Timestamp.now()
+    };
+
+    this.deckService.updateDeck(this.deck.id, updatedDeck).then(() => {
+      console.log('Deck salvato con successo!');
+    }).catch(err => {
+      console.error('Errore durante il salvataggio del deck:', err);
+    });
+    console.log('Deck pronto per il salvataggio:', updatedDeck);
+  }
+
+  public parseCards() {
+    if (!this.deck?.cards) return;
+
+    Object.entries(this.deck.cards).forEach(([code, qty]) => {
+      if (!this.cardsMap.has(code)) return;
+      this.selectedCards.set(code, qty);
+    });
   }
 }

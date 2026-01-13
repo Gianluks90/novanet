@@ -1,30 +1,32 @@
-import { Pipe, PipeTransform } from "@angular/core";
+import { Pipe, PipeTransform } from '@angular/core';
+import { Card } from '../models/card';
 
 @Pipe({
   name: 'checkInfluence',
-  pure: true
+  pure: true,
+  standalone: true
 })
 export class CheckInfluencePipe implements PipeTransform {
 
   transform(
-    deck: Record<string, number>[],
-    cardsMap: Map<string, any>,
+    selectedCards: Map<string, number>,
+    cardsMap: Map<string, Card>,
     identityFaction: string
   ): number {
-    if (!deck || !cardsMap) return 0;
+    if (!selectedCards || !cardsMap) return 0;
 
     let total = 0;
 
-    for (const entry of deck) {
-      const [code, qty] = Object.entries(entry)[0];
+    selectedCards.forEach((qty, code) => {
       const card = cardsMap.get(code);
+      if (!card) return;
 
-      if (!card) continue;
-      if (card.faction_code === identityFaction) continue;
-      if (!card.influence_cost) continue;
+      if (card.faction_code === identityFaction) return;
+      if (card.faction_code?.startsWith('neutral')) return;
+      if (!card.faction_cost) return;
 
-      total += card.influence_cost * qty;
-    }
+      total += card.faction_cost * qty;
+    });
 
     return total;
   }

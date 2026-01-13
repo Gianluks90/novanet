@@ -19,7 +19,7 @@ import { ConfirmDialog } from '../../../components/dialogs/confirm-dialog/confir
 
 @Component({
   selector: 'app-decks-list-page',
-  imports: [FormsModule, UIButton, FilterDecksBySidePipe, CheckInfluencePipe, CheckAgendaPointsPipe, RouterLink],
+  imports: [FormsModule, UIButton, FilterDecksBySidePipe, RouterLink],
   templateUrl: './decks-list-page.html',
   styleUrl: './decks-list-page.scss',
 })
