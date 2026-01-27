@@ -3,6 +3,7 @@
         <div class="section-header">
             <div class="side-line"></div>
             <div class="header-content">
+                <span class="material-symbols-rounded" [routerLink]="['/decks']">arrow_back</span>
                 <h1 i18n>Deck View "{{form.get('name')?.value}}"</h1>
                 <div class="actions-container">
                     <p i18n>{{mode === 'edit' ? '[ Edit mode ]' : '[ View only ]'}}</p>
@@ -30,14 +31,14 @@
 
                         <div class="progress-container">
                             <div class="progress-labels">
-                                <p>Deck size / minimum deck size</p>
+                                <p i18n>Deck size / minimum deck size</p>
                                 <p>{{totalCards}} / {{deck.identity.minimum_deck_size}}</p>
                             </div>
                             <progress [value]="totalCards" [max]="deck.identity.minimum_deck_size" min="0"></progress>
                         </div>
                         <div class="progress-container">
                             <div class="progress-labels">
-                                <p>Influence / influence limit</p>
+                                <p i18n>Influence / influence limit</p>
                                 <!-- <p>{{totalInfluence}} / {{deck.identity.influence_limit}}</p> -->
                                 <p>
                                     {{ selectedCards | checkInfluence: cardsMap : deck.identity.faction_code! }}
@@ -47,24 +48,39 @@
                             </div>
                             <progress [value]="totalInfluence" [max]="deck.identity.influence_limit" min="0"></progress>
                         </div>
-                        <p>
-                            Agenda points: {{ selectedCards | checkAgendaPoints: cardsMap }}
-                        </p>
+                        @if (deck.identity.side_code === 'corp') {
+                            <p class="agenda-points-label">
+                                <span i18n>Agenda points</span>
+                                <span class="agenda-points-value">{{ selectedCards | checkAgendaPoints: cardsMap }}</span>
+                            </p>
+                        }
                     </div>
                 </div>
-                <p class="cards-container-title">Cards</p>
+                <p class="cards-container-title">
+                    <span i18n>Cards</span>
+                    <span i18n-title title="Export card list" class="material-symbols-rounded" (click)="exportCardList()">bottom_panel_open</span>
+                </p>
                 <div class="cards-container">
                     @for (entry of selectedCardsList; track entry.card.code) {
-                        <div class="card-item" [class.even-item]="$even">
-                            <p class="card-item-title">
-                                <span class="material-symbols-rounded" (click)="removeCard(entry.card.code)">remove</span>
-                                <span (click)="selectCard(entry.card)">x{{entry.qty}} {{entry.card.translations?.[locale]?.title || entry.card.title}}</span>
-                                <span>({{entry.card.type_code! | typeLabel}})</span>
+                        <div class="card-item" [class.even-item]="$even" (click)="selectCard(entry.card)">
+                            <p class="card-item-title" >
+                                <span
+                                  class="material-symbols-rounded"
+                                  (click)="$event.stopPropagation(); removeCard(entry.card.code)"
+                                >
+                                  delete
+                                </span>
+                                <span>x{{entry.qty}} {{entry.card.translations?.[locale]?.title || entry.card.title}}</span>
                             </p>
                             <section>
-                                @if (entry.card.faction_code !== 'neutral-runner' && entry.card.faction_code !== 'neutral-corp' && entry.card.faction_code !== deck.identity.faction_code) {
+                                <span class="type-label">{{entry.card.type_code! | typeLabel}}</span>
+                                @if (entry.card.faction_code !== deck.identity.faction_code && entry.card.faction_cost! > 0) {
                                     <span [innerHTML]="entry.card | dots: factions"></span>
+                                }
+                                @if (entry.card.faction_code !== 'neutral-runner' && entry.card.faction_code !== 'neutral-corp') {
                                     <img class="faction-icon" [src]="'./images/faction-icons/' + entry.card.faction_code+ '.svg'" alt="">
+                                } @else {
+                                    <span class="material-symbols-rounded no-faction-icon">remove</span>
                                 }
                             </section>
                         </div>
@@ -84,7 +100,7 @@
             <div class="header-content">
                 <h1 i18n>Deck Builder</h1>
                 <div class="actions-container">
-                    <span class="material-symbols-rounded">bottom_panel_close</span>
+                    <span class="material-symbols-rounded" (click)="importCardList()">bottom_panel_close</span>
                     <span class="material-symbols-rounded" (click)="saveDeck()">save</span>
                 </div>
             </div>
@@ -165,6 +181,8 @@
                             <span [innerHTML]="c | dots: factions"></span>
                             @if (c?.faction_code !== 'neutral-runner' && c?.faction_code !== 'neutral-corp') {
                                 <img class="faction-icon" [src]="'./images/faction-icons/' + c?.faction_code+ '.svg'" alt="">
+                            } @else {
+                                <span class="material-symbols-rounded no-faction-icon">remove</span>
                             }
                         </section>
                     </div>

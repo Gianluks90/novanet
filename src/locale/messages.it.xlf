@@ -242,6 +242,10 @@
           <context context-type="linenumber">59</context>
         </context-group>
         <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/dialogs/import-export-card-list-dialog/import-export-card-list-dialog.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+        <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/dialogs/new-deck-dialog/new-deck-dialog.html</context>
           <context context-type="linenumber">39</context>
         </context-group>
@@ -327,7 +331,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/decks-page/deck-builder-page/deck-builder-page.html</context>
-          <context context-type="linenumber">96</context>
+          <context context-type="linenumber">112</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4801343738652376557" datatype="html">
@@ -410,6 +414,38 @@
           <context context-type="linenumber">74,75</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="8946877391206281535" datatype="html">
+        <source>Import a deck by pasting the <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>recipe<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/> of the deck in its original format (e.g. 3x card name) into the field below. Each card must be followed by a newline. <x id="INTERPOLATION" equiv-text="{{data.list ? 'Import cards overwrite previous deck list.' : ''}}"/></source>
+        <target>Importa un mazzo incollando la <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>ricetta<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/> del mazzo nel suo formato originale (es. 3x nome carta) nel campo sottostante. Ogni carta deve essere seguita da una nuova riga. <x id="INTERPOLATION" equiv-text="{{data.list ? 'Le carte importate sovrascrivono l'elenco del mazzo precedente.' : ''}}"/></target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/dialogs/import-export-card-list-dialog/import-export-card-list-dialog.html</context>
+          <context context-type="linenumber">2,3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2949007112721781952" datatype="html">
+        <source>Card list</source>
+        <target>Elenco carte</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/dialogs/import-export-card-list-dialog/import-export-card-list-dialog.html</context>
+          <context context-type="linenumber">5,6</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8738732372986673558" datatype="html">
+        <source>Copy to clipboard</source>
+        <target>Copia negli appunti</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/dialogs/import-export-card-list-dialog/import-export-card-list-dialog.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="importButton" datatype="html">
+        <source>Import</source>
+        <target>Importa</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/dialogs/import-export-card-list-dialog/import-export-card-list-dialog.html</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="1811764741143746732" datatype="html">
         <source>New Deck</source>
         <target>Nuovo mazzo</target>
@@ -443,7 +479,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/decks-page/deck-builder-page/deck-builder-page.html</context>
-          <context context-type="linenumber">108,109</context>
+          <context context-type="linenumber">124,125</context>
         </context-group>
       </trans-unit>
       <trans-unit id="selectIdentityOption" datatype="html">
@@ -567,7 +603,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/decks-page/deck-builder-page/deck-builder-page.html</context>
-          <context context-type="linenumber">131,132</context>
+          <context context-type="linenumber">147,148</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5103632384924428849" datatype="html">
@@ -587,7 +623,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/decks-page/deck-builder-page/deck-builder-page.html</context>
-          <context context-type="linenumber">137,138</context>
+          <context context-type="linenumber">153,154</context>
         </context-group>
       </trans-unit>
       <trans-unit id="565606266379309262" datatype="html">
@@ -599,7 +635,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/decks-page/deck-builder-page/deck-builder-page.html</context>
-          <context context-type="linenumber">151,152</context>
+          <context context-type="linenumber">167,168</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8563831429165086702" datatype="html">
@@ -663,7 +699,7 @@
         <target>Vista mazzo "<x id="INTERPOLATION" equiv-text="{{form.get('name')?.value}}"/>"</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/decks-page/deck-builder-page/deck-builder-page.html</context>
-          <context context-type="linenumber">6,7</context>
+          <context context-type="linenumber">7,8</context>
         </context-group>
       </trans-unit>
       <trans-unit id="187187500641108332" datatype="html">
@@ -671,11 +707,51 @@
         <target><x id="INTERPOLATION" equiv-text="{{mode === 'edit' ? '[ Modifica ]' : '[ Visualizza ]'}}"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/decks-page/deck-builder-page/deck-builder-page.html</context>
-          <context context-type="linenumber">8,9</context>
+          <context context-type="linenumber">9,10</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/home-page/home-page.html</context>
           <context context-type="linenumber">73,74</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8239503217931655519" datatype="html">
+        <source>Deck size / minimum deck size</source>
+        <target>Dimensione / dimensione minima</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/decks-page/deck-builder-page/deck-builder-page.html</context>
+          <context context-type="linenumber">34,35</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5790324007666955347" datatype="html">
+        <source>Influence / influence limit</source>
+        <target>Influenza / limite di influenza</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/decks-page/deck-builder-page/deck-builder-page.html</context>
+          <context context-type="linenumber">41,42</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3158288278510668253" datatype="html">
+        <source>Agenda points</source>
+        <target>Punti obiettivo</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/decks-page/deck-builder-page/deck-builder-page.html</context>
+          <context context-type="linenumber">53,54</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5811097982080929097" datatype="html">
+        <source>Cards</source>
+        <target>Carte</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/decks-page/deck-builder-page/deck-builder-page.html</context>
+          <context context-type="linenumber">60,61</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2700530588475867347" datatype="html">
+        <source>Export card list</source>
+        <target>Esporta lista carte</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/decks-page/deck-builder-page/deck-builder-page.html</context>
+          <context context-type="linenumber">61</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5333322948480524390" datatype="html">
@@ -683,7 +759,7 @@
         <target>Nessuna carta aggiunta ancora.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/decks-page/deck-builder-page/deck-builder-page.html</context>
-          <context context-type="linenumber">72,73</context>
+          <context context-type="linenumber">88,89</context>
         </context-group>
       </trans-unit>
       <trans-unit id="9001260591295540415" datatype="html">
@@ -691,7 +767,7 @@
         <target>Editor del mazzo</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/decks-page/deck-builder-page/deck-builder-page.html</context>
-          <context context-type="linenumber">85,86</context>
+          <context context-type="linenumber">101,102</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5969626932285070126" datatype="html">
@@ -699,7 +775,7 @@
         <target>Nome del mazzo</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/decks-page/deck-builder-page/deck-builder-page.html</context>
-          <context context-type="linenumber">95,96</context>
+          <context context-type="linenumber">111,112</context>
         </context-group>
       </trans-unit>
       <trans-unit id="7513076467032912668" datatype="html">
@@ -707,7 +783,7 @@
         <target>Formato</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/decks-page/deck-builder-page/deck-builder-page.html</context>
-          <context context-type="linenumber">99,100</context>
+          <context context-type="linenumber">115,116</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4882576462716076993" datatype="html">
@@ -715,7 +791,7 @@
         <target>Cerca carta</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/decks-page/deck-builder-page/deck-builder-page.html</context>
-          <context context-type="linenumber">119,120</context>
+          <context context-type="linenumber">135,136</context>
         </context-group>
       </trans-unit>
       <trans-unit id="runnerDecksColumnTitle" datatype="html">

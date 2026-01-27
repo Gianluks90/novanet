@@ -1,0 +1,17 @@
+<app-ui-dialog-container i18n-dialogTitle [dialogTitle]="data.list ? 'Export card list' : 'Import card list'">
+    <p i18n class="p-note">Import a deck by pasting the <em>recipe</em> of the deck in its original format (e.g. 3x card name) into the field below. Each card must be followed by a newline. {{data.list ? 'Import cards overwrite previous deck list.' : ''}}</p>
+    <form [formGroup]="form" class="form-container">
+            <div class="form-group">
+                <label i18n for="cardList">Card list</label>
+                <textarea id="cardList" formControlName="cardList" rows="10"></textarea>
+            </div>
+        </form>
+    <div dialog-actions-container>
+        @if (data.list) {
+            <app-ui-button i18n-text text="Copy to clipboard" icon="content_copy" (click)="copyToClipboard()"></app-ui-button>
+        } @else {
+            <app-ui-button i18n-text="@@importButton" text="Import" icon="bottom_panel_close" [disabled]="!form.valid || form.pristine" (click)="onSubmit()"></app-ui-button>
+        }
+        <app-ui-button i18n-text="@@closeButton" text="Close" icon="close" (click)="dialogRef.close()"></app-ui-button>
+    </div>
+</app-ui-dialog-container>

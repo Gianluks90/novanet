@@ -13,7 +13,6 @@ export class CheckAgendaPointsPipe implements PipeTransform {
     cardsMap: Map<string, Card>
   ): number {
     if (!selectedCards || !cardsMap) return 0;
-
     let total = 0;
 
     selectedCards.forEach((qty, code) => {

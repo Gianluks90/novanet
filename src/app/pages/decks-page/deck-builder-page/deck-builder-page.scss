@@ -25,6 +25,13 @@
                 justify-content: space-between;
                 align-items: center;
 
+                &>.material-symbols-rounded:hover {
+                    cursor: pointer;
+                    color: var(--accent-color);
+                    transform: scale(1.2);
+                    transition: color 0.3s, transform 0.3s;
+                }
+
                 .actions-container {
                     display: flex;
                     align-items: center;
@@ -235,6 +242,11 @@ select {
             display: flex;
             align-items: center;
             gap: 8px;
+
+            &>.type-label {
+                text-transform: uppercase;
+                font-size: .8rem;
+            }
         }
 
         &>.card-item-title {
@@ -294,11 +306,11 @@ select {
         // transform: scale(1);
         text-shadow: none;
     }
-} 
+}
 
 .influence-dot {
     margin-right: 4px;
-  font-size: 0.9em;
+    font-size: 0.9em;
 }
 
 .progress-container {
@@ -318,4 +330,33 @@ select {
     padding: 8px 0;
     text-transform: uppercase;
     border-bottom: 1px solid var(--accent-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &>.material-symbols-rounded {
+        cursor: pointer;
+        font-size: 1.2em;
+
+        &:hover {
+            color: var(--accent-color);
+            transform: scale(1.2);
+            transition: color 0.3s, transform 0.3s;
+        }
+    }
+}
+
+.agenda-points-label {
+    margin-top: 12px;
+    font-size: 1.1em;
+    border: 1px solid var(--accent-color);
+    padding: 8px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &>.agenda-points-value {
+        font-weight: bold;
+    }
 }

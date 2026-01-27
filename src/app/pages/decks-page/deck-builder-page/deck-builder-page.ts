@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, effect, inject, LOCALE_ID, ViewChild, ElementRef } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Deck } from '../../../models/deck';
 import { CardDetail } from "../../../components/card-detail/card-detail";
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -20,10 +20,11 @@ import { CheckAgendaPointsPipe } from "../../../pipes/check-agenda-points-pipe";
 import { CheckInfluencePipe } from "../../../pipes/check-influence-pipe";
 import { Timestamp } from 'firebase/firestore';
 import { DeckService } from '../../../services/deck-service';
+import { ImportExportCardListDialog } from '../../../components/dialogs/import-export-card-list-dialog/import-export-card-list-dialog';
 
 @Component({
   selector: 'app-deck-builder-page',
-  imports: [CardDetail, FormsModule, ReactiveFormsModule, FactionLabelPipe, TypeLabelPipe, DotsPipe, CheckAgendaPointsPipe, CheckInfluencePipe],
+  imports: [CardDetail, FormsModule, ReactiveFormsModule, FactionLabelPipe, TypeLabelPipe, DotsPipe, CheckAgendaPointsPipe, CheckInfluencePipe, RouterLink],
   templateUrl: './deck-builder-page.html',
   styleUrl: './deck-builder-page.scss',
 })
@@ -97,7 +98,6 @@ export class DeckBuilderPage {
     });
 
     effect(() => {
-      this.cardService.loadCards();
       if (!this.cardService.$cardsMap()) return;
 
       this.cardsMap = this.cardService.$cardsMap();
@@ -123,6 +123,8 @@ export class DeckBuilderPage {
   public cardZoomed: boolean = false;
 
   ngOnInit() {
+      this.cardService.loadCards();
+
     this.deck = this.route.snapshot.data['deck'];
 
     this.form.patchValue({
@@ -310,5 +312,53 @@ export class DeckBuilderPage {
       if (!this.cardsMap.has(code)) return;
       this.selectedCards.set(code, qty);
     });
+  }
+
+  public importCardList() {
+    this.openImportExportDialog();
+  }
+
+  public exportCardList() {
+    const exportData: string[] = [];
+this.selectedCards.forEach((qty, code) => {
+  const card = this.cardsMap.get(code);
+  if (card) exportData.push(`${qty}x ${card.title}`);
+});
+
+    this.openImportExportDialog(exportData.join('\n'));
+  }
+
+
+  private openImportExportDialog(data?: any) {
+    this.dialogRef = this.dialog.open<DialogResult>(ImportExportCardListDialog, {
+      ...DIALOGS_CONFIG,
+      data: { list: data || '' }
+    });
+
+    this.dialogRef?.closed.subscribe((result: DialogResult | undefined) => {
+  if (result?.status === 'confirmed' && result.data?.list) {
+    const lines = result.data.list.split('\n');
+    const next = new Map<string, number>();
+
+    lines.forEach((line: string) => {
+      // es: "2x Card Name"
+      const match = line.match(/^(\d+)x\s+(.+)$/);
+      if (!match) return;
+      const qty = parseInt(match[1], 10);
+      const title = match[2].trim();
+
+      // trova la carta corrispondente dal title
+      const cardEntry = Array.from(this.cardsMap.entries())
+        .find(([code, card]) => card.title === title);
+      if (cardEntry) {
+        const [code] = cardEntry;
+        next.set(code, qty);
+      }
+    });
+
+    this.selectedCards = next;
+    this.cd.detectChanges();
+  }
+});
   }
 }
