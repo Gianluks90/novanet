@@ -196,7 +196,6 @@ export class CardsPage {
     }
     this.selectedCard = card;
     this.scrollToSelected();
-    console.log(this.selectedCard);
   }
 
   public scrollToSelected() {

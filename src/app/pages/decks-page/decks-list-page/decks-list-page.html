@@ -1,4 +1,8 @@
 <div class="decks-list-page-main-container">
+    <div class="view-mode-container">
+        <button type="button" i18n [class.active]="viewMode === 'mine'" (click)="switchViewMode('mine')">My decks</button>
+        <button type="button" i18n [class.active]="viewMode === 'public'" (click)="switchViewMode('public')">Public gallery</button>
+    </div>
     <div class="filter-container">
         <div class="side-line"></div>
         <p i18n="@@filtersSectionTitle" class="section-title">Filters</p>
@@ -21,7 +25,7 @@
                     <div class="column-header">
                         <div class="side-line"></div>
                         <p i18n="@@runnerDecksColumnTitle" class="column-title">Runner Decks</p>
-                        @if (decks.length > 0) {
+                        @if (viewMode === 'mine') {
                             <span class="material-symbols-rounded" (click)="openNewDeckDialog('runner')">add</span>
                         }
                     </div>
@@ -34,8 +38,10 @@
                                     <!-- <p i18n class="info-line">Influence limit: {{d.cards | checkInfluence:cardsMap:d.identity.faction_code! }}/{{d.identity.influence_limit}} Agenda points: {{ d.cards | checkAgendaPoints:cardsMap }}</p> -->
                                 </div>
                                 <div class="deck-actions">
-                                    <span class="material-symbols-rounded" [routerLink]="['/decks/builder', d.id]">edit</span>
-                                    <span class="material-symbols-rounded" (click)="openConfirmDeleteDeckDialog(d)">delete</span>
+                                    <span class="material-symbols-rounded" i18n-title [title]="d.createdBy === firebase.$user()?.uid ? 'Edit' : 'View'" [routerLink]="['/decks/builder', d.id]">{{ d.createdBy === firebase.$user()?.uid ? 'edit' : 'visibility' }}</span>
+                                    @if (d.createdBy === firebase.$user()?.uid) {
+                                        <span class="material-symbols-rounded" (click)="openConfirmDeleteDeckDialog(d)">delete</span>
+                                    }
                                 </div>
                             </div>
                         } @empty {
@@ -47,7 +53,7 @@
                     <div class="column-header">
                         <div class="side-line"></div>
                         <p i18n="@@corpDecksColumnTitle" class="column-title">Corp Decks</p>
-                        @if (decks.length > 0) {
+                        @if (viewMode === 'mine') {
                             <span class="material-symbols-rounded" (click)="openNewDeckDialog('corp')">add</span>
                         }
                     </div>
@@ -60,8 +66,10 @@
                                     <!-- <p i18n class="info-line">Influence limit: {{d.cards | checkInfluence:cardsMap:d.identity.faction_code! }}/{{d.identity.influence_limit}} Agenda points: {{ d.cards | checkAgendaPoints:cardsMap }}</p> -->
                                 </div>
                                 <div class="deck-actions">
-                                    <span class="material-symbols-rounded" [routerLink]="['/decks/builder', d.id]">edit</span>
-                                    <span class="material-symbols-rounded" (click)="openConfirmDeleteDeckDialog(d)">delete</span>
+                                    <span class="material-symbols-rounded" i18n-title [title]="d.createdBy === firebase.$user()?.uid ? 'Edit' : 'View'" [routerLink]="['/decks/builder', d.id]">{{ d.createdBy === firebase.$user()?.uid ? 'edit' : 'visibility' }}</span>
+                                    @if (d.createdBy === firebase.$user()?.uid) {
+                                        <span class="material-symbols-rounded" (click)="openConfirmDeleteDeckDialog(d)">delete</span>
+                                    }
                                 </div>
                             </div>
                         } @empty {
@@ -71,8 +79,12 @@
                 </div>
             } @else {
                 <div class="empty-message-container">
-                <p i18n="@@noDecksMessage">No decks available. It's time to create a new one, no?</p>   
-                <app-ui-button i18n-text text="New deck" icon="add_notes" (click)="openNewDeckDialog()"></app-ui-button>
+                @if (viewMode === 'mine') {
+                    <p i18n="@@noDecksMessage">No decks available. It's time to create a new one, no?</p>
+                    <app-ui-button i18n-text text="New deck" icon="add_notes" (click)="openNewDeckDialog()"></app-ui-button>
+                } @else {
+                    <p i18n>No public decks yet.</p>
+                }
             </div>
             }
     </div>

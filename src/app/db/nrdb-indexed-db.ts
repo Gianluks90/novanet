@@ -7,7 +7,7 @@ interface NrdbSchema extends DBSchema {
   };
   meta: {
     key: string;        // 'version'
-    value: string;
+    value: any;
   };
 }
 

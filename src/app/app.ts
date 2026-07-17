@@ -6,7 +6,6 @@ import { initializeApp } from 'firebase/app';
 import { FIREBASE_CONFIG } from './environment/firebaseConfig';
 import { FirebaseService } from './services/firebase-service';
 import { getFirestore } from 'firebase/firestore';
-import { LoadingPage } from './pages/loading-page/loading-page';
 import { NotificationService } from './services/notification-service';
 
 @Component({

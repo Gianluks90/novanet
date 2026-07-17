@@ -48,7 +48,6 @@ export class FirebaseService {
                     favoriteCaption: user['favoriteCaption'] ?? null,
                     favoriteFaction: user['favoriteFaction'] ?? null,
                     role: user['role'] ?? null,
-                    deckIds: user['deckIds'] ?? [],
                 });
             }
         })

@@ -13,8 +13,7 @@ export class KeywordLabelPipe implements PipeTransform {
     if (!code) return '';
     // Handle special cases
     if (this.specialCases.includes(code)) {
-      const key = code.toLowerCase().replace('-', '-');
-      return KEYWORD_LABELS[key]?.[lang] ?? code;
+      return KEYWORD_LABELS[code.toLowerCase()]?.[lang] ?? code;
     }
     // Handle regular cases
     if (!code.includes('-')) return KEYWORD_LABELS[code.toLowerCase()]?.[lang] ?? code;

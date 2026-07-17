@@ -6,10 +6,37 @@
                 <span class="material-symbols-rounded" [routerLink]="['/decks']">arrow_back</span>
                 <h1 i18n>Deck View "{{form.get('name')?.value}}"</h1>
                 <div class="actions-container">
-                    <p i18n>{{mode === 'edit' ? '[ Edit mode ]' : '[ View only ]'}}</p>
+                    @if (isOwner) {
+                        <span
+                          class="material-symbols-rounded"
+                          i18n-title
+                          [title]="mode === 'edit' ? 'Manage visibility' : 'Back to editing'"
+                          (click)="mode = mode === 'edit' ? 'visibility' : 'edit'"
+                        >{{ mode === 'edit' ? 'share' : 'close' }}</span>
+                    } @else {
+                        <p i18n>[ View only ]</p>
+                        <app-ui-button i18n-text text="Copy to my account" icon="content_copy" size="small" (click)="cloneDeck()"></app-ui-button>
+                    }
                 </div>
             </div>
         </div>
+        @if (isOwner && mode === 'visibility') {
+        <div class="visibility-panel">
+            <p i18n class="section-label">Deck visibility</p>
+            <label>
+                <input type="radio" name="visibility" [checked]="deck?.visibility !== 'public' && deck?.visibility !== 'shared'" (change)="setVisibility('private')">
+                <span i18n>Private — only you can see it</span>
+            </label>
+            <label>
+                <input type="radio" name="visibility" [checked]="deck?.visibility === 'shared'" (change)="setVisibility('shared')">
+                <span i18n>Shared — anyone with the direct link can view it (not listed anywhere)</span>
+            </label>
+            <label>
+                <input type="radio" name="visibility" [checked]="deck?.visibility === 'public'" (change)="setVisibility('public')">
+                <span i18n>Public — listed in the community gallery</span>
+            </label>
+        </div>
+        }
         @if (deck) {
         <div class="section-content view-content">
             @if (deck.identity) {
@@ -64,12 +91,14 @@
                     @for (entry of selectedCardsList; track entry.card.code) {
                         <div class="card-item" [class.even-item]="$even" (click)="selectCard(entry.card)">
                             <p class="card-item-title" >
+                                @if (isOwner) {
                                 <span
                                   class="material-symbols-rounded"
                                   (click)="$event.stopPropagation(); removeCard(entry.card.code)"
                                 >
                                   delete
                                 </span>
+                                }
                                 <span>x{{entry.qty}} {{entry.card.translations?.[locale]?.title || entry.card.title}}</span>
                             </p>
                             <section>
@@ -94,6 +123,7 @@
         </div>
         }
     </section>
+    @if (isOwner) {
     <section class="deck-form-container">
         <div class="section-header">
             <div class="side-line"></div>
@@ -190,6 +220,20 @@
             </div>
         </div>
     </section>
+    } @else {
+    <section class="deck-form-container read-only-container">
+        <div class="section-header">
+            <div class="side-line"></div>
+            <div class="header-content">
+                <h1 i18n>Deck Builder</h1>
+            </div>
+        </div>
+        <div class="section-content">
+            <p i18n>You're viewing someone else's deck in read-only mode.</p>
+            <app-ui-button i18n-text text="Copy to my account" icon="content_copy" (click)="cloneDeck()"></app-ui-button>
+        </div>
+    </section>
+    }
 </div>
 
 @if(selectedCard && cardZoomed) {

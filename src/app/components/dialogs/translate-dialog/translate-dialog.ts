@@ -34,8 +34,6 @@ export class TranslateDialog {
       text: this.data.card().text,
     });
 
-    console.log(this.data.card());
-    
     if(!this.data.card().flavor) {
       this.form.get('flavor')?.clearValidators();
       this.form.get('flavor')?.updateValueAndValidity();

@@ -40,4 +40,7 @@ export interface CardTranslation {
     translatedAt: any; // Timestamp
     translatedBy: string;
     approvedBy?: string;
+    // Only set once approved -- the version the global translations counter
+    // was at when this entry was approved (used for incremental sync).
+    version?: number;
 }

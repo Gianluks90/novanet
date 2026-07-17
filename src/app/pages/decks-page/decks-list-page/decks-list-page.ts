@@ -30,6 +30,9 @@ export class DecksListPage {
   public allDesks: Deck[] = [];
   public decks: Deck[] = [];
   public cardsMap: Map<string, any> = new Map();
+  public viewMode: 'mine' | 'public' = 'mine';
+  private myDecks: Deck[] = [];
+  private publicDecks: Deck[] = [];
 
   constructor(
     private cd: ChangeDetectorRef,
@@ -37,7 +40,7 @@ export class DecksListPage {
     private notification: NotificationService,
     private deckService: DeckService,
     private cardService: CardService,
-    private firebase: FirebaseService
+    public firebase: FirebaseService
   ) {
     this.route.parent?.data.subscribe(data => {
       this.sides = data['configs'].sides.data;
@@ -47,19 +50,36 @@ export class DecksListPage {
       if (this.firebase.$user()) {
         this.cardService.loadCards();
         this.deckService.getDecksByUser();
+        this.deckService.getPublicDecks();
       }
     });
 
     effect(() => {
-      const decks = this.deckService.$decks();
+      this.myDecks = this.deckService.$decks();
       this.cardsMap = this.cardService.$cardsMap();
-
-      this.allDesks = decks;
-      this.originalDecks = [...decks];
-      this.decks = [...decks];
-
+      if (this.viewMode === 'mine') this.refreshList();
       this.cd.detectChanges();
     });
+
+    effect(() => {
+      this.publicDecks = this.deckService.$publicDecks();
+      if (this.viewMode === 'public') this.refreshList();
+      this.cd.detectChanges();
+    });
+  }
+
+  public switchViewMode(mode: 'mine' | 'public') {
+    if (this.viewMode === mode) return;
+    this.viewMode = mode;
+    this.refreshList();
+  }
+
+  private refreshList() {
+    const source = this.viewMode === 'mine' ? this.myDecks : this.publicDecks;
+    this.allDesks = source;
+    this.originalDecks = [...source];
+    this.decks = [...source];
+    this.applyFilters();
   }
 
   public filters = {

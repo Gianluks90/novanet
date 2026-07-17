@@ -954,6 +954,106 @@
           <context context-type="linenumber">43</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="8163217719567218989" datatype="html">
+        <source>[ View only ]</source>
+        <target>[ Sola lettura ]</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/decks-page/deck-builder-page/deck-builder-page.html</context>
+          <context context-type="linenumber">17,18</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7350880347895261404" datatype="html">
+        <source>Copy to my account</source>
+        <target>Copia nel mio account</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/decks-page/deck-builder-page/deck-builder-page.html</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/decks-page/deck-builder-page/deck-builder-page.html</context>
+          <context context-type="linenumber">233</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7725377431167034496" datatype="html">
+        <source>Deck visibility</source>
+        <target>Visibilità del mazzo</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/decks-page/deck-builder-page/deck-builder-page.html</context>
+          <context context-type="linenumber">25,26</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3920929810899993865" datatype="html">
+        <source>Private — only you can see it</source>
+        <target>Privato — solo tu puoi vederlo</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/decks-page/deck-builder-page/deck-builder-page.html</context>
+          <context context-type="linenumber">28,29</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5526712928174911930" datatype="html">
+        <source>Shared — anyone with the direct link can view it (not listed anywhere)</source>
+        <target>Condiviso — chiunque abbia il link diretto può vederlo (non è elencato da nessuna parte)</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/decks-page/deck-builder-page/deck-builder-page.html</context>
+          <context context-type="linenumber">32,33</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="650790450902741748" datatype="html">
+        <source>Public — listed in the community gallery</source>
+        <target>Pubblico — elencato nella galleria della community</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/decks-page/deck-builder-page/deck-builder-page.html</context>
+          <context context-type="linenumber">36,37</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2928980131725761575" datatype="html">
+        <source>You&apos;re viewing someone else&apos;s deck in read-only mode.</source>
+        <target>Stai visualizzando il mazzo di qualcun altro in modalità di sola lettura.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/decks-page/deck-builder-page/deck-builder-page.html</context>
+          <context context-type="linenumber">232,233</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5917066443761521006" datatype="html">
+        <source>Deck copied to your account.</source>
+        <target>Mazzo copiato nel tuo account.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/decks-page/deck-builder-page/deck-builder-page.ts</context>
+          <context context-type="linenumber">161</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2884360117707635968" datatype="html">
+        <source>Error copying deck: <x id="PH" equiv-text="err.message"/></source>
+        <target>Errore durante la copia del mazzo: <x id="PH" equiv-text="err.message"/></target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/decks-page/deck-builder-page/deck-builder-page.ts</context>
+          <context context-type="linenumber">164</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8112850055870398647" datatype="html">
+        <source>My decks</source>
+        <target>I miei mazzi</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/decks-page/decks-list-page/decks-list-page.html</context>
+          <context context-type="linenumber">3,4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2840645231398952970" datatype="html">
+        <source>Public gallery</source>
+        <target>Galleria pubblica</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/decks-page/decks-list-page/decks-list-page.html</context>
+          <context context-type="linenumber">4,5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3141547641420251377" datatype="html">
+        <source>No public decks yet.</source>
+        <target>Ancora nessun mazzo pubblico.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/decks-page/decks-list-page/decks-list-page.html</context>
+          <context context-type="linenumber">86,87</context>
+        </context-group>
+      </trans-unit>
     </body>
   </file>
 </xliff>

@@ -1,18 +1,97 @@
-rules_version='2'
+rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // users/{uid} - one profile doc per authenticated user, created on first login
+    // (see FirebaseService.ensureUserExists). Only the owner can read/write their own doc.
+    match /users/{userId} {
+      allow read: if isSignedIn() && request.auth.uid == userId;
+      allow create: if isSignedIn() && request.auth.uid == userId
+                    && request.resource.data.uid == userId;
+      allow update: if isSignedIn() && request.auth.uid == userId;
+      allow delete: if false;
+    }
+
+    // decks/{deckId} - owned by the user in createdBy. Any signed-in user
+    // (not just the owner) may also READ a deck marked 'public' (listed in
+    // the community gallery, DeckService.getPublicDecks) or 'shared'
+    // (never listed/queried -- reachable only via a direct link, i.e.
+    // getDeckById). Only the owner may ever write to a deck; anyone else
+    // viewing a public/shared deck can only clone it into a brand new deck
+    // of their own (DeckService.cloneDeck -> a normal `create` below, always
+    // as a fresh 'private' doc). Deletion is a real delete, owner-only
+    // (DeckService.deckRemove).
+    match /decks/{deckId} {
+      allow read: if isSignedIn() && (
+        resource.data.createdBy == request.auth.uid ||
+        resource.data.visibility == 'public' ||
+        resource.data.visibility == 'shared'
+      );
+      allow create: if isSignedIn() && request.resource.data.createdBy == request.auth.uid;
+      allow update: if isSignedIn()
+                    && resource.data.createdBy == request.auth.uid
+                    && request.resource.data.createdBy == request.auth.uid;
+      allow delete: if isSignedIn() && resource.data.createdBy == request.auth.uid;
+    }
+
+    // translations/{cardCode} - community card-text translations.
+    // Public read so even logged-out users get translated card text
+    // (nrdbResolver runs on the unguarded home route).
+    // NOTE: only the 'it' target locale exists today (see angular.json
+    // i18n.locales); add more `.<lang>` checks below if more are added.
+    // A non-admin may only create/update their OWN not-yet-approved entry
+    // (and only while it isn't already approved -- they can't downgrade an
+    // approved translation back to unapproved), or flip `reported` without
+    // touching `approved`/`translatedBy`. Only an admin
+    // (users/{uid}.role == 'admin') may set approved: true.
+    match /translations/{cardCode} {
+      allow read: if true;
+
+      allow create: if isAdmin() || (
+        isSignedIn() &&
+        request.resource.data.translations.it.approved == false &&
+        request.resource.data.translations.it.translatedBy == request.auth.uid
+      );
+
+      allow update: if isAdmin() || (
+        isSignedIn() &&
+        request.resource.data.translations.it.approved == false &&
+        request.resource.data.translations.it.translatedBy == request.auth.uid &&
+        resource.data.translations.it.approved != true
+      ) || (
+        isSignedIn() &&
+        request.resource.data.translations.it.approved == resource.data.translations.it.approved &&
+        request.resource.data.translations.it.translatedBy == resource.data.translations.it.translatedBy
+      );
+
+      allow delete: if false;
+    }
+
+    // configs/translationsConfig - global translation version counter.
+    // Public read (checked by the unguarded home-route resolver). Any signed-in
+    // user may create it with the initial value; only an admin may bump the
+    // version (CardService.approveTranslation).
+    match /configs/translationsConfig {
+      allow read: if true;
+      allow create: if isSignedIn() && request.resource.data.version == 0;
+      allow update: if isAdmin();
+      allow delete: if false;
+    }
+
+    // Deny everything not explicitly matched above.
     match /{document=**} {
-      // This rule allows anyone with your database reference to view, edit,
-      // and delete all data in your database. It is useful for getting
-      // started, but it is configured to expire after 30 days because it
-      // leaves your app open to attackers. At that time, all client
-      // requests to your database will be denied.
-      //
-      // Make sure to write security rules for your app before that time, or
-      // else all client requests to your database will be denied until you
-      // update your rules.
-      allow read, write: if request.time < timestamp.date(2026, 1, 18);
+      allow read, write: if false;
     }
   }
 }

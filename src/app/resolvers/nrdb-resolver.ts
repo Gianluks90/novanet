@@ -1,11 +1,13 @@
-import { from, Observable, of, switchMap, map, tap } from 'rxjs';
+import { from, Observable, of, switchMap, map } from 'rxjs';
 import { nrdbDb } from '../db/nrdb-indexed-db';
 import { ResolveFn } from '@angular/router';
 import { inject, LOCALE_ID } from '@angular/core';
 import { NetrunnerDbService } from '../db/netrunner-db-service';
 import { CardService } from '../services/card-service';
+import { computePacksSignature } from './packs-signature';
 
 const API_URL = 'https://netrunnerdb.com/api/2.0/public/cards';
+const PACKS_URL = 'https://netrunnerdb.com/api/2.0/public/packs';
 
 export const nrdbResolver: ResolveFn<boolean> = (): Observable<boolean> => {
   const nrdbService = inject(NetrunnerDbService);
@@ -14,27 +16,45 @@ export const nrdbResolver: ResolveFn<boolean> = (): Observable<boolean> => {
 
   return from(nrdbDb).pipe(
     switchMap(db =>
-      from(db.get('meta', 'installed')).pipe(
-        switchMap(installed => {
-          // se già installato, continuiamo comunque al check traduzioni
-          const install$ = installed
-            ? of(true)
-            : from(fetch(API_URL).then(res => res.json())).pipe(
-                switchMap(json => {
-                  const tx = db.transaction(['cards', 'meta'], 'readwrite');
-                  for (const card of json.data) {
-                    tx.objectStore('cards').put(card, card.code);
-                  }
-                  tx.objectStore('meta').put('true', 'installed');
-                  return from(tx.done).pipe(map(() => true));
-                })
-              );
+      // Lightweight signal for "is our local card catalog stale": compare the
+      // set of NRDB pack codes against what we had at our last install. A new
+      // pack/cycle release changes this signature, which triggers a full
+      // card re-fetch -- unlike the old boolean `installed` flag, this never
+      // goes stale on its own.
+      from(fetch(PACKS_URL).then(res => res.json())).pipe(
+        switchMap(packsJson => {
+          const currentPacksSignature = computePacksSignature(packsJson.data);
 
-          return install$;
-        }),
-        // dopo l'installazione, controlliamo le traduzioni
-        switchMap(() => from(cardService.getGlobalTranslationStatus())),
-        switchMap(configSnap => 
+          return from(db.get('meta', 'packsSignature')).pipe(
+            switchMap(storedPacksSignature => {
+              const needsCardRefresh = storedPacksSignature !== currentPacksSignature;
+
+              const install$ = !needsCardRefresh
+                ? of(false)
+                : from(fetch(API_URL).then(res => res.json())).pipe(
+                    switchMap(json => {
+                      const tx = db.transaction(['cards', 'meta'], 'readwrite');
+                      for (const card of json.data) {
+                        tx.objectStore('cards').put(card, card.code);
+                      }
+                      tx.objectStore('meta').put('true', 'installed');
+                      tx.objectStore('meta').put(currentPacksSignature, 'packsSignature');
+                      return from(tx.done).pipe(map(() => true));
+                    })
+                  );
+
+              return install$;
+            })
+          );
+        })
+      ).pipe(
+        // dopo l'installazione/refresh, controlliamo le traduzioni
+        switchMap(didRefreshCatalog =>
+          from(cardService.getGlobalTranslationStatus()).pipe(
+            map(configSnap => ({ configSnap, didRefreshCatalog }))
+          )
+        ),
+        switchMap(({ configSnap, didRefreshCatalog }) =>
           from((async () => {
             const globalVersion = configSnap.exists()
               ? configSnap.data()?.version ?? 0
@@ -44,9 +64,12 @@ export const nrdbResolver: ResolveFn<boolean> = (): Observable<boolean> => {
             const localVersionStored = localStorage.getItem('translationsVersion');
             let localVersion = Number(localVersionStored ?? 0);
 
-            // Check if IndexedDB is empty
+            // Check if IndexedDB is empty, or if we just refreshed the whole
+            // catalog above (which overwrites every card record from NRDB
+            // and wipes any locally-merged `translations` field along with
+            // it) -- either way, treat this as a fresh install for translations.
             const dbCardsCount = await (await nrdbDb).transaction('cards').objectStore('cards').count();
-            if (dbCardsCount === 0) {
+            if (dbCardsCount === 0 || didRefreshCatalog) {
               localVersion = 0;
             }
 
@@ -71,33 +94,16 @@ export const nrdbResolver: ResolveFn<boolean> = (): Observable<boolean> => {
               });
             }
 
-            // 🔁 INCREMENTALE with missing cards check
+            // 🔁 INCREMENTALE: solo il delta da localVersion a globalVersion.
+            // (Il vecchio controllo "missing cards" rileggeva l'intera
+            // collezione ad ogni sync -- non serve più: un refresh del
+            // catalogo carte forza già localVersion a 0 qui sopra, quindi
+            // finisce nel ramo bootstrap che ri-scarica tutto.)
             if (globalVersion > localVersion) {
-              console.log('[translations] incremental sync with missing cards check', localVersion, '→', globalVersion);
+              console.log('[translations] incremental sync', localVersion, '→', globalVersion);
 
-              // First, check for missing cards in IndexedDB
-              return cardService.getApprovedTranslationsSinceVersion(locale, 0).then(async allTranslations => {
-                // Filter translations that are missing in local DB
-                const db = await nrdbDb;
-                const results = await Promise.all(
-                  allTranslations.map(async tr => {
-                    const card = await db.get('cards', tr.code);
-                    return { translation: tr, isMissing: !card };
-                  })
-                );
-                const missingTranslations = results.filter(r => r.isMissing).map(r => r.translation);
-                const translationsToMerge = [...missingTranslations];
-
-                // Also get incremental translations since localVersion
-                const incrementalTranslations = await cardService.getApprovedTranslationsSinceVersion(locale, localVersion);
-                incrementalTranslations.forEach(tr => {
-                  if (!translationsToMerge.find(t => t.code === tr.code)) {
-                    translationsToMerge.push(tr);
-                  }
-                });
-
-                if (translationsToMerge.length === 0) {
-                  // No translations to merge, just update version
+              return cardService.getApprovedTranslationsSinceVersion(locale, localVersion).then(translations => {
+                if (translations.length === 0) {
                   localStorage.setItem(
                     'translationsVersion',
                     String(globalVersion)
@@ -106,7 +112,7 @@ export const nrdbResolver: ResolveFn<boolean> = (): Observable<boolean> => {
                   return true;
                 }
 
-                const merge$ = translationsToMerge.map(tr =>
+                const merge$ = translations.map(tr =>
                   nrdbService.mergeAndSaveTranslations(tr.code, tr.translations)
                 );
 

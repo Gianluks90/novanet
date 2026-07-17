@@ -46,7 +46,6 @@ export class CardService {
     approved: boolean
   ): Promise<void> {
     await this.setTranslation(card, lang, approved);
-    await this.updateGlobalTranslationStatus();
   }
 
   /**
@@ -59,8 +58,6 @@ export class CardService {
     // Atomically increment the global version and get the new value
     const newVersion = await this.incrementGlobalTranslationVersion();
 
-    // Use the new version for the translation
-    // await this.setTranslation(card, lang, true, newVersion);
     const cardDocRef = doc(
       this.firebaseService.database,
       'translations',
@@ -71,10 +68,14 @@ export class CardService {
       translations: {
         [lang]: {
           approved: true,
-          approvedBy: getAuth().currentUser?.uid
-        },
-        updatedAt: Timestamp.now()
-      }
+          approvedBy: getAuth().currentUser?.uid,
+          // Stamp the freshly-incremented version here (not at submission
+          // time) so incremental clients querying `version > localVersion`
+          // actually pick up this approval.
+          version: newVersion
+        }
+      },
+      updatedAt: Timestamp.now()
     }, { merge: true })
   }
 
@@ -110,8 +111,11 @@ export class CardService {
       card.code
     );
 
-    const lastVersion = await this.getGlobalTranslationStatus().then(snap => snap.data() || { version: 0 });
-
+    // No `version` field here on purpose: it's meaningless while unapproved
+    // (every sync query filters on `approved == true`), and approveTranslation
+    // stamps the real one once this actually becomes visible to other users.
+    // Writing it here would just cost an extra read of the config doc for
+    // every submission with no benefit.
     await setDoc(
       cardDocRef,
       {
@@ -124,7 +128,6 @@ export class CardService {
             flavor: card.flavor,
             translatedAt: Timestamp.now(),
             translatedBy: getAuth().currentUser?.uid,
-            version: lastVersion.version
           }
         },
         updatedAt: Timestamp.now()
@@ -185,25 +188,14 @@ export class CardService {
       'translationsConfig'
     );
 
-    // Atomically increment version
-    await updateDoc(configDocRef, { version: increment(1) });
+    // `setDoc` + merge (instead of `updateDoc`) also creates the doc with
+    // version 1 if it doesn't exist yet -- no separate "does the config doc
+    // exist" read/init step needed anywhere else.
+    await setDoc(configDocRef, { version: increment(1) }, { merge: true });
 
     // Read back the updated version
     const snap = await getDoc(configDocRef);
     return snap.data()?.['version'] ?? 0;
-  }
-
-  private async updateGlobalTranslationStatus(): Promise<void> {
-    const configDocRef = doc(
-      collection(this.firebaseService.database, 'configs'),
-      'translationsConfig'
-    );
-
-    const snap = await getDoc(configDocRef);
-    if (!snap.exists()) {
-      // Only initialize if config does not exist
-      await setDoc(configDocRef, { version: 0 });
-    }
   }
 
   public async getGlobalTranslationStatus(): Promise<any> {

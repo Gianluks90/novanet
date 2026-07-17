@@ -25,8 +25,4 @@ export class Header {
       }
     });
   }
-
-  ngOnInit() {
-    console.log('Current locale:', this.locale);
-  }
 }

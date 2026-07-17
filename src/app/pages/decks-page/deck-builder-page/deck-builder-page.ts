@@ -1,5 +1,7 @@
 import { ChangeDetectorRef, Component, effect, inject, LOCALE_ID, ViewChild, ElementRef } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { FirebaseService } from '../../../services/firebase-service';
+import { NotificationService } from '../../../services/notification-service';
 import { Deck } from '../../../models/deck';
 import { CardDetail } from "../../../components/card-detail/card-detail";
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -21,10 +23,11 @@ import { CheckInfluencePipe } from "../../../pipes/check-influence-pipe";
 import { Timestamp } from 'firebase/firestore';
 import { DeckService } from '../../../services/deck-service';
 import { ImportExportCardListDialog } from '../../../components/dialogs/import-export-card-list-dialog/import-export-card-list-dialog';
+import { UIButton } from '../../../ui';
 
 @Component({
   selector: 'app-deck-builder-page',
-  imports: [CardDetail, FormsModule, ReactiveFormsModule, FactionLabelPipe, TypeLabelPipe, DotsPipe, CheckAgendaPointsPipe, CheckInfluencePipe, RouterLink],
+  imports: [CardDetail, FormsModule, ReactiveFormsModule, FactionLabelPipe, TypeLabelPipe, DotsPipe, CheckAgendaPointsPipe, CheckInfluencePipe, RouterLink, UIButton],
   templateUrl: './deck-builder-page.html',
   styleUrl: './deck-builder-page.scss',
 })
@@ -59,10 +62,13 @@ export class DeckBuilderPage {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private fb: FormBuilder,
     private cardService: CardService,
     private cd: ChangeDetectorRef,
-    private deckService: DeckService
+    private deckService: DeckService,
+    public firebase: FirebaseService,
+    private notification: NotificationService
   ) {
     this.route.parent?.data.subscribe(data => {
       this.cycles = data['configs'].cycles.data || [];
@@ -127,11 +133,35 @@ export class DeckBuilderPage {
 
     this.deck = this.route.snapshot.data['deck'];
 
+    if (!this.isOwner) {
+      this.mode = 'edit';
+    }
+
     this.form.patchValue({
       name: this.deck?.name || '',
       // format: this.deck?.format || '',
       identity: this.deck?.identity.code || '',
       notes: this.deck?.notes || ''
+    });
+  }
+
+  public get isOwner(): boolean {
+    return !!this.deck && this.deck.createdBy === this.firebase.$user()?.uid;
+  }
+
+  public setVisibility(visibility: 'private' | 'public' | 'shared') {
+    if (!this.deck || !this.isOwner) return;
+    this.deck.visibility = visibility;
+    this.deckService.updateDeck(this.deck.id, { visibility });
+  }
+
+  public cloneDeck() {
+    if (!this.deck) return;
+    this.deckService.cloneDeck(this.deck).then(newId => {
+      this.notification.notify($localize`Deck copied to your account.`, 'check');
+      this.router.navigate(['/decks/builder', newId]);
+    }).catch(err => {
+      this.notification.notify($localize`Error copying deck: ${err.message}`, 'dangerous');
     });
   }
 
@@ -210,6 +240,8 @@ export class DeckBuilderPage {
   private dialogRef: DialogRef<DialogResult, any> | null = null;
 
   public openAddCardDialog(card: Card) {
+    if (!this.isOwner) return;
+
     this.dialogRef = this.dialog.open<DialogResult>(AddCardDialog, {
       ...DIALOGS_CONFIG,
       disableClose: true,
@@ -219,17 +251,13 @@ export class DeckBuilderPage {
     this.dialogRef?.closed.subscribe((result: DialogResult | undefined) => {
       this.selectCard(card);
       if (result?.status === 'confirmed') {
-        console.log('entra qui_');
-
-        // const current = this.selectedCards.get(card.code) || 0;
-        // this.selectedCards.set(card.code, (current + result.data.quantity > 3 ? 3 : current + result.data.quantity));
-
         const next = new Map(this.selectedCards);
 
         const current = next.get(card.code) || 0;
+        const limit = card.deck_limit && card.deck_limit > 0 ? card.deck_limit : Infinity;
         next.set(
           card.code,
-          Math.min(3, current + result.data.quantity)
+          Math.min(limit, current + result.data.quantity)
         );
 
         this.selectedCards = next;
@@ -260,11 +288,9 @@ export class DeckBuilderPage {
     return influence;
   }
 
-  // public removeCard(code: string) {
-  //   this.selectedCards.delete(code);
-  // }
-
   public removeCard(code: string) {
+    if (!this.isOwner) return;
+
     const next = new Map(this.selectedCards);
     next.delete(code);
     this.selectedCards = next;
@@ -280,7 +306,7 @@ export class DeckBuilderPage {
   }
 
   public saveDeck() {
-    if (!this.deck) return;
+    if (!this.deck || !this.isOwner) return;
 
     const cardsPayload: Record<string, number> = {};
     this.selectedCards.forEach((qty, code) => {
@@ -297,12 +323,9 @@ export class DeckBuilderPage {
       updatedAt: Timestamp.now()
     };
 
-    this.deckService.updateDeck(this.deck.id, updatedDeck).then(() => {
-      console.log('Deck salvato con successo!');
-    }).catch(err => {
+    this.deckService.updateDeck(this.deck.id, updatedDeck).catch(err => {
       console.error('Errore durante il salvataggio del deck:', err);
     });
-    console.log('Deck pronto per il salvataggio:', updatedDeck);
   }
 
   public parseCards() {
@@ -315,6 +338,7 @@ export class DeckBuilderPage {
   }
 
   public importCardList() {
+    if (!this.isOwner) return;
     this.openImportExportDialog();
   }
 
@@ -351,8 +375,9 @@ this.selectedCards.forEach((qty, code) => {
       const cardEntry = Array.from(this.cardsMap.entries())
         .find(([code, card]) => card.title === title);
       if (cardEntry) {
-        const [code] = cardEntry;
-        next.set(code, qty);
+        const [code, card] = cardEntry;
+        const limit = card.deck_limit && card.deck_limit > 0 ? card.deck_limit : Infinity;
+        next.set(code, Math.min(limit, qty));
       }
     });
 
