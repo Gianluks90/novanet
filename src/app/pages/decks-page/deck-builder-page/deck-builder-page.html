@@ -4,17 +4,17 @@
     <div class="card-item" [class.in-deck]="!inDeckList && copies > 0" [class.selected]="selectedCard?.id === card.id">
         <button type="button" class="card-item-title" (click)="selectCard(card)">{{ card | cardTitle: showTranslated }}</button>
         <div class="card-item-meta">
-            @if (card.influence_cost! > 0 && (!inDeckList || card.faction_id !== deck?.identity?.faction_id)) {
-                <span [innerHTML]="card | dots: factions"></span>
-            }
-            @if (card.faction_id !== 'neutral_runner' && card.faction_id !== 'neutral_corp') {
-                <img class="faction-icon" [src]="'./images/faction-icons/' + card.faction_id + '.svg'" alt="">
-            } @else {
-                <span class="material-symbols-rounded no-faction-icon" aria-hidden="true">remove</span>
-            }
-            @if (cardIssueKey(card); as issue) {
-                <span class="material-symbols-rounded card-issue" [title]="issue | t" [attr.aria-label]="issue | t" role="img">block</span>
-            }
+            <span class="meta-influence" [innerHTML]="(card.influence_cost! > 0 && (!inDeckList || card.faction_id !== deck?.identity?.faction_id)) ? (card | dots: factions) : ''"></span>
+            <span class="meta-faction">
+                @if (card.faction_id !== 'neutral_runner' && card.faction_id !== 'neutral_corp') {
+                    <img class="faction-icon" [src]="'./images/faction-icons/' + card.faction_id + '.svg'" alt="">
+                }
+            </span>
+            <span class="meta-issue">
+                @if (cardIssueKey(card); as issue) {
+                    <span class="material-symbols-rounded card-issue" [title]="issue | t" [attr.aria-label]="issue | t" role="img">block</span>
+                }
+            </span>
             @if (isOwner) {
                 <app-ui-stepper [value]="copies" [max]="limitOf(card)"
                     [decreaseLabel]="'deckBuilderPage.removeCopy' | t" [increaseLabel]="'deckBuilderPage.addCopy' | t"
@@ -43,60 +43,64 @@
     </div>
 </ng-template>
 
-<!-- Format and identity of the deck. Rendered in two places (see .settings-wide / .settings-narrow), hence the id suffix. -->
-<ng-template #deckSettings let-where>
-    <form class="form-container deck-settings" [formGroup]="form">
-        <div class="form-group">
-            <label [attr.for]="'format-select-' + where">{{ 'deckBuilderPage.format' | t }}</label>
-            <select name="format" [id]="'format-select-' + where" formControlName="format">
-                <option value="">{{ 'deckBuilderPage.selectFormat' | t }}</option>
-                @for (f of formatService.formats(); track f.id) {
-                    <option [value]="f.id">{{ f.name }}{{ formatMark(f.id) }}</option>
-                }
-                <option [value]="casualFormat">{{ 'deckBuilderPage.formatCasual' | t }}</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label [attr.for]="'identity-select-' + where">{{ 'identityLabel' | t }}</label>
-            <select name="identity" [id]="'identity-select-' + where" formControlName="identity">
-                <option value="">{{ 'deckBuilderPage.selectIdentity' | t }}</option>
-                @for (identity of identities; track $index) {
-                    <option  [value]="identity.id">{{identity | cardTitle: showTranslated}}</option>
-                }
-            </select>
-        </div>
-    </form>
+<!-- Menu to change the deck's identity (same side only). -->
+<ng-template #identityMenu>
+    <div class="ui-menu ui-menu-scroll" cdkMenu>
+        <p class="ui-menu-title">{{ 'identityLabel' | t }}</p>
+        @for (identity of identities; track identity.id) {
+            <button type="button" class="ui-menu-item" cdkMenuItem (cdkMenuItemTriggered)="setIdentity(identity.id)">
+                <span class="material-symbols-rounded" aria-hidden="true">{{ identity.id === deck?.identity?.id ? 'check' : '' }}</span>
+                {{ identity | cardTitle: showTranslated }}
+            </button>
+        }
+    </div>
 </ng-template>
 
 <div class="deck-builder-page-main-container">
-    <section class="deck-view-container">
-        <div class="section-header">
-            <div class="side-line"></div>
-            <div class="header-content">
-                <app-ui-icon-button icon="arrow_back" [label]="'deckBuilderPage.backToDecks' | t" [link]="['/decks']"></app-ui-icon-button>
+    <!-- One toolbar for the whole page: name, format and the deck's actions -->
+    <header class="page-toolbar">
+        <div class="side-line"></div>
+        <div class="toolbar-content">
+            <app-ui-icon-button icon="arrow_back" [label]="'deckBuilderPage.backToDecks' | t" [link]="['/decks']"></app-ui-icon-button>
+            @if (isOwner) {
+                <input type="text" class="title-input" [formControl]="nameControl" [attr.aria-label]="'nameLabel' | t"
+                    [placeholder]="'enterTextPlaceholder' | t" autocorrect="off" autocomplete="off">
+                <div class="format-picker" [formGroup]="form">
+                    <select name="format" formControlName="format" [attr.aria-label]="'deckBuilderPage.format' | t">
+                        <option value="">{{ 'deckBuilderPage.selectFormat' | t }}</option>
+                        @for (f of formatService.formats(); track f.id) {
+                            <option [value]="f.id">{{ f.name }}{{ formatMark(f.id) }}</option>
+                        }
+                        <option [value]="casualFormat">{{ 'deckBuilderPage.formatCasual' | t }}</option>
+                    </select>
+                </div>
+            } @else {
+                <h1>{{ nameControl.value }}</h1>
+            }
+            <div class="actions-container">
                 @if (isOwner) {
-                    <input type="text" class="title-input" [formControl]="nameControl" [attr.aria-label]="'nameLabel' | t"
-                        [placeholder]="'enterTextPlaceholder' | t" autocorrect="off" autocomplete="off">
-                } @else {
-                    <h1>{{ nameControl.value }}</h1>
-                }
-                <div class="actions-container">
-                    @if (isOwner && deck?.local) {
+                    <app-ui-icon-button icon="bottom_panel_close" [label]="'importExportCardListDialog.importCardList' | t" (click)="importCardList()"></app-ui-icon-button>
+                    <app-ui-icon-button icon="bottom_panel_open" [label]="'deckBuilderPage.exportCardList' | t" (click)="exportCardList()"></app-ui-icon-button>
+                    <app-ui-icon-button icon="save" [indicator]="dirty"
+                        [label]="dirty ? (('saveChangesButton' | t) + ' — ' + ('unsavedChanges.title' | t)) : ('saveChangesButton' | t)"
+                        (click)="saveDeck()"></app-ui-icon-button>
+                    @if (deck?.local) {
                         <app-ui-icon-button icon="cloud_upload" [label]="'deckBuilderPage.saveOnline' | t" (click)="uploadDeck()"></app-ui-icon-button>
-                    } @else if (isOwner) {
+                    } @else {
                         <app-ui-icon-button
                           [icon]="mode === 'edit' ? 'share' : 'close'"
                           [label]="(mode === 'edit' ? 'deckBuilderPage.manageVisibility' : 'deckBuilderPage.backToEditing') | t"
                           [active]="mode === 'visibility'"
                           (click)="mode = mode === 'edit' ? 'visibility' : 'edit'"
                         ></app-ui-icon-button>
-                    } @else {
-                        <span class="view-only-label">{{ 'deckBuilderPage.viewOnly' | t }}</span>
-                        <app-ui-button [text]="'deckBuilderPage.copyToMyAccount' | t" icon="content_copy" size="small" (click)="cloneDeck()"></app-ui-button>
                     }
-                </div>
+                } @else {
+                    <span class="view-only-label">{{ 'deckBuilderPage.viewOnly' | t }}</span>
+                    <app-ui-button [text]="'deckBuilderPage.copyToMyAccount' | t" icon="content_copy" size="small" (click)="cloneDeck()"></app-ui-button>
+                }
             </div>
         </div>
+    </header>
         @if (isOwner && mode === 'visibility') {
         <div class="visibility-panel">
             <p class="section-label">{{ 'deckBuilderPage.deckVisibility' | t }}</p>
@@ -105,24 +109,34 @@
             <p class="p-note visibility-hint">{{ visibilityHint | t }}</p>
         </div>
         }
+    <div class="page-body">
+    <section class="deck-view-container">
         @if (deck) {
-        <div class="section-content view-content">
+        <div class="view-content">
             @if (deck.identity) {
             <section class="deck-list-section">
                 @if (deck.originalAuthorName && deck.originalAuthorId !== firebase.$user()?.uid) {
                     <p class="p-note deck-author">{{ 'deckBuilderPage.originalAuthor' | t: [deck.originalAuthorName] }}</p>
                 }
                 <div class="identity-strip">
-                    <button type="button" class="identity-art" (click)="onCardClick(deck.identity)">
-                        <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + deck.identity.id + '.jpg'" [alt]="deck.identity | cardTitle: showTranslated">
-                    </button>
+                    <div class="identity-art-column">
+                        <button type="button" class="identity-art" (click)="onCardClick(deck.identity)">
+                            <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + deck.identity.id + '.jpg'" [alt]="deck.identity | cardTitle: showTranslated">
+                        </button>
+                        @if (isOwner) {
+                            <button type="button" class="ghost-btn change-identity" [cdkMenuTriggerFor]="identityMenu"
+                                [attr.aria-label]="'deckBuilderPage.changeIdentityLabel' | t" [title]="'deckBuilderPage.changeIdentityLabel' | t">
+                                <span class="material-symbols-rounded" aria-hidden="true">swap_horiz</span>
+                            </button>
+                        }
+                    </div>
                     <div class="identity-info">
                         <div class="identity-title">
                             @let identity = deck.identity;
                             @if (identity?.card_type_id?.endsWith('_identity') && identity?.faction_id !== 'neutral_runner' && identity?.faction_id !== 'neutral_corp') {
                                 <img class="faction-icon" [src]="'./images/faction-icons/' + identity?.faction_id+ '.svg'" alt="">
                             }
-                            {{(deck.identity | cardTitle: showTranslated).split(':')[0]}}
+                            <span class="identity-name">{{(deck.identity | cardTitle: showTranslated).split(':')[0]}}</span>
                         </div>
                         <div class="identity-subtitle">
                             {{(deck.identity | cardTitle: showTranslated).split(':')[1]}}
@@ -195,7 +209,6 @@
                         <app-ui-icon-button [icon]="deckView === 'list' ? 'grid_view' : 'view_list'" size="sm"
                             [label]="(deckView === 'list' ? 'deckBuilderPage.viewGrid' : 'deckBuilderPage.viewList') | t"
                             (click)="toggleDeckView()"></app-ui-icon-button>
-                        <app-ui-icon-button icon="bottom_panel_open" size="sm" [label]="'deckBuilderPage.exportCardList' | t" (click)="exportCardList()"></app-ui-icon-button>
                     </div>
                 </div>
                 <div class="cards-container">
@@ -226,11 +239,6 @@
             <!-- Wide window: a column next to the list (empty until a card is selected). Narrower: it only
                  exists while a card is selected and slides in from the right over the list (button or Esc to close). -->
             <div class="detail-column">
-                @if (isOwner) {
-                    <div class="settings-wide">
-                        <ng-container *ngTemplateOutlet="deckSettings; context: { $implicit: 'detail' }"></ng-container>
-                    </div>
-                }
                 <aside class="detail-drawer" [class.open]="!!selectedCard">
                     <div class="drawer-header">
                         <app-ui-icon-button icon="close" size="sm" [label]="'closeButton' | t" (click)="closeDetail()"></app-ui-icon-button>
@@ -244,24 +252,7 @@
         }
     </section>
     @if (isOwner) {
-    <section class="deck-form-container">
-        <div class="section-header">
-            <div class="side-line"></div>
-            <div class="header-content">
-                <h1>{{ 'deckBuilderPage.deckBuilder' | t }}</h1>
-                <div class="actions-container">
-                    <app-ui-icon-button icon="bottom_panel_close" [label]="'importExportCardListDialog.importCardList' | t" (click)="importCardList()"></app-ui-icon-button>
-                    <app-ui-icon-button icon="save" [indicator]="dirty"
-                        [label]="dirty ? (('saveChangesButton' | t) + ' — ' + ('unsavedChanges.title' | t)) : ('saveChangesButton' | t)"
-                        (click)="saveDeck()"></app-ui-icon-button>
-                </div>
-            </div>
-        </div>
-        <div class="section-content">
-            <!-- wide window: these selects live above the card detail, in the deck view -->
-            <div class="settings-narrow">
-                <ng-container *ngTemplateOutlet="deckSettings; context: { $implicit: 'panel' }"></ng-container>
-            </div>
+    <section class="search-panel">
             <div class="search-bar" [formGroup]="cardForm">
                 <input #cardInputEl type="text" formControlName="cardInput"
                     [attr.aria-label]="'deckBuilderPage.searchCard' | t"
@@ -311,17 +302,9 @@
                     <ng-container *ngTemplateOutlet="cardRow; context: { $implicit: c, inDeckList: false }"></ng-container>
                 }
             </div>
-        </div>
     </section>
     } @else {
-    <section class="deck-form-container read-only-container">
-        <div class="section-header">
-            <div class="side-line"></div>
-            <div class="header-content">
-                <h1>{{ 'deckBuilderPage.deckBuilder' | t }}</h1>
-            </div>
-        </div>
-        <div class="section-content">
+    <section class="search-panel read-only-container">
             @if (deck) {
                 <p>{{ 'deckBuilderPage.youReViewingSomeoneElse' | t }}</p>
                 <app-ui-button [text]="'deckBuilderPage.copyToMyAccount' | t" icon="content_copy" (click)="cloneDeck()"></app-ui-button>
@@ -334,9 +317,9 @@
                 }
                 <app-ui-button [text]="'deckBuilderPage.backToDecks' | t" icon="arrow_back" [routerLink]="['/decks']"></app-ui-button>
             }
-        </div>
     </section>
     }
+    </div>
 </div>
 
 @if(selectedCard && cardZoomed) {

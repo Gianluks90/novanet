@@ -19,6 +19,11 @@
   box-shadow: var(--shadow-md);
 }
 
+.ui-menu-scroll {
+  max-height: min(60vh, 480px);
+  overflow-y: auto;
+}
+
 .ui-menu-title {
   margin: 0 0 var(--space-1);
   padding: var(--space-2) var(--space-3);

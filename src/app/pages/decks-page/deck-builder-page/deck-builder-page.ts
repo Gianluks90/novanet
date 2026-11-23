@@ -3,6 +3,7 @@ import { HasUnsavedChanges } from '../../../guards/unsaved-changes-guard';
 import { TranslationKey } from '../../../i18n/en';
 import { AfterViewInit, ChangeDetectorRef, Component, effect, inject, ViewChild, ElementRef, HostListener, untracked } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
+import { CdkMenu, CdkMenuItem, CdkMenuTrigger } from '@angular/cdk/menu';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FirebaseService } from '../../../services/firebase-service';
 import { NotificationService } from '../../../services/notification-service';
@@ -41,7 +42,7 @@ import { agendaRequirement } from '../../../utils/deck-rules';
 
 @Component({
   selector: 'app-deck-builder-page',
-  imports: [TranslatePipe, CardTitlePipe, UiIconButton, UiSegmented, UiStepper, UiToggle, CardDetail, CardZoom, NgTemplateOutlet, FormsModule, ReactiveFormsModule, FactionLabelPipe, TypeLabelPipe, DotsPipe, RouterLink, UIButton],
+  imports: [TranslatePipe, CardTitlePipe, UiIconButton, UiSegmented, UiStepper, UiToggle, CardDetail, CardZoom, NgTemplateOutlet, CdkMenu, CdkMenuItem, CdkMenuTrigger, FormsModule, ReactiveFormsModule, FactionLabelPipe, TypeLabelPipe, DotsPipe, RouterLink, UIButton],
   templateUrl: './deck-builder-page.html',
   styleUrl: './deck-builder-page.scss',
 })
@@ -512,6 +513,11 @@ export class DeckBuilderPage implements AfterViewInit {
   public clearSearch(event?: Event) {
     event?.stopPropagation();
     this.cardForm.patchValue({ cardInput: '' });
+  }
+
+  /** Changes the deck's identity (the menu lists the identities of the deck's side). */
+  public setIdentity(id: string) {
+    this.form.get('identity')?.setValue(id);
   }
 
   public closeDetail() {

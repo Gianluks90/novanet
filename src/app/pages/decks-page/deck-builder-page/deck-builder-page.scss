@@ -6,92 +6,115 @@ $wide-breakpoint: 1360px;
     --page-gap: var(--space-2);
 
     height: 100%;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) clamp(320px, 34vw, 400px);
+    display: flex;
+    flex-direction: column;
     gap: var(--page-gap);
 
-    &>section {
+    // ---- toolbar: back, name, format, actions
+    &>.page-toolbar {
+        flex-shrink: 0;
         display: flex;
-        flex-direction: column;
-        gap: var(--page-gap);
+        align-items: stretch;
+        background-color: var(--bg-container-color);
+        border: 1px solid var(--accent-color);
 
-        min-height: 0;
-
-        &>.section-header {
-            background-color: var(--bg-container-color);
-            border: 1px solid var(--accent-color);
+        &>.toolbar-content {
+            flex: 1;
+            min-width: 0;
             display: flex;
             align-items: center;
-            gap: var(--space-2);
+            flex-wrap: wrap;
+            gap: var(--space-2) var(--space-3);
+            padding: var(--space-2) var(--space-3);
 
-            &>.header-content {
-                padding: var(--space-2) var(--space-3);
-                display: flex;
-                width: 100%;
+            h1,
+            .title-input {
+                flex: 1 1 12rem;
                 min-width: 0;
-                justify-content: space-between;
+                font-size: 1.1rem;
+                font-weight: bold;
+                text-transform: uppercase;
+                margin: 0;
+            }
+
+            // the deck name, edited in place: looks like a title until hovered or focused
+            .title-input {
+                padding: var(--space-1) var(--space-2);
+                border-color: transparent;
+                background-color: transparent;
+                color: var(--fg-color);
+                height: var(--control-height);
+
+                &:hover,
+                &:focus {
+                    border-color: var(--accent-color);
+                }
+            }
+
+            .format-picker {
+                flex: 0 1 clamp(160px, 18vw, 240px);
+
+                select {
+                    height: var(--control-height);
+                }
+            }
+
+            .actions-container {
+                display: flex;
                 align-items: center;
                 gap: var(--space-2);
+                margin-left: auto;
 
-                h1,
-                .title-input {
-                    flex: 1;
-                    min-width: 0;
-                    font-size: 1.1rem;
-                    font-weight: bold;
+                &>.view-only-label {
                     text-transform: uppercase;
-                    margin: 0;
-                }
-
-                // the deck name, edited in place: looks like a title until hovered or focused
-                .title-input {
-                    padding: var(--space-1) var(--space-2);
-                    border-color: transparent;
-                    background-color: transparent;
-                    color: var(--fg-color);
-                    height: var(--control-height);
-
-                    &:hover,
-                    &:focus {
-                        border-color: var(--accent-color);
-                    }
-                }
-
-                .actions-container {
-                    display: flex;
-                    align-items: center;
-                    gap: var(--space-2);
-
-                    &>.view-only-label {
-                        text-transform: uppercase;
-                        color: var(--accent-color);
-                        cursor: default;
-                        user-select: none;
-                    }
+                    color: var(--accent-color);
+                    cursor: default;
+                    user-select: none;
                 }
             }
         }
+    }
 
-        &>.section-content {
-            background-color: var(--bg-container-color);
-            border: 1px solid var(--accent-color);
-            flex-grow: 1;
-            padding: var(--space-3);
+    // ---- the two columns: the deck (list + card detail) and the card search
+    &>.page-body {
+        flex: 1;
+        min-height: 0;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) clamp(320px, 34vw, 400px);
+        gap: var(--page-gap);
+
+        &>section {
+            min-height: 0;
             display: flex;
             flex-direction: column;
-            overflow: hidden; // giusto qui
         }
 
-        &>.view-content {
-            position: relative; // anchors the detail drawer
-            gap: var(--space-2);
+        &>.search-panel {
+            gap: var(--page-gap);
+            padding: var(--space-3);
+            background-color: var(--bg-container-color);
+            border: 1px solid var(--accent-color);
+            overflow: hidden;
+        }
 
+        &>.deck-view-container>.view-content {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            position: relative; // anchors the detail drawer
+
+            // the deck: identity, validity and cards
             &>.deck-list-section {
+                flex: 1;
+                min-width: 0;
+                min-height: 0;
                 display: flex;
                 flex-direction: column;
                 gap: var(--space-2);
-                flex: 1;
-                min-height: 0;
+                padding: var(--space-3);
+                background-color: var(--bg-container-color);
+                border: 1px solid var(--accent-color);
+                overflow: hidden;
             }
 
             // plenty of room: list and card detail side by side, half and half
@@ -99,7 +122,7 @@ $wide-breakpoint: 1360px;
                 display: grid;
                 grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
                 grid-template-rows: minmax(0, 1fr);
-                gap: var(--space-4);
+                gap: var(--page-gap);
             }
         }
     }
@@ -112,7 +135,18 @@ $wide-breakpoint: 1360px;
     gap: var(--space-3);
     align-items: start;
 
-    &>.identity-art {
+    // the art with the "change identity" button under it
+    &>.identity-art-column {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+
+        &>.change-identity {
+            width: 100%;
+        }
+    }
+
+    & .identity-art {
         padding: 0;
         border: 0;
         background: none;
@@ -135,6 +169,12 @@ $wide-breakpoint: 1360px;
             align-items: center;
             gap: var(--space-2);
 
+            &>.identity-name {
+                flex: 1;
+                min-width: 0;
+            }
+
+
             &>img {
                 width: 24px;
                 height: 24px;
@@ -155,14 +195,10 @@ $wide-breakpoint: 1360px;
     }
 }
 
-// Right half of the deck view when there is room: format/identity selects above the card detail.
+// Right half of the deck view when there is room: the card detail next to the list.
 // Narrower, the wrapper disappears (display: contents) and the detail is the drawer below.
 .detail-column {
     display: contents;
-}
-
-.settings-wide {
-    display: none;
 }
 
 // Card detail sliding in from the right over the deck list
@@ -210,17 +246,6 @@ $wide-breakpoint: 1360px;
         gap: var(--space-2);
         min-width: 0;
         min-height: 0;
-    }
-
-    .settings-wide {
-        display: block;
-        flex-shrink: 0;
-        padding: var(--space-2) var(--space-3);
-        border: 1px solid var(--accent-color);
-    }
-
-    .settings-narrow {
-        display: none;
     }
 
     .detail-drawer,
@@ -303,17 +328,10 @@ select {
 }
 
 // format + identity side by side
-.deck-settings {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: var(--space-2);
-}
-
 .search-bar {
     display: flex;
     align-items: center;
     gap: var(--space-2);
-    margin-top: var(--space-2);
 
     &>input {
         flex: 1;
@@ -330,7 +348,6 @@ select {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: var(--space-2);
-    margin-top: var(--space-2);
 }
 
 .form-container,
@@ -382,11 +399,18 @@ select {
             white-space: nowrap;
         }
 
+        // fixed columns, so influence, faction and the stepper line up from row to row
         &>.card-item-meta {
-            display: flex;
+            display: grid;
+            grid-template-columns: 3.5rem 24px 1.25rem auto;
             align-items: center;
-            gap: var(--space-2);
+            column-gap: var(--space-2);
             flex-shrink: 0;
+
+            .meta-influence {
+                justify-self: end;
+                white-space: nowrap;
+            }
 
             img {
                 height: 24px;
@@ -472,14 +496,13 @@ select {
 
 // Is the deck legal in the chosen format, and what breaks the format's rules
 .format-status {
-    padding: var(--space-2) var(--space-3);
-    border-left: 3px solid var(--error-color);
-    background-color: color-mix(in srgb, var(--error-color) 10%, transparent);
+    padding-top: var(--space-2);
+    border-top: 1px solid var(--border-muted);
     font-size: .9rem;
+    color: var(--error-color);
 
     &.legal {
-        border-left-color: var(--accent-color);
-        background-color: var(--surface-hover);
+        color: var(--accent-color);
     }
 
     .format-verdict {
@@ -491,6 +514,11 @@ select {
         .material-symbols-rounded {
             font-size: 1.2rem;
         }
+    }
+
+    .format-issues,
+    .format-incomplete {
+        color: var(--fg-color);
     }
 
     .format-issues {
@@ -514,7 +542,6 @@ select {
 
 .legal-toggle {
     flex-shrink: 0;
-    margin-top: var(--space-2);
 }
 
 .cards-container-title {
@@ -539,11 +566,14 @@ select {
 }
 
 .visibility-panel {
+    flex-shrink: 0;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: var(--space-2);
     padding: var(--space-3);
+    background-color: var(--bg-container-color);
+    border: 1px solid var(--accent-color);
 
     & > .visibility-hint {
         margin-top: 0;
