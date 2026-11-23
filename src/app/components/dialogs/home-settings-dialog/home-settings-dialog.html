@@ -46,6 +46,13 @@
             <input type="color" id="customAccentColor" formControlName="customAccentColor" [placeholder]="'homeSettingsDialog.enterAValidColorE' | t" autocorrect="off" autocomplete="off">
         </div>
     </form>
+    <p class="p-subtitle">{{ 'homeSettingsDialog.myTranslations' | t }}</p>
+    <p class="p-note">{{ 'homeSettingsDialog.myTranslationsInfo' | t: [translations.userCount()] }}</p>
+    <div class="translations-actions">
+        <app-ui-button [text]="'homeSettingsDialog.exportTranslations' | t" icon="download" [disabled]="translations.userCount() === 0" (click)="exportTranslations()"></app-ui-button>
+        <app-ui-button [text]="'importButton' | t" icon="upload" (click)="fileInput.click()"></app-ui-button>
+        <input #fileInput type="file" accept="application/json,.json" hidden (change)="importTranslations($event)">
+    </div>
     <div dialog-actions-container>
         @if(data.user && data.user.role === 'admin') {
             <a href="https://console.firebase.google.com/project/novanet-2026/overview" target="_blank" rel="noopener">

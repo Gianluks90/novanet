@@ -73,7 +73,7 @@ export class CardsPage {
     private cardService: CardService) {
     // Translations load lazily: re-apply the filters (title search / "translated only") once they are in.
     effect(() => {
-      this.translations.active();
+      this.translations.revision();
       if (this.allCards.length) {
         this.applyFilters();
         this.cd.detectChanges();

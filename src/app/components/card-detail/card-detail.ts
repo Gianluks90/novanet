@@ -14,6 +14,9 @@ import { UserService } from '../../services/user-service';
 import { CdkMenu, CdkMenuTrigger } from '@angular/cdk/menu';
 import { TranslatePipe } from '../../i18n/translate-pipe';
 import { I18nService } from '../../i18n/i18n-service';
+import { Dialog } from '@angular/cdk/dialog';
+import { DIALOGS_CONFIG } from '../../const/dialogConfig';
+import { PersonalTranslationDialog } from '../dialogs/personal-translation-dialog/personal-translation-dialog';
 import { CardTranslationService } from '../../services/card-translation-service';
 
 @Component({
@@ -39,6 +42,7 @@ export class CardDetail {
   public zoomCardEmit = output<boolean>();
   private i18n = inject(I18nService);
   private translations = inject(CardTranslationService);
+  private dialog = inject(Dialog);
   public get locale(): string { return this.i18n.lang(); }
   public disableZoom = input<boolean>(false);
   public disableCenter = input<boolean>(false);
@@ -88,6 +92,23 @@ export class CardDetail {
 
   public zoomCard() {
     this.zoomCardEmit.emit(true);
+  }
+
+  /** True when the user already wrote their own translation of the selected card (current language). */
+  public hasPersonalTranslation(): boolean {
+    const card = this.selectedCard();
+    return !!card && !!this.translations.userTranslation(card.id);
+  }
+
+  public openTranslationDialog() {
+    const card = this.selectedCard();
+    if (!card) return;
+    this.dialog.open(PersonalTranslationDialog, {
+      ...DIALOGS_CONFIG,
+      panelClass: 'big-dialog-container',
+      disableClose: true,
+      data: { card },
+    });
   }
 
   public updateUserFavoriteCaption() {

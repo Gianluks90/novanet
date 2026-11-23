@@ -1,0 +1,51 @@
+<app-ui-dialog-container [dialogTitle]="'personalTranslationDialog.title' | t: [i18n.lang().toUpperCase()]">
+    <p class="p-note">{{ 'personalTranslationDialog.note' | t }}</p>
+    @let c = data.card;
+    <div class="translation-container">
+        <section class="preview-card-container">
+            <p class="section-subtitle">{{ 'personalTranslationDialog.original' | t }}</p>
+            <p class="section-title">{{ c.title }}</p>
+            <div class="effect-container">
+                <div class="card-text" [innerHTML]="c.text | nrIcons"></div>
+                @if (c.flavor) {
+                    <div class="flavor-text">{{ c.flavor }}</div>
+                }
+            </div>
+        </section>
+        <section>
+            <form [formGroup]="form" class="form-container">
+                <div class="form-group">
+                    <label for="title">{{ 'personalTranslationDialog.titleLabel' | t }}</label>
+                    <input type="text" id="title" formControlName="title" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <div class="effect-header">
+                        <label for="text">{{ 'personalTranslationDialog.effectLabel' | t }}</label>
+                        <span [cdkMenuTriggerFor]="menu" class="material-symbols-rounded">add</span>
+                    </div>
+                    <textarea id="text" formControlName="text" rows="5"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="flavor">{{ 'personalTranslationDialog.flavorLabel' | t }}</label>
+                    <textarea id="flavor" formControlName="flavor" rows="3"></textarea>
+                </div>
+            </form>
+        </section>
+    </div>
+    <div dialog-actions-container>
+        <app-ui-button [text]="'saveChangesButton' | t" icon="save" [disabled]="!form.valid || form.pristine" (click)="save()"></app-ui-button>
+        @if (hasPersonal) {
+            <app-ui-button [text]="'personalTranslationDialog.remove' | t" icon="delete" (click)="remove()"></app-ui-button>
+        }
+        <app-ui-button [text]="'closeButton' | t" icon="close" (click)="dialogRef.close()"></app-ui-button>
+    </div>
+</app-ui-dialog-container>
+
+<ng-template #menu>
+    <div class="lang-menu-container" cdkMenu>
+        <app-ui-button [text]="'personalTranslationDialog.boldText' | t" icon="format_bold" (click)="insert('<strong>text</strong>')"></app-ui-button>
+        <app-ui-button [text]="'personalTranslationDialog.creditIcon' | t" pipeIcon="[credit]" (click)="insert('[credit]')"></app-ui-button>
+        <app-ui-button [text]="'personalTranslationDialog.clickIcon' | t" pipeIcon="[click]" (click)="insert('[click]')"></app-ui-button>
+        <app-ui-button [text]="'personalTranslationDialog.memoryIcon' | t" pipeIcon="[mu]" (click)="insert('[mu]')"></app-ui-button>
+    </div>
+</ng-template>

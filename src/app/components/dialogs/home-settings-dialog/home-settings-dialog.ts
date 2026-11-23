@@ -1,4 +1,7 @@
 import { Component, inject } from '@angular/core';
+import { CardTranslationService } from '../../../services/card-translation-service';
+import { NotificationService } from '../../../services/notification-service';
+import { I18nService } from '../../../i18n/i18n-service';
 import { UIButton, UiDialogContainer } from '../../../ui';
 import { APP_VERSION } from '../../../const/appVersion';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
@@ -23,6 +26,9 @@ export class HomeSettingsDialog {
   public dialogRef = inject<DialogRef<DialogResult,HomeSettingsDialog>>(DialogRef);
   public data = inject(DIALOG_DATA) as { user: NovaUser | null, factions: Faction[] };
   public form: FormGroup;
+  public translations = inject(CardTranslationService);
+  private notification = inject(NotificationService);
+  private i18n = inject(I18nService);
 
   constructor(private fb: FormBuilder, private userService: UserService) {
     this.form = this.fb.group({
@@ -46,6 +52,32 @@ export class HomeSettingsDialog {
       }).catch((error) => {
         console.error('Error updating user info:', error);
       });
+    }
+  }
+
+  // PERSONAL TRANSLATIONS
+
+  public exportTranslations() {
+    const blob = new Blob([this.translations.exportUserTranslations()], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'novanet-translations.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  public async importTranslations(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+    try {
+      const count = await this.translations.importUserTranslations(await file.text());
+      this.notification.notify(this.i18n.t('notifications.translationsImported', [count]), 'check');
+    } catch {
+      this.notification.notify(this.i18n.t('notifications.translationsImportError'), 'dangerous');
+    } finally {
+      input.value = '';
     }
   }
 }

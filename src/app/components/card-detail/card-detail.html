@@ -139,6 +139,9 @@
 
 <ng-template #menu>
     <div class="lang-menu-container" cdkMenu>
+        @if (locale !== 'en') {
+            <app-ui-button [text]="(hasPersonalTranslation() ? 'cardDetail.editMyTranslation' : 'cardDetail.translate') | t" icon="translate" (click)="openTranslationDialog()"></app-ui-button>
+        }
         @if(firebase.$user() && card()?.flavor) {
              <app-ui-button [text]="'cardDetail.addCaptionToProfile' | t" icon="format_quote" (click)="updateUserFavoriteCaption()"></app-ui-button>
         }
