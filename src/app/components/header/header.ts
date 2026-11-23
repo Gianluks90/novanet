@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CdkMenu, CdkMenuItem, CdkMenuTrigger } from '@angular/cdk/menu';
 import { ThemeToggle } from '../theme-toggle/theme-toggle';
-import { UIButton, UiBadge } from '../../ui';
+import { UiBadge } from '../../ui';
 import { FirebaseService } from '../../services/firebase-service';
 import { AuthService } from '../../services/auth-service';
 import { SettingsService } from '../../services/settings-service';
@@ -12,7 +12,7 @@ import { TranslatePipe } from '../../i18n/translate-pipe';
 /** Top bar: home logo, main navigation, language, theme and account menu. */
 @Component({
   selector: 'app-header',
-  imports: [TranslatePipe, RouterLink, RouterLinkActive, CdkMenuTrigger, CdkMenu, CdkMenuItem, ThemeToggle, UIButton, UiBadge],
+  imports: [TranslatePipe, RouterLink, RouterLinkActive, CdkMenuTrigger, CdkMenu, CdkMenuItem, ThemeToggle, UiBadge],
   templateUrl: './header.html',
   styleUrl: './header.scss',
 })

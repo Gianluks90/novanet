@@ -36,10 +36,9 @@ export class App {
     });
 
     effect(() => {
-      if (this.firebaseService.$user()) {
-        this.backgroundImageUrl = this.firebaseService.$user()!.customBackgroundURL || null;
-        this.cd.detectChanges();
-      }
+      // Also runs on sign-out so the custom background doesn't outlive the session.
+      this.backgroundImageUrl = this.firebaseService.$user()?.customBackgroundURL || null;
+      this.cd.detectChanges();
     });
   }
 

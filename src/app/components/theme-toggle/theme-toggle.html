@@ -1,5 +1,5 @@
-<div class="theme-toggle-main-container" [style.color]="'var(--accent-color)'">
-    @let isLight = (currentTheme | async) === 'light';
-    <app-ui-icon-button [icon]="isLight ? 'bedtime' : 'sunny'"
-        [label]="(isLight ? 'header.themeDark' : 'header.themeLight') | t" (click)="toggleTheme()"></app-ui-icon-button>
-</div>
+@let isLight = (currentTheme | async) === 'light';
+<button type="button" class="header-btn" [attr.aria-label]="(isLight ? 'header.themeDark' : 'header.themeLight') | t"
+    [title]="(isLight ? 'header.themeDark' : 'header.themeLight') | t" (click)="toggleTheme()">
+    <span class="material-symbols-rounded" aria-hidden="true">{{ isLight ? 'bedtime' : 'sunny' }}</span>
+</button>

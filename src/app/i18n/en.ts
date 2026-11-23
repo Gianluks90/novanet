@@ -163,6 +163,7 @@ export const EN = {
   "header.themeLight": "Switch to light theme",
   "header.userMenu": "Account menu",
   "header.signIn": "Sign in",
+  "header.signInOrRegister": "Sign in / Register",
   "header.signOut": "Sign out",
   "header.settings": "Settings",
   "unsavedChanges.title": "Unsaved changes",

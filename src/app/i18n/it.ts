@@ -165,6 +165,7 @@ export const IT: Record<TranslationKey, string> = {
   "header.themeLight": "Passa al tema chiaro",
   "header.userMenu": "Menu account",
   "header.signIn": "Accedi",
+  "header.signInOrRegister": "Accedi / Registrati",
   "header.signOut": "Esci",
   "header.settings": "Impostazioni",
   "unsavedChanges.title": "Modifiche non salvate",

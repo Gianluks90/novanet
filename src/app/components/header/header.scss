@@ -69,33 +69,6 @@
     gap: var(--space-3);
 }
 
-.header-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-1);
-    height: var(--control-height);
-    min-width: var(--control-height);
-    padding: 0 var(--space-2);
-    justify-content: center;
-    border: 1px solid transparent;
-    border-radius: var(--radius-sm);
-    background: transparent;
-    color: var(--accent-color);
-    font-size: var(--font-size-md);
-    cursor: pointer;
-    transition:
-        transform var(--duration-base),
-        border-color var(--duration-base);
-
-    &:hover {
-        border-color: var(--border-color);
-    }
-
-    .material-symbols-rounded {
-        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48;
-    }
-}
-
 .avatar-btn {
     padding: 0;
     border-radius: 50%;
@@ -109,6 +82,10 @@
     object-fit: cover;
 }
 
-.sign-in {
-    width: 120px;
+.sign-in-btn {
+    padding: 0 var(--space-3);
+    gap: var(--space-2);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-caps);
+    white-space: nowrap;
 }

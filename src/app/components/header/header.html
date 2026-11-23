@@ -33,9 +33,10 @@
                 }
             </button>
         } @else {
-            <div class="sign-in">
-                <app-ui-button size="small" icon="login" [text]="'header.signIn' | t" (click)="signIn()"></app-ui-button>
-            </div>
+            <button type="button" class="header-btn sign-in-btn" (click)="signIn()">
+                <span class="material-symbols-rounded" aria-hidden="true">login</span>
+                <span class="sign-in-label">{{ 'header.signInOrRegister' | t }}</span>
+            </button>
         }
     </section>
 </div>
