@@ -3,6 +3,7 @@
 @use './styles/base';
 @use './styles/menu';
 @use './styles/header-btn';
+@use './styles/form-feedback';
 
 * {
   font-family: 'Genos', sans-serif;
@@ -200,7 +201,7 @@ form.form-container {
 
 // Input
 
-input[type="text"], input[type="number"] {
+input[type="text"], input[type="number"], input[type="email"], input[type="password"] {
   padding: 8px;
   border: 1px solid var(--accent-color);
   border-radius: 4px;

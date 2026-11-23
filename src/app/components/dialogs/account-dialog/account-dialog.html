@@ -1,0 +1,115 @@
+<app-ui-dialog-container [dialogTitle]="'account.title' | t">
+    @if (info(); as account) {
+        @if (error(); as errorKey) {
+            <div class="form-error" role="alert">{{ errorKey | t }}</div>
+        }
+        @if (notice(); as message) {
+            <div class="form-notice" role="status">{{ message }}</div>
+        }
+
+        <section class="account-section">
+            <div class="email-row">
+                <div>
+                    <span class="section-label">{{ 'account.emailLabel' | t }}</span>
+                    <span class="email">{{ account.email }}</span>
+                </div>
+                @if (account.emailVerified) {
+                    <app-ui-badge icon="verified" tone="accent" [label]="'account.verified' | t"></app-ui-badge>
+                } @else {
+                    <app-ui-badge icon="warning" tone="warn" [label]="'account.unverified' | t"></app-ui-badge>
+                }
+            </div>
+            @if (!account.emailVerified) {
+                <p class="section-text">{{ 'account.verifyIntro' | t: [account.email] }}</p>
+                <div class="button-row">
+                    <app-ui-button icon="mail" [disabled]="busy() || resendIn() > 0"
+                        [text]="resendIn() > 0 ? ('account.resendWait' | t: [resendIn()]) : ('account.resendVerification' | t)"
+                        (click)="resend()"></app-ui-button>
+                    <app-ui-button icon="refresh" [disabled]="busy()" [text]="'account.checkVerification' | t"
+                        (click)="checkVerification()"></app-ui-button>
+                </div>
+            }
+        </section>
+
+        <section class="account-section">
+            <span class="section-label">{{ 'account.methods' | t }}</span>
+            <div class="methods">
+                @if (account.hasPassword) {
+                    <app-ui-badge icon="password" [label]="'account.methodPassword' | t"></app-ui-badge>
+                }
+                @if (account.hasGoogle) {
+                    <app-ui-badge icon="account_circle" [label]="'account.methodGoogle' | t"></app-ui-badge>
+                }
+            </div>
+        </section>
+
+        <section class="account-section">
+            @if (account.hasPassword) {
+                <span class="section-label">{{ 'account.changePassword' | t }}</span>
+                <form class="form-container" [formGroup]="passwordForm" (ngSubmit)="changePassword()" novalidate>
+                    <div class="form-group">
+                        <label for="account-current">{{ 'account.currentPassword' | t }}</label>
+                        <input type="password" id="account-current" formControlName="current" autocomplete="current-password"
+                            [attr.aria-invalid]="invalid(passwordForm.controls.current)">
+                    </div>
+                    <div class="form-group">
+                        <label for="account-new">{{ 'account.newPassword' | t }}</label>
+                        <input type="password" id="account-new" formControlName="next" autocomplete="new-password"
+                            [attr.aria-invalid]="invalid(passwordForm.controls.next)">
+                        @if (invalid(passwordForm.controls.next)) {
+                            <span class="field-error">{{ 'authDialog.errorPasswordShort' | t }}</span>
+                        } @else {
+                            <span class="field-hint">{{ 'authDialog.passwordHint' | t }}</span>
+                        }
+                    </div>
+                    <div class="form-group">
+                        <label for="account-confirm">{{ 'account.confirmNewPassword' | t }}</label>
+                        <input type="password" id="account-confirm" formControlName="confirm" autocomplete="new-password"
+                            [attr.aria-invalid]="passwordMismatch">
+                        @if (passwordMismatch) {
+                            <span class="field-error">{{ 'authDialog.errorPasswordMismatch' | t }}</span>
+                        }
+                    </div>
+                    <!-- no (click): a plain submit button, so Enter submits too -->
+                    <app-ui-button icon="key" [text]="'account.changePassword' | t" [disabled]="busy()"></app-ui-button>
+                </form>
+            } @else {
+                <span class="section-label">{{ 'account.setPassword' | t }}</span>
+                <p class="section-text">{{ 'account.setPasswordInfo' | t }}</p>
+                <app-ui-button icon="mail" [text]="'account.sendSetPasswordLink' | t" [disabled]="busy()"
+                    (click)="sendSetPasswordLink()"></app-ui-button>
+            }
+        </section>
+
+        <section class="account-section danger">
+            <span class="section-label">{{ 'account.deleteTitle' | t }}</span>
+            <p class="section-text">{{ 'account.deleteInfo' | t }}</p>
+            @if (confirmingDelete()) {
+                @if (account.hasPassword) {
+                    <div class="form-container">
+                        <div class="form-group">
+                            <label for="account-delete-password">{{ 'account.deleteConfirmPassword' | t }}</label>
+                            <input type="password" id="account-delete-password" [formControl]="deletePassword"
+                                autocomplete="current-password" [attr.aria-invalid]="invalid(deletePassword)"
+                                (keydown.enter)="confirmDelete()">
+                        </div>
+                    </div>
+                } @else {
+                    <p class="section-text">{{ 'account.deleteConfirmGoogle' | t }}</p>
+                }
+                <div class="button-row">
+                    <app-ui-button icon="delete_forever" [text]="'account.deleteConfirmButton' | t" [disabled]="busy()"
+                        (click)="confirmDelete()"></app-ui-button>
+                    <app-ui-button icon="close" [text]="'account.cancel' | t" [disabled]="busy()"
+                        (click)="cancelDelete()"></app-ui-button>
+                </div>
+            } @else {
+                <app-ui-button icon="delete" [text]="'account.deleteButton' | t" [disabled]="busy()"
+                    (click)="startDelete()"></app-ui-button>
+            }
+        </section>
+    }
+    <div dialog-actions-container>
+        <app-ui-button [text]="'closeButton' | t" icon="close" (click)="close()"></app-ui-button>
+    </div>
+</app-ui-dialog-container>

@@ -55,6 +55,13 @@
 <ng-template #userMenu>
     <div class="ui-menu" cdkMenu>
         <p class="ui-menu-title">{{ userName }}</p>
+        <button type="button" class="ui-menu-item" cdkMenuItem (cdkMenuItemTriggered)="openAccount()">
+            <span class="material-symbols-rounded" aria-hidden="true">manage_accounts</span>
+            {{ 'header.account' | t }}
+            @if (unverified) {
+                <app-ui-badge icon="warning" tone="warn" [iconOnly]="true" [label]="'account.unverified' | t"></app-ui-badge>
+            }
+        </button>
         <button type="button" class="ui-menu-item" cdkMenuItem (cdkMenuItemTriggered)="openSettings()">
             <span class="material-symbols-rounded" aria-hidden="true">settings</span>
             {{ 'header.settings' | t }}

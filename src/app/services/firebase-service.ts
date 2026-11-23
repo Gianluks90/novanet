@@ -1,6 +1,6 @@
 import { effect, Injectable, signal, WritableSignal } from "@angular/core";
 import { initializeApp } from "firebase/app";
-import { doc, DocumentData, Firestore, getDoc, getFirestore, onSnapshot, setDoc, Timestamp } from "firebase/firestore";
+import { collection, deleteDoc, doc, DocumentData, Firestore, getDoc, getDocs, getFirestore, onSnapshot, query, setDoc, Timestamp, where, writeBatch } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { FIREBASE_CONFIG } from "../environment/firebaseConfig";
 import { NovaUser } from "../models/NovaUser";
@@ -12,6 +12,8 @@ export class FirebaseService {
     public database: Firestore;
     public $user: WritableSignal<NovaUser | null> = signal(null);
     public user: NovaUser | null = null;
+    /** Name chosen at registration, used while the auth profile does not have a display name yet. */
+    public pendingDisplayName: string | null = null;
 
     constructor() {
         const app = initializeApp(FIREBASE_CONFIG);
@@ -72,10 +74,26 @@ export class FirebaseService {
             await setDoc(docRef, {
                 uid: user.uid,
                 email: user.email ?? null,
-                displayName: user.displayName ?? null,
+                displayName: user.displayName ?? this.pendingDisplayName ?? null,
                 photoURL: user.photoURL ?? null,
                 createdAt: Timestamp.now(),
             });
         }
+    }
+
+    /**
+     * Deletes everything the account has online: its decks, then its profile. Must run while the
+     * user is still signed in (the Firestore rules need it), i.e. before the auth account is deleted.
+     */
+    public async deleteUserData(uid: string): Promise<void> {
+        this.stopProfileListener();
+        const decks = await getDocs(query(collection(this.database, 'decks'), where('createdBy', '==', uid)));
+        // a batch holds at most 500 writes
+        for (let i = 0; i < decks.docs.length; i += 400) {
+            const batch = writeBatch(this.database);
+            decks.docs.slice(i, i + 400).forEach(d => batch.delete(d.ref));
+            await batch.commit();
+        }
+        await deleteDoc(doc(this.database, 'users', uid));
     }
 }

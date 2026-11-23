@@ -1,0 +1,42 @@
+form app-ui-button {
+    // the primary button sits at the end of the form, a bit apart from the last field
+    margin-top: var(--space-2);
+}
+
+.auth-divider {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin: var(--space-4) 0;
+    font-size: .85rem;
+    text-transform: uppercase;
+    opacity: .7;
+
+    &::before,
+    &::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background-color: var(--border-muted);
+    }
+}
+
+.auth-links {
+    display: flex;
+    justify-content: center;
+    margin: var(--space-3) 0;
+}
+
+.link-btn {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--accent-color);
+    font-size: .9rem;
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover {
+        text-decoration: none;
+    }
+}

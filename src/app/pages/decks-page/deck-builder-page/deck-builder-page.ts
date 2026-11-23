@@ -238,7 +238,7 @@ export class DeckBuilderPage {
     try {
       await this.saveDeck();
       if (!getAuth().currentUser) {
-        const signedIn = await this.authService.loginWithGoogle();
+        const signedIn = await this.authService.signIn();
         if (!signedIn) return;
       }
       this.deck = await this.deckService.uploadLocalDeck(this.deck.id);
@@ -265,12 +265,31 @@ export class DeckBuilderPage {
     }
   }
 
-  public setVisibility(visibility: 'private' | 'public' | 'shared') {
+  /** Forces the visibility selector to show a value other than the deck's (to undo a refused click). */
+  public visibilityShown: string | null = null;
+
+  public async setVisibility(visibility: 'private' | 'public' | 'shared') {
     if (!this.deck || !this.isOwner) return;
+    if (visibility === 'public' && !(await this.canPublish())) {
+      // The selector already switched on its own: show the real value again.
+      this.visibilityShown = visibility;
+      this.cd.detectChanges();
+      this.visibilityShown = null;
+      this.cd.detectChanges();
+      this.notification.notify(this.i18n.t('deckBuilderPage.verifyToPublish'), 'warning');
+      this.authService.openAccount();
+      return;
+    }
     // Decks created before authors were tracked get theirs recorded the first time they are shared.
     const author = this.deck.originalAuthorId ? {} : this.deckService.authorFields(this.deck);
     Object.assign(this.deck, author, { visibility });
     this.deckService.updateDeck(this.deck.id, { visibility, ...author });
+  }
+
+  /** Public decks need a verified email; the account may have been verified since the page loaded. */
+  private async canPublish(): Promise<boolean> {
+    if (this.authService.info()?.emailVerified) return true;
+    return this.authService.refreshVerification().catch(() => false);
   }
 
   public cloneDeck() {

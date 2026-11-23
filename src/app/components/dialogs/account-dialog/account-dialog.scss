@@ -1,0 +1,54 @@
+.account-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-4) 0;
+    border-bottom: 1px solid var(--border-muted);
+
+    &:first-of-type {
+        padding-top: 0;
+    }
+
+    &.danger {
+        border-bottom: 0;
+
+        .section-label {
+            color: var(--error-color);
+        }
+    }
+}
+
+.section-label {
+    display: block;
+    font-size: .85rem;
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-caps);
+    opacity: .8;
+}
+
+.section-text {
+    font-size: 1rem;
+    opacity: .85;
+}
+
+.email-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+
+    .email {
+        word-break: break-all;
+    }
+}
+
+.methods,
+.button-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+}
+
+.button-row app-ui-button {
+    flex: 1 1 auto;
+}

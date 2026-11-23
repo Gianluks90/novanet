@@ -25,7 +25,7 @@
         @if (isOwner && mode === 'visibility') {
         <div class="visibility-panel">
             <p class="section-label">{{ 'deckBuilderPage.deckVisibility' | t }}</p>
-            <app-ui-segmented [options]="visibilityOptions" [value]="deck?.visibility || 'private'"
+            <app-ui-segmented [options]="visibilityOptions" [value]="visibilityShown ?? deck?.visibility ?? 'private'"
                 (valueChange)="setVisibility($any($event))"></app-ui-segmented>
             <p class="p-note visibility-hint">{{ visibilityHint | t }}</p>
         </div>

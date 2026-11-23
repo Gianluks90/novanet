@@ -19,7 +19,8 @@ service cloud.firestore {
       allow update: if isSignedIn() && request.auth.uid == userId
                     && !request.resource.data.diff(resource.data).affectedKeys()
                         .hasAny(['role', 'uid', 'email', 'createdAt']);
-      allow delete: if false;
+      // an account can delete its own profile (AuthService.deleteAccount removes the decks first, then this)
+      allow delete: if isSignedIn() && request.auth.uid == userId;
     }
 
     // decks/{deckId} - owned by the user in createdBy. Any signed-in user
@@ -57,6 +58,13 @@ service cloud.firestore {
         || request.resource.data.get('originalAuthorId', null) != null;
     }
 
+    // Publishing in the public gallery needs a verified email (Google accounts always are). The
+    // client refreshes the ID token after the user verifies (AuthService.refreshVerification).
+    function publicNeedsVerifiedEmail() {
+      return request.resource.data.get('visibility', 'private') != 'public'
+        || request.auth.token.get('email_verified', false) == true;
+    }
+
     match /decks/{deckId} {
       allow read: if isSignedIn() && (
         resource.data.createdBy == request.auth.uid ||
@@ -66,14 +74,16 @@ service cloud.firestore {
       allow create: if isSignedIn() && request.resource.data.createdBy == request.auth.uid
                     && request.resource.data.get('visibility', 'private') in ['private', 'shared', 'public']
                     && authorIsValidOnCreate()
-                    && publicNeedsAuthor();
+                    && publicNeedsAuthor()
+                    && publicNeedsVerifiedEmail();
       allow update: if isSignedIn()
                     && resource.data.createdBy == request.auth.uid
                     && request.resource.data.createdBy == request.auth.uid
                     && request.resource.data.get('visibility', 'private') in ['private', 'shared', 'public']
                     && authorIsPreservedOnUpdate()
                     && request.resource.data.get('originalAuthorName', null) == resource.data.get('originalAuthorName', request.resource.data.get('originalAuthorName', null))
-                    && publicNeedsAuthor();
+                    && publicNeedsAuthor()
+                    && publicNeedsVerifiedEmail();
       allow delete: if isSignedIn() && resource.data.createdBy == request.auth.uid;
     }
 

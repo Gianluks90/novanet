@@ -1,0 +1,86 @@
+<app-ui-dialog-container [dialogTitle]="title() | t">
+    @if (resetSentTo(); as sentTo) {
+        <div class="form-notice" role="status">{{ 'authDialog.resetSent' | t: [sentTo] }}</div>
+        <div class="auth-links">
+            <button type="button" class="link-btn" (click)="setMode('signin')">{{ 'authDialog.backToSignIn' | t }}</button>
+        </div>
+    } @else {
+        <p>{{ intro() | t }}</p>
+        <br>
+        @if (error(); as errorKey) {
+            <div class="form-error" role="alert">{{ errorKey | t }}</div>
+        }
+        <form class="form-container" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+            @if (mode() === 'register') {
+                <div class="form-group">
+                    <label for="auth-name">{{ 'authDialog.displayName' | t }}</label>
+                    <input type="text" id="auth-name" formControlName="name" autocomplete="nickname" autocorrect="off"
+                        [attr.aria-invalid]="showError('name')">
+                    @if (showError('name')) {
+                        <span class="field-error">{{ 'authDialog.errorNameRequired' | t }}</span>
+                    }
+                </div>
+            }
+            <div class="form-group">
+                <label for="auth-email">{{ 'authDialog.email' | t }}</label>
+                <input type="email" id="auth-email" formControlName="email" autocomplete="email" autocorrect="off"
+                    autocapitalize="off" spellcheck="false" [attr.aria-invalid]="showError('email')">
+                @if (showError('email')) {
+                    <span class="field-error">{{ 'authDialog.errorEmailInvalid' | t }}</span>
+                }
+            </div>
+            @if (mode() !== 'reset') {
+                <div class="form-group">
+                    <div class="label-container">
+                        <label for="auth-password">{{ 'authDialog.password' | t }}</label>
+                        @if (mode() === 'signin') {
+                            <button type="button" class="link-btn" (click)="setMode('reset')">{{ 'authDialog.forgotPassword' | t }}</button>
+                        }
+                    </div>
+                    <input type="password" id="auth-password" formControlName="password"
+                        [attr.autocomplete]="mode() === 'register' ? 'new-password' : 'current-password'"
+                        [attr.aria-invalid]="showError('password')">
+                    @if (showError('password')) {
+                        <span class="field-error">{{ (mode() === 'register' ? 'authDialog.errorPasswordShort' : 'authDialog.errorPasswordRequired') | t }}</span>
+                    } @else if (mode() === 'register') {
+                        <span class="field-hint">{{ 'authDialog.passwordHint' | t }}</span>
+                    }
+                </div>
+            }
+            @if (mode() === 'register') {
+                <div class="form-group">
+                    <label for="auth-confirm">{{ 'authDialog.confirmPassword' | t }}</label>
+                    <input type="password" id="auth-confirm" formControlName="confirm" autocomplete="new-password"
+                        [attr.aria-invalid]="passwordMismatch">
+                    @if (passwordMismatch) {
+                        <span class="field-error">{{ 'authDialog.errorPasswordMismatch' | t }}</span>
+                    }
+                </div>
+            }
+            <!-- no (click): a plain submit button, so Enter in any field submits the form too -->
+            <app-ui-button [text]="submitLabel() | t" [icon]="mode() === 'reset' ? 'mail' : 'login'" [disabled]="busy()"></app-ui-button>
+        </form>
+
+        @if (mode() !== 'reset') {
+            <div class="auth-divider" role="separator"><span>{{ 'authDialog.or' | t }}</span></div>
+            <app-ui-button [text]="'authDialog.continueWithGoogle' | t" icon="account_circle" [disabled]="busy()" (click)="google()"></app-ui-button>
+        }
+
+        <div class="auth-links">
+            @switch (mode()) {
+                @case ('signin') {
+                    <button type="button" class="link-btn" (click)="setMode('register')">{{ 'authDialog.noAccount' | t }}</button>
+                }
+                @case ('register') {
+                    <button type="button" class="link-btn" (click)="setMode('signin')">{{ 'authDialog.haveAccount' | t }}</button>
+                }
+                @case ('reset') {
+                    <button type="button" class="link-btn" (click)="setMode('signin')">{{ 'authDialog.backToSignIn' | t }}</button>
+                }
+            }
+        </div>
+    }
+    <div dialog-actions-container>
+        <app-ui-button [text]="'closeButton' | t" icon="close" (click)="close()"></app-ui-button>
+    </div>
+</app-ui-dialog-container>

@@ -47,6 +47,16 @@ export class Header {
     void this.settings.open();
   }
 
+  /** Signed in with an email that was not verified yet. */
+  public get unverified(): boolean {
+    const info = this.auth.info();
+    return !!info && !info.emailVerified;
+  }
+
+  public openAccount() {
+    this.auth.openAccount();
+  }
+
   public signIn() {
     void this.auth.signIn();
   }
