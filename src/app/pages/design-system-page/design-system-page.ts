@@ -1,4 +1,5 @@
 import { Component, signal } from '@angular/core';
+import { CdkMenu, CdkMenuItem, CdkMenuTrigger } from '@angular/cdk/menu';
 import { UIButton, UiBadge, UiIconButton, UiSegmented, UiToggle, SegmentedOption } from '../../ui';
 
 /**
@@ -8,7 +9,7 @@ import { UIButton, UiBadge, UiIconButton, UiSegmented, UiToggle, SegmentedOption
  */
 @Component({
   selector: 'app-design-system-page',
-  imports: [UIButton, UiBadge, UiIconButton, UiSegmented, UiToggle],
+  imports: [UIButton, UiBadge, UiIconButton, UiSegmented, UiToggle, CdkMenuTrigger, CdkMenu, CdkMenuItem],
   templateUrl: './design-system-page.html',
   styleUrl: './design-system-page.scss',
 })
@@ -43,4 +44,5 @@ export class DesignSystemPage {
   public visibility = signal('private');
   public toggle = signal(false);
   public activeIcon = signal(false);
+  public lastMenuAction = signal('—');
 }

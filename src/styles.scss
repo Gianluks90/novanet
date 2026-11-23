@@ -1,6 +1,7 @@
 /* Global styles. Design tokens and foundation live in src/styles/ (see /#/design-system). */
 @use './styles/tokens';
 @use './styles/base';
+@use './styles/menu';
 
 * {
   font-family: 'Genos', sans-serif;

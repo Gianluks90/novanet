@@ -32,7 +32,7 @@
                 <app-ui-button [text]="'homePage.deckBuilder' | t" icon="stack_hexagon"
                     [routerLink]="'/decks/list'"></app-ui-button>
                 <app-ui-button [text]="'homePage.play' | t" [disabled]="true" icon="group"></app-ui-button>
-                <app-ui-button [text]="firebase.$user() ? 'logout' : 'login/register'"
+                <app-ui-button [text]="(firebase.$user() ? 'header.signOut' : 'header.signIn') | t"
                     [icon]="firebase.$user() ? 'logout' : 'login'" (click)="toggleSession()"></app-ui-button>
                 <p class="version">v {{appVersion}}</p>
             </div>

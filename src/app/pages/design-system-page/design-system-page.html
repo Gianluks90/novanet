@@ -80,6 +80,26 @@
     </section>
 
     <section>
+        <h2>Menu</h2>
+        <p class="p-note">Global classes <code>.ui-menu</code>, <code>.ui-menu-title</code>, <code>.ui-menu-item</code> (<code>src/styles/_menu.scss</code>) on top of the CDK menu (<code>cdkMenuTriggerFor</code>, <code>cdkMenu</code>, <code>cdkMenuItem</code>): keyboard navigation and focus handling come from the CDK. Used by the header language and account menus.</p>
+        <div class="row">
+            <button type="button" class="ds-menu-trigger" [cdkMenuTriggerFor]="demoMenu">Open menu</button>
+            <span>Last action: <code>{{ lastMenuAction() }}</code></span>
+        </div>
+        <ng-template #demoMenu>
+            <div class="ui-menu" cdkMenu>
+                <p class="ui-menu-title">Heading</p>
+                <button type="button" class="ui-menu-item" cdkMenuItem (cdkMenuItemTriggered)="lastMenuAction.set('settings')">
+                    <span class="material-symbols-rounded" aria-hidden="true">settings</span> Settings
+                </button>
+                <button type="button" class="ui-menu-item" cdkMenuItem (cdkMenuItemTriggered)="lastMenuAction.set('logout')">
+                    <span class="material-symbols-rounded" aria-hidden="true">logout</span> Sign out
+                </button>
+            </div>
+        </ng-template>
+    </section>
+
+    <section>
         <h2>Badges</h2>
         <div class="row">
             <app-ui-badge icon="computer" label="This device"></app-ui-badge>

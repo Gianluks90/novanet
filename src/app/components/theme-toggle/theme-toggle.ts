@@ -1,10 +1,12 @@
 import { Component, inject } from '@angular/core';
-import { ThemeService } from '../../services/theme-service';
 import { AsyncPipe } from '@angular/common';
+import { ThemeService } from '../../services/theme-service';
+import { UiIconButton } from '../../ui';
+import { TranslatePipe } from '../../i18n/translate-pipe';
 
 @Component({
   selector: 'app-theme-toggle',
-  imports: [AsyncPipe],
+  imports: [AsyncPipe, UiIconButton, TranslatePipe],
   templateUrl: './theme-toggle.html',
   styleUrl: './theme-toggle.scss',
 })

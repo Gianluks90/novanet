@@ -9,10 +9,9 @@
     padding: var(--space-1) 0;
     border: 0;
     background: transparent;
-    color: var(--fg-color);
-    font-size: var(--font-size-md);
-    text-transform: uppercase;
-    letter-spacing: var(--letter-spacing-caps);
+    // take the look of the surrounding text (buttons don't inherit it by default)
+    color: inherit;
+    font: inherit;
     cursor: pointer;
 
     &:disabled {
@@ -24,8 +23,8 @@
 .track {
     position: relative;
     flex-shrink: 0;
-    width: 36px;
-    height: 18px;
+    width: 2.2em;
+    height: 1.1em;
     border: 1px solid var(--border-color);
     border-radius: var(--radius-sm);
     background-color: var(--bg-color);
@@ -34,10 +33,10 @@
 
 .thumb {
     position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 12px;
-    height: 12px;
+    top: 0.125em;
+    left: 0.125em;
+    width: 0.75em;
+    height: 0.75em;
     border-radius: 2px;
     background-color: var(--accent-color);
     transition:
@@ -51,7 +50,7 @@
     }
 
     .thumb {
-        transform: translateX(18px);
+        transform: translateX(1.1em);
         background-color: var(--on-accent);
     }
 }

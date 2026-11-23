@@ -153,6 +153,18 @@ export const EN = {
   "decksListPage.viewPublic": "Public",
   "decksListPage.by": "by {0}",
   "deckBuilderPage.originalAuthor": "Original author: {0}",
+  "nav.cards": "Cards",
+  "nav.decks": "Decks",
+  "nav.play": "Play",
+  "header.home": "NovaNet home",
+  "header.comingSoon": "Soon",
+  "header.language": "Language",
+  "header.themeDark": "Switch to dark theme",
+  "header.themeLight": "Switch to light theme",
+  "header.userMenu": "Account menu",
+  "header.signIn": "Sign in",
+  "header.signOut": "Sign out",
+  "header.settings": "Settings",
 } as const;
 
 export type TranslationKey = keyof typeof EN;

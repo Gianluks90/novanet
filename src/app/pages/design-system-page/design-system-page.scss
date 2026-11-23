@@ -114,3 +114,14 @@
     justify-content: center;
     border: 1px solid var(--border-color);
 }
+
+.ds-menu-trigger {
+    height: var(--control-height);
+    padding: 0 var(--space-4);
+    border: 1px solid var(--border-color);
+    background: var(--bg-color);
+    color: var(--fg-color);
+    font-size: var(--font-size-md);
+    text-transform: uppercase;
+    cursor: pointer;
+}

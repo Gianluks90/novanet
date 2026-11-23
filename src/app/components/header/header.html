@@ -1,16 +1,66 @@
-<div class="header-main-container" [class.custom-background-overlay]="customBackground">
-    <div class="logo" [routerLink]="'/'" [style.background-color]="'var(--accent-color)'"
-        [style.mask]="'url(./images/logo/novanet.svg) no-repeat center / contain'"
-        [style.-webkit-mask]="'url(./images/logo/novanet.svg) no-repeat center / contain'"></div>
+<div class="header-main-container">
+    <a class="logo-link" routerLink="/" [attr.aria-label]="'header.home' | t" [title]="'header.home' | t">
+        <div class="logo" [style.background-color]="'var(--accent-color)'"
+            [style.mask]="'url(./images/logo/novanet.svg) no-repeat center / contain'"
+            [style.-webkit-mask]="'url(./images/logo/novanet.svg) no-repeat center / contain'"></div>
+    </a>
+
+    <nav class="main-nav">
+        <a class="nav-link" routerLink="/cards" routerLinkActive="active">{{ 'nav.cards' | t }}</a>
+        <a class="nav-link" routerLink="/decks" routerLinkActive="active">{{ 'nav.decks' | t }}</a>
+        <span class="nav-link disabled" aria-disabled="true">
+            {{ 'nav.play' | t }}
+            <app-ui-badge [label]="'header.comingSoon' | t"></app-ui-badge>
+        </span>
+    </nav>
+
     <section class="action-section">
-        <div class="material-symbols-rounded" [cdkMenuTriggerFor]="menu">translate</div>
+        <button type="button" class="header-btn" [cdkMenuTriggerFor]="languageMenu"
+            [attr.aria-label]="'header.language' | t" [title]="'header.language' | t">
+            <span class="material-symbols-rounded" aria-hidden="true">translate</span>
+            <span class="lang-code">{{ locale.toUpperCase() }}</span>
+        </button>
+
         <app-theme-toggle></app-theme-toggle>
+
+        @if (firebase.$user()) {
+            <button type="button" class="header-btn avatar-btn" [cdkMenuTriggerFor]="userMenu"
+                [attr.aria-label]="'header.userMenu' | t" [title]="userName">
+                @if (avatarUrl) {
+                    <img class="avatar" [src]="avatarUrl" alt="" referrerpolicy="no-referrer">
+                } @else {
+                    <span class="material-symbols-rounded" aria-hidden="true">account_circle</span>
+                }
+            </button>
+        } @else {
+            <div class="sign-in">
+                <app-ui-button size="small" icon="login" [text]="'header.signIn' | t" (click)="signIn()"></app-ui-button>
+            </div>
+        }
     </section>
 </div>
 
-<ng-template #menu>
-    <div class="lang-menu-container" cdkMenu>
-        <app-ui-button text="English" [icon]="locale === 'en' ? 'arrow_right' : ''" (click)="setLang('en')"></app-ui-button>
-        <app-ui-button text="Italiano" [icon]="locale === 'it' ? 'arrow_right' : ''" (click)="setLang('it')"></app-ui-button>
+<ng-template #languageMenu>
+    <div class="ui-menu" cdkMenu>
+        @for (language of languages; track language.code) {
+            <button type="button" class="ui-menu-item" cdkMenuItem (cdkMenuItemTriggered)="setLang(language.code)">
+                <span class="material-symbols-rounded" aria-hidden="true">{{ locale === language.code ? 'check' : '' }}</span>
+                {{ language.label }}
+            </button>
+        }
+    </div>
+</ng-template>
+
+<ng-template #userMenu>
+    <div class="ui-menu" cdkMenu>
+        <p class="ui-menu-title">{{ userName }}</p>
+        <button type="button" class="ui-menu-item" cdkMenuItem (cdkMenuItemTriggered)="openSettings()">
+            <span class="material-symbols-rounded" aria-hidden="true">settings</span>
+            {{ 'header.settings' | t }}
+        </button>
+        <button type="button" class="ui-menu-item" cdkMenuItem (cdkMenuItemTriggered)="signOut()">
+            <span class="material-symbols-rounded" aria-hidden="true">logout</span>
+            {{ 'header.signOut' | t }}
+        </button>
     </div>
 </ng-template>

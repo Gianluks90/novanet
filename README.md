@@ -6,6 +6,11 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 
 Added 2026-11-23. This README is the project TODO list.
 
+### Navigation and header (2026-11-23)
+
+- [x] **Done 2026-11-23** (`ng build` passes; not verified in the browser): the header now has the logo (home), main navigation **Cards · Decks · Play (disabled, "soon")** with the active page highlighted, a language menu (shows the current code), the theme toggle (now a labelled icon button) and an account area — "Sign in" button when signed out, avatar menu (name, Settings, Sign out) when signed in. Settings can be opened from any page (`SettingsService`, factions read from the cached reference data). Shared dropdown styles live in `src/styles/_menu.scss` on top of the CDK menu (keyboard navigation for free) and are shown in `#/design-system`. The home page's buttons got translated "sign in/out" labels and use the same settings service. The sign-in/sign-out flow shows a notification on errors.
+- [ ] Open: the card-detail and personal-translation menus still use the old per-component `.lang-menu-container` (migrate them to `.ui-menu`); the header is hidden-on-blur/scroll behaviour and a compact layout for narrow windows are not designed (the app blocks < 768 px anyway); an "unsaved changes" guard in the deck builder and the `returnUrl` after login are still open.
+
 ### Deck authorship and the public gallery (2026-11-23)
 
 - Public/shared decks are readable only by **signed-in** users (rules require `isSignedIn()`; the app doesn't even start the gallery listener for guests, who see "sign in to browse the public gallery").

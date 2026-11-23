@@ -1,12 +1,9 @@
 import { Component, effect, HostListener, inject } from '@angular/core';
 import { APP_VERSION } from '../../const/appVersion';
 import { AuthService } from '../../services/auth-service';
+import { SettingsService } from '../../services/settings-service';
 import { FirebaseService } from '../../services/firebase-service';
 import { UIButton, UIDiagonalLine, UiImageContainer } from '../../ui';
-import { Dialog, DialogRef } from '@angular/cdk/dialog';
-import { DialogResult } from '../../models/DialogResult';
-import { HomeSettingsDialog } from '../../components/dialogs/home-settings-dialog/home-settings-dialog';
-import { DIALOGS_CONFIG } from '../../const/dialogConfig';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { NotificationService } from '../../services/notification-service';
 import { Faction } from '../../models/faction';
@@ -23,8 +20,7 @@ import { I18nService } from '../../i18n/i18n-service';
 export class HomePage {
   public appVersion = APP_VERSION;
   public firebase = inject(FirebaseService);
-  private dialog = inject(Dialog);
-  private dialogRef: DialogRef<DialogResult, any> | null = null;
+  private settings = inject(SettingsService);
   public factions: Faction[] = [];
   private i18n = inject(I18nService);
   public get locale(): string { return this.i18n.lang(); }
@@ -36,16 +32,7 @@ export class HomePage {
   }
 
   public openDialog() {
-    this.dialogRef = this.dialog.open<DialogResult>(HomeSettingsDialog, {
-      ...DIALOGS_CONFIG,
-      data: { user: this.firebase.$user(), factions: this.factions },
-    });
-
-    this.dialogRef.closed.subscribe((result: DialogResult | undefined) => {
-      if (result?.status === 'confirmed') {
-        this.notification.notify(this.i18n.t('notifications.settingsUpdated'), 'check')
-      }
-    });
+    void this.settings.open();
   }
 
   /** The same button logs in or out depending on the current session. */

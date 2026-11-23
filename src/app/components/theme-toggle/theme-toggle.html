@@ -1,3 +1,5 @@
 <div class="theme-toggle-main-container" [style.color]="'var(--accent-color)'">
-    <span class="material-symbols-rounded" (click)="toggleTheme()">{{(currentTheme | async) === 'light' ? 'bedtime' : 'sunny'}}</span>
+    @let isLight = (currentTheme | async) === 'light';
+    <app-ui-icon-button [icon]="isLight ? 'bedtime' : 'sunny'"
+        [label]="(isLight ? 'header.themeDark' : 'header.themeLight') | t" (click)="toggleTheme()"></app-ui-icon-button>
 </div>
