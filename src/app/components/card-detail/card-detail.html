@@ -3,11 +3,13 @@
     <span class="material-symbols-rounded">trackpad_input</span>
     <p>{{ 'cardDetail.selectACardToInspect' | t }}</p>
     } @else {
+    @let c = card();
+    <!-- the card number: big and faint in the top-right corner, behind the set name -->
+    <div class="card-number" aria-hidden="true">{{c?.position}}</div>
     <section>
-        @let c = card();
         <div class="inspector-header">
             <div class="side-label">{{c?.side_id}}</div>
-            <div class="set-label">{{c?.card_set_id | packCode: packs()}} #{{c?.position}}</div>
+            <div class="set-label" [attr.aria-label]="(c?.card_set_id | packCode: packs()) + ' #' + c?.position">{{c?.card_set_id | packCode: packs()}}</div>
         </div>
         @if(c?.card_type_id?.endsWith('_identity')) {
         <div class="identity-container identity-item">

@@ -37,7 +37,7 @@
     display: inline-flex;
     align-items: center;
     gap: var(--space-2);
-    // same shape and hover as the other header buttons (see styles/_header-btn.scss)
+    // same shape and hover as the other header buttons (see styles/_ghost-btn.scss)
     height: var(--control-height);
     padding: 0 var(--space-3);
     border-radius: var(--radius-sm);
@@ -56,9 +56,9 @@
         background-color: var(--surface-hover);
     }
 
-    // current page: accent line along the bottom edge of the button
+    // current page: kept highlighted as if hovered
     &.active {
-        box-shadow: inset 0 -2px 0 var(--accent-color);
+        background-color: var(--surface-hover);
     }
 
     &.disabled {

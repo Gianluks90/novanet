@@ -23,7 +23,7 @@
 
     <section class="action-section">
         @if (firebase.$user()) {
-            <button type="button" class="header-btn avatar-btn" [cdkMenuTriggerFor]="userMenu"
+            <button type="button" class="ghost-btn avatar-btn" [cdkMenuTriggerFor]="userMenu"
                 [attr.aria-label]="'header.userMenu' | t" [title]="userName">
                 @if (avatarUrl) {
                     <img class="avatar" [src]="avatarUrl" alt="" referrerpolicy="no-referrer">
@@ -32,13 +32,13 @@
                 }
             </button>
         } @else {
-            <button type="button" class="header-btn sign-in-btn" (click)="signIn()">
+            <button type="button" class="ghost-btn sign-in-btn" (click)="signIn()">
                 <span class="material-symbols-rounded" aria-hidden="true">login</span>
                 <span class="sign-in-label">{{ 'header.signInOrRegister' | t }}</span>
             </button>
         }
 
-        <button type="button" class="header-btn" (click)="openSettings()"
+        <button type="button" class="ghost-btn" (click)="openSettings()"
             [attr.aria-label]="'header.settings' | t" [title]="'header.settings' | t">
             <span class="material-symbols-rounded" aria-hidden="true">settings</span>
         </button>

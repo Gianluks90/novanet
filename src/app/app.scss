@@ -88,6 +88,8 @@ $scroll-duration: 14s;
 
     .app-page-container {
         flex: 1;
+        // without this a tall page makes the shell taller than the window (and scrollable)
+        min-height: 0;
         overflow: auto;
     }
 }

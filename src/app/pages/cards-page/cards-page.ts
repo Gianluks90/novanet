@@ -23,6 +23,8 @@ import { TranslatePipe } from '../../i18n/translate-pipe';
 import { I18nService } from '../../i18n/i18n-service';
 import { CardTranslationService } from '../../services/card-translation-service';
 
+import { scrollToCenter } from '../../utils/scroll';
+
 @Component({
   selector: 'app-cards-page',
   imports: [TranslatePipe, 
@@ -225,7 +227,7 @@ export class CardsPage {
   public scrollToSelected() {
     if (this.selectedCard?.id) {
       const element = document.getElementById(this.selectedCard.id);
-      element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      scrollToCenter(element);
     }
   }
 

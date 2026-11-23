@@ -23,7 +23,29 @@
 
     position: relative;
 
+    // Card number as a faint watermark in the top-right corner, behind the set name. It is cut off
+    // (with a fade) after the side/set row, so it never gets behind the title, strength or costs.
+    &>.card-number {
+        position: absolute;
+        top: 0;
+        right: 12px;
+        z-index: 0;
+        height: 3.5rem;
+        overflow: hidden;
+        font-size: 6rem;
+        font-weight: bold;
+        line-height: .85;
+        color: var(--accent-color);
+        opacity: .14;
+        pointer-events: none;
+        user-select: none;
+        -webkit-mask-image: linear-gradient(to bottom, #000 45%, transparent 100%);
+        mask-image: linear-gradient(to bottom, #000 45%, transparent 100%);
+    }
+
     section {
+        position: relative;
+        z-index: 1;
         padding: 16px;
         display: flex;
         flex-direction: column;
@@ -46,6 +68,8 @@
     &>.card-menu-button {
         position: sticky;
         bottom: 0;
+        // above the content (the section has z-index 1 to sit over the card number)
+        z-index: 2;
         padding: 8px 16px;
         width: 100%;
         display: flex;
@@ -73,6 +97,10 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    .set-label {
+        text-align: right;
+    }
 
     .side-label {
         text-transform: uppercase;
@@ -118,6 +146,7 @@
 
     .strength-container {
         border: 1px solid var(--fg-color);
+        background-color: var(--bg-container-color);
         height: 100%;
         display: flex;
         align-items: center;

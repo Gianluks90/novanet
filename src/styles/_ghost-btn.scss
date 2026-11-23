@@ -1,7 +1,8 @@
-// Ghost button used for the header actions (language, theme, sign in, avatar): accent-colored,
-// background lightens with the accent on hover. Modifiers (avatar, sign-in) live in the header component.
+// Ghost button (a text and/or icon button with no border): accent-colored, the background lightens
+// with the accent on hover. Used by the header actions and the icon actions of toolbars (card filters).
+// The header's nav links share its shape and hover (see header.scss).
 
-.header-btn {
+.ghost-btn {
     display: inline-flex;
     align-items: center;
     gap: var(--space-1);

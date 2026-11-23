@@ -19,6 +19,8 @@ import { DIALOGS_CONFIG } from '../../const/dialogConfig';
 import { PersonalTranslationDialog } from '../dialogs/personal-translation-dialog/personal-translation-dialog';
 import { CardTranslationService } from '../../services/card-translation-service';
 
+import { scrollToCenter } from '../../utils/scroll';
+
 @Component({
   selector: 'app-card-detail',
   imports: [TranslatePipe, 
@@ -86,7 +88,7 @@ export class CardDetail {
   public scrollToSelected() {
     if (this.selectedCard()?.id) {
       const element = document.getElementById(this.selectedCard()?.id || '');
-      element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      scrollToCenter(element);
     }
   }
 

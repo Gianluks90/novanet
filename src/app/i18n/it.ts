@@ -54,6 +54,7 @@ export const IT: Record<TranslationKey, string> = {
   "cardsPage.allTypes": "Tipi (tutti)",
   "cardsPage.cardImagesAndDataProvided": "Immagini e dati delle carte forniti da <a href=\"https://netrunnerdb.com/\" target=\"_blank\" rel=\"noopener noreferrer\">NetrunnerDB</a>. Traduzioni delle carte dal progetto della community <a href=\"https://github.com/Null-Signal-Games/netrunner-cards-json\" target=\"_blank\" rel=\"noopener noreferrer\">netrunner-cards-json</a>.",
   "cardsPage.deselectCard": "Deseleziona carta",
+  "cardsPage.resetFilters": "Reimposta filtri",
   "cardsPage.gridViewGrid": "<span class=\"material-symbols-rounded\">grid_view</span> Griglia: {0}",
   "cardsPage.sortSortByFound": "<span class=\"material-symbols-rounded\">sort</span> Ordina per: {0} (trovate: {1})",
   "deckBuilderPage.deckView": "Vista mazzo \"{0}\"",

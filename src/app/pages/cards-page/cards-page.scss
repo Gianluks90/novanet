@@ -39,130 +39,130 @@
         position: relative;
         min-height: 0;
 
-        &>div {
+        // left column: header with the grid controls, the scrolling grid, floating footer
+        &>.grid-section {
             border: 1px solid var(--accent-color);
             background-color: var(--bg-container-color);
-        }
-
-        &>.footer-container {
-            position: absolute;
-            bottom: 4px;
-            left: 4px;
-            z-index: 2;
             display: flex;
-            align-items: center;
-            gap: 4px;
-            border: none;
+            flex-direction: column;
+            min-height: 0;
+            position: relative;
+            overflow: hidden;
 
-            &>.attribution-container, &>.deselect-card {
-                border: 1px solid var(--accent-color);
-                text-transform: uppercase;
-                background-color: var(--bg-container-color);
-                padding: 4px 8px;
-                color: var(--text-secondary-color);
+            &>.action-controls {
+                width: 100%;
+                flex-shrink: 0;
                 display: flex;
-                flex-direction: row-reverse;
+                align-items: center;
+                gap: 24px;
+                min-height: 40px;
+                padding: 4px 16px;
+                border-bottom: 1px solid var(--accent-color);
+                user-select: none;
+                font-size: .8rem;
+
+                &>.control-container {
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-end;
+                    gap: 4px;
+                    cursor: pointer;
+
+                    &>.material-symbols-rounded {
+                        font-size: 1rem;
+                    }
+                }
+            }
+
+            &>.footer-container {
+                position: absolute;
+                bottom: 4px;
+                left: 4px;
+                z-index: 2;
+                display: flex;
                 align-items: center;
                 gap: 4px;
-                font-size: .7rem;
-                cursor: pointer;
 
-                &>.attribution-text {
-                    flex-grow: 1;
-                    text-align: left;
+                &>.attribution-container, &>.deselect-card {
+                    border: 1px solid var(--accent-color);
+                    text-transform: uppercase;
+                    background-color: var(--bg-container-color);
+                    padding: 4px 8px;
+                    color: var(--text-secondary-color);
+                    display: flex;
+                    flex-direction: row-reverse;
+                    align-items: center;
+                    gap: 4px;
+                    font-size: .7rem;
+                    cursor: pointer;
 
-                    &>a {
-                        color: var(--fg-color);
-                        text-decoration: underline;
-                        cursor: pointer;
+                    &>.attribution-text {
+                        flex-grow: 1;
+                        text-align: left;
+
+                        &>a {
+                            color: var(--fg-color);
+                            text-decoration: underline;
+                            cursor: pointer;
+                        }
+                    }
+
+                    &>.material-symbols-rounded {
+                        font-size: 1rem;
+                    }
+                }
+            }
+
+            &>.cards-container {
+                flex: 1;
+                min-height: 0;
+                display: grid;
+                gap: 16px;
+                padding: 16px;
+                overflow-y: auto;
+                align-content: flex-start;
+
+                &>.card-item {
+                    width: 100%;
+                    aspect-ratio: 2/3;
+                    background-color: var(--bg-container-color);
+                    border: 1px solid var(--accent-color);
+                    border-radius: 8px;
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    cursor: pointer;
+
+                    transition:
+                        filter 150ms ease,
+                        opacity 150ms ease,
+                        box-shadow 150ms ease,
+                        transform 150ms ease;
+
+                    &>img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                        border-radius: 8px;
                     }
                 }
 
-                &>.material-symbols-rounded {
-                    font-size: 1rem;
+                &>.card-placeholder {
+                    aspect-ratio: 2/3;
+                    opacity: .6;
                 }
-            }
-        }
 
-        &>.action-controls {
-            position: absolute;
-            top: 4px;
-            left: 4px;
-            border: 1px solid var(--accent-color);
-            display: flex;
-            gap: 12px;
-            user-select: none;
-            font-size: .8rem;
-            padding: 4px 8px;
-            background-color: var(--bg-container-color);
-            z-index: 2;
-
-            &>.control-container {
-                display: flex;
-                align-items: center;
-                justify-content: flex-end;
-                gap: 4px;
-                cursor: pointer;
-
-                &>.material-symbols-rounded {
-                    font-size: 1rem;
+                &>.selected-card {
+                    filter: saturate(1.15) contrast(1.05);
+                    box-shadow: 0 0 6px var(--accent-color);
+                    z-index: 1;
                 }
-            }
 
-            &>.admin-control {
-                color: var(--accent-color);
-            }
-        }
-
-        &>.cards-container {
-            display: grid;
-            gap: 16px;
-            padding: 16px;
-            height: 100%;
-            overflow-y: auto;
-            padding-top: 40px;
-            align-content: flex-start;
-
-            &>.card-item {
-                width: 100%;
-                aspect-ratio: 2/3;
-                background-color: var(--bg-container-color);
-                border: 1px solid var(--accent-color);
-                border-radius: 8px;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                cursor: pointer;
-
-                transition:
-                    filter 150ms ease,
-                    opacity 150ms ease,
-                    box-shadow 150ms ease,
-                    transform 150ms ease;
-
-                &>img {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                    border-radius: 8px;
+                &>.not-selected-card {
+                    opacity: 0.5;
+                    filter: saturate(0.5);
                 }
-            }
-
-            &>.card-placeholder {
-                aspect-ratio: 2/3;
-                opacity: .6;
-            }
-
-            &>.selected-card {
-                filter: saturate(1.15) contrast(1.05);
-                box-shadow: 0 0 6px var(--accent-color);
-                z-index: 1;
-            }
-
-            &>.not-selected-card {
-                opacity: 0.5;
-                filter: saturate(0.5);
             }
         }
 
@@ -226,30 +226,9 @@ select {
     cursor: pointer;
 }
 
-.reset-icon {
-    font-size: 1rem;
-    cursor: pointer;
-    border: 1px solid var(--accent-color);
-    padding: 4px;
-    border-radius: 4px;
-    color: var(--accent-color);
-    height: 24px;
-    width: 24px;
-    align-self: self-start;
-    margin-top: 8px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    &>.material-symbols-rounded {
-        font-size: 1.2rem;
-    }
-
-    &:hover {
-        background-color: var(--accent-color);
-        color: var(--bg-color);
-        transition: background-color 0.3s, color 0.3s;
-    }
+// the icon-only reset button of the filter bar (shape and hover come from .ghost-btn)
+.reset-btn {
+    flex-shrink: 0;
 }
 
 .section-title {
