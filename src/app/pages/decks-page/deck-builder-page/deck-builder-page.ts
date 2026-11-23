@@ -28,6 +28,8 @@ import { TranslatePipe } from '../../../i18n/translate-pipe';
 import { I18nService } from '../../../i18n/i18n-service';
 import { CardTranslationService } from '../../../services/card-translation-service';
 import { CardTitlePipe } from '../../../pipes/card-title-pipe';
+import { AuthService } from '../../../services/auth-service';
+import { getAuth } from 'firebase/auth';
 
 @Component({
   selector: 'app-deck-builder-page',
@@ -72,7 +74,8 @@ export class DeckBuilderPage {
     private cd: ChangeDetectorRef,
     private deckService: DeckService,
     public firebase: FirebaseService,
-    private notification: NotificationService
+    private notification: NotificationService,
+    private authService: AuthService
   ) {
     this.route.parent?.data.subscribe(data => {
       this.cycles = data['configs'].cycles || [];
@@ -151,8 +154,27 @@ export class DeckBuilderPage {
     });
   }
 
+  /** The user can edit this deck: it is saved on this device, or it is theirs online. */
   public get isOwner(): boolean {
-    return !!this.deck && this.deck.createdBy === this.firebase.$user()?.uid;
+    return !!this.deck && (!!this.deck.local || this.deck.createdBy === this.firebase.$user()?.uid);
+  }
+
+  /** Moves a deck saved on this device to the user's account (asks to sign in first if needed). */
+  public async uploadDeck() {
+    if (!this.deck?.local) return;
+    try {
+      await this.saveDeck();
+      if (!getAuth().currentUser) {
+        const signedIn = await this.authService.loginWithGoogle();
+        if (!signedIn) return;
+      }
+      this.deck = await this.deckService.uploadLocalDeck(this.deck.id);
+      this.notification.notify(this.i18n.t('notifications.deckUploaded'), 'check');
+      this.cd.detectChanges();
+    } catch (err: any) {
+      console.error('Error uploading deck:', err);
+      this.notification.notify(this.i18n.t('notifications.errorUploadingDeck', [err?.message ?? '']), 'dangerous');
+    }
   }
 
   public setVisibility(visibility: 'private' | 'public' | 'shared') {
@@ -303,7 +325,7 @@ export class DeckBuilderPage {
       .filter(e => !!e.card);
   }
 
-  public saveDeck() {
+  public async saveDeck(): Promise<void> {
     if (!this.deck || !this.isOwner) return;
 
     const cardsPayload: Record<string, number> = {};
@@ -321,9 +343,13 @@ export class DeckBuilderPage {
       updatedAt: Timestamp.now()
     };
 
-    this.deckService.updateDeck(this.deck.id, updatedDeck).catch(err => {
+    try {
+      await this.deckService.updateDeck(this.deck.id, updatedDeck);
+      this.notification.notify(this.i18n.t('notifications.deckSaved'), 'check');
+    } catch (err: any) {
       console.error('Errore durante il salvataggio del deck:', err);
-    });
+      this.notification.notify(this.i18n.t('notifications.errorSavingDeck', [err?.message ?? '']), 'dangerous');
+    }
   }
 
   public parseCards() {

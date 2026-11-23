@@ -137,6 +137,17 @@ export const EN = {
   "notifications.authError": "Could not complete the sign-in/sign-out. Please try again.",
   "deckBuilderPage.deckNotAvailable": "This deck does not exist or is not available to you.",
   "deckBuilderPage.backToDecks": "Back to decks",
+  "decksListPage.thisDevice": "This device",
+  "decksListPage.myAccount": "My account",
+  "decksListPage.signInForGallery": "Sign in to browse the public gallery.",
+  "newDeckDialog.saveIn": "Save in",
+  "newDeckDialog.signInToSaveOnline": "Sign in to save decks online (and share them). Without an account they stay on this device.",
+  "deckBuilderPage.saveOnline": "Save online (requires sign-in)",
+  "deckBuilderPage.signInToOpen": "Sign in to open online decks.",
+  "notifications.deckSaved": "Deck saved.",
+  "notifications.errorSavingDeck": "Error saving deck: {0}",
+  "notifications.deckUploaded": "Deck saved to your account.",
+  "notifications.errorUploadingDeck": "Error saving the deck online: {0}",
 } as const;
 
 export type TranslationKey = keyof typeof EN;

@@ -52,16 +52,18 @@ export class DecksListPage {
     // only re-run when the signed-in user changes, not on every profile update
     const uid = computed(() => this.firebase.$user()?.uid);
 
+    // the catalog is needed by everybody (guests included)
+    void this.cardService.loadCards();
+
     effect(() => {
       if (uid()) {
-        this.cardService.loadCards();
         this.deckService.getDecksByUser();
         this.deckService.getPublicDecks();
       }
     });
 
     effect(() => {
-      this.myDecks = this.deckService.$decks();
+      this.myDecks = this.deckService.$myDecks();
       this.cardsMap = this.cardService.$cardsMap();
       if (this.viewMode === 'mine') this.refreshList();
       this.cd.detectChanges();
@@ -72,6 +74,16 @@ export class DecksListPage {
       if (this.viewMode === 'public') this.refreshList();
       this.cd.detectChanges();
     });
+  }
+
+  /** Number of cards in the deck (sum of the copies). */
+  public deckSize(deck: Deck): number {
+    return Object.values(deck.cards ?? {}).reduce((total, qty) => total + Number(qty), 0);
+  }
+
+  /** True for decks the current user can edit: saved on this device or owned online. */
+  public canEdit(deck: Deck): boolean {
+    return !!deck.local || deck.createdBy === this.firebase.$user()?.uid;
   }
 
   public switchViewMode(mode: 'mine' | 'public') {
@@ -147,6 +159,7 @@ export class DecksListPage {
       disableClose: true,
       data: {
         sides: this.sides,
+        signedIn: !!this.firebase.$user(),
         side: side ? side : undefined
       }
     });

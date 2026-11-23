@@ -24,6 +24,18 @@
             </select>
         </div>
         <div class="form-group">
+            <label for="storage">{{ 'newDeckDialog.saveIn' | t }}</label>
+            <select name="storage" id="storage-select" formControlName="storage">
+                <option value="local">{{ 'decksListPage.thisDevice' | t }}</option>
+                @if (data.signedIn) {
+                    <option value="cloud">{{ 'decksListPage.myAccount' | t }}</option>
+                }
+            </select>
+            @if (!data.signedIn) {
+                <p class="form-hint">{{ 'newDeckDialog.signInToSaveOnline' | t }}</p>
+            }
+        </div>
+        <div class="form-group">
             <label for="name">{{ 'nameLabel' | t }}</label>
             <input type="text" id="name" formControlName="name" [placeholder]="'enterTextPlaceholder' | t" autocorrect="off" autocomplete="off">
         </div>

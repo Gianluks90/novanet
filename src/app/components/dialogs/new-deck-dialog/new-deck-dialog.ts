@@ -21,7 +21,7 @@ import { CardTitlePipe } from '../../../pipes/card-title-pipe';
 })
 export class NewDeckDialog {
   public dialogRef = inject<DialogRef<DialogResult, NewDeckDialog>>(DialogRef);
-  public data = inject(DIALOG_DATA) as { sides: Side[], side?: 'runner' | 'corp' };
+  public data = inject(DIALOG_DATA) as { sides: Side[], signedIn: boolean, side?: 'runner' | 'corp' };
   public form: FormGroup;
   public sides: Side[] = [];
   private allCards: Card[] = [];
@@ -34,6 +34,8 @@ export class NewDeckDialog {
       side: ['runner', Validators.required],
       identity: ['', Validators.required],
       name: ['', [Validators.required, Validators.minLength(3)]],
+      // decks are saved on this device unless the user is signed in and picks their account
+      storage: [this.data.signedIn ? 'cloud' : 'local'],
       customBackImageURL: ['']
     });
 
@@ -59,14 +61,17 @@ export class NewDeckDialog {
 
   onSubmit() {
     if (this.form.valid) {
+      const { storage, ...formValue } = this.form.value;
+      const local = storage !== 'cloud' || !this.data.signedIn;
       const newDeckData = {
-        ...this.form.value,
+        ...formValue,
+        local,
         id: crypto.randomUUID(),
         identity: this.allCards.find(card => card.id === this.form.value.identity) || null,
         cards: [],
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now(),
-        createdBy: getAuth().currentUser?.uid,
+        createdBy: local ? 'local' : getAuth().currentUser?.uid,
         customBackImageURL: this.form.value.customBackImageURL || null,
         visibility: 'private',
         format: '',

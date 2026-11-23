@@ -6,7 +6,9 @@
                 <span class="material-symbols-rounded" [routerLink]="['/decks']">arrow_back</span>
                 <h1>{{ 'deckBuilderPage.deckView' | t: [form.get('name')?.value] }}</h1>
                 <div class="actions-container">
-                    @if (isOwner) {
+                    @if (isOwner && deck?.local) {
+                        <span class="material-symbols-rounded" [title]="'deckBuilderPage.saveOnline' | t" (click)="uploadDeck()">cloud_upload</span>
+                    } @else if (isOwner) {
                         <span
                           class="material-symbols-rounded"
                           [title]="(mode === 'edit' ? 'deckBuilderPage.manageVisibility' : 'deckBuilderPage.backToEditing') | t"
@@ -232,7 +234,7 @@
                 <p>{{ 'deckBuilderPage.youReViewingSomeoneElse' | t }}</p>
                 <app-ui-button [text]="'deckBuilderPage.copyToMyAccount' | t" icon="content_copy" (click)="cloneDeck()"></app-ui-button>
             } @else {
-                <p>{{ 'deckBuilderPage.deckNotAvailable' | t }}</p>
+                <p>{{ (firebase.$user() ? 'deckBuilderPage.deckNotAvailable' : 'deckBuilderPage.signInToOpen') | t }}</p>
                 <app-ui-button [text]="'deckBuilderPage.backToDecks' | t" icon="arrow_back" [routerLink]="['/decks']"></app-ui-button>
             }
         </div>

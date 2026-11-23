@@ -1,6 +1,6 @@
 import { computed, effect, inject, Injectable, signal, untracked } from '@angular/core';
-import { openDB } from 'idb';
 import { nrdbDb } from '../db/nrdb-indexed-db';
+import { userDb } from '../db/user-indexed-db';
 import { CardTranslation } from '../models/card-translation';
 import { I18nService } from '../i18n/i18n-service';
 
@@ -14,13 +14,8 @@ type UserData = Record<string, Record<string, UserTranslation>>; // lang -> card
 
 const EXPORT_FORMAT = 'novanet-translations';
 
-// Personal translations live in their own database, so a future change/wipe of the card
-// cache schema (`nrdb` DB) can never delete user-written data.
-const userDb = openDB('novanet-user', 1, {
-  upgrade(db) {
-    db.createObjectStore('translations'); // key: `${lang}:${cardId}`
-  },
-});
+// Personal translations live in the `novanet-user` database (see db/user-indexed-db.ts), so a
+// future change/wipe of the card cache schema (`nrdb` DB) can never delete user-written data.
 
 /**
  * Card-text translations (title/text/flavor) for the current language, in layers:

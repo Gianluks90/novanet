@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { nrdbResolver } from './resolvers/nrdb-resolver';
 import { cardsConfigResolver } from './resolvers/cards-config-resolver';
-import { AuthGuardService } from './services/auth-guard-service';
 import { deckResolver } from './resolvers/deck-resolver';
 
 export const routes: Routes = [
@@ -31,7 +30,6 @@ export const routes: Routes = [
             nrdb: nrdbResolver,
             configs: cardsConfigResolver
         },
-        canActivate: [AuthGuardService],
         children: [
             {
                 path: '', // Serve a fare il redirect a /list

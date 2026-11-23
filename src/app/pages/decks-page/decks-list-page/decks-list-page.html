@@ -34,12 +34,12 @@
                             <div class="deck-container">
                                 <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + d.identity.id + '.jpg'" alt="">
                                 <div class="info-container">
-                                    <p>{{d.name}} <span class="material-symbols-rounded validity-icon" [title]="d.cards['length'] < d.identity.minimum_deck_size! ? 'Deck is too small' : 'Deck size is valid'">{{d.cards['length'] < d.identity.minimum_deck_size! ? 'close' : 'check'}}</span></p>
+                                    <p>{{d.name}} <span class="material-symbols-rounded storage-icon" [title]="(d.local ? 'decksListPage.thisDevice' : 'decksListPage.myAccount') | t">{{ d.local ? 'computer' : 'cloud' }}</span> <span class="material-symbols-rounded validity-icon" [title]="deckSize(d) < d.identity.minimum_deck_size! ? 'Deck is too small' : 'Deck size is valid'">{{deckSize(d) < d.identity.minimum_deck_size! ? 'close' : 'check'}}</span></p>
                                     <!-- <p i18n class="info-line">Influence limit: {{d.cards | checkInfluence:cardsMap:d.identity.faction_id! }}/{{d.identity.influence_limit}} Agenda points: {{ d.cards | checkAgendaPoints:cardsMap }}</p> -->
                                 </div>
                                 <div class="deck-actions">
-                                    <span class="material-symbols-rounded" [title]="(d.createdBy === firebase.$user()?.uid ? 'decksListPage.edit' : 'decksListPage.view') | t" [routerLink]="['/decks/builder', d.id]">{{ d.createdBy === firebase.$user()?.uid ? 'edit' : 'visibility' }}</span>
-                                    @if (d.createdBy === firebase.$user()?.uid) {
+                                    <span class="material-symbols-rounded" [title]="(canEdit(d) ? 'decksListPage.edit' : 'decksListPage.view') | t" [routerLink]="['/decks/builder', d.id]">{{ canEdit(d) ? 'edit' : 'visibility' }}</span>
+                                    @if (canEdit(d)) {
                                         <span class="material-symbols-rounded" (click)="openConfirmDeleteDeckDialog(d)">delete</span>
                                     }
                                 </div>
@@ -62,12 +62,12 @@
                             <div class="deck-container">
                                 <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + d.identity.id + '.jpg'" alt="">
                                 <div class="info-container">
-                                    <p>{{d.name}} <span class="material-symbols-rounded validity-icon" [title]="d.cards['length'] < d.identity.minimum_deck_size! ? 'Deck is too small' : 'Deck size is valid'">{{d.cards['length'] < d.identity.minimum_deck_size! ? 'close' : 'check'}}</span></p>
+                                    <p>{{d.name}} <span class="material-symbols-rounded storage-icon" [title]="(d.local ? 'decksListPage.thisDevice' : 'decksListPage.myAccount') | t">{{ d.local ? 'computer' : 'cloud' }}</span> <span class="material-symbols-rounded validity-icon" [title]="deckSize(d) < d.identity.minimum_deck_size! ? 'Deck is too small' : 'Deck size is valid'">{{deckSize(d) < d.identity.minimum_deck_size! ? 'close' : 'check'}}</span></p>
                                     <!-- <p i18n class="info-line">Influence limit: {{d.cards | checkInfluence:cardsMap:d.identity.faction_id! }}/{{d.identity.influence_limit}} Agenda points: {{ d.cards | checkAgendaPoints:cardsMap }}</p> -->
                                 </div>
                                 <div class="deck-actions">
-                                    <span class="material-symbols-rounded" [title]="(d.createdBy === firebase.$user()?.uid ? 'decksListPage.edit' : 'decksListPage.view') | t" [routerLink]="['/decks/builder', d.id]">{{ d.createdBy === firebase.$user()?.uid ? 'edit' : 'visibility' }}</span>
-                                    @if (d.createdBy === firebase.$user()?.uid) {
+                                    <span class="material-symbols-rounded" [title]="(canEdit(d) ? 'decksListPage.edit' : 'decksListPage.view') | t" [routerLink]="['/decks/builder', d.id]">{{ canEdit(d) ? 'edit' : 'visibility' }}</span>
+                                    @if (canEdit(d)) {
                                         <span class="material-symbols-rounded" (click)="openConfirmDeleteDeckDialog(d)">delete</span>
                                     }
                                 </div>
@@ -82,6 +82,8 @@
                 @if (viewMode === 'mine') {
                     <p>{{ 'noDecksMessage' | t }}</p>
                     <app-ui-button [text]="'decksListPage.newDeck' | t" icon="add_notes" (click)="openNewDeckDialog()"></app-ui-button>
+                } @else if (!firebase.$user()) {
+                    <p>{{ 'decksListPage.signInForGallery' | t }}</p>
                 } @else {
                     <p>{{ 'decksListPage.noPublicDecksYet' | t }}</p>
                 }
