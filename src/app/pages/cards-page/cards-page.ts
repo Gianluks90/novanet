@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, effect, inject } from '@angular/core';
-import { UIDiagonalLine, UiToggle } from '../../ui';
+import { UiToggle } from '../../ui';
 import { nrdbDb } from '../../db/nrdb-indexed-db';
 import { Card } from '../../models/card';
 import { ActivatedRoute, Route } from '@angular/router';
@@ -26,7 +26,6 @@ import { CardTranslationService } from '../../services/card-translation-service'
 @Component({
   selector: 'app-cards-page',
   imports: [TranslatePipe, 
-    UIDiagonalLine,
     FormsModule,
     CardComponent,
     CardBack,

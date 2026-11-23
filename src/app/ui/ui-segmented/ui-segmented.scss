@@ -7,6 +7,20 @@
     border: 1px solid var(--border-color);
 }
 
+.ui-segmented.fill {
+    display: flex;
+    width: 100%;
+
+    .segment {
+        flex: 1 1 0;
+        justify-content: center;
+    }
+}
+
+:host:has(.fill) {
+    display: block;
+}
+
 .ui-segmented.sm .segment {
     padding: 0 var(--space-3);
     gap: var(--space-1);
@@ -51,5 +65,24 @@
 
     .material-symbols-rounded {
         font-size: 1.1rem;
+    }
+}
+
+// Color swatches: filled with their color; selection is shown by the check mark, not by the accent fill.
+.segment.swatch {
+    &,
+    &.selected,
+    &:hover:not(.selected) {
+        background-color: var(--swatch);
+        color: var(--swatch-on);
+    }
+
+    &:hover:not(.selected) {
+        filter: brightness(1.15);
+    }
+
+    .swatch-check {
+        // reserve the space so the segment keeps its height whether selected or not
+        min-height: 1.1rem;
     }
 }

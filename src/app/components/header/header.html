@@ -6,23 +6,22 @@
     </a>
 
     <nav class="main-nav">
-        <a class="nav-link" routerLink="/cards" routerLinkActive="active">{{ 'nav.cards' | t }}</a>
-        <a class="nav-link" routerLink="/decks" routerLinkActive="active">{{ 'nav.decks' | t }}</a>
+        <a class="nav-link" routerLink="/cards" routerLinkActive="active">
+            <span class="material-symbols-rounded" aria-hidden="true">cards_stack</span>
+            {{ 'nav.cards' | t }}
+        </a>
+        <a class="nav-link" routerLink="/decks" routerLinkActive="active">
+            <span class="material-symbols-rounded" aria-hidden="true">stack_hexagon</span>
+            {{ 'nav.decks' | t }}
+        </a>
         <span class="nav-link disabled" aria-disabled="true">
+            <span class="material-symbols-rounded" aria-hidden="true">group</span>
             {{ 'nav.play' | t }}
             <app-ui-badge [label]="'header.comingSoon' | t"></app-ui-badge>
         </span>
     </nav>
 
     <section class="action-section">
-        <button type="button" class="header-btn" [cdkMenuTriggerFor]="languageMenu"
-            [attr.aria-label]="'header.language' | t" [title]="'header.language' | t">
-            <span class="material-symbols-rounded" aria-hidden="true">translate</span>
-            <span class="lang-code">{{ locale.toUpperCase() }}</span>
-        </button>
-
-        <app-theme-toggle></app-theme-toggle>
-
         @if (firebase.$user()) {
             <button type="button" class="header-btn avatar-btn" [cdkMenuTriggerFor]="userMenu"
                 [attr.aria-label]="'header.userMenu' | t" [title]="userName">
@@ -38,19 +37,13 @@
                 <span class="sign-in-label">{{ 'header.signInOrRegister' | t }}</span>
             </button>
         }
+
+        <button type="button" class="header-btn" (click)="openSettings()"
+            [attr.aria-label]="'header.settings' | t" [title]="'header.settings' | t">
+            <span class="material-symbols-rounded" aria-hidden="true">settings</span>
+        </button>
     </section>
 </div>
-
-<ng-template #languageMenu>
-    <div class="ui-menu" cdkMenu>
-        @for (language of languages; track language.code) {
-            <button type="button" class="ui-menu-item" cdkMenuItem (cdkMenuItemTriggered)="setLang(language.code)">
-                <span class="material-symbols-rounded" aria-hidden="true">{{ locale === language.code ? 'check' : '' }}</span>
-                {{ language.label }}
-            </button>
-        }
-    </div>
-</ng-template>
 
 <ng-template #userMenu>
     <div class="ui-menu" cdkMenu>
@@ -61,10 +54,6 @@
             @if (unverified) {
                 <app-ui-badge icon="warning" tone="warn" [iconOnly]="true" [label]="'account.unverified' | t"></app-ui-badge>
             }
-        </button>
-        <button type="button" class="ui-menu-item" cdkMenuItem (cdkMenuItemTriggered)="openSettings()">
-            <span class="material-symbols-rounded" aria-hidden="true">settings</span>
-            {{ 'header.settings' | t }}
         </button>
         <button type="button" class="ui-menu-item" cdkMenuItem (cdkMenuItemTriggered)="signOut()">
             <span class="material-symbols-rounded" aria-hidden="true">logout</span>

@@ -56,7 +56,7 @@ export class FirebaseService {
                     email: user['email'],
                     photoURL: user['photoURL'],
                     customPhotoURL: user['customPhotoURL'] ?? null,
-                    customAccentColor: user['customAccentColor'] ?? null,
+                    accentColors: user['accentColors'] ?? null,
                     customBackgroundURL: user['customBackgroundURL'] ?? null,
                     nickname: user['nickname'] ?? null,
                     favoriteCaption: user['favoriteCaption'] ?? null,

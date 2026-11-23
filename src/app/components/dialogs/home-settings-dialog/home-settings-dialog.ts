@@ -1,8 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { CardTranslationService } from '../../../services/card-translation-service';
 import { NotificationService } from '../../../services/notification-service';
-import { I18nService } from '../../../i18n/i18n-service';
-import { UIButton, UiDialogContainer } from '../../../ui';
+import { I18nService, Lang, SUPPORTED_LANGS } from '../../../i18n/i18n-service';
+import { SegmentedOption, UIButton, UiDialogContainer, UiSegmented } from '../../../ui';
+import { ThemeService } from '../../../services/theme-service';
 import { APP_VERSION } from '../../../const/appVersion';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { DialogResult } from '../../../models/DialogResult';
@@ -17,7 +18,7 @@ import { TranslatePipe } from '../../../i18n/translate-pipe';
 
 @Component({
   selector: 'app-home-settings-dialog',
-  imports: [TranslatePipe, UiDialogContainer, UIButton, FormsModule, ReactiveFormsModule, FactionLabelPipe],
+  imports: [TranslatePipe, UiDialogContainer, UIButton, UiSegmented, FormsModule, ReactiveFormsModule, FactionLabelPipe],
   templateUrl: './home-settings-dialog.html',
   styleUrl: './home-settings-dialog.scss',
 })
@@ -27,8 +28,9 @@ export class HomeSettingsDialog {
   public data = inject(DIALOG_DATA) as { user: NovaUser | null, factions: Faction[] };
   public form: FormGroup;
   public translations = inject(CardTranslationService);
+  public theme = inject(ThemeService);
   private notification = inject(NotificationService);
-  private i18n = inject(I18nService);
+  public i18n = inject(I18nService);
 
   constructor(private fb: FormBuilder, private userService: UserService) {
     this.form = this.fb.group({
@@ -36,14 +38,27 @@ export class HomeSettingsDialog {
       customPhotoURL: [this.data.user?.customPhotoURL],
       customBackgroundURL: [this.data.user?.customBackgroundURL],
       favoriteFaction: [this.data.user?.favoriteFaction || ''],
-      customAccentColor: [this.data.user?.customAccentColor || '#FCF552'],
     })
   }
 
-  public resetColor() {
-    this.form.patchValue({ customAccentColor: '#FCF552' });
-    this.form.markAsDirty();
+  public readonly languageOptions: SegmentedOption[] = SUPPORTED_LANGS.map(code => ({ value: code, label: `language.${code}` as const }));
+
+  public readonly themeOptions: SegmentedOption[] = [
+    { value: 'light', label: 'homeSettingsDialog.themeLight', icon: 'light_mode' },
+    { value: 'dark', label: 'homeSettingsDialog.themeDark', icon: 'dark_mode' },
+  ];
+
+  public setLang(lang: string) {
+    this.i18n.setLang(lang as Lang);
   }
+
+  public setTheme(theme: string) {
+    this.theme.setTheme(theme as 'light' | 'dark');
+  }
+
+  /** The accent colors of the current theme, as segments. The choice is applied and saved right away. */
+  public accentOptions = computed<SegmentedOption[]>(() =>
+    this.theme.accentPresets().map(p => ({ value: p.id, label: p.label, color: p.color })));
 
   public onSubmit() {
     if (this.form.valid) {

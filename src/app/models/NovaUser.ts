@@ -8,7 +8,8 @@ export interface NovaUser {
   photoURL: string;
   customPhotoURL?: string;
   customBackgroundURL?: string;
-  customAccentColor?: string;
+  /** Accent preset id chosen for each theme (see const/accent-colors.ts). */
+  accentColors?: { light?: string; dark?: string };
   nickname?: string;
   favoriteCaption?: {
     [lang: string]: string;

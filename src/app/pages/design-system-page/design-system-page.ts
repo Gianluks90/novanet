@@ -1,3 +1,4 @@
+import { ACCENT_PRESETS } from '../../const/accent-colors';
 import { Component, signal } from '@angular/core';
 import { CdkMenu, CdkMenuItem, CdkMenuTrigger } from '@angular/cdk/menu';
 import { UIButton, UiBadge, UiIconButton, UiSegmented, UiToggle, SegmentedOption } from '../../ui';
@@ -42,6 +43,8 @@ export class DesignSystemPage {
 
   public segment = signal('mine');
   public visibility = signal('private');
+  public swatchOptions: SegmentedOption[] = ACCENT_PRESETS.dark.map(p => ({ value: p.id, label: p.label, color: p.color }));
+  public swatch = signal('yellow');
   public toggle = signal(false);
   public activeIcon = signal(false);
   public lastMenuAction = signal('—');

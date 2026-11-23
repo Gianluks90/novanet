@@ -54,9 +54,6 @@
         <div class="reset-icon" (click)="resetFilters()">
             <span class="material-symbols-rounded">refresh</span>
         </div>
-        @if (!firebase.$user()?.customBackgroundURL) {
-            <app-ui-diagonal-line position="bottom-right"></app-ui-diagonal-line>
-        }
     </div>
     <div class="content-container">
         <div class="footer-container">

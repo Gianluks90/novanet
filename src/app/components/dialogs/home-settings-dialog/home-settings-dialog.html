@@ -40,12 +40,22 @@
     }
     <p class="p-subtitle">{{ 'homeSettingsDialog.appOptions' | t }}</p>
     <!-- <p>No app options at the moment.</p> -->
-    <form [formGroup]="form" class="form-container">
-        <div class="form-group">
-            <div class="label-container">{{ 'homeSettingsDialog.accentColor' | t }} <span class="reset-span" (click)="resetColor()">[ {{ 'homeSettingsDialog.reset' | t }} ]</span></div>
-            <input type="color" id="customAccentColor" formControlName="customAccentColor" [placeholder]="'homeSettingsDialog.enterAValidColorE' | t" autocorrect="off" autocomplete="off">
-        </div>
-    </form>
+    <div class="option-group">
+        <span class="option-label">{{ 'header.language' | t }}</span>
+        <app-ui-segmented [options]="languageOptions" [value]="i18n.lang()" [fill]="true"
+            groupLabel="header.language" (valueChange)="setLang($event)"></app-ui-segmented>
+    </div>
+    <div class="option-group">
+        <span class="option-label">{{ 'homeSettingsDialog.theme' | t }}</span>
+        <app-ui-segmented [options]="themeOptions" [value]="theme.theme()" [fill]="true"
+            groupLabel="homeSettingsDialog.theme" (valueChange)="setTheme($event)"></app-ui-segmented>
+    </div>
+    <div class="option-group">
+        <span class="option-label">{{ 'homeSettingsDialog.accentColor' | t }}</span>
+        <app-ui-segmented [options]="accentOptions()" [value]="theme.accentId()" [fill]="true"
+            groupLabel="homeSettingsDialog.accentColor" (valueChange)="theme.setAccent($event)"></app-ui-segmented>
+        <span class="field-hint">{{ 'homeSettingsDialog.accentColorHint' | t: [(theme.theme() === 'light' ? 'homeSettingsDialog.themeLight' : 'homeSettingsDialog.themeDark') | t] }}</span>
+    </div>
     <p class="p-subtitle">{{ 'homeSettingsDialog.myTranslations' | t }}</p>
     <p class="p-note">{{ 'homeSettingsDialog.myTranslationsInfo' | t: [translations.userCount()] }}</p>
     <div class="translations-actions">

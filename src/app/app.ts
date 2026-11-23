@@ -8,6 +8,7 @@ import { FirebaseService } from './services/firebase-service';
 import { getFirestore } from 'firebase/firestore';
 import { NotificationService } from './services/notification-service';
 import { I18nService } from './i18n/i18n-service';
+import { ThemeService } from './services/theme-service';
 
 @Component({
   selector: 'app-root',
@@ -20,6 +21,8 @@ export class App {
   private i18n = inject(I18nService);
   public get locale(): string { return this.i18n.lang(); }
   public backgroundImageUrl: string | null = null;
+  /** Instantiated here so the saved theme and accent color are applied on startup, whatever the page. */
+  private theme = inject(ThemeService);
 
   constructor(private firebaseService: FirebaseService, private router: Router, private notification: NotificationService, private cd: ChangeDetectorRef) {
     this.router.events.subscribe((event) => {

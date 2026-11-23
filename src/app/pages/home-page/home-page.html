@@ -17,9 +17,6 @@
 
                 <p class="disclaimer">{{ 'homePage.novanetIsAnIndependentProject' | t }}</p>
             </div>
-            @if (!firebase.$user()?.customBackgroundURL) {
-            <app-ui-diagonal-line position="bottom-right"></app-ui-diagonal-line>
-            }
         </div>
         <div class="menu-container animation-fade-in" [style.animation-delay]="'1s'">
             <div class="side-line"></div>
@@ -36,9 +33,6 @@
                     [icon]="firebase.$user() ? 'logout' : 'login'" (click)="toggleSession()"></app-ui-button>
                 <p class="version">v {{appVersion}}</p>
             </div>
-            @if (!firebase.$user()?.customBackgroundURL) {
-            <app-ui-diagonal-line position="bottom-right"></app-ui-diagonal-line>
-            }
         </div>
     </div>
     @if(firebase.$user()) {
@@ -59,9 +53,6 @@
                 <p class="p-note">{{ firebase.$user()?.favoriteCaption?.[locale] || ('homePage.noFavoriteCaption' | t) }}</p>
             </div>
         </div>
-        @if (!firebase.$user()?.customBackgroundURL) {
-        <app-ui-diagonal-line position="bottom-right"></app-ui-diagonal-line>
-        }
     </div>
     }
 </div>
