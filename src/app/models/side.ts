@@ -1,4 +1,4 @@
 export interface Side {
-    code: string;
+    id: string;
     name: string;
 }

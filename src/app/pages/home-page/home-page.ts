@@ -28,7 +28,7 @@ export class HomePage {
 
   constructor(private authService: AuthService, private notification: NotificationService, private route: ActivatedRoute) {
     this.route.data.subscribe(data => {
-      this.factions = data['configs'].factions.data;
+      this.factions = data['configs'].factions;
     });
   }
 

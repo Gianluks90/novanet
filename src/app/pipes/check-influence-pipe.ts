@@ -21,11 +21,11 @@ export class CheckInfluencePipe implements PipeTransform {
       const card = cardsMap.get(code);
       if (!card) return;
 
-      if (card.faction_code === identityFaction) return;
-      if (card.faction_code?.startsWith('neutral')) return;
-      if (!card.faction_cost) return;
+      if (card.faction_id === identityFaction) return;
+      if (card.faction_id?.startsWith('neutral')) return;
+      if (!card.influence_cost) return;
 
-      total += card.faction_cost * qty;
+      total += card.influence_cost * qty;
     });
 
     return total;

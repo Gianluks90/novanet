@@ -9,8 +9,8 @@
             <label i18n="@@sideLabel" for="side">Side</label>
             <select name="side" id="side-select" formControlName="side">
                 <!-- <option i18n value="all">All Sides</option> -->
-                @for(side of sides; track side.code) {
-                    <option [value]="side.code">{{ side.name }}</option>
+                @for(side of sides; track side.id) {
+                    <option [value]="side.id">{{ side.name }}</option>
                 }
         </select>
         </div>
@@ -18,8 +18,8 @@
             <label i18n="@@identityLabel" for="identity">Identity</label>
             <select name="identity" id="identity-select" formControlName="identity">
                 <option i18n="@@selectIdentityOption" value="">Select an identity</option>
-                @for(card of identities; track card.code) {
-                    <option [value]="card.code">{{ card.translations?.[locale]?.title || card.title }}</option>
+                @for(card of identities; track card.id) {
+                    <option [value]="card.id">{{ card.translations?.[locale]?.title || card.title }}</option>
                 }
             </select>
         </div>

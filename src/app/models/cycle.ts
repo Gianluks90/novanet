@@ -1,7 +1,6 @@
 export interface Cycle {
-    code: string;
-    name?: string;
+    id: string;
+    name: string;
     position?: number;
-    size?: number;
-    rotated?: boolean;
+    date_release?: string;
 }

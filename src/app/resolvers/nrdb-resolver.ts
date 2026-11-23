@@ -1,44 +1,47 @@
-import { from, Observable, of, switchMap, map } from 'rxjs';
-import { nrdbDb } from '../db/nrdb-indexed-db';
+import { from, Observable } from 'rxjs';
 import { ResolveFn } from '@angular/router';
+import { nrdbDb } from '../db/nrdb-indexed-db';
+import { fetchCards, fetchCardSets } from '../db/nrdb-api';
 import { computePacksSignature } from './packs-signature';
 
-const API_URL = 'https://netrunnerdb.com/api/2.0/public/cards';
-const PACKS_URL = 'https://netrunnerdb.com/api/2.0/public/packs';
-
+/**
+ * Keeps the local card catalog (IndexedDB `cards`) in sync with NetrunnerDB v3.
+ * The card-set list is a lightweight staleness signal: when its signature
+ * (set ids + latest update) differs from the one stored at the last install, the
+ * whole catalog is re-downloaded. If the network fails and we already have cards
+ * cached, we carry on with the cache.
+ */
 export const nrdbResolver: ResolveFn<boolean> = (): Observable<boolean> => {
-  return from(nrdbDb).pipe(
-    switchMap(db =>
-      // Lightweight signal for "is our local card catalog stale": compare the
-      // set of NRDB pack codes against what we had at our last install. A new
-      // pack/cycle release changes this signature, which triggers a full
-      // card re-fetch -- unlike the old boolean `installed` flag, this never
-      // goes stale on its own.
-      from(fetch(PACKS_URL).then(res => res.json())).pipe(
-        switchMap(packsJson => {
-          const currentPacksSignature = computePacksSignature(packsJson.data);
+  return from((async () => {
+    const db = await nrdbDb;
 
-          return from(db.get('meta', 'packsSignature')).pipe(
-            switchMap(storedPacksSignature => {
-              const needsCardRefresh = storedPacksSignature !== currentPacksSignature;
+    try {
+      const currentSignature = computePacksSignature(await fetchCardSets());
+      const [storedSignature, cachedCount] = await Promise.all([
+        db.get('meta', 'packsSignature'),
+        db.count('cards'),
+      ]);
 
-              if (!needsCardRefresh) return of(true);
+      if (storedSignature === currentSignature && cachedCount > 0) {
+        return true;
+      }
 
-              return from(fetch(API_URL).then(res => res.json())).pipe(
-                switchMap(json => {
-                  const tx = db.transaction(['cards', 'meta'], 'readwrite');
-                  for (const card of json.data) {
-                    tx.objectStore('cards').put(card, card.code);
-                  }
-                  tx.objectStore('meta').put('true', 'installed');
-                  tx.objectStore('meta').put(currentPacksSignature, 'packsSignature');
-                  return from(tx.done).pipe(map(() => true));
-                })
-              );
-            })
-          );
-        })
-      )
-    )
-  );
+      const cards = await fetchCards();
+      const tx = db.transaction(['cards', 'meta'], 'readwrite');
+      tx.objectStore('cards').clear();
+      for (const card of cards) {
+        tx.objectStore('cards').put(card, card.id);
+      }
+      tx.objectStore('meta').put('true', 'installed');
+      tx.objectStore('meta').put(currentSignature, 'packsSignature');
+      await tx.done;
+      return true;
+    } catch (err) {
+      if (await db.count('cards') > 0) {
+        console.error('[nrdbResolver] network error, using cached cards', err);
+        return true;
+      }
+      throw err;
+    }
+  })());
 };

@@ -39,7 +39,7 @@ export class NewDeckDialog {
 
     this.form.get('side')?.valueChanges.subscribe(side => {
       this.form.get('identity')?.setValue('');
-      this.identities = this.allCards.filter(card => card.type_code === 'identity' && card.side_code === side);
+      this.identities = this.allCards.filter(card => card.card_type_id.endsWith('_identity') && card.side_id === side);
       this.dc.detectChanges();
     });
 
@@ -49,7 +49,7 @@ export class NewDeckDialog {
   async ngAfterViewInit() {
     const db = await nrdbDb;
     this.allCards = await db.getAll('cards') as Card[];
-    this.identities = this.allCards.filter(card => card.type_code === 'identity' && card.side_code === this.form.get('side')?.value);
+    this.identities = this.allCards.filter(card => card.card_type_id.endsWith('_identity') && card.side_id === this.form.get('side')?.value);
     this.dc.detectChanges();
   }
 
@@ -58,7 +58,7 @@ export class NewDeckDialog {
       const newDeckData = {
         ...this.form.value,
         id: Math.random().toString(36).substring(2, 15),
-        identity: this.allCards.find(card => card.code === this.form.value.identity) || null,
+        identity: this.allCards.find(card => card.id === this.form.value.identity) || null,
         cards: [],
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now(),

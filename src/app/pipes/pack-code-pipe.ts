@@ -10,7 +10,7 @@ export class PackCodePipe implements PipeTransform {
   transform(value: string | undefined | null, packs: Pack[]): string {
     if (!value || !packs?.length) return '';
 
-    const pack = packs.find(p => p.code === value);
+    const pack = packs.find(p => p.id === value);
     return pack ? pack.name : value; // fallback al code se non trovato
   }
 

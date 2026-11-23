@@ -42,12 +42,12 @@
             @if (deck.identity) {
             <section>
                 <div class="identity-container" (click)="onCardClick(deck.identity)">
-                    <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + deck.identity.code + '.jpg'" alt="">
+                    <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + deck.identity.id + '.jpg'" alt="">
                     <div class="identity-info">
                         <div class="identity-title">
                             @let identity = deck.identity;
-                            @if (identity?.type_code === 'identity' && identity?.faction_code !== 'neutral-runner' && identity?.faction_code !== 'neutral-corp') {
-                                <img class="faction-icon" [src]="'./images/faction-icons/' + identity?.faction_code+ '.svg'" alt="">
+                            @if (identity?.card_type_id?.endsWith('_identity') && identity?.faction_id !== 'neutral_runner' && identity?.faction_id !== 'neutral_corp') {
+                                <img class="faction-icon" [src]="'./images/faction-icons/' + identity?.faction_id+ '.svg'" alt="">
                             }
                             {{deck.identity.translations?.[locale]?.title!.split(':')[0] || deck.identity.title.split(':')[0]}}
                         </div>
@@ -68,14 +68,14 @@
                                 <p i18n>Influence / influence limit</p>
                                 <!-- <p>{{totalInfluence}} / {{deck.identity.influence_limit}}</p> -->
                                 <p>
-                                    {{ selectedCards | checkInfluence: cardsMap : deck.identity.faction_code! }}
+                                    {{ selectedCards | checkInfluence: cardsMap : deck.identity.faction_id! }}
                                     /
                                     {{ deck.identity.influence_limit }}
                                 </p>
                             </div>
                             <progress [value]="totalInfluence" [max]="deck.identity.influence_limit" min="0"></progress>
                         </div>
-                        @if (deck.identity.side_code === 'corp') {
+                        @if (deck.identity.side_id === 'corp') {
                             <p class="agenda-points-label">
                                 <span i18n>Agenda points</span>
                                 <span class="agenda-points-value">{{ selectedCards | checkAgendaPoints: cardsMap }}</span>
@@ -88,13 +88,13 @@
                     <span i18n-title title="Export card list" class="material-symbols-rounded" (click)="exportCardList()">bottom_panel_open</span>
                 </p>
                 <div class="cards-container">
-                    @for (entry of selectedCardsList; track entry.card.code) {
+                    @for (entry of selectedCardsList; track entry.card.id) {
                         <div class="card-item" [class.even-item]="$even" (click)="selectCard(entry.card)">
                             <p class="card-item-title" >
                                 @if (isOwner) {
                                 <span
                                   class="material-symbols-rounded"
-                                  (click)="$event.stopPropagation(); removeCard(entry.card.code)"
+                                  (click)="$event.stopPropagation(); removeCard(entry.card.id)"
                                 >
                                   delete
                                 </span>
@@ -102,12 +102,12 @@
                                 <span>x{{entry.qty}} {{entry.card.translations?.[locale]?.title || entry.card.title}}</span>
                             </p>
                             <section>
-                                <span class="type-label">{{entry.card.type_code! | typeLabel}}</span>
-                                @if (entry.card.faction_code !== deck.identity.faction_code && entry.card.faction_cost! > 0) {
+                                <span class="type-label">{{entry.card.card_type_id! | typeLabel}}</span>
+                                @if (entry.card.faction_id !== deck.identity.faction_id && entry.card.influence_cost! > 0) {
                                     <span [innerHTML]="entry.card | dots: factions"></span>
                                 }
-                                @if (entry.card.faction_code !== 'neutral-runner' && entry.card.faction_code !== 'neutral-corp') {
-                                    <img class="faction-icon" [src]="'./images/faction-icons/' + entry.card.faction_code+ '.svg'" alt="">
+                                @if (entry.card.faction_id !== 'neutral_runner' && entry.card.faction_id !== 'neutral_corp') {
+                                    <img class="faction-icon" [src]="'./images/faction-icons/' + entry.card.faction_id+ '.svg'" alt="">
                                 } @else {
                                     <span class="material-symbols-rounded no-faction-icon">remove</span>
                                 }
@@ -155,7 +155,7 @@
                     <select name="identity" id="identity-select" formControlName="identity">
                         <option value="">Select identity</option>
                         @for (identity of identities; track $index) {
-                            <option  [value]="identity.code">{{identity.translations?.[locale]?.title || identity.title}}</option>
+                            <option  [value]="identity.id">{{identity.translations?.[locale]?.title || identity.title}}</option>
                         }
                     </select>
                 </div>
@@ -176,16 +176,16 @@
                 <select id="faction-select" formControlName="faction">
                     <option i18n value="all">All Factions</option>
                     @for (f of factions; track $index) {
-                        <option  [value]="f.code">{{f.code | factionLabel}}</option>
+                        <option  [value]="f.id">{{f.id | factionLabel}}</option>
                     }
                 </select>
                 <select id="pack-select" formControlName="pack">
                     <option i18n value="all">All packs</option>
-                    @for(cycle of cycles; track cycle.code) {
+                    @for(cycle of cycles; track cycle.id) {
                     <optgroup [label]="cycle.name">
-                        @for (pack of packs; track pack.code) {
-                        @if (pack.cycle_code === cycle.code) {
-                        <option [value]="pack.code">
+                        @for (pack of packs; track pack.id) {
+                        @if (pack.card_cycle_id === cycle.id) {
+                        <option [value]="pack.id">
                             {{ pack.name }}
                         </option>
                         }
@@ -196,12 +196,12 @@
                 <select id="type-select" formControlName="type">
                     <option i18n value="all">All Types</option>
                     @for (t of types; track $index) {
-                        <option  [value]="t.code">{{t.name! | typeLabel }}</option>
+                        <option  [value]="t.id">{{t.id | typeLabel }}</option>
                     }
                 </select>
             </div>
             <div class="cards-container">
-                @for (c of filteredCards; track c.code) {
+                @for (c of filteredCards; track c.id) {
                     <div class="card-item" [class.even-item]="$even">
                         <p class="card-item-title">
                             <span (click)="openAddCardDialog(c)" class="material-symbols-rounded">add</span>
@@ -209,8 +209,8 @@
                         </p>
                         <section>
                             <span [innerHTML]="c | dots: factions"></span>
-                            @if (c?.faction_code !== 'neutral-runner' && c?.faction_code !== 'neutral-corp') {
-                                <img class="faction-icon" [src]="'./images/faction-icons/' + c?.faction_code+ '.svg'" alt="">
+                            @if (c?.faction_id !== 'neutral_runner' && c?.faction_id !== 'neutral_corp') {
+                                <img class="faction-icon" [src]="'./images/faction-icons/' + c?.faction_id+ '.svg'" alt="">
                             } @else {
                                 <span class="material-symbols-rounded no-faction-icon">remove</span>
                             }
@@ -243,7 +243,7 @@
         <span class="material-symbols-rounded" (click)="cardZoomed = false">close</span>
     </div>
     <div class="zoom-card-image">
-        <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + selectedCard.code + '.jpg'" alt="">
+        <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + selectedCard.id + '.jpg'" alt="">
     </div>
 </div>
 }

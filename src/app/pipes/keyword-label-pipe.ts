@@ -8,7 +8,7 @@ export class KeywordLabelPipe implements PipeTransform {
   private locale = inject(LOCALE_ID);
   private specialCases: string[] = ['G-mod'];
 
-  transform(code: string | undefined): string {
+  transform(code: string | null | undefined): string {
     const lang = this.locale.split('-')[0]; // it, en    
     if (!code) return '';
     // Handle special cases

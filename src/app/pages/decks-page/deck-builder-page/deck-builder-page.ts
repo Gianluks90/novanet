@@ -71,10 +71,10 @@ export class DeckBuilderPage {
     private notification: NotificationService
   ) {
     this.route.parent?.data.subscribe(data => {
-      this.cycles = data['configs'].cycles.data || [];
-      this.packs = data['configs'].packs.data || [];
-      this.factions = data['configs'].factions.data || [];
-      this.types = data['configs'].types.data || [];
+      this.cycles = data['configs'].cycles || [];
+      this.packs = data['configs'].packs || [];
+      this.factions = data['configs'].factions || [];
+      this.types = data['configs'].types || [];
     });
 
     this.form = this.fb.group({
@@ -107,7 +107,7 @@ export class DeckBuilderPage {
       if (!this.cardService.$cardsMap()) return;
 
       this.cardsMap = this.cardService.$cardsMap();
-      this.identities = Array.from(this.cardsMap.values()).filter(c => c.type_code === 'identity' && c.side_code === this.deck?.side);
+      this.identities = Array.from(this.cardsMap.values()).filter(c => c.card_type_id.endsWith('_identity') && c.side_id === this.deck?.side);
       this.applyFilters();
       this.parseCards();
       this.cd.detectChanges();
@@ -140,7 +140,7 @@ export class DeckBuilderPage {
     this.form.patchValue({
       name: this.deck?.name || '',
       // format: this.deck?.format || '',
-      identity: this.deck?.identity.code || '',
+      identity: this.deck?.identity.id || '',
       notes: this.deck?.notes || ''
     });
   }
@@ -166,7 +166,7 @@ export class DeckBuilderPage {
   }
 
   public onCardClick(card: Card) {
-    if (this.selectedCard && this.selectedCard.code === card.code) {
+    if (this.selectedCard && this.selectedCard.id === card.id) {
       this.cardZoomed = true
     } else {
       this.cardZoomed = false
@@ -191,17 +191,17 @@ export class DeckBuilderPage {
 
     this.filteredCards = Array.from(this.cardsMap.values())
       // regole di gioco
-      .filter(c => c.type_code !== 'identity')
-      .filter(c => c.side_code === this.deck!.side)
+      .filter(c => c.card_type_id.endsWith('_identity') === false)
+      .filter(c => c.side_id === this.deck!.side)
 
       // filtro fazione
-      .filter(c => faction === 'all' || c.faction_code === faction)
+      .filter(c => faction === 'all' || c.faction_id === faction)
 
       // filtro pack / set
-      .filter(c => pack === 'all' || c.pack_code === pack)
+      .filter(c => pack === 'all' || c.card_set_id === pack)
 
       // filtro tipo
-      .filter(c => type === 'all' || c.type_code === type)
+      .filter(c => type === 'all' || c.card_type_id === type)
 
       // filtro testuale (tutte le lingue)
       .filter(c => {
@@ -253,10 +253,10 @@ export class DeckBuilderPage {
       if (result?.status === 'confirmed') {
         const next = new Map(this.selectedCards);
 
-        const current = next.get(card.code) || 0;
+        const current = next.get(card.id) || 0;
         const limit = card.deck_limit && card.deck_limit > 0 ? card.deck_limit : Infinity;
         next.set(
-          card.code,
+          card.id,
           Math.min(limit, current + result.data.quantity)
         );
 
@@ -279,9 +279,9 @@ export class DeckBuilderPage {
       const card = this.cardsMap.get(code);
       if (!card) return;
 
-      if (card.faction_code !== this.deck?.identity.faction_code &&
-        !card.faction_code!.startsWith('neutral')) {
-        influence += (card.faction_cost ?? 0) * qty;
+      if (card.faction_id !== this.deck?.identity.faction_id &&
+        !card.faction_id!.startsWith('neutral')) {
+        influence += (card.influence_cost ?? 0) * qty;
       }
     });
 

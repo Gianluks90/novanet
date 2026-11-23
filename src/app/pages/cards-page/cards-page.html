@@ -10,16 +10,16 @@
         <select name="faction" id="faction-select" [(ngModel)]="filters.faction"
             (change)="onChangeFactionFilter($event)">
             <option i18n value="all">All Factions</option>
-            @for(faction of factions; track faction.code) {
-            <option [value]="faction.code">{{ faction.code | factionLabel}}</option>
+            @for(faction of factions; track faction.id) {
+            <option [value]="faction.id">{{ faction.id | factionLabel}}</option>
             }
         </select>
         }
         @if (sides.length > 0) {
         <select name="side" id="side-select" [(ngModel)]="filters.side" (change)="onChangeSideFilter($event)">
             <option i18n value="all">All Sides</option>
-            @for(side of sides; track side.code) {
-            <option [value]="side.code">{{ side.name }}</option>
+            @for(side of sides; track side.id) {
+            <option [value]="side.id">{{ side.name }}</option>
             }
         </select>
         }
@@ -29,11 +29,11 @@
         <select name="pack" id="pack-select" [(ngModel)]="filters.pack" (change)="onChangePackFilter($event)">
             <option i18n value="all">All packs</option>
 
-            @for(cycle of cycles; track cycle.code) {
+            @for(cycle of cycles; track cycle.id) {
             <optgroup [label]="cycle.name">
-                @for (pack of packs; track pack.code) {
-                @if (pack.cycle_code === cycle.code) {
-                <option [value]="pack.code">
+                @for (pack of packs; track pack.id) {
+                @if (pack.card_cycle_id === cycle.id) {
+                <option [value]="pack.id">
                     {{ pack.name }}
                 </option>
                 }
@@ -46,8 +46,8 @@
         @if (types.length > 0) {
         <select name="type" id="type-select" [(ngModel)]="filters.type" (change)="onChangeTypeFilter($event)">
             <option i18n value="all">All Types</option>
-            @for(type of types; track type.code) {
-            <option [value]="type.code">{{ type.code | typeLabel }}</option>
+            @for(type of types; track type.id) {
+            <option [value]="type.id">{{ type.id | typeLabel }}</option>
             }
         </select>
         }
@@ -100,11 +100,11 @@
         <div class="cards-container" [class.small-size]="zoomLevel === 'small-size'"
             [class.medium-size]="zoomLevel === 'medium-size'" [class.large-size]="zoomLevel === 'large-size'"
             [class.standard-size]="zoomLevel === 'standard-size'">
-            @for(card of cards; track card.code) {
+            @for(card of cards; track card.id) {
                 <app-card-component (click)="onCardClick(card)" [card]="card" [selectedCard]="selectedCard"
-                    [selectedCardClass]="selectedCard && selectedCard.code === card.code"
-                    [notSelectedCardClass]="selectedCard && selectedCard.code !== card.code"
-                    [id]="card.code"></app-card-component>
+                    [selectedCardClass]="selectedCard && selectedCard.id === card.id"
+                    [notSelectedCardClass]="selectedCard && selectedCard.id !== card.id"
+                    [id]="card.id"></app-card-component>
             }
         </div>
         <app-card-detail [selectedCard]="selectedCard" [packs]="packs" (zoomCardEmit)="onCardZoomEmitted($event)"></app-card-detail>
@@ -118,7 +118,7 @@
         <span class="material-symbols-rounded" (click)="cardZoomed = false">close</span>
     </div>
     <div class="zoom-card-image">
-        <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + selectedCard.code + '.jpg'" alt="">
+        <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + selectedCard.id + '.jpg'" alt="">
     </div>
 </div>
 }

@@ -43,7 +43,7 @@ export class DecksListPage {
     public firebase: FirebaseService
   ) {
     this.route.parent?.data.subscribe(data => {
-      this.sides = data['configs'].sides.data;
+      this.sides = data['configs'].sides;
     });
 
     effect(() => {

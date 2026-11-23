@@ -11,11 +11,11 @@ export const FACTION_LABELS: Record<string, Record<string, string>> = {
         en: 'Shaper',
         it: 'Modellatori'
     },
-    'neutral-runner': {
+    'neutral_runner': {
         en: 'Neutral (runner)',
         it: 'Neutrali (runner)'
     },
-    'haas-bioroid': {
+    'haas_bioroid': {
         en: 'Haas-Bioroid',
         it: 'Haas-Bioroide'
     },
@@ -27,11 +27,11 @@ export const FACTION_LABELS: Record<string, Record<string, string>> = {
         en: 'NBN',
         it: 'NBN'
     },
-    'weyland-consortium': {
+    'weyland_consortium': {
         en: 'Weyland Consortium',
         it: 'Consorzio Weyland'
     },
-    'neutral-corp': {
+    'neutral_corp': {
         en: 'Neutral (corp)',
         it: 'Neutrali (corp)'
     },
@@ -43,7 +43,7 @@ export const FACTION_LABELS: Record<string, Record<string, string>> = {
         en: 'Adam',
         it: 'Adam'
     },
-    'sunny-lebeau': {
+    'sunny_lebeau': {
         en: 'Sunny Labeau',
         it: 'Sunny Labeau'
     }

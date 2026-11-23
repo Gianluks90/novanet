@@ -2,7 +2,7 @@
     @let c = data.card;
     @if (c) {
         <div class="add-card-main-container">
-            <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + c.code + '.jpg'" alt="">
+            <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + c.id + '.jpg'" alt="">
             <div class="card-detail-container">
                 <app-card-detail [selectedCard]="c" [packs]="data.packs" [disableMenu]="true" [disableZoom]="true" [disableCenter]="true"></app-card-detail>
             </div>

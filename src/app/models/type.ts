@@ -1,7 +1,5 @@
+/** A NetrunnerDB v3 card type (identities are split into `corp_identity` / `runner_identity`). */
 export interface Type {
-    code: string;
-    name?: string;
-    position?: number;
-    is_subtype?: boolean;
-    side_code?: string;
+    id: string;
+    name: string;
 }

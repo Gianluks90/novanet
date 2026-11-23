@@ -19,9 +19,13 @@ export const TYPE_LABELS: Record<string, Record<string, string>> = {
         en: 'Ice',
         it: 'Ghiaccio'
     },
-    'identity': {
-        en: 'Identity',
-        it: 'Identità'
+    'corp_identity': {
+        en: 'Corp Identity',
+        it: 'Identità Corp'
+    },
+    'runner_identity': {
+        en: 'Runner Identity',
+        it: 'Identità Runner'
     },
     'operation': {
         en: 'Operation',

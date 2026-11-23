@@ -19,8 +19,8 @@
                     <label i18n for="faction-select">Favorite Faction</label>
                     <select name="faction" id="faction-select" formControlName="favoriteFaction">
                         <option i18n value="">None</option>
-                        @for(faction of factions; track faction.code) {
-                        <option [value]="faction.code">{{ faction.code | factionLabel}}</option>
+                        @for(faction of factions; track faction.id) {
+                        <option [value]="faction.id">{{ faction.id | factionLabel}}</option>
                         }
                     </select>
                 </div>

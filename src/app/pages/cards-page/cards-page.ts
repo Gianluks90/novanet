@@ -67,12 +67,12 @@ export class CardsPage {
     private notification: NotificationService,
     private cardService: CardService) {
     this.route.data.subscribe(data => {
-      this.cycles = data['configs'].cycles.data;
-      this.factions = data['configs'].factions.data;
-      this.packs = data['configs'].packs.data;
-      this.sides = data['configs'].sides.data;
-      // this.types = data['configs'].types.data.filter((t:any) => !t.is_subtype);
-      this.types = data['configs'].types.data;
+      this.cycles = data['configs'].cycles;
+      this.factions = data['configs'].factions;
+      this.packs = data['configs'].packs;
+      this.sides = data['configs'].sides;
+      // this.types = data['configs'].types.filter((t:any) => !t.is_subtype);
+      this.types = data['configs'].types;
     });
   }
 
@@ -147,25 +147,25 @@ export class CardsPage {
     switch (this.sortBy) {
       case 'faction':
         this.cards = base.sort((a, b) =>
-          (a.faction_code || '').localeCompare(b.faction_code || '')
+          (a.faction_id || '').localeCompare(b.faction_id || '')
         );
         break;
 
       case 'type':
         this.cards = base.sort((a, b) =>
-          (a.type_code || '').localeCompare(b.type_code || '')
+          (a.card_type_id || '').localeCompare(b.card_type_id || '')
         );
         break;
 
       case 'faction cost':
         this.cards = base.sort((a, b) =>
-          (b.faction_cost || 0) - (a.faction_cost || 0)
+          (b.influence_cost || 0) - (a.influence_cost || 0)
         );
         break;
 
       case 'cost':
         this.cards = base.sort((a, b) =>
-          (a.cost || 0) - (b.cost || 0)
+          (Number(a.cost) || 0) - (Number(b.cost) || 0)
         );
         break;
 
@@ -189,7 +189,7 @@ export class CardsPage {
 
   public onCardClick(card: Card) {
 
-    if (this.selectedCard && this.selectedCard.code === card.code) {
+    if (this.selectedCard && this.selectedCard.id === card.id) {
       this.cardZoomed = true
     } else {
       this.cardZoomed = false
@@ -199,8 +199,8 @@ export class CardsPage {
   }
 
   public scrollToSelected() {
-    if (this.selectedCard?.code) {
-      const element = document.getElementById(this.selectedCard.code);
+    if (this.selectedCard?.id) {
+      const element = document.getElementById(this.selectedCard.id);
       element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }
@@ -272,31 +272,31 @@ export class CardsPage {
       }
       if (
         this.filters.pack !== 'all' &&
-        card.pack_code !== this.filters.pack
+        card.card_set_id !== this.filters.pack
       ) {
         return false;
       }
       if (
         this.filters.faction !== 'all' &&
-        card.faction_code !== this.filters.faction
+        card.faction_id !== this.filters.faction
       ) {
         return false;
       }
       if (
         this.filters.side !== 'all' &&
-        card.side_code !== this.filters.side
+        card.side_id !== this.filters.side
       ) {
         return false;
       }
       if (
         this.filters.type !== 'all' &&
-        card.type_code !== this.filters.type
+        card.card_type_id !== this.filters.type
       ) {
         return false;
       }
       if (
         this.filters.cost !== null &&
-        card.cost !== this.filters.cost
+        Number(card.cost) !== this.filters.cost
       ) {
         return false;
       }

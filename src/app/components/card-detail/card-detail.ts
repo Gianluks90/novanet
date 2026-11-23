@@ -67,15 +67,15 @@ export class CardDetail {
 
   public factionCostArray: any[] = [];
   private initFactionCostArray() {
-    const cost = this.selectedCard()?.faction_cost || 0;
+    const cost = this.selectedCard()?.influence_cost || 0;
     if (cost && cost > 0) {
       this.factionCostArray = Array(5).fill(false).map((_, i) => i < cost);
     }
   }
 
   public scrollToSelected() {
-    if (this.selectedCard()?.code) {
-      const element = document.getElementById(this.selectedCard()?.code || '');
+    if (this.selectedCard()?.id) {
+      const element = document.getElementById(this.selectedCard()?.id || '');
       element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }

@@ -13,7 +13,7 @@ export class CardService {
     const cards = await db.getAll('cards') as Card[];
 
     const map = new Map<string, Card>();
-    cards.forEach(c => map.set(c.code, c));
+    cards.forEach(c => map.set(c.id, c));
 
     this.$cardsMap.set(map);
   }

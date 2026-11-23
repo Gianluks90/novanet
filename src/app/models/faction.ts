@@ -1,8 +1,9 @@
 export interface Faction {
-    code: string;
-    color?: string;
+    id: string;
+    name: string;
+    side_id: string;
     is_mini?: boolean;
     is_neutral?: boolean;
-    name?: string;
-    side_code?: string;
+    /** Hex color without '#'. Not provided by the API: filled from FACTION_COLORS. */
+    color?: string;
 }

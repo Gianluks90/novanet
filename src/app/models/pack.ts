@@ -1,9 +1,10 @@
+/** A NetrunnerDB v3 "card set" (what NRDB 2.0 called a pack). */
 export interface Pack {
-    code: string;
-    cycle_code?: string;
-    date_release?: string;
+    id: string;
     name: string;
+    card_cycle_id?: string;
+    date_release?: string;
     position?: number;
     size?: number;
-    ffg_id?: number;
+    updated_at?: string;
 }
