@@ -58,6 +58,8 @@ export const IT: Record<TranslationKey, string> = {
   "deckBuilderPage.selectIdentity": "Seleziona identità",
   "deckBuilderPage.searchCardPlaceholder": "Nome o codice della carta",
   "deckBuilderPage.addCopy": "Aggiungi una copia",
+  "deckBuilderPage.viewGrid": "Vista a griglia",
+  "deckBuilderPage.viewList": "Vista a elenco",
   "deckBuilderPage.removeCopy": "Rimuovi una copia",
   "deckBuilderPage.missingCards": "Mancano {0} carte",
   "deckBuilderPage.influenceOver": "{0} di influenza oltre il limite",

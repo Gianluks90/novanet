@@ -407,12 +407,26 @@ export class DeckBuilderPage implements AfterViewInit {
     const card = this.filteredCards[0];
     if (!card || !this.isOwner) return;
     this.changeQuantity(card, 1);
-    this.selectCard(card);
     this.cardInputEl?.nativeElement.select();
   }
 
-  public clearSearch() {
+  /** Esc in the search field clears it (and does not also close the card detail). */
+  public clearSearch(event?: Event) {
+    event?.stopPropagation();
     this.cardForm.patchValue({ cardInput: '' });
+  }
+
+  public closeDetail() {
+    this.selectedCard = null;
+    this.cardZoomed = false;
+  }
+
+  /** Esc closes the zoom first, then the card detail (unless a dialog is open). */
+  @HostListener('document:keydown.escape')
+  public onEscape() {
+    if (document.querySelector('.dialog-container')) return;
+    if (this.cardZoomed) this.cardZoomed = false;
+    else if (this.selectedCard) this.selectedCard = null;
   }
 
   public get totalCards(): number {
@@ -469,6 +483,54 @@ export class DeckBuilderPage implements AfterViewInit {
   public get agendaValid(): boolean {
     const { min, max } = this.agendaNeeded;
     return this.agendaPoints >= min && this.agendaPoints <= max;
+  }
+
+  // ---- deck list: groups by type, list or grid ------------------------------------------
+
+  /** Order of the card types in the deck list, per side (types not listed go last). */
+  private static readonly TYPE_ORDER: Record<string, string[]> = {
+    runner: ['event', 'hardware', 'resource', 'program'],
+    corp: ['agenda', 'asset', 'ice', 'operation', 'upgrade'],
+  };
+
+  /** The deck's cards grouped by type, each group sorted by title. */
+  public get selectedCardGroups(): { type: string; entries: { card: Card; qty: number }[]; total: number }[] {
+    const order = DeckBuilderPage.TYPE_ORDER[this.deck?.side ?? ''] ?? [];
+    const rank = (type: string) => { const i = order.indexOf(type); return i < 0 ? order.length : i; };
+    const groups = new Map<string, { card: Card; qty: number }[]>();
+    for (const entry of this.selectedCardsList) {
+      const list = groups.get(entry.card.card_type_id) ?? [];
+      list.push(entry);
+      groups.set(entry.card.card_type_id, list);
+    }
+    return Array.from(groups.entries())
+      .sort(([a], [b]) => rank(a) - rank(b) || a.localeCompare(b))
+      .map(([type, entries]) => ({
+        type,
+        entries: entries.sort((a, b) => a.card.title.localeCompare(b.card.title)),
+        total: entries.reduce((sum, e) => sum + e.qty, 0),
+      }));
+  }
+
+  /** How the deck's cards are shown; remembered on this device. */
+  public deckView: 'list' | 'grid' = DeckBuilderPage.loadDeckView();
+
+  private static loadDeckView(): 'list' | 'grid' {
+    try {
+      return localStorage.getItem('deckListView') === 'grid' ? 'grid' : 'list';
+    } catch {
+      return 'list';
+    }
+  }
+
+  public toggleDeckView() {
+    this.deckView = this.deckView === 'list' ? 'grid' : 'list';
+    try { localStorage.setItem('deckListView', this.deckView); } catch { /* not remembered */ }
+  }
+
+  /** Card picture for the grid tiles. */
+  public tileImage(card: Card): string {
+    return 'https://card-images.netrunnerdb.com/v2/medium/' + card.id + '.jpg';
   }
 
   public get selectedCardsList(): { card: Card; qty: number }[] {

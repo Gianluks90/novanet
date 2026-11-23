@@ -56,6 +56,8 @@ export const EN = {
   "deckBuilderPage.selectIdentity": "Select identity",
   "deckBuilderPage.searchCardPlaceholder": "Card name or code",
   "deckBuilderPage.addCopy": "Add a copy",
+  "deckBuilderPage.viewGrid": "Grid view",
+  "deckBuilderPage.viewList": "List view",
   "deckBuilderPage.removeCopy": "Remove a copy",
   "deckBuilderPage.missingCards": "{0} cards missing",
   "deckBuilderPage.influenceOver": "{0} influence over the limit",

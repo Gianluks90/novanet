@@ -1,10 +1,13 @@
+// Width from which the card detail is a column next to the deck list; below it, a drawer over the list.
+$wide-breakpoint: 1360px;
+
 .deck-builder-page-main-container {
     // the one gap between panels and inside them (same as the cards and decks pages)
     --page-gap: var(--space-2);
 
     height: 100%;
     display: grid;
-    grid-template-columns: 1fr 400px;
+    grid-template-columns: minmax(0, 1fr) clamp(320px, 34vw, 400px);
     gap: var(--page-gap);
 
     &>section {
@@ -80,36 +83,54 @@
         }
 
         &>.view-content {
-            display: grid;
-            grid-template-columns: 1fr 300px;
-            gap: var(--space-4);
+            position: relative; // anchors the detail drawer
+            gap: var(--space-2);
 
-            &>section {
+            &>.deck-list-section {
                 display: flex;
                 flex-direction: column;
                 gap: var(--space-2);
+                flex: 1;
                 min-height: 0;
+            }
+
+            // plenty of room: list and card detail side by side, half and half
+            @media (min-width: $wide-breakpoint) {
+                display: grid;
+                grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+                grid-template-rows: minmax(0, 1fr);
+                gap: var(--space-4);
             }
         }
     }
 }
 
-.identity-container {
-    width: 100%;
+// Compact identity strip: small art, name and the three meters side by side
+.identity-strip {
     display: grid;
-    grid-template-columns: 130px 1fr;
-    gap: var(--space-4);
+    grid-template-columns: 72px 1fr;
+    gap: var(--space-3);
+    align-items: start;
 
-    img {
-        width: 100%;
-        border-radius: 4px;
+    &>.identity-art {
+        padding: 0;
+        border: 0;
+        background: none;
+        cursor: pointer;
+        line-height: 0;
+
+        img {
+            width: 100%;
+            border-radius: 4px;
+        }
     }
 
     &>.identity-info {
+        min-width: 0;
+
         &>.identity-title {
             font-weight: bold;
             font-size: 1.2em;
-            margin-bottom: var(--space-2);
             display: flex;
             align-items: center;
             gap: var(--space-2);
@@ -123,8 +144,79 @@
         &>.identity-subtitle {
             font-style: italic;
             color: var(--accent-color);
-            margin-bottom: var(--space-3);
+            margin-bottom: var(--space-2);
         }
+
+        &>.meters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--space-3);
+        }
+    }
+}
+
+// Card detail sliding in from the right over the deck list
+.detail-drawer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    width: 320px;
+    display: none;
+    flex-direction: column;
+    background-color: var(--bg-container-color);
+    border-left: 1px solid var(--accent-color);
+    box-shadow: -4px 0 8px rgba(0, 0, 0, .25);
+
+    &.open {
+        display: flex;
+        animation: drawerIn var(--duration-base) ease-out;
+    }
+
+    &>.drawer-header {
+        display: flex;
+        justify-content: flex-end;
+        padding: var(--space-1) var(--space-2);
+        border-bottom: 1px solid var(--accent-color);
+    }
+
+    &>.drawer-body {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+
+        app-card-detail {
+            flex: 1;
+            height: auto;
+        }
+    }
+}
+
+@media (min-width: $wide-breakpoint) {
+    .detail-drawer,
+    .detail-drawer.open {
+        display: flex;
+        position: static;
+        width: auto;
+        min-height: 0;
+        border-left: 0;
+        box-shadow: none;
+        animation: none;
+    }
+
+    .detail-drawer>.drawer-header {
+        display: none;
+    }
+}
+
+@keyframes drawerIn {
+    from {
+        transform: translateX(100%);
+    }
+
+    to {
+        transform: translateX(0);
     }
 }
 
@@ -226,7 +318,8 @@ select {
     overflow-y: auto;
     padding: var(--space-2) 0;
 
-    &>.card-item {
+    // rows are direct children in the search results, and inside a .type-group in the deck list
+    .card-item {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -270,15 +363,79 @@ select {
                 width: 24px;
             }
 
-            .type-label {
-                text-transform: uppercase;
-                font-size: .8rem;
-            }
-
             .read-only-qty {
                 min-width: 1.5rem;
                 text-align: center;
             }
+        }
+    }
+}
+
+// the deck list: cards grouped by type under a separator
+.type-group {
+    display: flex;
+    flex-direction: column;
+
+    &+.type-group {
+        margin-top: var(--space-3);
+    }
+
+    &>.type-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--space-1) var(--space-2);
+        margin-bottom: var(--space-1);
+        border-bottom: 1px solid var(--border-muted);
+        font-size: .85rem;
+        text-transform: uppercase;
+        letter-spacing: var(--letter-spacing-caps);
+        color: var(--accent-color);
+
+        &>.type-count {
+            opacity: .8;
+        }
+    }
+}
+
+// grid view: pictures, three per row, copies stepper under each
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3) var(--space-2);
+    padding: var(--space-1) var(--space-2) 0;
+
+    .card-tile {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-1);
+        padding: var(--space-1);
+        transition: background-color var(--duration-base);
+
+        &:hover,
+        &.selected {
+            background-color: var(--surface-hover);
+        }
+
+        .tile-art {
+            width: 100%;
+            padding: 0;
+            border: 0;
+            background: none;
+            line-height: 0;
+            cursor: pointer;
+
+            img {
+                width: 100%;
+                aspect-ratio: 2 / 3;
+                object-fit: cover;
+                border-radius: 4px;
+            }
+        }
+
+        .read-only-qty {
+            font-size: .9rem;
         }
     }
 }
@@ -291,6 +448,12 @@ select {
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    &>.title-actions {
+        display: flex;
+        align-items: center;
+        gap: var(--space-1);
+    }
 }
 
 .influence-dot {

@@ -4,9 +4,6 @@
     <div class="card-item" [class.in-deck]="!inDeckList && copies > 0" [class.selected]="selectedCard?.id === card.id">
         <button type="button" class="card-item-title" (click)="selectCard(card)">{{ card | cardTitle }}</button>
         <div class="card-item-meta">
-            @if (inDeckList) {
-                <span class="type-label">{{ card.card_type_id! | typeLabel }}</span>
-            }
             @if (card.influence_cost! > 0 && (!inDeckList || card.faction_id !== deck?.identity?.faction_id)) {
                 <span [innerHTML]="card | dots: factions"></span>
             }
@@ -23,6 +20,23 @@
                 <span class="read-only-qty">x{{ copies }}</span>
             }
         </div>
+    </div>
+</ng-template>
+
+<!-- A card of the deck as a picture tile (grid view). -->
+<ng-template #cardTile let-card>
+    @let copies = qtyOf(card.id);
+    <div class="card-tile" [class.selected]="selectedCard?.id === card.id">
+        <button type="button" class="tile-art" [attr.aria-label]="card | cardTitle" (click)="selectCard(card)">
+            <img loading="lazy" [src]="tileImage(card)" [alt]="card | cardTitle">
+        </button>
+        @if (isOwner) {
+            <app-ui-stepper [value]="copies" [max]="limitOf(card)"
+                [decreaseLabel]="'deckBuilderPage.removeCopy' | t" [increaseLabel]="'deckBuilderPage.addCopy' | t"
+                (decrease)="changeQuantity(card, -1)" (increase)="changeQuantity(card, 1)"></app-ui-stepper>
+        } @else {
+            <span class="read-only-qty">x{{ copies }}</span>
+        }
     </div>
 </ng-template>
 
@@ -65,13 +79,15 @@
         }
         @if (deck) {
         <div class="section-content view-content">
-            @if (deck.originalAuthorName && deck.originalAuthorId !== firebase.$user()?.uid) {
-                <p class="p-note deck-author">{{ 'deckBuilderPage.originalAuthor' | t: [deck.originalAuthorName] }}</p>
-            }
             @if (deck.identity) {
-            <section>
-                <div class="identity-container" (click)="onCardClick(deck.identity)">
-                    <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + deck.identity.id + '.jpg'" alt="">
+            <section class="deck-list-section">
+                @if (deck.originalAuthorName && deck.originalAuthorId !== firebase.$user()?.uid) {
+                    <p class="p-note deck-author">{{ 'deckBuilderPage.originalAuthor' | t: [deck.originalAuthorName] }}</p>
+                }
+                <div class="identity-strip">
+                    <button type="button" class="identity-art" (click)="onCardClick(deck.identity)">
+                        <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + deck.identity.id + '.jpg'" [alt]="deck.identity | cardTitle">
+                    </button>
                     <div class="identity-info">
                         <div class="identity-title">
                             @let identity = deck.identity;
@@ -80,58 +96,88 @@
                             }
                             {{(deck.identity | cardTitle).split(':')[0]}}
                         </div>
-                        <hr>
                         <div class="identity-subtitle">
                             {{(deck.identity | cardTitle).split(':')[1]}}
                         </div>
-
-                        <div class="meter">
-                            <div class="meter-labels">
-                                <span>{{ 'deckBuilderPage.deckSizeMinimumDeckSize' | t }}</span>
-                                <span>{{ totalCards }} / {{ deck.identity.minimum_deck_size }}</span>
-                            </div>
-                            <progress [class.warn]="missingCards > 0" [value]="totalCards" [max]="deck.identity.minimum_deck_size" min="0"></progress>
-                            @if (missingCards > 0) {
-                                <span class="meter-hint warn">{{ 'deckBuilderPage.missingCards' | t: [missingCards] }}</span>
-                            }
-                        </div>
-                        <div class="meter">
-                            <div class="meter-labels">
-                                <span>{{ 'deckBuilderPage.influenceInfluenceLimit' | t }}</span>
-                                <span>{{ totalInfluence }} / {{ deck.identity.influence_limit ?? '∞' }}</span>
-                            </div>
-                            @if (influenceLimit !== null) {
-                                <progress [class.error]="influenceOver > 0" [value]="totalInfluence" [max]="influenceLimit" min="0"></progress>
-                            }
-                            @if (influenceOver > 0) {
-                                <span class="meter-hint error">{{ 'deckBuilderPage.influenceOver' | t: [influenceOver] }}</span>
-                            }
-                        </div>
-                        @if (deck.identity.side_id === 'corp') {
+                        <div class="meters">
                             <div class="meter">
                                 <div class="meter-labels">
-                                    <span>{{ 'deckBuilderPage.agendaPoints' | t }}</span>
-                                    <span class="agenda-points-value" [class.error]="!agendaValid">{{ agendaPoints }}</span>
+                                    <span>{{ 'deckBuilderPage.deckSizeMinimumDeckSize' | t }}</span>
+                                    <span>{{ totalCards }} / {{ deck.identity.minimum_deck_size }}</span>
                                 </div>
-                                <span class="meter-hint" [class.error]="!agendaValid">{{ 'deckBuilderPage.agendaRequired' | t: [agendaNeeded.min, agendaNeeded.max] }}</span>
+                                <progress [class.warn]="missingCards > 0" [value]="totalCards" [max]="deck.identity.minimum_deck_size" min="0"></progress>
+                                @if (missingCards > 0) {
+                                    <span class="meter-hint warn">{{ 'deckBuilderPage.missingCards' | t: [missingCards] }}</span>
+                                }
                             </div>
-                        }
+                            <div class="meter">
+                                <div class="meter-labels">
+                                    <span>{{ 'deckBuilderPage.influenceInfluenceLimit' | t }}</span>
+                                    <span>{{ totalInfluence }} / {{ deck.identity.influence_limit ?? '∞' }}</span>
+                                </div>
+                                @if (influenceLimit !== null) {
+                                    <progress [class.error]="influenceOver > 0" [value]="totalInfluence" [max]="influenceLimit" min="0"></progress>
+                                }
+                                @if (influenceOver > 0) {
+                                    <span class="meter-hint error">{{ 'deckBuilderPage.influenceOver' | t: [influenceOver] }}</span>
+                                }
+                            </div>
+                            @if (deck.identity.side_id === 'corp') {
+                                <div class="meter">
+                                    <div class="meter-labels">
+                                        <span>{{ 'deckBuilderPage.agendaPoints' | t }}</span>
+                                        <span class="agenda-points-value" [class.error]="!agendaValid">{{ agendaPoints }}</span>
+                                    </div>
+                                    <span class="meter-hint" [class.error]="!agendaValid">{{ 'deckBuilderPage.agendaRequired' | t: [agendaNeeded.min, agendaNeeded.max] }}</span>
+                                </div>
+                            }
+                        </div>
                     </div>
                 </div>
                 <div class="cards-container-title">
                     <span>{{ 'deckBuilderPage.cards' | t }}</span>
-                    <app-ui-icon-button icon="bottom_panel_open" size="sm" [label]="'deckBuilderPage.exportCardList' | t" (click)="exportCardList()"></app-ui-icon-button>
+                    <div class="title-actions">
+                        <app-ui-icon-button [icon]="deckView === 'list' ? 'grid_view' : 'view_list'" size="sm"
+                            [label]="(deckView === 'list' ? 'deckBuilderPage.viewGrid' : 'deckBuilderPage.viewList') | t"
+                            (click)="toggleDeckView()"></app-ui-icon-button>
+                        <app-ui-icon-button icon="bottom_panel_open" size="sm" [label]="'deckBuilderPage.exportCardList' | t" (click)="exportCardList()"></app-ui-icon-button>
+                    </div>
                 </div>
                 <div class="cards-container">
-                    @for (entry of selectedCardsList; track entry.card.id) {
-                        <ng-container *ngTemplateOutlet="cardRow; context: { $implicit: entry.card, inDeckList: true }"></ng-container>
+                    @for (group of selectedCardGroups; track group.type) {
+                        <div class="type-group">
+                            <div class="type-header">
+                                <span>{{ group.type | typeLabel }}</span>
+                                <span class="type-count">{{ group.total }}</span>
+                            </div>
+                            @if (deckView === 'grid') {
+                                <div class="cards-grid">
+                                    @for (entry of group.entries; track entry.card.id) {
+                                        <ng-container *ngTemplateOutlet="cardTile; context: { $implicit: entry.card }"></ng-container>
+                                    }
+                                </div>
+                            } @else {
+                                @for (entry of group.entries; track entry.card.id) {
+                                    <ng-container *ngTemplateOutlet="cardRow; context: { $implicit: entry.card, inDeckList: true }"></ng-container>
+                                }
+                            }
+                        </div>
                     } @empty {
                         <p>{{ 'deckBuilderPage.noCardsAddedYet' | t }}</p>
                     }
                 </div>
             </section>
-            <app-card-detail [selectedCard]="selectedCard" [disableMenu]="true" [disableCenter]="true" [packs]="packs" (zoomCardEmit)="onCardZoomEmitted($event)"></app-card-detail>
             }
+            <!-- Wide window: a column next to the list (empty until a card is selected). Narrower: it only
+                 exists while a card is selected and slides in from the right over the list (button or Esc to close). -->
+            <aside class="detail-drawer" [class.open]="!!selectedCard">
+                <div class="drawer-header">
+                    <app-ui-icon-button icon="close" size="sm" [label]="'closeButton' | t" (click)="closeDetail()"></app-ui-icon-button>
+                </div>
+                <div class="drawer-body">
+                    <app-card-detail [selectedCard]="selectedCard" [disableMenu]="true" [disableCenter]="true" [packs]="packs" (zoomCardEmit)="onCardZoomEmitted($event)"></app-card-detail>
+                </div>
+            </aside>
         </div>
         }
     </section>
@@ -176,7 +222,7 @@
                     [attr.aria-label]="'deckBuilderPage.searchCard' | t"
                     [placeholder]="'deckBuilderPage.searchCardPlaceholder' | t"
                     autocorrect="off" autocomplete="off"
-                    (keydown.enter)="addFirstResult()" (keydown.escape)="clearSearch()">
+                    (keydown.enter)="addFirstResult()" (keydown.escape)="clearSearch($event)">
                 <button type="button" class="ghost-btn reset-btn" (click)="resetFilters()"
                     [attr.aria-label]="'cardsPage.resetFilters' | t" [title]="'cardsPage.resetFilters' | t">
                     <span class="material-symbols-rounded" aria-hidden="true">refresh</span>

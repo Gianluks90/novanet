@@ -150,37 +150,6 @@
     .card-cost {
         font-size: 1.5rem;
     }
-
-    .strength-container {
-        border: 1px solid var(--fg-color);
-        background-color: var(--bg-container-color);
-        height: 100%;
-        display: flex;
-        align-items: center;
-        flex-direction: column;
-        justify-content: center;
-        height: 48px;
-        width: 48px;
-        cursor: default;
-        user-select: none;
-
-        &>.strength-label {
-            background-color: var(--fg-color);
-            color: var(--bg-container-color);
-            width: 100%;
-            text-align: center;
-        }
-
-        &>.strength-value {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-    }
-}
-
-.ice-header {
-    display: grid;
-    grid-template-columns: 1fr 48px;
 }
 
 .identity-item {
@@ -286,6 +255,34 @@
         .influence-limit {
             background-color: var(--accent-color);
             color: var(--bg-container-color);
+        }
+    }
+
+    .strength-container {
+        border: 1px solid var(--fg-color);
+        background-color: var(--bg-container-color);
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        justify-content: center;
+        height: 48px;
+        width: 48px;
+        // pushed to the right edge of the icons row, just above the effect
+        margin-left: auto;
+        flex-shrink: 0;
+        cursor: default;
+        user-select: none;
+
+        &>.strength-label {
+            background-color: var(--fg-color);
+            color: var(--bg-container-color);
+            width: 100%;
+            text-align: center;
+        }
+
+        &>.strength-value {
+            font-size: 1.5rem;
+            font-weight: bold;
         }
     }
 }

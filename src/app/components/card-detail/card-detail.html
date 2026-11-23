@@ -20,15 +20,9 @@
             <p class="identity-subtitle">{{c?.title!.split(':')[1]}}</p>
         </div>
         } @else {
-        <div class="identity-container" [class.ice-header]="c?.strength || c?.strength === 0">
+        <div class="identity-container">
             <p class="section-title"><span [title]="'uniquenessTooltipText' | t"
                     class="unique-icon">{{c?.is_unique ? '◆' : ''}}</span> {{c?.title}}</p>
-            @if (c?.strength || c?.strength === 0) {
-            <div class="strength-container">
-                <span [title]="'strengthTooltipText' | t" class="strength-label">{{ 'cardDetail.str' | t }}</span>
-                <span class="strength-value">{{c?.strength}}</span>
-            </div>
-            }
         </div>
         }
         <p>
@@ -81,6 +75,12 @@
                 {{c?.advancement_requirement}}/{{c?.agenda_points}} <span
                     [title]="'agendaPointsTooltipText' | t" class="nr-icon nr-agenda"></span>
             </p>
+            }
+            @if (c?.strength || c?.strength === 0) {
+            <div class="strength-container">
+                <span [title]="'strengthTooltipText' | t" class="strength-label">{{ 'cardDetail.str' | t }}</span>
+                <span class="strength-value">{{c?.strength}}</span>
+            </div>
             }
         </div>
         <div class="effect-container">
