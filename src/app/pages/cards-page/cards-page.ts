@@ -9,7 +9,8 @@ import { Pack } from '../../models/pack';
 import { Side } from '../../models/side';
 import { Type } from '../../models/type';
 import { FormsModule } from '@angular/forms';
-import { CardComponent } from '../../components/card-component/card-component';
+import { CardComponent, CardImageSize } from '../../components/card-component/card-component';
+import { CardBack } from '../../components/card-back/card-back';
 import { CardDetail } from '../../components/card-detail/card-detail';
 import { FirebaseService } from '../../services/firebase-service';
 import { NotificationService } from '../../services/notification-service';
@@ -28,6 +29,7 @@ import { CardTranslationService } from '../../services/card-translation-service'
     UIDiagonalLine,
     FormsModule,
     CardComponent,
+    CardBack,
     CardDetail,
     FactionLabelPipe,
     TypeLabelPipe,
@@ -48,6 +50,15 @@ export class CardsPage {
   private i18n = inject(I18nService);
   private translations = inject(CardTranslationService);
   public get locale(): string { return this.i18n.lang(); }
+
+  /** Thumbnail resolution matching the grid zoom (card widths: ~75-110px, 100-150px, 170-250px, 220px+). */
+  public get thumbnailSize(): CardImageSize {
+    switch (this.zoomLevel) {
+      case 'small-size': return 'small';
+      case 'standard-size': return 'medium';
+      default: return 'large';
+    }
+  }
 
   public cycles: Cycle[] = [];
   public factions: Faction[] = [];

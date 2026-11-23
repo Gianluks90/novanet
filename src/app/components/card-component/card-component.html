@@ -1,5 +1,13 @@
-<div class="card-item"
-                [class.selected-card]="selectedCard() && selectedCard()?.id === card()?.id"
-                [class.not-selected-card]="selectedCard() && selectedCard()?.id !== card()?.id" [id]="card()?.id">
-                <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + card()?.id + '.jpg'" alt="">
-            </div>
+<div class="card-item" appCardTilt
+    [class.selected-card]="selectedCard() && selectedCard()?.id === card()?.id"
+    [class.not-selected-card]="selectedCard() && selectedCard()?.id !== card()?.id" [id]="card()?.id">
+    <div class="card-flip" [class.flipped]="loaded()">
+        <div class="card-face card-back-face">
+            <app-card-back [side]="card()?.side_id"></app-card-back>
+        </div>
+        <div class="card-face card-front-face">
+            <img [src]="imageUrl()" alt="" decoding="async" (load)="loaded.set(true)">
+        </div>
+    </div>
+    <div class="card-glare"></div>
+</div>

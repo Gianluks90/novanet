@@ -53,7 +53,7 @@ To run a single test file once specs exist, use Vitest's own filtering, e.g. `np
 
 **Routing** uses hash location strategy (`withHashLocation()` in [src/app/app.config.ts](src/app/app.config.ts)), relevant for Firebase Hosting rewrites.
 
-**Directory map**: `components/` (reusable pieces incl. `dialogs/` for Angular CDK/Material-style dialogs), `pages/` (routed views, some nested like `decks-page/decks-list-page` and `decks-page/deck-builder-page`), `services/` (injectable app state/business logic), `db/` (NRDB IndexedDB access), `models/` (plain TS interfaces mirroring Firestore/NRDB shapes), `pipes/` (display-formatting pipes for card fields — faction labels, icons, influence checks, etc.), `resolvers/` (route data preloading), `const/` (label maps and config constants), `ui/` (small presentational primitives re-exported from `ui/index.ts`), `environment/` (Firebase config).
+**Directory map**: `components/` (reusable pieces incl. `dialogs/` for Angular CDK/Material-style dialogs), `pages/` (routed views, some nested like `decks-page/decks-list-page` and `decks-page/deck-builder-page`), `services/` (injectable app state/business logic), `db/` (NRDB IndexedDB access), `models/` (plain TS interfaces mirroring Firestore/NRDB shapes), `directives/` (e.g. `appCardTilt`, pointer-follow 3D tilt that only sets CSS variables), `pipes/` (display-formatting pipes for card fields — faction labels, icons, influence checks, etc.), `resolvers/` (route data preloading), `const/` (label maps and config constants), `ui/` (small presentational primitives re-exported from `ui/index.ts`), `environment/` (Firebase config).
 
 ## Conventions
 

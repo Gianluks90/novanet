@@ -1,0 +1,39 @@
+:host {
+    --back-from: #1f2a3a;
+    --back-to: #0d121a;
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    border-radius: 8px;
+    border: 1px solid var(--accent-color);
+    overflow: hidden;
+    background: linear-gradient(155deg, var(--back-from), var(--back-to));
+}
+
+:host([data-side='corp']) {
+    --back-from: #3a1f26;
+    --back-to: #140a0d;
+}
+
+:host([data-side='runner']) {
+    --back-from: #1c3340;
+    --back-to: #0a1218;
+}
+
+// inner frame
+:host::before {
+    content: '';
+    position: absolute;
+    inset: 6%;
+    border: 1px solid var(--accent-color);
+    border-radius: 5px;
+    opacity: .45;
+}
+
+.back-logo {
+    position: absolute;
+    inset: 0;
+    opacity: .75;
+}

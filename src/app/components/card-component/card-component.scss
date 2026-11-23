@@ -1,43 +1,91 @@
 :host {
-    &>:hover {
-        transform: scale(1.03);
-        transition: transform 0.5s;
+    display: block;
+}
+
+.card-item {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 2/3;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+
+    // tilt: the CardTiltDirective only sets the --tilt-* variables
+    transform: perspective(700px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) scale(var(--tilt-scale, 1));
+    transition:
+        transform 400ms ease-out,
+        filter 150ms ease,
+        opacity 150ms ease,
+        box-shadow 150ms ease;
+
+    // while the pointer moves over it, follow it closely
+    &.tilting {
+        transition:
+            transform 80ms linear,
+            filter 150ms ease,
+            opacity 150ms ease,
+            box-shadow 150ms ease;
     }
 
-    &>.selected-card {
+    &.selected-card {
         filter: saturate(1.15) contrast(1.05);
         box-shadow: 0 0 6px var(--accent-color);
         z-index: 1;
     }
 
-    &>.not-selected-card {
+    &.not-selected-card {
         opacity: 0.5;
         filter: saturate(0.5);
     }
 }
 
-.card-item {
-    width: 100%;
-    aspect-ratio: 2/3;
-    background-color: var(--bg-container-color);
-    border: 1px solid var(--accent-color);
+// flip: starts showing the back, turns to the face when the image is loaded
+.card-flip {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+    transform: perspective(600px) rotateY(180deg);
+    transition: transform 600ms cubic-bezier(0.2, 0.7, 0.2, 1);
+
+    &.flipped {
+        transform: perspective(600px) rotateY(0deg);
+    }
+}
+
+.card-face {
+    position: absolute;
+    inset: 0;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
+    overflow: hidden;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
 
-    transition:
-        filter 150ms ease,
-        opacity 150ms ease,
-        box-shadow 150ms ease,
-        transform 150ms ease;
+    &.card-back-face {
+        transform: rotateY(180deg);
+    }
 
-    &>img {
+    & > img {
+        display: block;
         width: 100%;
         height: 100%;
         object-fit: cover;
-        border-radius: 8px;
+    }
+}
+
+.card-glare {
+    position: absolute;
+    inset: 0;
+    border-radius: 8px;
+    pointer-events: none;
+    opacity: var(--glare-opacity, 0);
+    transition: opacity 250ms ease;
+    background: radial-gradient(circle at var(--glare-x, 50%) var(--glare-y, 50%), rgba(255, 255, 255, 0.35), transparent 55%);
+    mix-blend-mode: soft-light;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .card-item,
+    .card-flip {
+        transition: none;
     }
 }
