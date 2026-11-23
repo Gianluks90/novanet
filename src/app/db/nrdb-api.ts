@@ -5,6 +5,7 @@ import { Pack } from '../models/pack';
 import { Side } from '../models/side';
 import { Type } from '../models/type';
 import { FACTION_COLORS } from '../const/factionColors';
+import { GameFormat, Restriction } from '../models/format';
 
 /** Single entry point for NetrunnerDB (v3, JSON:API). */
 export const NRDB_API_URL = 'https://api.netrunnerdb.com/api/v3/public';
@@ -135,4 +136,63 @@ export async function fetchReferenceData(): Promise<Omit<CardsConfig, 'packs'>> 
     sides: sides.map(toNamed) as Side[],
     types: (types.map(toNamed) as Type[]).sort((a, b) => a.name.localeCompare(b.name)),
   };
+}
+
+// ---- formats -------------------------------------------------------------
+
+/** Cheap signal of "the formats changed": ids, last update and number of snapshots of every format. */
+export async function fetchFormatsSignature(): Promise<string> {
+  const rows = await fetchAll('formats', { 'fields[formats]': 'updated_at,snapshot_ids' });
+  return rows
+    .map(r => `${r.id}:${r.attributes['updated_at']}:${(r.attributes['snapshot_ids'] ?? []).length}`)
+    .sort()
+    .join('|');
+}
+
+const toRestriction = (r: JsonApiResource): Restriction => {
+  const verdicts = r.attributes['verdicts'] ?? {};
+  return {
+    id: r.id,
+    name: r.attributes['name'],
+    pointLimit: r.attributes['point_limit'] ?? null,
+    banned: verdicts['banned'] ?? [],
+    restricted: verdicts['restricted'] ?? [],
+    points: verdicts['points'] ?? {},
+    universalFactionCost: verdicts['universal_faction_cost'] ?? {},
+  };
+};
+
+/**
+ * Every format with its *latest snapshot by date* (not the one the API flags as active: that flag
+ * lags behind, e.g. Standard's newest snapshots are marked inactive) and that snapshot's restriction list.
+ */
+export async function fetchFormats(): Promise<GameFormat[]> {
+  const formats = await fetchAll('formats', { 'fields[formats]': 'name' });
+  const today = new Date().toISOString().slice(0, 10);
+
+  return Promise.all(formats.map(async (format): Promise<GameFormat> => {
+    const snapshots = await fetchAll('snapshots', {
+      'filter[format_id]': format.id,
+      'fields[snapshots]': 'date_start',
+    });
+    // newest snapshot that has already started (a future one is announced, not in force yet)
+    const current = snapshots
+      .filter(s => (s.attributes['date_start'] ?? '') <= today)
+      .sort((a, b) => String(b.attributes['date_start']).localeCompare(String(a.attributes['date_start'])))[0];
+    if (!current) throw new Error(`NRDB: no snapshot for the format ${format.id}`);
+
+    const snapshot = (await fetchPage(`snapshots/${current.id}`, {}) as unknown as { data: JsonApiResource }).data;
+    const restrictionId: string | null = snapshot.attributes['restriction_id'] ?? null;
+    const restriction = restrictionId
+      ? toRestriction((await fetchPage(`restrictions/${restrictionId}`, {}) as unknown as { data: JsonApiResource }).data)
+      : null;
+
+    return {
+      id: format.id,
+      name: format.attributes['name'],
+      snapshotId: current.id,
+      cardSetIds: snapshot.attributes['card_set_ids'] ?? [],
+      restriction,
+    };
+  }));
 }

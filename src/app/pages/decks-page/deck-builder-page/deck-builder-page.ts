@@ -1,4 +1,4 @@
-import { UiIconButton, UiSegmented, UiStepper, SegmentedOption } from '../../../ui';
+import { UiIconButton, UiSegmented, UiStepper, UiToggle, SegmentedOption } from '../../../ui';
 import { HasUnsavedChanges } from '../../../guards/unsaved-changes-guard';
 import { TranslationKey } from '../../../i18n/en';
 import { AfterViewInit, ChangeDetectorRef, Component, effect, inject, ViewChild, ElementRef, HostListener, untracked } from '@angular/core';
@@ -34,11 +34,14 @@ import { AuthService } from '../../../services/auth-service';
 import { getAuth } from 'firebase/auth';
 
 import { parseCardList } from '../../../utils/card-list';
+import { FormatService } from '../../../services/format-service';
+import { CASUAL_FORMAT, GameFormat } from '../../../models/format';
+import { cardIssue, FORMAT_RULES, Violation } from '../../../utils/deck-validation';
 import { agendaRequirement } from '../../../utils/deck-rules';
 
 @Component({
   selector: 'app-deck-builder-page',
-  imports: [TranslatePipe, CardTitlePipe, UiIconButton, UiSegmented, UiStepper, CardDetail, CardZoom, NgTemplateOutlet, FormsModule, ReactiveFormsModule, FactionLabelPipe, TypeLabelPipe, DotsPipe, RouterLink, UIButton],
+  imports: [TranslatePipe, CardTitlePipe, UiIconButton, UiSegmented, UiStepper, UiToggle, CardDetail, CardZoom, NgTemplateOutlet, FormsModule, ReactiveFormsModule, FactionLabelPipe, TypeLabelPipe, DotsPipe, RouterLink, UIButton],
   templateUrl: './deck-builder-page.html',
   styleUrl: './deck-builder-page.scss',
 })
@@ -59,19 +62,8 @@ export class DeckBuilderPage implements AfterViewInit {
   public packs: Pack[] = [];
   public factions: Faction[] = [];
   public types: Type[] = [];
-  public formats: string[] = [
-    'standard',
-    'throwback',
-    'startup',
-    'system gateway',
-    'core',
-    'preconstructed',
-    'chimera',
-    'eternal',
-    'casual'
-  ];
-
   public cardsMap: Map<string, Card> = new Map();
+  public formatService = inject(FormatService);
   public filteredCards: Card[] = [];
   public identities: Card[] = [];
   public selectedCards = new Map<string, number>();
@@ -118,6 +110,23 @@ export class DeckBuilderPage implements AfterViewInit {
       if (newIdentity && this.deck) {
         this.deck.identity = newIdentity;
       }
+      this.updateLegality();
+    });
+
+    this.form.get('format')?.valueChanges.subscribe(() => {
+      this.updateLegality();
+      this.applyFilters();
+    });
+
+    // the formats arrive after the page (cache, then network): validate again, and fix an old format value
+    effect(() => {
+      this.formatService.formats();
+      untracked(() => {
+        this.normalizeFormat();
+        this.updateLegality();
+        this.applyFilters();
+        this.cd.detectChanges();
+      });
     });
 
     effect(() => {
@@ -165,7 +174,7 @@ export class DeckBuilderPage implements AfterViewInit {
 
     this.form.patchValue({
       name: this.deck?.name || '',
-      format: this.deck?.format || '',
+      format: this.formatService.normalize(this.deck?.format),
       identity: this.deck?.identity.id || '',
       notes: this.deck?.notes || ''
     });
@@ -227,7 +236,7 @@ export class DeckBuilderPage implements AfterViewInit {
     this.mode = 'edit';
     this.form.patchValue({
       name: deck.name || '',
-      format: deck.format || '',
+      format: this.formatService.normalize(deck.format),
       identity: deck.identity?.id || '',
       notes: deck.notes || ''
     });
@@ -351,6 +360,10 @@ export class DeckBuilderPage implements AfterViewInit {
       // filtro tipo
       .filter(c => type === 'all' || c.card_type_id === type)
 
+      // only the cards that can be played in the chosen format (on request)
+      .filter(c => !this.onlyLegal || !this.currentFormat || !this.currentPool
+        || cardIssue(c, this.currentFormat, this.currentPool) === null)
+
       // filtro testuale (tutte le lingue)
       .filter(c => {
         if (!search) return true;
@@ -380,6 +393,90 @@ export class DeckBuilderPage implements AfterViewInit {
   private dialog = inject(Dialog);
   private dialogRef: DialogRef<DialogResult, any> | null = null;
 
+  // ---- format and legality ---------------------------------------------------------
+
+  /** The chosen format when it is one of NetrunnerDB's (null for casual or none: no card pool, no lists). */
+  public currentFormat: GameFormat | null = null;
+  private currentPool: Set<string> | null = null;
+  /** For every format: is the deck legal in it? */
+  public formatStatus = new Map<string, boolean>();
+  /** Problems of the deck with the chosen format's own rules (card pool, bans, points). */
+  public formatViolations: Violation[] = [];
+  /** Hide the cards that cannot be played in the chosen format from the search. */
+  public onlyLegal = false;
+
+  public readonly casualFormat = CASUAL_FORMAT;
+
+  /** Re-checks the deck against every format. Called whenever the cards, identity or format change. */
+  private updateLegality() {
+    const formats = this.formatService.formats();
+    this.currentFormat = formats.find(f => f.id === this.form.get('format')?.value) ?? null;
+    this.currentPool = this.currentFormat && this.cardsMap.size > 0
+      ? this.formatService.pool(this.currentFormat, this.cardsMap) : null;
+    this.formatStatus = new Map();
+    this.formatViolations = [];
+
+    const identity = this.deck?.identity && (this.cardsMap.get(this.deck.identity.id) ?? this.deck.identity);
+    if (!identity || this.cardsMap.size === 0) return;
+
+    for (const format of formats) {
+      const violations = this.formatService.validate({ identity, cards: this.selectedCards }, this.cardsMap, format);
+      this.formatStatus.set(format.id, violations.length === 0);
+      if (format.id === this.currentFormat?.id) {
+        this.formatViolations = violations.filter(v => FORMAT_RULES.includes(v.code));
+      }
+    }
+  }
+
+  /** The stored format may be one of the app's old ones: show it as the closest current one. */
+  private normalizeFormat() {
+    const control = this.form.get('format');
+    if (!control) return;
+    const normalized = this.formatService.normalize(control.value);
+    if (normalized === control.value) return;
+    const wasDirty = this.dirty;
+    control.setValue(normalized, { emitEvent: false });
+    if (!wasDirty) this.baseline = this.currentSnapshot();
+  }
+
+  /** ` ✓` / ` ✗` after a format's name in the select: is the deck legal in it? */
+  public formatMark(id: string): string {
+    const legal = this.formatStatus.get(id);
+    return legal === undefined ? '' : legal ? ' ✓' : ' ✗';
+  }
+
+  /** The chosen format and whether the deck is legal in it (null when there is no format to check). */
+  public get formatVerdict(): { name: string; legal: boolean } | null {
+    const format = this.currentFormat;
+    const legal = format ? this.formatStatus.get(format.id) : undefined;
+    return format && legal !== undefined ? { name: format.name, legal } : null;
+  }
+
+  /** Why a card cannot be played in the chosen format (null when it can, or there is no format). */
+  public cardIssueKey(card: Card): TranslationKey | null {
+    if (!this.currentFormat || !this.currentPool) return null;
+    const issue = cardIssue(card, this.currentFormat, this.currentPool);
+    return issue === 'pool' ? 'deckBuilderPage.issuePool' : issue === 'banned' ? 'deckBuilderPage.issueBanned' : null;
+  }
+
+  public setOnlyLegal(value: boolean) {
+    this.onlyLegal = value;
+    this.applyFilters();
+  }
+
+  /** A format rule the deck breaks, as a sentence. */
+  public violationText(violation: Violation): string {
+    const card = violation.printingId ? this.cardsMap.get(violation.printingId) : undefined;
+    const name = card ? (this.showTranslated ? this.translations.title(card) : card.title) : '';
+    switch (violation.code) {
+      case 'pool': return this.i18n.t('deckBuilderPage.violationPool', [name]);
+      case 'banned': return this.i18n.t('deckBuilderPage.violationBanned', [name]);
+      case 'restricted': return this.i18n.t('deckBuilderPage.violationRestricted', [name]);
+      case 'points': return this.i18n.t('deckBuilderPage.violationPoints', [violation.amount ?? 0, violation.limit ?? 0]);
+      default: return '';
+    }
+  }
+
   // ---- copies in the deck --------------------------------------------------------
 
   /** Copies of the card in the deck. */
@@ -400,6 +497,7 @@ export class DeckBuilderPage implements AfterViewInit {
     const next = new Map(this.selectedCards);
     if (quantity > 0) next.set(card.id, quantity); else next.delete(card.id);
     this.selectedCards = next;
+    this.updateLegality();
   }
 
   /** Enter in the search field: one more copy of the first result, ready to type the next search. */
@@ -562,8 +660,18 @@ export class DeckBuilderPage implements AfterViewInit {
       cardsPayload[code] = qty;
     });
 
+    // which formats the deck is legal in, for this version of the card pools and lists
+    const identity = this.cardsMap.get(this.deck.identity.id) ?? this.deck.identity;
+    const legality = this.formatService.formats().length > 0 && this.cardsMap.size > 0
+      ? {
+          legalFormats: this.formatService.legalFormats({ identity, cards: this.selectedCards }, this.cardsMap),
+          legalFormatsBasis: this.formatService.signature(),
+        }
+      : {};
+
     const updatedDeck: Deck = {
       ...this.deck,
+      ...legality,
       name: this.form.get('name')?.value,
       format: this.form.get('format')?.value,
       identity: this.deck.identity,
@@ -596,6 +704,7 @@ export class DeckBuilderPage implements AfterViewInit {
       this.cardsParsed = true;
       this.baseline = this.currentSnapshot();
     }
+    this.updateLegality();
   }
 
   public importCardList() {
@@ -624,6 +733,7 @@ this.selectedCards.forEach((qty, code) => {
       if (result?.status === 'confirmed' && result.data?.list) {
         const { cards, unknown } = parseCardList(result.data.list, this.cardsMap);
         this.selectedCards = new Map(Object.entries(cards));
+        this.updateLegality();
         if (unknown.length > 0) {
           this.notification.notify(this.i18n.t('notifications.cardListUnknown', [unknown.length]), 'warning');
         }

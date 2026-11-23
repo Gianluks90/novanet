@@ -12,6 +12,9 @@
             } @else {
                 <span class="material-symbols-rounded no-faction-icon" aria-hidden="true">remove</span>
             }
+            @if (cardIssueKey(card); as issue) {
+                <span class="material-symbols-rounded card-issue" [title]="issue | t" [attr.aria-label]="issue | t" role="img">block</span>
+            }
             @if (isOwner) {
                 <app-ui-stepper [value]="copies" [max]="limitOf(card)"
                     [decreaseLabel]="'deckBuilderPage.removeCopy' | t" [increaseLabel]="'deckBuilderPage.addCopy' | t"
@@ -47,9 +50,10 @@
             <label [attr.for]="'format-select-' + where">{{ 'deckBuilderPage.format' | t }}</label>
             <select name="format" [id]="'format-select-' + where" formControlName="format">
                 <option value="">{{ 'deckBuilderPage.selectFormat' | t }}</option>
-                @for (f of formats; track $index) {
-                    <option  [value]="f">{{f}}</option>
+                @for (f of formatService.formats(); track f.id) {
+                    <option [value]="f.id">{{ f.name }}{{ formatMark(f.id) }}</option>
                 }
+                <option [value]="casualFormat">{{ 'deckBuilderPage.formatCasual' | t }}</option>
             </select>
         </div>
         <div class="form-group">
@@ -158,6 +162,28 @@
                         </div>
                     </div>
                 </div>
+                @if (formatVerdict; as verdict) {
+                    <div class="format-status" [class.legal]="verdict.legal">
+                        <div class="format-verdict">
+                            <span class="material-symbols-rounded" aria-hidden="true">{{ verdict.legal ? 'check_circle' : 'cancel' }}</span>
+                            {{ (verdict.legal ? 'deckBuilderPage.validInFormat' : 'deckBuilderPage.notValidInFormat') | t: [verdict.name] }}
+                        </div>
+                        @if (!verdict.legal) {
+                            @if (formatViolations.length > 0) {
+                                <ul class="format-issues">
+                                    @for (violation of formatViolations.slice(0, 5); track $index) {
+                                        <li>{{ violationText(violation) }}</li>
+                                    }
+                                    @if (formatViolations.length > 5) {
+                                        <li>{{ 'deckBuilderPage.formatIssuesMore' | t: [formatViolations.length - 5] }}</li>
+                                    }
+                                </ul>
+                            } @else {
+                                <p class="format-incomplete">{{ 'deckBuilderPage.formatIncomplete' | t }}</p>
+                            }
+                        }
+                    </div>
+                }
                 <div class="cards-container-title">
                     <span>{{ 'deckBuilderPage.cards' | t }}</span>
                     <div class="title-actions">
@@ -275,6 +301,11 @@
                     }
                 </select>
             </div>
+            @if (currentFormat) {
+                <div class="legal-toggle">
+                    <app-ui-toggle label="deckBuilderPage.onlyLegalCards" [value]="onlyLegal" (valueChange)="setOnlyLegal($event)"></app-ui-toggle>
+                </div>
+            }
             <div class="cards-container">
                 @for (c of filteredCards; track c.id) {
                     <ng-container *ngTemplateOutlet="cardRow; context: { $implicit: c, inDeckList: false }"></ng-container>

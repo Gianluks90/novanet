@@ -46,6 +46,15 @@
                                 <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + d.identity.id + '.jpg'" alt="">
                                 <div class="info-container">
                                     <p>{{d.name}} <span class="material-symbols-rounded validity-icon" [title]="(deckSize(d) < d.identity.minimum_deck_size! ? 'decksListPage.deckTooSmall' : 'decksListPage.deckSizeValid') | t">{{deckSize(d) < d.identity.minimum_deck_size! ? 'close' : 'check'}}</span></p>
+                                    @if (formatNames(legalFormatsOf(d)); as names) {
+                                        @if (names.length > 0) {
+                                            <div class="deck-formats" [title]="'decksListPage.legalIn' | t">
+                                                @for (name of names; track name) {
+                                                    <app-ui-badge [label]="name" tone="accent"></app-ui-badge>
+                                                }
+                                            </div>
+                                        }
+                                    }
                                     @if (canEdit(d) || authorOf(d)) {
                                         <div class="deck-subtitle">
                                             @if (canEdit(d)) {
@@ -84,6 +93,15 @@
                                 <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + d.identity.id + '.jpg'" alt="">
                                 <div class="info-container">
                                     <p>{{d.name}} <span class="material-symbols-rounded validity-icon" [title]="(deckSize(d) < d.identity.minimum_deck_size! ? 'decksListPage.deckTooSmall' : 'decksListPage.deckSizeValid') | t">{{deckSize(d) < d.identity.minimum_deck_size! ? 'close' : 'check'}}</span></p>
+                                    @if (formatNames(legalFormatsOf(d)); as names) {
+                                        @if (names.length > 0) {
+                                            <div class="deck-formats" [title]="'decksListPage.legalIn' | t">
+                                                @for (name of names; track name) {
+                                                    <app-ui-badge [label]="name" tone="accent"></app-ui-badge>
+                                                }
+                                            </div>
+                                        }
+                                    }
                                     @if (canEdit(d) || authorOf(d)) {
                                         <div class="deck-subtitle">
                                             @if (canEdit(d)) {

@@ -22,6 +22,8 @@ import { AuthService } from '../../../services/auth-service';
 
 import { parseCardList } from '../../../utils/card-list';
 
+import { FormatService } from '../../../services/format-service';
+
 @Component({
   selector: 'app-decks-list-page',
   imports: [TranslatePipe, FormsModule, UIButton, UiBadge, UiIconButton, UiSegmented, FilterDecksBySidePipe],
@@ -172,6 +174,49 @@ export class DecksListPage {
     this.openNewDeckDialog(undefined, true);
   }
 
+  public formatService = inject(FormatService);
+
+  /** The deck with the formats it is legal in worked out (when the formats and the catalog are known). */
+  private async withLegality(deck: Deck): Promise<Deck> {
+    await this.formatService.load();
+    if (this.formatService.formats().length === 0 || this.cardsMap.size === 0) return deck;
+    return {
+      ...deck,
+      legalFormats: this.legalNow(deck),
+      legalFormatsBasis: this.formatService.signature(),
+    };
+  }
+
+  private legalNow(deck: Deck): string[] {
+    const identity = this.cardsMap.get(deck.identity.id) ?? deck.identity;
+    return this.formatService.legalFormats(
+      { identity, cards: new Map(Object.entries(deck.cards ?? {})) }, this.cardsMap);
+  }
+
+  private legalCache = new Map<string, { key: string; ids: string[] }>();
+
+  /**
+   * Formats the deck is legal in: the ones saved with it, or worked out again here when the card
+   * pools or lists changed since (or it was saved before formats were tracked).
+   */
+  public legalFormatsOf(deck: Deck): string[] {
+    const basis = this.formatService.signature();
+    if (!basis || this.cardsMap.size === 0) return deck.legalFormats ?? [];
+    if (deck.legalFormats && deck.legalFormatsBasis === basis) return deck.legalFormats;
+
+    const key = `${basis}|${deck.updatedAt?.seconds ?? 0}|${deck.identity?.id}|${Object.keys(deck.cards ?? {}).length}`;
+    const cached = this.legalCache.get(deck.id);
+    if (cached?.key === key) return cached.ids;
+    const ids = this.legalNow(deck);
+    this.legalCache.set(deck.id, { key, ids });
+    return ids;
+  }
+
+  /** Display names of formats, in the order of the format list. */
+  public formatNames(ids: string[]): string[] {
+    return this.formatService.formats().filter(f => ids.includes(f.id)).map(f => f.name);
+  }
+
   public openNewDeckDialog(side?: 'runner' | 'corp', importList = false): void {
     this.dialogRef = this.dialog.open<DialogResult>(NewDeckDialog, {
       ...DIALOGS_CONFIG,
@@ -194,7 +239,7 @@ export class DecksListPage {
           deck.cards = parsed.cards;
           unknown = parsed.unknown;
         }
-        this.deckService.newDeck(deck).then(() => {
+        this.withLegality(deck).then(withFormats => this.deckService.newDeck(withFormats)).then(() => {
           this.notification.notify(this.i18n.t(result.data.cardList ? 'notifications.deckImported' : 'notifications.newDeckCreated'), 'check');
           if (unknown.length > 0) {
             this.notification.notify(this.i18n.t('notifications.cardListUnknown', [unknown.length]), 'warning');

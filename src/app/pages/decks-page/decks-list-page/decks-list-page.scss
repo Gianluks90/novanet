@@ -246,3 +246,11 @@ input[type="number"] {
     width: 200px;
     margin-top: var(--space-3);
 }
+
+// formats the deck is legal in
+.deck-formats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+    margin-top: var(--space-1);
+}

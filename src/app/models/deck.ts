@@ -8,7 +8,12 @@ export interface Deck {
     name: string;
     identity: Card;
     cards: Record<string, number>;
+    /** NetrunnerDB format id the deck is built for, `casual`, or '' when not chosen. */
     format: string;
+    /** Ids of the formats the deck is legal in (card pool, ban/points lists and deck building rules). */
+    legalFormats?: string[];
+    /** `FormatService.signature` the legal formats were worked out with: another one means they are stale. */
+    legalFormatsBasis?: string;
     notes?: string;
     createdAt: Timestamp;
     updatedAt: Timestamp;
