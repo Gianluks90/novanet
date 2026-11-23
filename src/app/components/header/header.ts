@@ -6,7 +6,6 @@ import { UIButton, UiBadge } from '../../ui';
 import { FirebaseService } from '../../services/firebase-service';
 import { AuthService } from '../../services/auth-service';
 import { SettingsService } from '../../services/settings-service';
-import { NotificationService } from '../../services/notification-service';
 import { I18nService, Lang } from '../../i18n/i18n-service';
 import { TranslatePipe } from '../../i18n/translate-pipe';
 
@@ -22,7 +21,6 @@ export class Header {
   private i18n = inject(I18nService);
   private auth = inject(AuthService);
   private settings = inject(SettingsService);
-  private notification = inject(NotificationService);
 
   public readonly languages: Array<{ code: Lang; label: string }> = [
     { code: 'en', label: 'English' },
@@ -49,20 +47,11 @@ export class Header {
     void this.settings.open();
   }
 
-  public async signIn() {
-    await this.run(() => this.auth.loginWithGoogle());
+  public signIn() {
+    void this.auth.signIn();
   }
 
-  public async signOut() {
-    await this.run(() => this.auth.logout());
-  }
-
-  private async run(action: () => Promise<unknown>) {
-    try {
-      await action();
-    } catch (err) {
-      console.error('Authentication error:', err);
-      this.notification.notify(this.i18n.t('notifications.authError'), 'dangerous');
-    }
+  public signOut() {
+    void this.auth.signOut();
   }
 }

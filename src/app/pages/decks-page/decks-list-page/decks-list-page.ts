@@ -18,6 +18,7 @@ import { CardService } from '../../../services/card-service';
 import { ConfirmDialog } from '../../../components/dialogs/confirm-dialog/confirm-dialog';
 import { TranslatePipe } from '../../../i18n/translate-pipe';
 import { I18nService } from '../../../i18n/i18n-service';
+import { AuthService } from '../../../services/auth-service';
 
 @Component({
   selector: 'app-decks-list-page',
@@ -27,6 +28,7 @@ import { I18nService } from '../../../i18n/i18n-service';
 })
 export class DecksListPage {
   private i18n = inject(I18nService);
+  public authService = inject(AuthService);
   public sides: Side[] = [];
 
   public originalDecks: Deck[] = [];

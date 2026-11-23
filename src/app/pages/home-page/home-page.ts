@@ -36,16 +36,11 @@ export class HomePage {
   }
 
   /** The same button logs in or out depending on the current session. */
-  public async toggleSession() {
-    try {
-      if (this.firebase.$user()) {
-        await this.authService.logout();
-      } else {
-        await this.authService.loginWithGoogle();
-      }
-    } catch (err) {
-      console.error('Authentication error:', err);
-      this.notification.notify(this.i18n.t('notifications.authError'), 'dangerous');
+  public toggleSession() {
+    if (this.firebase.$user()) {
+      void this.authService.signOut();
+    } else {
+      void this.authService.signIn();
     }
   }
 }

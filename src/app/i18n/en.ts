@@ -165,6 +165,9 @@ export const EN = {
   "header.signIn": "Sign in",
   "header.signOut": "Sign out",
   "header.settings": "Settings",
+  "unsavedChanges.title": "Unsaved changes",
+  "unsavedChanges.message": "You have unsaved changes in this deck. If you leave now they will be lost.",
+  "unsavedChanges.leave": "Leave without saving",
 } as const;
 
 export type TranslationKey = keyof typeof EN;

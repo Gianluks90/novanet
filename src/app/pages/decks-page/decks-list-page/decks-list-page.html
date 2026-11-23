@@ -88,6 +88,9 @@
                     <app-ui-button [text]="'decksListPage.newDeck' | t" icon="add_notes" (click)="openNewDeckDialog()"></app-ui-button>
                 } @else if (!firebase.$user()) {
                     <p>{{ 'decksListPage.signInForGallery' | t }}</p>
+                    <div class="sign-in-action">
+                        <app-ui-button icon="login" [text]="'header.signIn' | t" (click)="authService.signIn()"></app-ui-button>
+                    </div>
                 } @else {
                     <p>{{ 'decksListPage.noPublicDecksYet' | t }}</p>
                 }

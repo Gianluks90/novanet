@@ -1,7 +1,7 @@
-<app-ui-dialog-container [dialogTitle]="'confirmDialog.confirm' | t">
-    <p>{{ 'confirmDialog.pressConfirmIfYouWish' | t }}</p>
+<app-ui-dialog-container [dialogTitle]="title | t">
+    <p>{{ message | t }}</p>
     <div dialog-actions-container>
-        <app-ui-button [text]="'confirmDialog.confirm' | t" icon="check" (click)="confirm()"></app-ui-button>
+        <app-ui-button [text]="confirmLabel | t" icon="check" (click)="confirm()"></app-ui-button>
         <app-ui-button [text]="'closeButton' | t" icon="close" (click)="dialogRef.close()"></app-ui-button>
     </div>
 </app-ui-dialog-container>

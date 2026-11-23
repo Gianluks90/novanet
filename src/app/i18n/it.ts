@@ -167,4 +167,7 @@ export const IT: Record<TranslationKey, string> = {
   "header.signIn": "Accedi",
   "header.signOut": "Esci",
   "header.settings": "Impostazioni",
+  "unsavedChanges.title": "Modifiche non salvate",
+  "unsavedChanges.message": "Hai modifiche non salvate in questo mazzo. Se esci ora andranno perse.",
+  "unsavedChanges.leave": "Esci senza salvare",
 };

@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { nrdbResolver } from './resolvers/nrdb-resolver';
 import { cardsConfigResolver } from './resolvers/cards-config-resolver';
 import { deckResolver } from './resolvers/deck-resolver';
+import { unsavedChangesGuard } from './guards/unsaved-changes-guard';
 
 export const routes: Routes = [
     {
@@ -45,6 +46,7 @@ export const routes: Routes = [
                 path: 'builder/:id',
                 title: 'Deck Builder - NovaNet',
                 loadComponent: () => import('./pages/decks-page/deck-builder-page/deck-builder-page').then(m => m.DeckBuilderPage),
+                canDeactivate: [unsavedChangesGuard],
                 resolve: {
                     deck: deckResolver,
                 }

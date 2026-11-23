@@ -1,6 +1,7 @@
-import { UiIconButton, UiSegmented, SegmentedOption } from '../../../ui';
+import { UiBadge, UiIconButton, UiSegmented, SegmentedOption } from '../../../ui';
+import { HasUnsavedChanges } from '../../../guards/unsaved-changes-guard';
 import { TranslationKey } from '../../../i18n/en';
-import { ChangeDetectorRef, Component, effect, inject, ViewChild, ElementRef } from '@angular/core';
+import { ChangeDetectorRef, Component, effect, inject, ViewChild, ElementRef, HostListener, untracked } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FirebaseService } from '../../../services/firebase-service';
 import { NotificationService } from '../../../services/notification-service';
@@ -35,7 +36,7 @@ import { getAuth } from 'firebase/auth';
 
 @Component({
   selector: 'app-deck-builder-page',
-  imports: [TranslatePipe, CardTitlePipe, UiIconButton, UiSegmented, CardDetail, FormsModule, ReactiveFormsModule, FactionLabelPipe, TypeLabelPipe, DotsPipe, CheckAgendaPointsPipe, CheckInfluencePipe, RouterLink, UIButton],
+  imports: [TranslatePipe, CardTitlePipe, UiBadge, UiIconButton, UiSegmented, CardDetail, FormsModule, ReactiveFormsModule, FactionLabelPipe, TypeLabelPipe, DotsPipe, CheckAgendaPointsPipe, CheckInfluencePipe, RouterLink, UIButton],
   templateUrl: './deck-builder-page.html',
   styleUrl: './deck-builder-page.scss',
 })
@@ -77,7 +78,7 @@ export class DeckBuilderPage {
     private deckService: DeckService,
     public firebase: FirebaseService,
     private notification: NotificationService,
-    private authService: AuthService
+    public authService: AuthService
   ) {
     this.route.parent?.data.subscribe(data => {
       this.cycles = data['configs'].cycles || [];
@@ -129,6 +130,13 @@ export class DeckBuilderPage {
     this.filtersForm.valueChanges.subscribe(() => {
       this.applyFilters();
     });
+
+    // A shared/online deck opened while signed out can't be read: once the user signs in, load it.
+    effect(() => {
+      if (this.firebase.$user() && !this.deck && this.routeDeckResolved) {
+        untracked(() => void this.loadDeckAfterSignIn());
+      }
+    });
   }
 
   public mode: 'edit' | 'visibility' = 'edit';
@@ -154,6 +162,69 @@ export class DeckBuilderPage {
       identity: this.deck?.identity.id || '',
       notes: this.deck?.notes || ''
     });
+    this.routeDeckResolved = true;
+  }
+
+  // ---- unsaved changes ------------------------------------------------------
+
+  private routeDeckResolved = false;
+  /** True once the saved cards are in `selectedCards` (before that the deck would look "edited"). */
+  private cardsParsed = false;
+  /** Snapshot of the editable state as last loaded/saved. */
+  private baseline = '';
+
+  private currentSnapshot(): string {
+    const v = this.form.value;
+    return JSON.stringify({
+      name: (v.name ?? '').trim(),
+      format: v.format ?? '',
+      identity: v.identity ?? '',
+      notes: v.notes ?? '',
+      cards: Array.from(this.selectedCards.entries()).sort(([a], [b]) => a.localeCompare(b)),
+    });
+  }
+
+  /** The user changed the deck since it was loaded or last saved. */
+  public get dirty(): boolean {
+    return this.isOwner && this.cardsParsed && this.currentSnapshot() !== this.baseline;
+  }
+
+  public hasUnsavedChanges(): boolean {
+    return this.dirty;
+  }
+
+  /** Closing/reloading the tab with unsaved changes asks for confirmation (the browser's own dialog). */
+  @HostListener('window:beforeunload', ['$event'])
+  public onBeforeUnload(event: BeforeUnloadEvent) {
+    if (this.dirty) event.preventDefault();
+  }
+
+  private async loadDeckAfterSignIn() {
+    const id = this.route.snapshot.paramMap.get('id');
+    if (!id) return;
+    try {
+      const deck = await this.deckService.getDeckById(id);
+      if (deck) this.applyDeck(deck);
+    } catch (err) {
+      console.warn('[deck-builder] deck still not available after sign-in', err);
+    }
+  }
+
+  private applyDeck(deck: Deck) {
+    this.deck = deck;
+    this.mode = 'edit';
+    this.form.patchValue({
+      name: deck.name || '',
+      format: deck.format || '',
+      identity: deck.identity?.id || '',
+      notes: deck.notes || ''
+    });
+    this.selectedCards = new Map();
+    this.cardsParsed = false;
+    this.identities = Array.from(this.cardsMap.values()).filter(c => c.card_type_id.endsWith('_identity') && c.side_id === deck.side);
+    this.applyFilters();
+    this.parseCards();
+    this.cd.detectChanges();
   }
 
   /** The user can edit this deck: it is saved on this device, or it is theirs online. */
@@ -364,6 +435,8 @@ export class DeckBuilderPage {
 
     try {
       await this.deckService.updateDeck(this.deck.id, updatedDeck);
+      this.deck = { ...updatedDeck };
+      this.baseline = this.currentSnapshot();
       this.notification.notify(this.i18n.t('notifications.deckSaved'), 'check');
     } catch (err: any) {
       console.error('Errore durante il salvataggio del deck:', err);
@@ -372,12 +445,18 @@ export class DeckBuilderPage {
   }
 
   public parseCards() {
-    if (!this.deck?.cards) return;
+    if (!this.deck) return;
 
-    Object.entries(this.deck.cards).forEach(([code, qty]) => {
+    Object.entries(this.deck.cards ?? {}).forEach(([code, qty]) => {
       if (!this.cardsMap.has(code)) return;
       this.selectedCards.set(code, qty);
     });
+
+    // first time the catalog and the deck are both there: this is the "clean" state
+    if (!this.cardsParsed && this.cardsMap.size > 0) {
+      this.cardsParsed = true;
+      this.baseline = this.currentSnapshot();
+    }
   }
 
   public importCardList() {

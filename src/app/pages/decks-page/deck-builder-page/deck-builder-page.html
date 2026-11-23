@@ -126,8 +126,11 @@
             <div class="header-content">
                 <h1>{{ 'deckBuilderPage.deckBuilder' | t }}</h1>
                 <div class="actions-container">
+                    @if (dirty) {
+                        <app-ui-badge icon="edit" tone="warn" [label]="'unsavedChanges.title' | t"></app-ui-badge>
+                    }
                     <app-ui-icon-button icon="bottom_panel_close" [label]="'importExportCardListDialog.importCardList' | t" (click)="importCardList()"></app-ui-icon-button>
-                    <app-ui-icon-button icon="save" [label]="'saveChangesButton' | t" (click)="saveDeck()"></app-ui-icon-button>
+                    <app-ui-icon-button icon="save" [label]="'saveChangesButton' | t" [active]="dirty" (click)="saveDeck()"></app-ui-icon-button>
                 </div>
             </div>
         </div>
@@ -230,6 +233,11 @@
                 <app-ui-button [text]="'deckBuilderPage.copyToMyAccount' | t" icon="content_copy" (click)="cloneDeck()"></app-ui-button>
             } @else {
                 <p>{{ (firebase.$user() ? 'deckBuilderPage.deckNotAvailable' : 'deckBuilderPage.signInToOpen') | t }}</p>
+                @if (!firebase.$user()) {
+                    <div class="sign-in-action">
+                        <app-ui-button icon="login" [text]="'header.signIn' | t" (click)="authService.signIn()"></app-ui-button>
+                    </div>
+                }
                 <app-ui-button [text]="'deckBuilderPage.backToDecks' | t" icon="arrow_back" [routerLink]="['/decks']"></app-ui-button>
             }
         </div>
