@@ -48,11 +48,11 @@
                             @if (identity?.card_type_id?.endsWith('_identity') && identity?.faction_id !== 'neutral_runner' && identity?.faction_id !== 'neutral_corp') {
                                 <img class="faction-icon" [src]="'./images/faction-icons/' + identity?.faction_id+ '.svg'" alt="">
                             }
-                            {{deck.identity.translations?.[locale]?.title!.split(':')[0] || deck.identity.title.split(':')[0]}}
+                            {{(deck.identity | cardTitle).split(':')[0]}}
                         </div>
                         <hr>
                         <div class="identity-subtitle">
-                            {{deck.identity.translations?.[locale]?.title!.split(':')[1] || deck.identity.title.split(':')[1]}}
+                            {{(deck.identity | cardTitle).split(':')[1]}}
                         </div> 
 
                         <div class="progress-container">
@@ -98,7 +98,7 @@
                                   delete
                                 </span>
                                 }
-                                <span>x{{entry.qty}} {{entry.card.translations?.[locale]?.title || entry.card.title}}</span>
+                                <span>x{{entry.qty}} {{entry.card | cardTitle}}</span>
                             </p>
                             <section>
                                 <span class="type-label">{{entry.card.card_type_id! | typeLabel}}</span>
@@ -154,7 +154,7 @@
                     <select name="identity" id="identity-select" formControlName="identity">
                         <option value="">Select identity</option>
                         @for (identity of identities; track $index) {
-                            <option  [value]="identity.id">{{identity.translations?.[locale]?.title || identity.title}}</option>
+                            <option  [value]="identity.id">{{identity | cardTitle}}</option>
                         }
                     </select>
                 </div>
@@ -204,7 +204,7 @@
                     <div class="card-item" [class.even-item]="$even">
                         <p class="card-item-title">
                             <span (click)="openAddCardDialog(c)" class="material-symbols-rounded">add</span>
-                            <span (click)="selectCard(c)">{{c.translations?.[locale]?.title || c.title}}</span>
+                            <span (click)="selectCard(c)">{{c | cardTitle}}</span>
                         </p>
                         <section>
                             <span [innerHTML]="c | dots: factions"></span>

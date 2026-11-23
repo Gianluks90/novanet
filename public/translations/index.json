@@ -1,0 +1,46 @@
+{
+  "source": "https://github.com/Null-Signal-Games/netrunner-cards-json",
+  "sourceCommit": "92d6c9a4194844c77efdc3e1080ca7c76c23592b",
+  "languages": {
+    "de": {
+      "hash": "2c23bf49dd",
+      "cards": 1738,
+      "packs": 60
+    },
+    "es": {
+      "hash": "d0baae4a7e",
+      "cards": 691,
+      "packs": 50
+    },
+    "fr": {
+      "hash": "55e6e8631c",
+      "cards": 1723,
+      "packs": 56
+    },
+    "it": {
+      "hash": "05fc267d61",
+      "cards": 554,
+      "packs": 50
+    },
+    "ja": {
+      "hash": "c4e5080db2",
+      "cards": 782,
+      "packs": 60
+    },
+    "ko": {
+      "hash": "555a06ad61",
+      "cards": 1248,
+      "packs": 49
+    },
+    "pl": {
+      "hash": "a3d1042fe5",
+      "cards": 652,
+      "packs": 50
+    },
+    "zh-hans": {
+      "hash": "e9c2784f66",
+      "cards": 1320,
+      "packs": 50
+    }
+  }
+}

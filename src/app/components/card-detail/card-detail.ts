@@ -14,6 +14,7 @@ import { UserService } from '../../services/user-service';
 import { CdkMenu, CdkMenuTrigger } from '@angular/cdk/menu';
 import { TranslatePipe } from '../../i18n/translate-pipe';
 import { I18nService } from '../../i18n/i18n-service';
+import { CardTranslationService } from '../../services/card-translation-service';
 
 @Component({
   selector: 'app-card-detail',
@@ -37,6 +38,7 @@ export class CardDetail {
   public packs = input<Pack[]>([]);
   public zoomCardEmit = output<boolean>();
   private i18n = inject(I18nService);
+  private translations = inject(CardTranslationService);
   public get locale(): string { return this.i18n.lang(); }
   public disableZoom = input<boolean>(false);
   public disableCenter = input<boolean>(false);
@@ -53,14 +55,15 @@ export class CardDetail {
 
       this.initFactionCostArray();
 
-      const translation = card.translations?.[this.locale as string];
+      // Upstream translations are often partial (e.g. title only): fall back field by field.
+      const translation = this.translations.translation(card.id);
 
       if (translation) {
         this.card.set({
           ...card,
-          title: translation.title,
-          text: translation.text,
-          flavor: translation.flavor
+          title: translation.title || card.title,
+          text: translation.text || card.text,
+          flavor: translation.flavor || card.flavor
         });
       } else {
         this.card.set(card);
@@ -91,7 +94,7 @@ export class CardDetail {
 
     const caption = {
       en: this.selectedCard()?.flavor || '',
-      [this.locale]: this.selectedCard()?.translations?.[this.locale]?.flavor || ''
+      [this.locale]: this.card()?.flavor || ''
     }
     if (!this.firebase.$user()) return;
     this.userService.updateUserInfo(this.firebase.$user()!.uid, { favoriteCaption: caption }).then(() => {

@@ -51,7 +51,7 @@ export const EN = {
   "cardsPage.allSides": "All Sides",
   "cardsPage.allPacks": "All packs",
   "cardsPage.allTypes": "All Types",
-  "cardsPage.cardImagesAndDataProvided": "Card images and data provided by <a href=\"https://netrunnerdb.com/\" target=\"_blank\" rel=\"noopener noreferrer\">NetrunnerDB</a>",
+  "cardsPage.cardImagesAndDataProvided": "Card images and data provided by <a href=\"https://netrunnerdb.com/\" target=\"_blank\" rel=\"noopener noreferrer\">NetrunnerDB</a>. Card translations from the community project <a href=\"https://github.com/Null-Signal-Games/netrunner-cards-json\" target=\"_blank\" rel=\"noopener noreferrer\">netrunner-cards-json</a>.",
   "cardsPage.deselectCard": "Deselect card",
   "cardsPage.gridViewGrid": "<span class=\"material-symbols-rounded\">grid_view</span> Grid: {0}",
   "cardsPage.sortSortByFound": "<span class=\"material-symbols-rounded\">sort</span> Sort by: {0} (found: {1})",

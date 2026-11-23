@@ -20,6 +20,7 @@ The complete, up-to-date game rules are available locally at `public/Null_Signal
 ```bash
 npm start            # ng serve — dev server at http://localhost:4200/ (English)
 npm run build         # ng build — production build, output to dist/novanet/browser (single build, runtime i18n)
+npm run sync:translations  # refresh public/translations/*.json from netrunner-cards-json (optionally: -- it fr)
 npm run watch         # ng build --watch --configuration development
 npm test              # ng test — runs unit tests with Vitest
 npm run host          # firebase deploy --only hosting
@@ -42,7 +43,7 @@ To run a single test file once specs exist, use Vitest's own filtering, e.g. `np
 - `nrdbResolver` is the heavier one: it fetches the card-set list on every load (memoized, shared with `cardsConfigResolver`) and compares a signature (set ids + latest `updated_at`, see [packs-signature.ts](src/app/resolvers/packs-signature.ts)) with the one stored in IndexedDB (`nrdb` DB v3, stores `cards` and `meta`, opened in [src/app/db/nrdb-indexed-db.ts](src/app/db/nrdb-indexed-db.ts)); when it changed (or the cache is empty) it re-downloads all printings (~2.5k, parallel pages) into IndexedDB. On network failure it keeps using the cached cards.
 - `CardService.loadCards()` ([src/app/services/card-service.ts](src/app/services/card-service.ts)) then reads everything out of IndexedDB into an in-memory `$cardsMap` signal that components consume.
 
-**Card translations**: there is currently no translation source (the Firestore-based submit/approve workflow and version counter were removed). `Card.translations?.[lang]` is still read by the UI for display and will be populated from static translation files in the next planned step (see README.md). Don't reintroduce Firestore writes for card text.
+**Card translations**: static files, not Firestore. `npm run sync:translations` ([scripts/sync-translations.mjs](scripts/sync-translations.mjs)) downloads the community translations from `Null-Signal-Games/netrunner-cards-json` into `public/translations/<lang>.json` (+ `index.json` with a content hash per language); re-run it when a new set is released and review the diff. `CardTranslationService` ([src/app/services/card-translation-service.ts](src/app/services/card-translation-service.ts)) lazily loads the file of the current language (cached in IndexedDB `meta` as `translations:<lang>`, refetched when the hash changes) and exposes `translation(cardId)` / `title(card)`; templates use the `cardTitle` pipe. Entries are keyed by printing id and are often partial (many have a title only), so always fall back to the English field. English has no file. Don't reintroduce Firestore writes for card text.
 
 **State management is signals-first**, not a store/NgRx. Services expose `signal`/`WritableSignal` state directly (e.g. `FirebaseService.$user`, `CardService.$cardsMap`, `DeckService.$decks`, `ThemeService` via `toSignal`), and components/effects react to those. Firestore reads mostly use `onSnapshot` for live updates rather than one-off `getDoc` where state needs to stay current.
 

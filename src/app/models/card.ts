@@ -40,15 +40,4 @@ export interface Card {
     strength?: number | null;
     trash_cost?: number | null;
     is_unique?: boolean;
-
-    translations?: {
-        [lang: string]: CardTranslation;
-    };
-}
-
-export interface CardTranslation {
-    title: string;
-    text: string;
-    flavor?: string;
-    keywords?: string;
 }

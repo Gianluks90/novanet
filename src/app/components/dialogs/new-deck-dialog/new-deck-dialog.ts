@@ -11,10 +11,11 @@ import { Card } from '../../../models/card';
 import { nrdbDb } from '../../../db/nrdb-indexed-db';
 import { TranslatePipe } from '../../../i18n/translate-pipe';
 import { I18nService } from '../../../i18n/i18n-service';
+import { CardTitlePipe } from '../../../pipes/card-title-pipe';
 
 @Component({
   selector: 'app-new-deck-dialog',
-  imports: [TranslatePipe, UiDialogContainer, UIButton, FormsModule, ReactiveFormsModule],
+  imports: [TranslatePipe, CardTitlePipe, UiDialogContainer, UIButton, FormsModule, ReactiveFormsModule],
   templateUrl: './new-deck-dialog.html',
   styleUrl: './new-deck-dialog.scss',
 })

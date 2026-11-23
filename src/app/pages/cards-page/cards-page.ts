@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, effect, inject } from '@angular/core';
 import { UIDiagonalLine } from '../../ui';
 import { nrdbDb } from '../../db/nrdb-indexed-db';
 import { Card } from '../../models/card';
@@ -20,6 +20,7 @@ import { SortByLabelPipe } from '../../pipes/sort-by-label-pipe';
 import { CardService } from '../../services/card-service';
 import { TranslatePipe } from '../../i18n/translate-pipe';
 import { I18nService } from '../../i18n/i18n-service';
+import { CardTranslationService } from '../../services/card-translation-service';
 
 @Component({
   selector: 'app-cards-page',
@@ -45,6 +46,7 @@ export class CardsPage {
   public selectedCard: Card | null = null;
   public cardZoomed: boolean = false;
   private i18n = inject(I18nService);
+  private translations = inject(CardTranslationService);
   public get locale(): string { return this.i18n.lang(); }
 
   public cycles: Cycle[] = [];
@@ -69,6 +71,15 @@ export class CardsPage {
     public firebase: FirebaseService,
     private notification: NotificationService,
     private cardService: CardService) {
+    // Translations load lazily: re-apply the filters (title search / "translated only") once they are in.
+    effect(() => {
+      this.translations.active();
+      if (this.allCards.length) {
+        this.applyFilters();
+        this.cd.detectChanges();
+      }
+    });
+
     this.route.data.subscribe(data => {
       this.cycles = data['configs'].cycles;
       this.factions = data['configs'].factions;
@@ -255,21 +266,12 @@ export class CardsPage {
       if (
         this.filters.text &&
         !card.title.toLowerCase().includes(this.filters.text) &&
-        !(
-          card.translations &&
-          card.translations[this.locale] &&
-          card.translations[this.locale].title &&
-          card.translations[this.locale].title.toLowerCase().includes(this.filters.text)
-        )
+        !this.translations.translation(card.id)?.title?.toLowerCase().includes(this.filters.text)
       ) {
         return false;
       }
       if (this.filters.translated === 'only') {
-        if (
-          !card.translations ||
-          !card.translations[this.locale] ||
-          !card.translations[this.locale].title
-        ) {
+        if (!this.translations.translation(card.id)?.title) {
           return false;
         }
       }

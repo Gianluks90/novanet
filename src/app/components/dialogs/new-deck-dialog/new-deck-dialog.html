@@ -19,7 +19,7 @@
             <select name="identity" id="identity-select" formControlName="identity">
                 <option value="">{{ 'selectIdentityOption' | t }}</option>
                 @for(card of identities; track card.id) {
-                    <option [value]="card.id">{{ card.translations?.[locale]?.title || card.title }}</option>
+                    <option [value]="card.id">{{ card | cardTitle }}</option>
                 }
             </select>
         </div>

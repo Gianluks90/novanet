@@ -26,10 +26,12 @@ import { ImportExportCardListDialog } from '../../../components/dialogs/import-e
 import { UIButton } from '../../../ui';
 import { TranslatePipe } from '../../../i18n/translate-pipe';
 import { I18nService } from '../../../i18n/i18n-service';
+import { CardTranslationService } from '../../../services/card-translation-service';
+import { CardTitlePipe } from '../../../pipes/card-title-pipe';
 
 @Component({
   selector: 'app-deck-builder-page',
-  imports: [TranslatePipe, CardDetail, FormsModule, ReactiveFormsModule, FactionLabelPipe, TypeLabelPipe, DotsPipe, CheckAgendaPointsPipe, CheckInfluencePipe, RouterLink, UIButton],
+  imports: [TranslatePipe, CardTitlePipe, CardDetail, FormsModule, ReactiveFormsModule, FactionLabelPipe, TypeLabelPipe, DotsPipe, CheckAgendaPointsPipe, CheckInfluencePipe, RouterLink, UIButton],
   templateUrl: './deck-builder-page.html',
   styleUrl: './deck-builder-page.scss',
 })
@@ -127,6 +129,7 @@ export class DeckBuilderPage {
   public mode: 'edit' | 'visibility' = 'edit';
   public deck: Deck | null = null;
   private i18n = inject(I18nService);
+  private translations = inject(CardTranslationService);
   public get locale(): string { return this.i18n.lang(); }
   public selectedCard: Card | null = null;
   public cardZoomed: boolean = false;
@@ -183,7 +186,6 @@ export class DeckBuilderPage {
 
   public selectCard(card: Card) {
     this.selectedCard = card;
-    // this.cardForm.patchValue({ cardInput: card.translations?.[this.locale]?.title || card.title });
   }
 
   private applyFilters() {
@@ -210,17 +212,10 @@ export class DeckBuilderPage {
       .filter(c => {
         if (!search) return true;
 
-        const titles: string[] = [];
+        // English title plus the one in the current language (if any).
+        const titles = [c.title, this.translations.translation(c.id)?.title];
 
-        if (c.title) titles.push(c.title.toLowerCase());
-
-        if (c.translations) {
-          Object.values(c.translations).forEach(t => {
-            if (t?.title) titles.push(t.title.toLowerCase());
-          });
-        }
-
-        return titles.some(t => t.includes(search));
+        return titles.some(t => t?.toLowerCase().includes(search));
       });
   }
 
