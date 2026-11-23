@@ -10,10 +10,11 @@ import { NovaUser } from '../../../models/NovaUser';
 import { CdkObserveContent } from "@angular/cdk/observers";
 import { Faction } from '../../../models/faction';
 import { FactionLabelPipe } from "../../../pipes/faction-label-pipe";
+import { TranslatePipe } from '../../../i18n/translate-pipe';
 
 @Component({
   selector: 'app-home-settings-dialog',
-  imports: [UiDialogContainer, UIButton, FormsModule, ReactiveFormsModule, FactionLabelPipe],
+  imports: [TranslatePipe, UiDialogContainer, UIButton, FormsModule, ReactiveFormsModule, FactionLabelPipe],
   templateUrl: './home-settings-dialog.html',
   styleUrl: './home-settings-dialog.scss',
 })

@@ -1,4 +1,4 @@
-<app-ui-dialog-container i18n-dialogTitle dialogTitle="Add card">
+<app-ui-dialog-container [dialogTitle]="'addCardDialog.addCard' | t">
     @let c = data.card;
     @if (c) {
         <div class="add-card-main-container">
@@ -17,6 +17,6 @@
         @if (!c.deck_limit || c.deck_limit > 2) {
             <app-ui-button text="3" icon="add" (click)="addCard(3)"></app-ui-button>
         }
-        <app-ui-button i18n-text="@@closeButton" text="Close" icon="close" (click)="dialogRef.close()"></app-ui-button>
+        <app-ui-button [text]="'closeButton' | t" icon="close" (click)="dialogRef.close()"></app-ui-button>
     </div>
 </app-ui-dialog-container>

@@ -1,12 +1,14 @@
-import { inject, LOCALE_ID, Pipe, PipeTransform } from '@angular/core';
+import { inject, Pipe, PipeTransform } from '@angular/core';
 import { FACTION_LABELS } from '../const/factionLabels';
+import { I18nService } from '../i18n/i18n-service';
 
 @Pipe({
   name: 'nrIcons',
+  pure: false,
   standalone: true
 })
 export class NrIconsPipe implements PipeTransform {
-  private locale = inject(LOCALE_ID);
+  private i18n = inject(I18nService);
 
   private iconMap: Record<string, string> = {
     agenda: 'nr-agenda',
@@ -49,7 +51,7 @@ export class NrIconsPipe implements PipeTransform {
         }
         const key = trimmed.toLowerCase();
         const className = this.iconMap[key];
-        const lang = this.locale.split('-')[0]; // it, en
+        const lang = this.i18n.lang(); // it, en
         const localizedKey = FACTION_LABELS[key.replace(/-/g, '_')]?.[lang] ?? key;
         
         return className

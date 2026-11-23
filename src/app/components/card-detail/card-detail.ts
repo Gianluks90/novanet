@@ -1,4 +1,4 @@
-import { Component, effect, inject, input, LOCALE_ID, output, signal } from '@angular/core';
+import { Component, effect, inject, input, output, signal } from '@angular/core';
 import { Card } from '../../models/card';
 import { FormsModule } from '@angular/forms';
 import { NrIconsPipe } from '../../pipes/nr-icons-pipe';
@@ -12,10 +12,12 @@ import { KeywordLabelPipe } from '../../pipes/keyword-label-pipe';
 import { FactionLabelPipe } from "../../pipes/faction-label-pipe";
 import { UserService } from '../../services/user-service';
 import { CdkMenu, CdkMenuTrigger } from '@angular/cdk/menu';
+import { TranslatePipe } from '../../i18n/translate-pipe';
+import { I18nService } from '../../i18n/i18n-service';
 
 @Component({
   selector: 'app-card-detail',
-  imports: [
+  imports: [TranslatePipe, 
     FormsModule,
     NrIconsPipe,
     PackCodePipe,
@@ -34,7 +36,8 @@ export class CardDetail {
   public card = signal<Card | null>(null);
   public packs = input<Pack[]>([]);
   public zoomCardEmit = output<boolean>();
-  public locale = inject(LOCALE_ID);
+  private i18n = inject(I18nService);
+  public get locale(): string { return this.i18n.lang(); }
   public disableZoom = input<boolean>(false);
   public disableCenter = input<boolean>(false);
   public disableMenu = input<boolean>(false);
@@ -92,10 +95,10 @@ export class CardDetail {
     }
     if (!this.firebase.$user()) return;
     this.userService.updateUserInfo(this.firebase.$user()!.uid, { favoriteCaption: caption }).then(() => {
-      this.notification.notify($localize`Favorite caption updated.`, 'check');
+      this.notification.notify(this.i18n.t('notifications.favoriteCaptionUpdated'), 'check');
     }).catch((error) => {
       console.error('Error updating favorite caption:', error);
-      this.notification.notify($localize`Error updating favorite caption, please try again later.`, 'dangerous');
+      this.notification.notify(this.i18n.t('notifications.errorUpdatingFavoriteCaption'), 'dangerous');
     });
   }
 

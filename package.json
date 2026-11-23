@@ -4,11 +4,10 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "startit": "ng serve --configuration=it --port 4201",
-    "build": "ng build --localize",
+    "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "host": "ng build --localize && firebase deploy --only hosting"
+    "host": "ng build && firebase deploy --only hosting"
   },
   "prettier": {
     "printWidth": 100,
@@ -41,7 +40,6 @@
     "@angular/build": "^21.0.3",
     "@angular/cli": "^21.0.3",
     "@angular/compiler-cli": "^21.0.0",
-    "@angular/localize": "^21.0.6",
     "typescript": "~5.9.2"
   }
 }

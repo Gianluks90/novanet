@@ -5,31 +5,17 @@
             <div class="content">
                 <!-- <h1 i18n>Welcome {{firebase.$user() ? 'back' : ''}} to <u>NovaNet</u></h1> -->
                 @if (firebase.$user()) {
-                    <h1 i18n>Welcome back to <u>NovaNet</u></h1>
+                    <h1 [innerHTML]="'homePage.welcomeBackToNovanet' | t"></h1>
                 } @else {
-                    <h1 i18n>Welcome to <u>NovaNet</u></h1>
+                    <h1 [innerHTML]="'homePage.welcomeToNovanet' | t"></h1>
                 }
-                <p i18n>Step into the digital nexus of <strong>Novacorp</strong>. <br><strong>NovaNet</strong> connects
-                    Corps
-                    and
-                    Runners in a single, dynamic space where strategy, cunning, and adaptability define success. Whether
-                    you’re building decks, analyzing cards, or testing your tactics against others, Novanet provides the
-                    tools and insights you need to dominate the cyber arena.</p>
+                <p [innerHTML]="'homePage.stepIntoTheDigitalNexus' | t"></p>
 
-                <p i18n>Our platform offers an integrated system that brings every aspect of the Android: Netrunner
-                    experience
-                    together. Track your progress, explore new strategies, and engage in competitive play—all while
-                    immersing yourself in a world of high-stakes corporate intrigue and shadowy netrunning operations.
-                </p>
+                <p>{{ 'homePage.ourPlatformOffersAnIntegrated' | t }}</p>
 
-                <p i18n>Novanet isn’t just a tool—it’s a gateway to a living, evolving environment where the line
-                    between
-                    Runner
-                    and Corp blurs. Your choices have consequences, your strategies shape the meta, and every game is a
-                    story waiting to unfold.</p>
+                <p>{{ 'homePage.novanetIsnTJustA' | t }}</p>
 
-                <p class="disclaimer" i18n>Novanet is an independent project and is not affiliated with, endorsed by, or
-                    associated with Fantasy Flight Games or Wizards of the Coast.</p>
+                <p class="disclaimer">{{ 'homePage.novanetIsAnIndependentProject' | t }}</p>
             </div>
             @if (!firebase.$user()?.customBackgroundURL) {
             <app-ui-diagonal-line position="bottom-right"></app-ui-diagonal-line>
@@ -42,10 +28,10 @@
                     <h2>Menu</h2>
                     <div class="material-symbols-rounded menu-icon" (click)="openDialog()">settings</div>
                 </div>
-                <app-ui-button i18n-text text="cards" icon="cards_stack" [routerLink]="'/cards'"></app-ui-button>
-                <app-ui-button i18n-text text="deck builder" icon="stack_hexagon"
+                <app-ui-button [text]="'homePage.cards' | t" icon="cards_stack" [routerLink]="'/cards'"></app-ui-button>
+                <app-ui-button [text]="'homePage.deckBuilder' | t" icon="stack_hexagon"
                     [routerLink]="'/decks/list'"></app-ui-button>
-                <app-ui-button i18n-text text="play" [disabled]="true" icon="group"></app-ui-button>
+                <app-ui-button [text]="'homePage.play' | t" [disabled]="true" icon="group"></app-ui-button>
                 <app-ui-button [text]="firebase.$user() ? 'logout' : 'login/register'"
                     [icon]="firebase.$user() ? 'logout' : 'login'" (click)="loginRegister()"></app-ui-button>
                 <p class="version">v {{appVersion}}</p>
@@ -70,7 +56,7 @@
                     }
                     <!-- <p>{{ firebase.$user()?.email }}</p> -->
                 </div>
-                <p i18n class="p-note">{{ firebase.$user()?.favoriteCaption?.[locale] || 'No favorite caption' }}</p>
+                <p class="p-note">{{ firebase.$user()?.favoriteCaption?.[locale] || ('homePage.noFavoriteCaption' | t) }}</p>
             </div>
         </div>
         @if (!firebase.$user()?.customBackgroundURL) {

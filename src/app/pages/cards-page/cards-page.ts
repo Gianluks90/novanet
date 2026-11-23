@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, LOCALE_ID } from '@angular/core';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { UIDiagonalLine } from '../../ui';
 import { nrdbDb } from '../../db/nrdb-indexed-db';
 import { Card } from '../../models/card';
@@ -18,10 +18,12 @@ import { TypeLabelPipe } from '../../pipes/type-label-pipe';
 import { ZoomLevelLabelPipe } from '../../pipes/zoom-level-label-pipe';
 import { SortByLabelPipe } from '../../pipes/sort-by-label-pipe';
 import { CardService } from '../../services/card-service';
+import { TranslatePipe } from '../../i18n/translate-pipe';
+import { I18nService } from '../../i18n/i18n-service';
 
 @Component({
   selector: 'app-cards-page',
-  imports: [
+  imports: [TranslatePipe, 
     UIDiagonalLine,
     FormsModule,
     CardComponent,
@@ -42,7 +44,8 @@ export class CardsPage {
   public showAttribution: boolean = false;
   public selectedCard: Card | null = null;
   public cardZoomed: boolean = false;
-  private locale = inject(LOCALE_ID);
+  private i18n = inject(I18nService);
+  public get locale(): string { return this.i18n.lang(); }
 
   public cycles: Cycle[] = [];
   public factions: Faction[] = [];

@@ -3,10 +3,11 @@ import { UiDialogContainer, UIButton } from "../../../ui";
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { DialogResult } from '../../../models/DialogResult';
 import { Form, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TranslatePipe } from '../../../i18n/translate-pipe';
 
 @Component({
   selector: 'app-import-export-card-list-dialog',
-  imports: [UiDialogContainer, UIButton, FormsModule, ReactiveFormsModule],
+  imports: [TranslatePipe, UiDialogContainer, UIButton, FormsModule, ReactiveFormsModule],
   templateUrl: './import-export-card-list-dialog.html',
   styleUrl: './import-export-card-list-dialog.scss',
 })

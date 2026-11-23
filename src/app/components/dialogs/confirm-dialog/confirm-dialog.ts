@@ -2,10 +2,11 @@ import { Component, inject } from '@angular/core';
 import { UiDialogContainer, UIButton } from '../../../ui';
 import { DialogRef } from '@angular/cdk/dialog';
 import { DialogResult } from '../../../models/DialogResult';
+import { TranslatePipe } from '../../../i18n/translate-pipe';
 
 @Component({
   selector: 'app-confirm-dialog',
-  imports: [UiDialogContainer, UIButton],
+  imports: [TranslatePipe, UiDialogContainer, UIButton],
   templateUrl: './confirm-dialog.html',
   styleUrl: './confirm-dialog.scss',
 })

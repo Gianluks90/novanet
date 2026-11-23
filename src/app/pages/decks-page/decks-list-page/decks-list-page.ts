@@ -16,14 +16,17 @@ import { CheckAgendaPointsPipe } from '../../../pipes/check-agenda-points-pipe';
 import { CheckInfluencePipe } from '../../../pipes/check-influence-pipe';
 import { CardService } from '../../../services/card-service';
 import { ConfirmDialog } from '../../../components/dialogs/confirm-dialog/confirm-dialog';
+import { TranslatePipe } from '../../../i18n/translate-pipe';
+import { I18nService } from '../../../i18n/i18n-service';
 
 @Component({
   selector: 'app-decks-list-page',
-  imports: [FormsModule, UIButton, FilterDecksBySidePipe, RouterLink],
+  imports: [TranslatePipe, FormsModule, UIButton, FilterDecksBySidePipe, RouterLink],
   templateUrl: './decks-list-page.html',
   styleUrl: './decks-list-page.scss',
 })
 export class DecksListPage {
+  private i18n = inject(I18nService);
   public sides: Side[] = [];
 
   public originalDecks: Deck[] = [];
@@ -148,9 +151,9 @@ export class DecksListPage {
     this.dialogRef.closed.subscribe((result: DialogResult | undefined) => {
       if (result?.status === 'confirmed') {
         this.deckService.newDeck(result.data.deck).then(() => {
-          this.notification.notify($localize`New deck created.`, 'check');
+          this.notification.notify(this.i18n.t('notifications.newDeckCreated'), 'check');
         }).catch(err => {
-          this.notification.notify($localize`Error creating deck: ${err.message}`, 'dangerous');
+          this.notification.notify(this.i18n.t('notifications.errorCreatingDeck', [err.message]), 'dangerous');
         });
       }
     })
@@ -165,9 +168,9 @@ export class DecksListPage {
     this.dialogRef?.closed.subscribe((result: DialogResult | undefined) => {
       if (result?.status === 'confirmed') {
         this.deckService.deckRemove(deck.id).then(() => {
-          this.notification.notify($localize`Deck deleted.`, 'check');
+          this.notification.notify(this.i18n.t('notifications.deckDeleted'), 'check');
         }).catch(err => {
-          this.notification.notify($localize`Error deleting deck: ${err.message}`, 'dangerous');
+          this.notification.notify(this.i18n.t('notifications.errorDeletingDeck', [err.message]), 'dangerous');
         });
       }
     })

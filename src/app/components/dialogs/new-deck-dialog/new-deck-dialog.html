@@ -1,12 +1,12 @@
-<app-ui-dialog-container i18n-dialogTitle dialogTitle="New Deck">
-    <p i18n>Fill in the fields below to create a new deck. Once done, the page will reload and you will find the new deck in the list. Some parameters can be modified later.</p>
+<app-ui-dialog-container [dialogTitle]="'newDeckDialog.newDeck' | t">
+    <p>{{ 'newDeckDialog.fillInTheFieldsBelow' | t }}</p>
     <br>
     @if (identities.length === 0) {
         <p>Loading identities...</p>
     } @else {
         <form [formGroup]="form" class="form-container">
         <div class="form-group">
-            <label i18n="@@sideLabel" for="side">Side</label>
+            <label for="side">{{ 'sideLabel' | t }}</label>
             <select name="side" id="side-select" formControlName="side">
                 <!-- <option i18n value="all">All Sides</option> -->
                 @for(side of sides; track side.id) {
@@ -15,27 +15,27 @@
         </select>
         </div>
         <div class="form-group">
-            <label i18n="@@identityLabel" for="identity">Identity</label>
+            <label for="identity">{{ 'identityLabel' | t }}</label>
             <select name="identity" id="identity-select" formControlName="identity">
-                <option i18n="@@selectIdentityOption" value="">Select an identity</option>
+                <option value="">{{ 'selectIdentityOption' | t }}</option>
                 @for(card of identities; track card.id) {
                     <option [value]="card.id">{{ card.translations?.[locale]?.title || card.title }}</option>
                 }
             </select>
         </div>
         <div class="form-group">
-            <label i18n="@@nameLabel" for="name">Deck name</label>
-            <input i18n-placeholder="@@enterTextPlaceholder" type="text" id="name" formControlName="name" placeholder="Enter text" autocorrect="off" autocomplete="off">
+            <label for="name">{{ 'nameLabel' | t }}</label>
+            <input type="text" id="name" formControlName="name" [placeholder]="'enterTextPlaceholder' | t" autocorrect="off" autocomplete="off">
         </div>
         <div class="form-group">
-            <label i18n="@@customBackImageURLLabel" for="customBackImageURL">Custom Back Image URL</label>
-            <input i18n-placeholder="@@enterURLValidPlaceholder" type="text" id="customBackImageURL" formControlName="customBackImageURL" placeholder="Enter a valid URL" autocorrect="off" autocomplete="off">
-            <p i18n class="form-hint">If you leave this field empty, the default back image will be used. The linked image will be used as the back of the deck, make sure it is of an appropriate size and rectangular to avoid losing details. Also, any offensive or inappropriate image may be reported.</p>
+            <label for="customBackImageURL">{{ 'customBackImageURLLabel' | t }}</label>
+            <input type="text" id="customBackImageURL" formControlName="customBackImageURL" [placeholder]="'enterURLValidPlaceholder' | t" autocorrect="off" autocomplete="off">
+            <p class="form-hint">{{ 'newDeckDialog.ifYouLeaveThisField' | t }}</p>
         </div>
     </form>
     }
     <div dialog-actions-container>
-        <app-ui-button i18n-text="@@saveChangesButton" text="Save changes" icon="save" [disabled]="!form.valid || form.pristine" (click)="onSubmit()"></app-ui-button>
-        <app-ui-button i18n-text="@@closeButton" text="Close" icon="close" (click)="dialogRef.close()"></app-ui-button>
+        <app-ui-button [text]="'saveChangesButton' | t" icon="save" [disabled]="!form.valid || form.pristine" (click)="onSubmit()"></app-ui-button>
+        <app-ui-button [text]="'closeButton' | t" icon="close" (click)="dialogRef.close()"></app-ui-button>
     </div>
 </app-ui-dialog-container>

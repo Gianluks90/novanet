@@ -19,8 +19,7 @@ The complete, up-to-date game rules are available locally at `public/Null_Signal
 
 ```bash
 npm start            # ng serve — dev server at http://localhost:4200/ (English)
-npm run startit       # ng serve --configuration=it — dev server in Italian locale
-npm run build         # ng build --localize — production build, both locales, output to dist/
+npm run build         # ng build — production build, output to dist/novanet/browser (single build, runtime i18n)
 npm run watch         # ng build --watch --configuration development
 npm test              # ng test — runs unit tests with Vitest
 npm run host          # firebase deploy --only hosting
@@ -49,7 +48,7 @@ To run a single test file once specs exist, use Vitest's own filtering, e.g. `np
 
 **Auth** is Google Sign-In only ([src/app/services/auth-service.ts](src/app/services/auth-service.ts)), guarded by `AuthGuardService` on the `/decks` route tree. `FirebaseService` listens for `onAuthStateChanged`, ensures a `users/{uid}` Firestore doc exists, and mirrors it into the `$user` signal via a live snapshot listener.
 
-**i18n**: Angular's built-in `$localize`/XLIFF i18n, not ngx-translate. Source strings are English; `src/locale/messages.it.xlf` holds Italian translations. `ng build --localize` produces both locale bundles; `LOCALE_ID` is injected where needed (e.g. to pick the translation language when talking to Firestore). Card-text translations (see above) are a separate concern from UI strings.
+**i18n**: runtime translations, no Angular `$localize`/XLIFF and no `ng build --localize`. [src/app/i18n/](src/app/i18n/) holds `en.ts` (source of truth for the keys, `TranslationKey` type), `it.ts` (typed `Record<TranslationKey, string>`, so a missing Italian key is a compile error), `I18nService` (`lang` signal persisted in localStorage, `t(key, args)`; placeholders are positional `{0}`, `{1}`) and the impure `t` pipe. In templates use `{{ 'key' | t }}`, `{{ 'key' | t: [value] }}`, `[placeholder]="'key' | t"`, or `[innerHTML]="'key' | t"` for strings containing HTML; in TS use `inject(I18nService).t(...)`. Add every new UI string to both dictionaries. Components read the current language via `i18n.lang()` (several expose `locale` as a getter for `card.translations?.[locale]`). The label pipes (`factionLabel`, `typeLabel`, ...) read `lang()` and are impure for the same reason. The header menu switches language live; supported languages are listed in `SUPPORTED_LANGS`. Card-text translations (see above) are a separate concern from UI strings.
 
 **Routing** uses hash location strategy (`withHashLocation()` in [src/app/app.config.ts](src/app/app.config.ts)), relevant for Firebase Hosting rewrites.
 

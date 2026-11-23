@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, effect, HostListener, inject, LOCALE_ID, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, effect, HostListener, inject, signal } from '@angular/core';
 import { NavigationEnd, NavigationStart, Router, RouterOutlet } from '@angular/router';
 import { Header } from './components/header/header';
 import { UnsupportedPage } from './pages/unsupported-page/unsupported-page';
@@ -7,6 +7,7 @@ import { FIREBASE_CONFIG } from './environment/firebaseConfig';
 import { FirebaseService } from './services/firebase-service';
 import { getFirestore } from 'firebase/firestore';
 import { NotificationService } from './services/notification-service';
+import { I18nService } from './i18n/i18n-service';
 
 @Component({
   selector: 'app-root',
@@ -16,19 +17,20 @@ import { NotificationService } from './services/notification-service';
 })
 export class App {
   protected isUnsupported = false;
-  private locale = inject(LOCALE_ID);
+  private i18n = inject(I18nService);
+  public get locale(): string { return this.i18n.lang(); }
   public backgroundImageUrl: string | null = null;
 
   constructor(private firebaseService: FirebaseService, private router: Router, private notification: NotificationService, private cd: ChangeDetectorRef) {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
         if (event.url.includes('cards')) {
-          this.notification.notify($localize `Cards loading...`, 'cards_stack')
+          this.notification.notify(this.i18n.t('notifications.cardsLoading'), 'cards_stack')
         }
       }
       if (event instanceof NavigationEnd) {
         if (event.url.includes('cards')) {
-          this.notification.notify($localize `Cards loaded! Wait for image rendering...`, 'cards_stack', 5000);
+          this.notification.notify(this.i18n.t('notifications.cardsLoaded'), 'cards_stack', 5000);
         }
       }
     });

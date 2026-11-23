@@ -7,14 +7,6 @@
   "newProjectRoot": "projects",
   "projects": {
     "novanet": {
-      "i18n": {
-        "sourceLocale": "en",
-        "locales": {
-          "it": {
-            "translation": "src/locale/messages.it.xlf"
-          }
-        }
-      },
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -50,27 +42,23 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "localize": true,
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "public",
+                "ignore": [
+                  "**/Null_Signal_Games_*.pdf"
+                ]
               }
             ],
             "styles": [
               "src/styles.scss"
-            ],
-            "polyfills": [
-              "@angular/localize/init"
             ]
           },
           "configurations": {
-            "it": {
-              "localize": ["it"]
-            },
             "production": {
               "budgets": [
                 {
@@ -97,9 +85,6 @@
         "serve": {
           "builder": "@angular/build:dev-server",
           "configurations": {
-            "it": {
-              "buildTarget": "novanet:build:development,it"
-            },
             "production": {
               "buildTarget": "novanet:build:production"
             },

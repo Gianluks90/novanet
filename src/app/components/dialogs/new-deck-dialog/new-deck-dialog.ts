@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, LOCALE_ID } from '@angular/core';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UiDialogContainer, UIButton } from '../../../ui';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
@@ -9,10 +9,12 @@ import { Timestamp } from 'firebase/firestore';
 import { ActivatedRoute } from '@angular/router';
 import { Card } from '../../../models/card';
 import { nrdbDb } from '../../../db/nrdb-indexed-db';
+import { TranslatePipe } from '../../../i18n/translate-pipe';
+import { I18nService } from '../../../i18n/i18n-service';
 
 @Component({
   selector: 'app-new-deck-dialog',
-  imports: [UiDialogContainer, UIButton, FormsModule, ReactiveFormsModule],
+  imports: [TranslatePipe, UiDialogContainer, UIButton, FormsModule, ReactiveFormsModule],
   templateUrl: './new-deck-dialog.html',
   styleUrl: './new-deck-dialog.scss',
 })
@@ -23,7 +25,8 @@ export class NewDeckDialog {
   public sides: Side[] = [];
   private allCards: Card[] = [];
   public identities: Card[] = [];
-  public locale = inject(LOCALE_ID);
+  private i18n = inject(I18nService);
+  public get locale(): string { return this.i18n.lang(); }
 
   constructor(private fb: FormBuilder, private dc: ChangeDetectorRef) {
     this.form = this.fb.group({

@@ -10,11 +10,7 @@
 
 <ng-template #menu>
     <div class="lang-menu-container" cdkMenu>
-        <a href="https://novanet-2026.web.app/en/">
-            <app-ui-button text="English" [icon]="locale === 'en' ? 'arrow_right' : ''"></app-ui-button>
-        </a>
-        <a href="https://novanet-2026.web.app/it/">
-            <app-ui-button text="Italiano" [icon]="locale === 'it' ? 'arrow_right' : ''"></app-ui-button>
-        </a>
+        <app-ui-button text="English" [icon]="locale === 'en' ? 'arrow_right' : ''" (click)="setLang('en')"></app-ui-button>
+        <app-ui-button text="Italiano" [icon]="locale === 'it' ? 'arrow_right' : ''" (click)="setLang('it')"></app-ui-button>
     </div>
 </ng-template>

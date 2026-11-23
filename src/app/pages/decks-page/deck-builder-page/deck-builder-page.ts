@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, effect, inject, LOCALE_ID, ViewChild, ElementRef } from '@angular/core';
+import { ChangeDetectorRef, Component, effect, inject, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FirebaseService } from '../../../services/firebase-service';
 import { NotificationService } from '../../../services/notification-service';
@@ -24,10 +24,12 @@ import { Timestamp } from 'firebase/firestore';
 import { DeckService } from '../../../services/deck-service';
 import { ImportExportCardListDialog } from '../../../components/dialogs/import-export-card-list-dialog/import-export-card-list-dialog';
 import { UIButton } from '../../../ui';
+import { TranslatePipe } from '../../../i18n/translate-pipe';
+import { I18nService } from '../../../i18n/i18n-service';
 
 @Component({
   selector: 'app-deck-builder-page',
-  imports: [CardDetail, FormsModule, ReactiveFormsModule, FactionLabelPipe, TypeLabelPipe, DotsPipe, CheckAgendaPointsPipe, CheckInfluencePipe, RouterLink, UIButton],
+  imports: [TranslatePipe, CardDetail, FormsModule, ReactiveFormsModule, FactionLabelPipe, TypeLabelPipe, DotsPipe, CheckAgendaPointsPipe, CheckInfluencePipe, RouterLink, UIButton],
   templateUrl: './deck-builder-page.html',
   styleUrl: './deck-builder-page.scss',
 })
@@ -124,7 +126,8 @@ export class DeckBuilderPage {
 
   public mode: 'edit' | 'visibility' = 'edit';
   public deck: Deck | null = null;
-  public locale = inject(LOCALE_ID);
+  private i18n = inject(I18nService);
+  public get locale(): string { return this.i18n.lang(); }
   public selectedCard: Card | null = null;
   public cardZoomed: boolean = false;
 
@@ -158,10 +161,10 @@ export class DeckBuilderPage {
   public cloneDeck() {
     if (!this.deck) return;
     this.deckService.cloneDeck(this.deck).then(newId => {
-      this.notification.notify($localize`Deck copied to your account.`, 'check');
+      this.notification.notify(this.i18n.t('notifications.deckCopied'), 'check');
       this.router.navigate(['/decks/builder', newId]);
     }).catch(err => {
-      this.notification.notify($localize`Error copying deck: ${err.message}`, 'dangerous');
+      this.notification.notify(this.i18n.t('notifications.errorCopyingDeck', [err.message]), 'dangerous');
     });
   }
 

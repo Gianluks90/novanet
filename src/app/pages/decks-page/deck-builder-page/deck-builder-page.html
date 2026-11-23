@@ -4,36 +4,35 @@
             <div class="side-line"></div>
             <div class="header-content">
                 <span class="material-symbols-rounded" [routerLink]="['/decks']">arrow_back</span>
-                <h1 i18n>Deck View "{{form.get('name')?.value}}"</h1>
+                <h1>{{ 'deckBuilderPage.deckView' | t: [form.get('name')?.value] }}</h1>
                 <div class="actions-container">
                     @if (isOwner) {
                         <span
                           class="material-symbols-rounded"
-                          i18n-title
-                          [title]="mode === 'edit' ? 'Manage visibility' : 'Back to editing'"
+                          [title]="(mode === 'edit' ? 'deckBuilderPage.manageVisibility' : 'deckBuilderPage.backToEditing') | t"
                           (click)="mode = mode === 'edit' ? 'visibility' : 'edit'"
                         >{{ mode === 'edit' ? 'share' : 'close' }}</span>
                     } @else {
-                        <p i18n>[ View only ]</p>
-                        <app-ui-button i18n-text text="Copy to my account" icon="content_copy" size="small" (click)="cloneDeck()"></app-ui-button>
+                        <p>{{ 'deckBuilderPage.viewOnly' | t }}</p>
+                        <app-ui-button [text]="'deckBuilderPage.copyToMyAccount' | t" icon="content_copy" size="small" (click)="cloneDeck()"></app-ui-button>
                     }
                 </div>
             </div>
         </div>
         @if (isOwner && mode === 'visibility') {
         <div class="visibility-panel">
-            <p i18n class="section-label">Deck visibility</p>
+            <p class="section-label">{{ 'deckBuilderPage.deckVisibility' | t }}</p>
             <label>
                 <input type="radio" name="visibility" [checked]="deck?.visibility !== 'public' && deck?.visibility !== 'shared'" (change)="setVisibility('private')">
-                <span i18n>Private — only you can see it</span>
+                <span>{{ 'deckBuilderPage.privateOnlyYouCanSee' | t }}</span>
             </label>
             <label>
                 <input type="radio" name="visibility" [checked]="deck?.visibility === 'shared'" (change)="setVisibility('shared')">
-                <span i18n>Shared — anyone with the direct link can view it (not listed anywhere)</span>
+                <span>{{ 'deckBuilderPage.sharedAnyoneWithTheDirect' | t }}</span>
             </label>
             <label>
                 <input type="radio" name="visibility" [checked]="deck?.visibility === 'public'" (change)="setVisibility('public')">
-                <span i18n>Public — listed in the community gallery</span>
+                <span>{{ 'deckBuilderPage.publicListedInTheCommunity' | t }}</span>
             </label>
         </div>
         }
@@ -58,14 +57,14 @@
 
                         <div class="progress-container">
                             <div class="progress-labels">
-                                <p i18n>Deck size / minimum deck size</p>
+                                <p>{{ 'deckBuilderPage.deckSizeMinimumDeckSize' | t }}</p>
                                 <p>{{totalCards}} / {{deck.identity.minimum_deck_size}}</p>
                             </div>
                             <progress [value]="totalCards" [max]="deck.identity.minimum_deck_size" min="0"></progress>
                         </div>
                         <div class="progress-container">
                             <div class="progress-labels">
-                                <p i18n>Influence / influence limit</p>
+                                <p>{{ 'deckBuilderPage.influenceInfluenceLimit' | t }}</p>
                                 <!-- <p>{{totalInfluence}} / {{deck.identity.influence_limit}}</p> -->
                                 <p>
                                     {{ selectedCards | checkInfluence: cardsMap : deck.identity.faction_id! }}
@@ -77,15 +76,15 @@
                         </div>
                         @if (deck.identity.side_id === 'corp') {
                             <p class="agenda-points-label">
-                                <span i18n>Agenda points</span>
+                                <span>{{ 'deckBuilderPage.agendaPoints' | t }}</span>
                                 <span class="agenda-points-value">{{ selectedCards | checkAgendaPoints: cardsMap }}</span>
                             </p>
                         }
                     </div>
                 </div>
                 <p class="cards-container-title">
-                    <span i18n>Cards</span>
-                    <span i18n-title title="Export card list" class="material-symbols-rounded" (click)="exportCardList()">bottom_panel_open</span>
+                    <span>{{ 'deckBuilderPage.cards' | t }}</span>
+                    <span [title]="'deckBuilderPage.exportCardList' | t" class="material-symbols-rounded" (click)="exportCardList()">bottom_panel_open</span>
                 </p>
                 <div class="cards-container">
                     @for (entry of selectedCardsList; track entry.card.id) {
@@ -114,7 +113,7 @@
                             </section>
                         </div>
                     } @empty {
-                        <p i18n>No cards added yet.</p>
+                        <p>{{ 'deckBuilderPage.noCardsAddedYet' | t }}</p>
                     }
                 </div>
             </section>
@@ -128,7 +127,7 @@
         <div class="section-header">
             <div class="side-line"></div>
             <div class="header-content">
-                <h1 i18n>Deck Builder</h1>
+                <h1>{{ 'deckBuilderPage.deckBuilder' | t }}</h1>
                 <div class="actions-container">
                     <span class="material-symbols-rounded" (click)="importCardList()">bottom_panel_close</span>
                     <span class="material-symbols-rounded" (click)="saveDeck()">save</span>
@@ -138,11 +137,11 @@
         <div class="section-content">
             <form class="form-container" [formGroup]="form">
                 <div class="form-group">
-                    <label i18n for="name">Deck name</label>
-                    <input i18n-placeholder="@@enterTextPlaceholder" type="text" name="name" id="name" formControlName="name" placeholder="Enter text" autocorrect="off" autocomplete="off">
+                    <label for="name">{{ 'nameLabel' | t }}</label>
+                    <input type="text" name="name" id="name" formControlName="name" [placeholder]="'enterTextPlaceholder' | t" autocorrect="off" autocomplete="off">
                 </div>
                 <div class="form-group">
-                    <label i18n for="format-select">Format</label>
+                    <label for="format-select">{{ 'deckBuilderPage.format' | t }}</label>
                     <select name="format" id="format-select" formControlName="format">
                         <option value="">Select format</option>
                         @for (f of formats; track $index) {
@@ -151,7 +150,7 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label i18n="@@identityLabel" for="identity-select">Identity</label>
+                    <label for="identity-select">{{ 'identityLabel' | t }}</label>
                     <select name="identity" id="identity-select" formControlName="identity">
                         <option value="">Select identity</option>
                         @for (identity of identities; track $index) {
@@ -162,7 +161,7 @@
             </form>
             <form class="form-container card-form" [formGroup]="cardForm">
                 <div class="form-group">
-                    <label i18n for="card-input">Search Card</label>
+                    <label for="card-input">{{ 'deckBuilderPage.searchCard' | t }}</label>
                     <input #cardInputEl type="text" 
                         formControlName="cardInput" 
                         placeholder="Enter card name or code" 
@@ -174,13 +173,13 @@
             </form>
             <div class="filters-container" [formGroup]="filtersForm">
                 <select id="faction-select" formControlName="faction">
-                    <option i18n value="all">All Factions</option>
+                    <option value="all">{{ 'cardsPage.allFactions' | t }}</option>
                     @for (f of factions; track $index) {
                         <option  [value]="f.id">{{f.id | factionLabel}}</option>
                     }
                 </select>
                 <select id="pack-select" formControlName="pack">
-                    <option i18n value="all">All packs</option>
+                    <option value="all">{{ 'cardsPage.allPacks' | t }}</option>
                     @for(cycle of cycles; track cycle.id) {
                     <optgroup [label]="cycle.name">
                         @for (pack of packs; track pack.id) {
@@ -194,7 +193,7 @@
                     }
                 </select>
                 <select id="type-select" formControlName="type">
-                    <option i18n value="all">All Types</option>
+                    <option value="all">{{ 'cardsPage.allTypes' | t }}</option>
                     @for (t of types; track $index) {
                         <option  [value]="t.id">{{t.id | typeLabel }}</option>
                     }
@@ -225,12 +224,12 @@
         <div class="section-header">
             <div class="side-line"></div>
             <div class="header-content">
-                <h1 i18n>Deck Builder</h1>
+                <h1>{{ 'deckBuilderPage.deckBuilder' | t }}</h1>
             </div>
         </div>
         <div class="section-content">
-            <p i18n>You're viewing someone else's deck in read-only mode.</p>
-            <app-ui-button i18n-text text="Copy to my account" icon="content_copy" (click)="cloneDeck()"></app-ui-button>
+            <p>{{ 'deckBuilderPage.youReViewingSomeoneElse' | t }}</p>
+            <app-ui-button [text]="'deckBuilderPage.copyToMyAccount' | t" icon="content_copy" (click)="cloneDeck()"></app-ui-button>
         </div>
     </section>
     }

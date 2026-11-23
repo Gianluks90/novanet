@@ -1,4 +1,4 @@
-import { Component, effect, HostListener, inject, LOCALE_ID } from '@angular/core';
+import { Component, effect, HostListener, inject } from '@angular/core';
 import { APP_VERSION } from '../../const/appVersion';
 import { AuthService } from '../../services/auth-service';
 import { FirebaseService } from '../../services/firebase-service';
@@ -11,10 +11,12 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { NotificationService } from '../../services/notification-service';
 import { Faction } from '../../models/faction';
 import { FactionLabelPipe } from "../../pipes/faction-label-pipe";
+import { TranslatePipe } from '../../i18n/translate-pipe';
+import { I18nService } from '../../i18n/i18n-service';
 
 @Component({
   selector: 'app-home-page',
-  imports: [UIDiagonalLine, UIButton, UiImageContainer, RouterLink, FactionLabelPipe],
+  imports: [TranslatePipe, UIDiagonalLine, UIButton, UiImageContainer, RouterLink, FactionLabelPipe],
   templateUrl: './home-page.html',
   styleUrl: './home-page.scss',
 })
@@ -24,7 +26,8 @@ export class HomePage {
   private dialog = inject(Dialog);
   private dialogRef: DialogRef<DialogResult, any> | null = null;
   public factions: Faction[] = [];
-  public locale = inject(LOCALE_ID);
+  private i18n = inject(I18nService);
+  public get locale(): string { return this.i18n.lang(); }
 
   constructor(private authService: AuthService, private notification: NotificationService, private route: ActivatedRoute) {
     this.route.data.subscribe(data => {
@@ -40,7 +43,7 @@ export class HomePage {
 
     this.dialogRef.closed.subscribe((result: DialogResult | undefined) => {
       if (result?.status === 'confirmed') {
-        this.notification.notify($localize`Settings updated`, 'check')
+        this.notification.notify(this.i18n.t('notifications.settingsUpdated'), 'check')
       }
     });
   }
