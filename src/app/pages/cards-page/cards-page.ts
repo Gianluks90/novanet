@@ -25,6 +25,8 @@ import { CardTranslationService } from '../../services/card-translation-service'
 
 import { scrollToCenter } from '../../utils/scroll';
 
+import { CardZoom } from '../../components/card-zoom/card-zoom';
+
 @Component({
   selector: 'app-cards-page',
   imports: [TranslatePipe, 
@@ -33,6 +35,7 @@ import { scrollToCenter } from '../../utils/scroll';
     CardBack,
     UiToggle,
     CardDetail,
+    CardZoom,
     FactionLabelPipe,
     TypeLabelPipe,
     ZoomLevelLabelPipe,

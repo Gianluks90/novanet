@@ -1,0 +1,11 @@
+<div class="ui-stepper" role="group">
+    <button type="button" class="step" [disabled]="!canDecrease" [attr.aria-label]="decreaseLabel()"
+        [title]="decreaseLabel()" (click)="decrease.emit()">
+        <span class="material-symbols-rounded" aria-hidden="true">remove</span>
+    </button>
+    <span class="value" aria-live="polite">{{ value() }}</span>
+    <button type="button" class="step" [disabled]="!canIncrease" [attr.aria-label]="increaseLabel()"
+        [title]="increaseLabel()" (click)="increase.emit()">
+        <span class="material-symbols-rounded" aria-hidden="true">add</span>
+    </button>
+</div>

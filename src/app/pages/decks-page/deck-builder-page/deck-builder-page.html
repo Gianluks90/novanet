@@ -1,10 +1,43 @@
+<!-- One row of a card list: title, type (deck list), influence, faction, copies. Used by both lists. -->
+<ng-template #cardRow let-card let-inDeckList="inDeckList">
+    @let copies = qtyOf(card.id);
+    <div class="card-item" [class.in-deck]="!inDeckList && copies > 0" [class.selected]="selectedCard?.id === card.id">
+        <button type="button" class="card-item-title" (click)="selectCard(card)">{{ card | cardTitle }}</button>
+        <div class="card-item-meta">
+            @if (inDeckList) {
+                <span class="type-label">{{ card.card_type_id! | typeLabel }}</span>
+            }
+            @if (card.influence_cost! > 0 && (!inDeckList || card.faction_id !== deck?.identity?.faction_id)) {
+                <span [innerHTML]="card | dots: factions"></span>
+            }
+            @if (card.faction_id !== 'neutral_runner' && card.faction_id !== 'neutral_corp') {
+                <img class="faction-icon" [src]="'./images/faction-icons/' + card.faction_id + '.svg'" alt="">
+            } @else {
+                <span class="material-symbols-rounded no-faction-icon" aria-hidden="true">remove</span>
+            }
+            @if (isOwner) {
+                <app-ui-stepper [value]="copies" [max]="limitOf(card)"
+                    [decreaseLabel]="'deckBuilderPage.removeCopy' | t" [increaseLabel]="'deckBuilderPage.addCopy' | t"
+                    (decrease)="changeQuantity(card, -1)" (increase)="changeQuantity(card, 1)"></app-ui-stepper>
+            } @else {
+                <span class="read-only-qty">x{{ copies }}</span>
+            }
+        </div>
+    </div>
+</ng-template>
+
 <div class="deck-builder-page-main-container">
     <section class="deck-view-container">
         <div class="section-header">
             <div class="side-line"></div>
             <div class="header-content">
                 <app-ui-icon-button icon="arrow_back" [label]="'deckBuilderPage.backToDecks' | t" [link]="['/decks']"></app-ui-icon-button>
-                <h1>{{ 'deckBuilderPage.deckView' | t: [form.get('name')?.value] }}</h1>
+                @if (isOwner) {
+                    <input type="text" class="title-input" [formControl]="nameControl" [attr.aria-label]="'nameLabel' | t"
+                        [placeholder]="'enterTextPlaceholder' | t" autocorrect="off" autocomplete="off">
+                } @else {
+                    <h1>{{ nameControl.value }}</h1>
+                }
                 <div class="actions-container">
                     @if (isOwner && deck?.local) {
                         <app-ui-icon-button icon="cloud_upload" [label]="'deckBuilderPage.saveOnline' | t" (click)="uploadDeck()"></app-ui-icon-button>
@@ -16,7 +49,7 @@
                           (click)="mode = mode === 'edit' ? 'visibility' : 'edit'"
                         ></app-ui-icon-button>
                     } @else {
-                        <p>{{ 'deckBuilderPage.viewOnly' | t }}</p>
+                        <span class="view-only-label">{{ 'deckBuilderPage.viewOnly' | t }}</span>
                         <app-ui-button [text]="'deckBuilderPage.copyToMyAccount' | t" icon="content_copy" size="small" (click)="cloneDeck()"></app-ui-button>
                     }
                 </div>
@@ -50,65 +83,48 @@
                         <hr>
                         <div class="identity-subtitle">
                             {{(deck.identity | cardTitle).split(':')[1]}}
-                        </div> 
-
-                        <div class="progress-container">
-                            <div class="progress-labels">
-                                <p>{{ 'deckBuilderPage.deckSizeMinimumDeckSize' | t }}</p>
-                                <p>{{totalCards}} / {{deck.identity.minimum_deck_size}}</p>
-                            </div>
-                            <progress [value]="totalCards" [max]="deck.identity.minimum_deck_size" min="0"></progress>
                         </div>
-                        <div class="progress-container">
-                            <div class="progress-labels">
-                                <p>{{ 'deckBuilderPage.influenceInfluenceLimit' | t }}</p>
-                                <!-- <p>{{totalInfluence}} / {{deck.identity.influence_limit}}</p> -->
-                                <p>
-                                    {{ selectedCards | checkInfluence: cardsMap : deck.identity.faction_id! }}
-                                    /
-                                    {{ deck.identity.influence_limit }}
-                                </p>
+
+                        <div class="meter">
+                            <div class="meter-labels">
+                                <span>{{ 'deckBuilderPage.deckSizeMinimumDeckSize' | t }}</span>
+                                <span>{{ totalCards }} / {{ deck.identity.minimum_deck_size }}</span>
                             </div>
-                            <progress [value]="totalInfluence" [max]="deck.identity.influence_limit" min="0"></progress>
+                            <progress [class.warn]="missingCards > 0" [value]="totalCards" [max]="deck.identity.minimum_deck_size" min="0"></progress>
+                            @if (missingCards > 0) {
+                                <span class="meter-hint warn">{{ 'deckBuilderPage.missingCards' | t: [missingCards] }}</span>
+                            }
+                        </div>
+                        <div class="meter">
+                            <div class="meter-labels">
+                                <span>{{ 'deckBuilderPage.influenceInfluenceLimit' | t }}</span>
+                                <span>{{ totalInfluence }} / {{ deck.identity.influence_limit ?? '∞' }}</span>
+                            </div>
+                            @if (influenceLimit !== null) {
+                                <progress [class.error]="influenceOver > 0" [value]="totalInfluence" [max]="influenceLimit" min="0"></progress>
+                            }
+                            @if (influenceOver > 0) {
+                                <span class="meter-hint error">{{ 'deckBuilderPage.influenceOver' | t: [influenceOver] }}</span>
+                            }
                         </div>
                         @if (deck.identity.side_id === 'corp') {
-                            <p class="agenda-points-label">
-                                <span>{{ 'deckBuilderPage.agendaPoints' | t }}</span>
-                                <span class="agenda-points-value">{{ selectedCards | checkAgendaPoints: cardsMap }}</span>
-                            </p>
+                            <div class="meter">
+                                <div class="meter-labels">
+                                    <span>{{ 'deckBuilderPage.agendaPoints' | t }}</span>
+                                    <span class="agenda-points-value" [class.error]="!agendaValid">{{ agendaPoints }}</span>
+                                </div>
+                                <span class="meter-hint" [class.error]="!agendaValid">{{ 'deckBuilderPage.agendaRequired' | t: [agendaNeeded.min, agendaNeeded.max] }}</span>
+                            </div>
                         }
                     </div>
                 </div>
-                <p class="cards-container-title">
+                <div class="cards-container-title">
                     <span>{{ 'deckBuilderPage.cards' | t }}</span>
                     <app-ui-icon-button icon="bottom_panel_open" size="sm" [label]="'deckBuilderPage.exportCardList' | t" (click)="exportCardList()"></app-ui-icon-button>
-                </p>
+                </div>
                 <div class="cards-container">
                     @for (entry of selectedCardsList; track entry.card.id) {
-                        <div class="card-item" [class.even-item]="$even" (click)="selectCard(entry.card)">
-                            <p class="card-item-title" >
-                                @if (isOwner) {
-                                <span
-                                  class="material-symbols-rounded"
-                                  (click)="$event.stopPropagation(); removeCard(entry.card.id)"
-                                >
-                                  delete
-                                </span>
-                                }
-                                <span>x{{entry.qty}} {{entry.card | cardTitle}}</span>
-                            </p>
-                            <section>
-                                <span class="type-label">{{entry.card.card_type_id! | typeLabel}}</span>
-                                @if (entry.card.faction_id !== deck.identity.faction_id && entry.card.influence_cost! > 0) {
-                                    <span [innerHTML]="entry.card | dots: factions"></span>
-                                }
-                                @if (entry.card.faction_id !== 'neutral_runner' && entry.card.faction_id !== 'neutral_corp') {
-                                    <img class="faction-icon" [src]="'./images/faction-icons/' + entry.card.faction_id+ '.svg'" alt="">
-                                } @else {
-                                    <span class="material-symbols-rounded no-faction-icon">remove</span>
-                                }
-                            </section>
-                        </div>
+                        <ng-container *ngTemplateOutlet="cardRow; context: { $implicit: entry.card, inDeckList: true }"></ng-container>
                     } @empty {
                         <p>{{ 'deckBuilderPage.noCardsAddedYet' | t }}</p>
                     }
@@ -135,15 +151,11 @@
             </div>
         </div>
         <div class="section-content">
-            <form class="form-container" [formGroup]="form">
-                <div class="form-group">
-                    <label for="name">{{ 'nameLabel' | t }}</label>
-                    <input type="text" name="name" id="name" formControlName="name" [placeholder]="'enterTextPlaceholder' | t" autocorrect="off" autocomplete="off">
-                </div>
+            <form class="form-container deck-settings" [formGroup]="form">
                 <div class="form-group">
                     <label for="format-select">{{ 'deckBuilderPage.format' | t }}</label>
                     <select name="format" id="format-select" formControlName="format">
-                        <option value="">Select format</option>
+                        <option value="">{{ 'deckBuilderPage.selectFormat' | t }}</option>
                         @for (f of formats; track $index) {
                             <option  [value]="f">{{f}}</option>
                         }
@@ -152,33 +164,32 @@
                 <div class="form-group">
                     <label for="identity-select">{{ 'identityLabel' | t }}</label>
                     <select name="identity" id="identity-select" formControlName="identity">
-                        <option value="">Select identity</option>
+                        <option value="">{{ 'deckBuilderPage.selectIdentity' | t }}</option>
                         @for (identity of identities; track $index) {
                             <option  [value]="identity.id">{{identity | cardTitle}}</option>
                         }
                     </select>
                 </div>
             </form>
-            <form class="form-container card-form" [formGroup]="cardForm">
-                <div class="form-group">
-                    <label for="card-input">{{ 'deckBuilderPage.searchCard' | t }}</label>
-                    <input #cardInputEl type="text" 
-                        formControlName="cardInput" 
-                        placeholder="Enter card name or code" 
-                        autocorrect="off" 
-                        autocomplete="off"
-                        >
-                </div>
-                <span class="material-symbols-rounded" (click)="resetFilters()">refresh</span>
-            </form>
+            <div class="search-bar" [formGroup]="cardForm">
+                <input #cardInputEl type="text" formControlName="cardInput"
+                    [attr.aria-label]="'deckBuilderPage.searchCard' | t"
+                    [placeholder]="'deckBuilderPage.searchCardPlaceholder' | t"
+                    autocorrect="off" autocomplete="off"
+                    (keydown.enter)="addFirstResult()" (keydown.escape)="clearSearch()">
+                <button type="button" class="ghost-btn reset-btn" (click)="resetFilters()"
+                    [attr.aria-label]="'cardsPage.resetFilters' | t" [title]="'cardsPage.resetFilters' | t">
+                    <span class="material-symbols-rounded" aria-hidden="true">refresh</span>
+                </button>
+            </div>
             <div class="filters-container" [formGroup]="filtersForm">
-                <select id="faction-select" formControlName="faction">
+                <select id="faction-select" formControlName="faction" [attr.aria-label]="'cardsPage.allFactions' | t">
                     <option value="all">{{ 'cardsPage.allFactions' | t }}</option>
                     @for (f of factions; track $index) {
                         <option  [value]="f.id">{{f.id | factionLabel}}</option>
                     }
                 </select>
-                <select id="pack-select" formControlName="pack">
+                <select id="pack-select" formControlName="pack" [attr.aria-label]="'cardsPage.allPacks' | t">
                     <option value="all">{{ 'cardsPage.allPacks' | t }}</option>
                     @for(cycle of cycles; track cycle.id) {
                     <optgroup [label]="cycle.name">
@@ -192,7 +203,7 @@
                     </optgroup>
                     }
                 </select>
-                <select id="type-select" formControlName="type">
+                <select id="type-select" formControlName="type" [attr.aria-label]="'cardsPage.allTypes' | t">
                     <option value="all">{{ 'cardsPage.allTypes' | t }}</option>
                     @for (t of types; track $index) {
                         <option  [value]="t.id">{{t.id | typeLabel }}</option>
@@ -201,20 +212,7 @@
             </div>
             <div class="cards-container">
                 @for (c of filteredCards; track c.id) {
-                    <div class="card-item" [class.even-item]="$even">
-                        <p class="card-item-title">
-                            <span (click)="openAddCardDialog(c)" class="material-symbols-rounded">add</span>
-                            <span (click)="selectCard(c)">{{c | cardTitle}}</span>
-                        </p>
-                        <section>
-                            <span [innerHTML]="c | dots: factions"></span>
-                            @if (c?.faction_id !== 'neutral_runner' && c?.faction_id !== 'neutral_corp') {
-                                <img class="faction-icon" [src]="'./images/faction-icons/' + c?.faction_id+ '.svg'" alt="">
-                            } @else {
-                                <span class="material-symbols-rounded no-faction-icon">remove</span>
-                            }
-                        </section>
-                    </div>
+                    <ng-container *ngTemplateOutlet="cardRow; context: { $implicit: c, inDeckList: false }"></ng-container>
                 }
             </div>
         </div>
@@ -246,13 +244,5 @@
 </div>
 
 @if(selectedCard && cardZoomed) {
-<div class="zoom-card-container">
-    <div class="zoom-card-header">
-        <p>Zoom</p>
-        <span class="material-symbols-rounded" (click)="cardZoomed = false">close</span>
-    </div>
-    <div class="zoom-card-image">
-        <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + selectedCard.id + '.jpg'" alt="">
-    </div>
-</div>
+<app-card-zoom [card]="selectedCard" (closed)="cardZoomed = false"></app-card-zoom>
 }

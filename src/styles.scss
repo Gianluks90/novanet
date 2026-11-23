@@ -439,4 +439,10 @@ progress {
         background-color: var(--accent-color);
         border-radius: 8px;
     }
+
+    // state of a meter (deck size, influence): `warn` = not there yet, `error` = over the limit
+    &.warn::-webkit-progress-value { background-color: var(--warn-color); }
+    &.warn::-moz-progress-bar { background-color: var(--warn-color); }
+    &.error::-webkit-progress-value { background-color: var(--error-color); }
+    &.error::-moz-progress-bar { background-color: var(--error-color); }
 }

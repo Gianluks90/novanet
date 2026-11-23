@@ -1,0 +1,42 @@
+:host {
+    display: inline-flex;
+}
+
+.ui-stepper {
+    display: inline-flex;
+    align-items: center;
+}
+
+.step {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--accent-color);
+    cursor: pointer;
+    transition: background-color var(--duration-base);
+
+    .material-symbols-rounded {
+        font-size: 1.1rem;
+    }
+
+    &:hover:not(:disabled) {
+        background-color: var(--surface-hover);
+    }
+
+    &:disabled {
+        opacity: .3;
+        cursor: not-allowed;
+    }
+}
+
+.value {
+    min-width: 1.5rem;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+}

@@ -74,6 +74,11 @@
         </div>
         <p class="p-note"><code>app-ui-segmented</code> with <code>color</code> options and <code>fill</code> — swatches that share the full width (the accent picker in settings).</p>
         <app-ui-segmented [options]="swatchOptions" [(value)]="swatch" [fill]="true"></app-ui-segmented>
+        <p class="p-note"><code>app-ui-stepper</code> — quantity − / + (the parent owns the value and the limits; here 0–3).</p>
+        <div class="row">
+            <app-ui-stepper [value]="copies()" [max]="3" decreaseLabel="Remove a copy" increaseLabel="Add a copy"
+                (decrease)="copies.set(copies() - 1)" (increase)="copies.set(copies() + 1)"></app-ui-stepper>
+        </div>
         <p class="p-note"><code>app-ui-toggle</code> — on/off setting.</p>
         <div class="row">
             <app-ui-toggle label="cardsPage.translatedOnly" [(value)]="toggle"></app-ui-toggle>

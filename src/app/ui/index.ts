@@ -5,3 +5,4 @@ export * from './ui-icon-button/ui-icon-button';
 export * from './ui-segmented/ui-segmented';
 export * from './ui-toggle/ui-toggle';
 export * from './ui-badge/ui-badge';
+export * from './ui-stepper/ui-stepper';

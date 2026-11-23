@@ -1,0 +1,11 @@
+<div class="zoom-card-container">
+    <div class="zoom-card-header">
+        <p>{{ 'cardZoom.title' | t }}</p>
+        <button type="button" class="close-btn" [attr.aria-label]="'closeButton' | t" [title]="'closeButton' | t" (click)="closed.emit()">
+            <span class="material-symbols-rounded" aria-hidden="true">close</span>
+        </button>
+    </div>
+    <div class="zoom-card-image">
+        <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + card().id + '.jpg'" alt="">
+    </div>
+</div>

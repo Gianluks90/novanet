@@ -1,13 +1,14 @@
-import { UiBadge, UiIconButton, UiSegmented, SegmentedOption } from '../../../ui';
+import { UiBadge, UiIconButton, UiSegmented, UiStepper, SegmentedOption } from '../../../ui';
 import { HasUnsavedChanges } from '../../../guards/unsaved-changes-guard';
 import { TranslationKey } from '../../../i18n/en';
-import { ChangeDetectorRef, Component, effect, inject, ViewChild, ElementRef, HostListener, untracked } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, effect, inject, ViewChild, ElementRef, HostListener, untracked } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FirebaseService } from '../../../services/firebase-service';
 import { NotificationService } from '../../../services/notification-service';
 import { Deck } from '../../../models/deck';
 import { CardDetail } from "../../../components/card-detail/card-detail";
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Pack } from '../../../models/pack';
 import { Card } from '../../../models/card';
 import { CardService } from '../../../services/card-service';
@@ -17,12 +18,10 @@ import { FactionLabelPipe } from "../../../pipes/faction-label-pipe";
 import { TypeLabelPipe } from "../../../pipes/type-label-pipe";
 import { Cycle } from '../../../models/cycle';
 import { DotsPipe } from "../../../pipes/dots-pipe";
-import { AddCardDialog } from '../../../components/dialogs/add-card-dialog/add-card-dialog';
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { DialogResult } from '../../../models/DialogResult';
 import { DIALOGS_CONFIG } from '../../../const/dialogConfig';
-import { CheckAgendaPointsPipe } from "../../../pipes/check-agenda-points-pipe";
-import { CheckInfluencePipe } from "../../../pipes/check-influence-pipe";
+import { CardZoom } from '../../../components/card-zoom/card-zoom';
 import { Timestamp } from 'firebase/firestore';
 import { DeckService } from '../../../services/deck-service';
 import { ImportExportCardListDialog } from '../../../components/dialogs/import-export-card-list-dialog/import-export-card-list-dialog';
@@ -35,20 +34,26 @@ import { AuthService } from '../../../services/auth-service';
 import { getAuth } from 'firebase/auth';
 
 import { parseCardList } from '../../../utils/card-list';
+import { agendaRequirement } from '../../../utils/deck-rules';
 
 @Component({
   selector: 'app-deck-builder-page',
-  imports: [TranslatePipe, CardTitlePipe, UiBadge, UiIconButton, UiSegmented, CardDetail, FormsModule, ReactiveFormsModule, FactionLabelPipe, TypeLabelPipe, DotsPipe, CheckAgendaPointsPipe, CheckInfluencePipe, RouterLink, UIButton],
+  imports: [TranslatePipe, CardTitlePipe, UiBadge, UiIconButton, UiSegmented, UiStepper, CardDetail, CardZoom, NgTemplateOutlet, FormsModule, ReactiveFormsModule, FactionLabelPipe, TypeLabelPipe, DotsPipe, RouterLink, UIButton],
   templateUrl: './deck-builder-page.html',
   styleUrl: './deck-builder-page.scss',
 })
-export class DeckBuilderPage {
+export class DeckBuilderPage implements AfterViewInit {
 
   @ViewChild('cardInputEl', { read: ElementRef }) cardInputEl!: ElementRef<HTMLInputElement>;
 
   public form: FormGroup;
   public cardForm: FormGroup;
   public filtersForm!: FormGroup;
+
+  /** The deck name, edited in the header of the deck view. */
+  public get nameControl(): FormControl {
+    return this.form.get('name') as FormControl;
+  }
   public cycles: Cycle[] = [];
 
   public packs: Pack[] = [];
@@ -165,6 +170,11 @@ export class DeckBuilderPage {
       notes: this.deck?.notes || ''
     });
     this.routeDeckResolved = true;
+  }
+
+  /** Ready to search: the search field has the focus when the editor opens. */
+  ngAfterViewInit() {
+    if (this.isOwner) setTimeout(() => this.cardInputEl?.nativeElement.focus());
   }
 
   // ---- unsaved changes ------------------------------------------------------
@@ -370,31 +380,39 @@ export class DeckBuilderPage {
   private dialog = inject(Dialog);
   private dialogRef: DialogRef<DialogResult, any> | null = null;
 
-  public openAddCardDialog(card: Card) {
+  // ---- copies in the deck --------------------------------------------------------
+
+  /** Copies of the card in the deck. */
+  public qtyOf(code: string): number {
+    return this.selectedCards.get(code) ?? 0;
+  }
+
+  /** Most copies of the card a deck can have (`null`: no limit). */
+  public limitOf(card: Card): number | null {
+    return card.deck_limit && card.deck_limit > 0 ? card.deck_limit : null;
+  }
+
+  /** Adds or removes copies, within 0 and the card's deck limit. */
+  public changeQuantity(card: Card, delta: number) {
     if (!this.isOwner) return;
+    const limit = this.limitOf(card) ?? Infinity;
+    const quantity = Math.min(limit, Math.max(0, this.qtyOf(card.id) + delta));
+    const next = new Map(this.selectedCards);
+    if (quantity > 0) next.set(card.id, quantity); else next.delete(card.id);
+    this.selectedCards = next;
+  }
 
-    this.dialogRef = this.dialog.open<DialogResult>(AddCardDialog, {
-      ...DIALOGS_CONFIG,
-      disableClose: true,
-      data: { card: card, packs: this.packs }
-    });
+  /** Enter in the search field: one more copy of the first result, ready to type the next search. */
+  public addFirstResult() {
+    const card = this.filteredCards[0];
+    if (!card || !this.isOwner) return;
+    this.changeQuantity(card, 1);
+    this.selectCard(card);
+    this.cardInputEl?.nativeElement.select();
+  }
 
-    this.dialogRef?.closed.subscribe((result: DialogResult | undefined) => {
-      this.selectCard(card);
-      if (result?.status === 'confirmed') {
-        const next = new Map(this.selectedCards);
-
-        const current = next.get(card.id) || 0;
-        const limit = card.deck_limit && card.deck_limit > 0 ? card.deck_limit : Infinity;
-        next.set(
-          card.id,
-          Math.min(limit, current + result.data.quantity)
-        );
-
-        this.selectedCards = next;
-        this.cd.detectChanges();
-      }
-    });
+  public clearSearch() {
+    this.cardForm.patchValue({ cardInput: '' });
   }
 
   public get totalCards(): number {
@@ -419,12 +437,38 @@ export class DeckBuilderPage {
     return influence;
   }
 
-  public removeCard(code: string) {
-    if (!this.isOwner) return;
+  // ---- deck validity ---------------------------------------------------------------
 
-    const next = new Map(this.selectedCards);
-    next.delete(code);
-    this.selectedCards = next;
+  /** Cards still needed to reach the identity's minimum deck size. */
+  public get missingCards(): number {
+    return Math.max(0, (this.deck?.identity.minimum_deck_size ?? 0) - this.totalCards);
+  }
+
+  /** The identity's influence limit (`null`: unlimited). */
+  public get influenceLimit(): number | null {
+    return this.deck?.identity.influence_limit ?? null;
+  }
+
+  public get influenceOver(): number {
+    const limit = this.influenceLimit;
+    return limit === null ? 0 : Math.max(0, this.totalInfluence - limit);
+  }
+
+  /** Agenda points in the deck (Corp). */
+  public get agendaPoints(): number {
+    let total = 0;
+    this.selectedCards.forEach((qty, code) => total += (this.cardsMap.get(code)?.agenda_points ?? 0) * qty);
+    return total;
+  }
+
+  /** Agenda points the deck needs for its current size. */
+  public get agendaNeeded(): { min: number; max: number } {
+    return agendaRequirement(this.totalCards);
+  }
+
+  public get agendaValid(): boolean {
+    const { min, max } = this.agendaNeeded;
+    return this.agendaPoints >= min && this.agendaPoints <= max;
   }
 
   public get selectedCardsList(): { card: Card; qty: number }[] {

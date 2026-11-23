@@ -102,13 +102,5 @@
 </div>
 
 @if(selectedCard && cardZoomed) {
-<div class="zoom-card-container">
-    <div class="zoom-card-header">
-        <p>Zoom</p>
-        <span class="material-symbols-rounded" (click)="cardZoomed = false">close</span>
-    </div>
-    <div class="zoom-card-image">
-        <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + selectedCard.id + '.jpg'" alt="">
-    </div>
-</div>
+<app-card-zoom [card]="selectedCard" (closed)="cardZoomed = false"></app-card-zoom>
 }

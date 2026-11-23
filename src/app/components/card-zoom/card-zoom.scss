@@ -1,0 +1,62 @@
+:host {
+    display: contents;
+}
+
+.zoom-card-container {
+    position: absolute;
+    top: 30%;
+    left: 3%;
+    border: 1px solid var(--accent-color);
+    display: flex;
+    flex-direction: column;
+    z-index: 3;
+    opacity: 0;
+    animation: fadeIn .3s forwards;
+    box-shadow: 0 0 4px rgba(0, 0, 0, .1);
+
+    &>.zoom-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: var(--bg-color);
+        padding: 0 4px;
+        text-transform: uppercase;
+
+        &>p {
+            margin-left: 8px;
+            font-weight: bold;
+        }
+
+        &>.close-btn {
+            display: inline-flex;
+            padding: 0;
+            border: 0;
+            background: transparent;
+            color: inherit;
+            cursor: pointer;
+        }
+    }
+
+    &>.zoom-card-image {
+        display: flex;
+        background-color: var(--bg-color);
+        padding: 4px;
+
+        img {
+            border: 1px solid var(--accent-color);
+            border-radius: 16px;
+        }
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}

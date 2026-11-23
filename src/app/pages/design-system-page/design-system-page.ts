@@ -1,7 +1,7 @@
 import { ACCENT_PRESETS } from '../../const/accent-colors';
 import { Component, signal } from '@angular/core';
 import { CdkMenu, CdkMenuItem, CdkMenuTrigger } from '@angular/cdk/menu';
-import { UIButton, UiBadge, UiIconButton, UiSegmented, UiToggle, SegmentedOption } from '../../ui';
+import { UIButton, UiBadge, UiIconButton, UiSegmented, UiStepper, UiToggle, SegmentedOption } from '../../ui';
 
 /**
  * Living style guide, reachable at `#/design-system` (not linked from the UI).
@@ -10,7 +10,7 @@ import { UIButton, UiBadge, UiIconButton, UiSegmented, UiToggle, SegmentedOption
  */
 @Component({
   selector: 'app-design-system-page',
-  imports: [UIButton, UiBadge, UiIconButton, UiSegmented, UiToggle, CdkMenuTrigger, CdkMenu, CdkMenuItem],
+  imports: [UIButton, UiBadge, UiIconButton, UiSegmented, UiStepper, UiToggle, CdkMenuTrigger, CdkMenu, CdkMenuItem],
   templateUrl: './design-system-page.html',
   styleUrl: './design-system-page.scss',
 })
@@ -45,6 +45,7 @@ export class DesignSystemPage {
   public visibility = signal('private');
   public swatchOptions: SegmentedOption[] = ACCENT_PRESETS.dark.map(p => ({ value: p.id, label: p.label, color: p.color }));
   public swatch = signal('yellow');
+  public copies = signal(1);
   public toggle = signal(false);
   public activeIcon = signal(false);
   public lastMenuAction = signal('—');
