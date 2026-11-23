@@ -134,6 +134,9 @@ export const EN = {
   "homeSettingsDialog.myTranslations": "My translations",
   "homeSettingsDialog.myTranslationsInfo": "{0} personal translations saved in this browser. Export them to back them up or to share them.",
   "homeSettingsDialog.exportTranslations": "Export",
+  "notifications.authError": "Could not complete the sign-in/sign-out. Please try again.",
+  "deckBuilderPage.deckNotAvailable": "This deck does not exist or is not available to you.",
+  "deckBuilderPage.backToDecks": "Back to decks",
 } as const;
 
 export type TranslationKey = keyof typeof EN;

@@ -1,33 +1,30 @@
-import { Injectable, signal, WritableSignal } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { browserLocalPersistence, getAuth, GoogleAuthProvider, setPersistence, signInWithPopup } from 'firebase/auth';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  constructor() { }
-
-  public async loginWithGoogle() {
-    const provider = new GoogleAuthProvider();
+  /**
+   * Opens the Google sign-in popup. Resolves to `true` when signed in, `false` when the user
+   * simply closed/cancelled the popup; throws for real errors (network, blocked popup, ...).
+   */
+  public async loginWithGoogle(): Promise<boolean> {
     const auth = getAuth();
     await setPersistence(auth, browserLocalPersistence);
     auth.useDeviceLanguage();
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        console.log('User logged in:', result.user);
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential?.accessToken;
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        const email = error.customData.email;
-        const credential = GoogleAuthProvider.credentialFromError(error);
-      });
+    try {
+      await signInWithPopup(auth, new GoogleAuthProvider());
+      return true;
+    } catch (error: any) {
+      if (error?.code === 'auth/popup-closed-by-user' || error?.code === 'auth/cancelled-popup-request') {
+        return false;
+      }
+      throw error;
+    }
   }
 
-  public logout() {
-    getAuth().signOut();
+  public async logout(): Promise<void> {
+    await getAuth().signOut();
   }
-
 }

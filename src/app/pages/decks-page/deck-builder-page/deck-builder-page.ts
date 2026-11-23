@@ -145,7 +145,7 @@ export class DeckBuilderPage {
 
     this.form.patchValue({
       name: this.deck?.name || '',
-      // format: this.deck?.format || '',
+      format: this.deck?.format || '',
       identity: this.deck?.identity.id || '',
       notes: this.deck?.notes || ''
     });

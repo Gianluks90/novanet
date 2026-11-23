@@ -18,9 +18,12 @@ export class FirebaseService {
         this.database = getFirestore(app);
 
         getAuth().onAuthStateChanged(async user => {
+            this.stopProfileListener();
             if (user) {
                 await this.ensureUserExists(user);
                 await this.getSignalUser();
+            } else {
+                this.$user.set(null);
             }
         });
 
@@ -29,10 +32,19 @@ export class FirebaseService {
         });
     }
 
+    private unsubscribeProfile: (() => void) | null = null;
+
+    private stopProfileListener() {
+        this.unsubscribeProfile?.();
+        this.unsubscribeProfile = null;
+    }
+
     public async getSignalUser() {
-        const authUser = getAuth().currentUser!;
+        const authUser = getAuth().currentUser;
+        if (!authUser) return;
+        this.stopProfileListener();
         const docRef = doc(this.database, 'users', authUser.uid);
-        const unsub = onSnapshot(docRef, (doc) => {
+        this.unsubscribeProfile = onSnapshot(docRef, (doc) => {
             if (doc.exists()) {
                 const user: DocumentData = doc.data();
                 this.$user.set({

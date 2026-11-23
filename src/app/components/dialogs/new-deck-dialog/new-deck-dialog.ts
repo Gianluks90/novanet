@@ -61,13 +61,15 @@ export class NewDeckDialog {
     if (this.form.valid) {
       const newDeckData = {
         ...this.form.value,
-        id: Math.random().toString(36).substring(2, 15),
+        id: crypto.randomUUID(),
         identity: this.allCards.find(card => card.id === this.form.value.identity) || null,
         cards: [],
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now(),
         createdBy: getAuth().currentUser?.uid,
-        customBackImageURL: this.form.value.customBackImage || null,
+        customBackImageURL: this.form.value.customBackImageURL || null,
+        visibility: 'private',
+        format: '',
       }
 
       // console.log(newDeckData);

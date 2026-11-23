@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, effect, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, effect, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Deck } from '../../../models/deck';
 import { FormsModule } from '@angular/forms';
@@ -49,8 +49,11 @@ export class DecksListPage {
       this.sides = data['configs'].sides;
     });
 
+    // only re-run when the signed-in user changes, not on every profile update
+    const uid = computed(() => this.firebase.$user()?.uid);
+
     effect(() => {
-      if (this.firebase.$user()) {
+      if (uid()) {
         this.cardService.loadCards();
         this.deckService.getDecksByUser();
         this.deckService.getPublicDecks();

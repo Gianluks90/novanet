@@ -19,6 +19,7 @@ export const routes: Routes = [
         title: 'Cards - NovaNet',
         loadComponent: () => import('./pages/cards-page/cards-page').then(m => m.CardsPage),
         resolve: {
+            nrdb: nrdbResolver,
             configs: cardsConfigResolver
         }
     },
@@ -27,6 +28,7 @@ export const routes: Routes = [
         title: 'Decks - NovaNet',
         loadComponent: () => import('./pages/decks-page/decks-page').then(m => m.DecksPage),
         resolve: {
+            nrdb: nrdbResolver,
             configs: cardsConfigResolver
         },
         canActivate: [AuthGuardService],

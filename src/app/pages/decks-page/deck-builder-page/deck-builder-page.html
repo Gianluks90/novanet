@@ -228,8 +228,13 @@
             </div>
         </div>
         <div class="section-content">
-            <p>{{ 'deckBuilderPage.youReViewingSomeoneElse' | t }}</p>
-            <app-ui-button [text]="'deckBuilderPage.copyToMyAccount' | t" icon="content_copy" (click)="cloneDeck()"></app-ui-button>
+            @if (deck) {
+                <p>{{ 'deckBuilderPage.youReViewingSomeoneElse' | t }}</p>
+                <app-ui-button [text]="'deckBuilderPage.copyToMyAccount' | t" icon="content_copy" (click)="cloneDeck()"></app-ui-button>
+            } @else {
+                <p>{{ 'deckBuilderPage.deckNotAvailable' | t }}</p>
+                <app-ui-button [text]="'deckBuilderPage.backToDecks' | t" icon="arrow_back" [routerLink]="['/decks']"></app-ui-button>
+            }
         </div>
     </section>
     }

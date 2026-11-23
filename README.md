@@ -6,6 +6,42 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 
 Added 2026-11-23. This README is the project TODO list.
 
+### Product decisions (2026-11-23)
+
+- The app is meant to be **public** (expected small audience); there is currently a single user (the owner), so schema/rule changes need no migration.
+- Goal: a platform to **play** (online, **against a bot**) and to **manage your collection**.
+- **Login only where Firestore is involved**: online persistence (decks, collection sync, profile) and the game engine/matches. Everything else must work signed out.
+  - [ ] Consequence to plan: deck building (and later the collection) for guests, stored locally in IndexedDB, with "sign in to save online/share"; today `/decks` is behind `AuthGuardService` and the whole deck flow needs an account. Also remember the requested URL (`returnUrl`) across login.
+  - [ ] Legality indicator for decks using the v3 `formats`/`card_pools`/`restrictions` data and the Comprehensive Rules (non-blocking).
+  - [ ] Game vs bot: keep the rules engine/game state independent from the renderer (Pixi vs DOM prototype still to be decided) and decide what a match stores in Firestore.
+
+### Code audit (2026-11-23, by reading the code — nothing was run)
+
+**Bugs that break a flow (fix first)**
+- [x] **First visit to `#/cards` or `#/decks/...` shows no cards.** Only the home route runs `nrdbResolver`; `cards` and `decks` only resolve `cardsConfigResolver`, and `CardsPage`/`CardService.loadCards()` just read IndexedDB. A new user opening a shared deck link, or anyone after the IndexedDB v3 wipe, sees an empty app until they pass through home. Fix: run `nrdbResolver` on those routes too (it's a no-op when the cache is valid). **Done 2026-11-23:** `nrdbResolver` now runs on `cards` and `decks` routes; `CardService.loadCards()` is a no-op once loaded and is invalidated when the catalog is re-downloaded.
+- [x] **"logout" button logs in.** `home-page.html` shows *logout* when signed in but always calls `loginRegister()` → `loginWithGoogle()`; `AuthService.logout()` is never called. Also `FirebaseService.$user` is never reset to `null` on sign-out (the `onAuthStateChanged` handler only handles the signed-in branch) and its profile `onSnapshot` is never unsubscribed. **Done 2026-11-23:** one `toggleSession()` button; `AuthService.logout()` used; `$user` reset on sign-out and the profile listener unsubscribed.
+- [x] **Deck `format` is wiped on every save.** `ngOnInit` has the `format` patch commented out, `saveDeck()` writes `form.format` (`''`) → the saved format is lost. **Done 2026-11-23:** the format is restored in `ngOnInit`.
+- [x] **Custom back image URL is never saved.** `NewDeckDialog.onSubmit` reads `form.value.customBackImage` (the control is `customBackImageURL`) → always `null`. **Done 2026-11-23:** now saved (the URL is not displayed anywhere yet — restrict it to https/an allow-list before showing it to other users).
+- [x] **Firestore listener leak / extra reads.** `decks-list-page` effect re-runs on every `$user` change (each profile snapshot is a new object) and calls `getDecksByUser()` + `getPublicDecks()` again; the `unsub` functions are dropped → duplicated listeners and Firestore read costs. The public gallery listener is also unbounded (no `limit`/pagination). **Done 2026-11-23:** `DeckService` listeners are idempotent, closed on sign-out, and the gallery is limited to 100 decks (sorted client-side).
+- [x] **Deck resolver can strand navigation.** `getDeckById` throws `permission-denied` for a missing or private deck (rules read `resource.data`), the resolver doesn't catch → the route silently doesn't load. Needs a "deck not found / not available" state. **Done 2026-11-23:** resolver returns `null` on errors and the builder shows a "deck not available" state.
+
+**Security**
+- [x] **`users/{uid}` rules let the owner write any field**, including `role` (self-promotion to admin) and `uid`/`email`. Today `role` only gates a settings link, but restrict updates with `request.resource.data.diff(resource.data).affectedKeys().hasOnly([...])` before any admin feature returns. **Done 2026-11-23:** rules now forbid changing `role`/`uid`/`email`/`createdAt` and creating a user with `role`. **Requires `firebase deploy --only firestore:rules`.**
+- [ ] `decks` rules don't validate shape/size (partially done: `visibility` must be private/shared/public, new decks are created with `visibility: 'private'`)/`visibility` values; deck documents embed a full copy of the identity card (`Deck.identity`) → large, stale-able documents. Consider storing `identityId` only.
+- [ ] **User-supplied image URLs shown to other users**: `customBackImageURL` (once fixed) renders on public/shared decks → tracking pixel / inappropriate images; the dialog hint mentions "reported" but no reporting exists. Restrict to https + an allow-list or drop the feature for public decks.
+- [x] Deck ids use `Math.random()` — "shared" decks rely on an unguessable link: use `crypto.randomUUID()`. **Done 2026-11-23:** ids are `crypto.randomUUID()` (new decks and clones).
+- [x] `AuthService.loginWithGoogle`: `error.customData.email` throws when the popup is closed (`customData` undefined) and the sign-in promise isn't awaited; it also `console.log`s the full user object (PII). **Done 2026-11-23:** rewritten: awaited, popup-closed is not an error, no PII logging.
+- [ ] Hosting hardening: add security headers (CSP, `X-Content-Type-Options`, `Referrer-Policy`, frame-ancestors) and cache headers in `firebase.json` (immutable for hashed assets, short for `translations/index.json`); consider Firebase **App Check** and restricting the web API key/authorized domains (the Firebase web config is public by design, so these are the real protections). Material Symbols are loaded from Google Fonts (privacy/CSP consideration — could be self-hosted).
+
+**Flow / usability**
+- [ ] Signed-out user clicking "Deck builder" is silently redirected home (guard has no message and drops the target URL). Show "sign in to build decks" and return to the requested route after login (also fixes shared-deck links).
+- [ ] No navigation in the header: to go from Cards to Decks you must return to the home page; settings, login/logout and profile only exist on the home page. Add header nav (Cards · Decks · Play) and a user menu.
+- [ ] Deck builder: `saveDeck()` gives no success/error feedback, no "unsaved changes" guard when leaving, `formats` is a hard-coded list that isn't validated; text import matches by English title only and picks an arbitrary printing for reprints.
+- [ ] Mobile/tablet are fully blocked by `UnsupportedPage` (width < 768 or Android/Mobi user agent) with no way through — fine if intentional, but state it on the home page.
+- [ ] Accessibility: cards and several controls are clickable `div`s (no keyboard focus/role), card images have `alt=""`.
+- [ ] Some UI strings are still hard-coded English: settings labels ("Nickname", "Custom Profile Pic (URL)", "Custom Background (URL)"), login/logout button text, zoom header, unsupported page, route titles.
+- [ ] Deck rules are not enforced by design (saving drafts is allowed) but there is no legality *indicator* yet (see the rules/formats item above).
+
 ### Decided plan (2026-11-23): data layer + translations
 
 Decisions taken: move to NRDB **v3** and drop 2.0 for us; use the official `netrunner-cards-json` translation files as the card-text base layer; Firestore is **no longer** used for card translations; one build with runtime language switching (EN + IT enabled for now). Suggested order (each step shippable on its own):

@@ -48,7 +48,17 @@ export class HomePage {
     });
   }
 
-  public loginRegister() {
-    this.authService.loginWithGoogle();
+  /** The same button logs in or out depending on the current session. */
+  public async toggleSession() {
+    try {
+      if (this.firebase.$user()) {
+        await this.authService.logout();
+      } else {
+        await this.authService.loginWithGoogle();
+      }
+    } catch (err) {
+      console.error('Authentication error:', err);
+      this.notification.notify(this.i18n.t('notifications.authError'), 'dangerous');
+    }
   }
 }

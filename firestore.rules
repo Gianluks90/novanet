@@ -11,9 +11,14 @@ service cloud.firestore {
     // (see FirebaseService.ensureUserExists). Only the owner can read/write their own doc.
     match /users/{userId} {
       allow read: if isSignedIn() && request.auth.uid == userId;
+      // `role` (and the identity fields) can only be set from the Firebase console / admin SDK:
+      // a user must not be able to promote themselves.
       allow create: if isSignedIn() && request.auth.uid == userId
-                    && request.resource.data.uid == userId;
-      allow update: if isSignedIn() && request.auth.uid == userId;
+                    && request.resource.data.uid == userId
+                    && !('role' in request.resource.data);
+      allow update: if isSignedIn() && request.auth.uid == userId
+                    && !request.resource.data.diff(resource.data).affectedKeys()
+                        .hasAny(['role', 'uid', 'email', 'createdAt']);
       allow delete: if false;
     }
 
@@ -32,10 +37,12 @@ service cloud.firestore {
         resource.data.visibility == 'public' ||
         resource.data.visibility == 'shared'
       );
-      allow create: if isSignedIn() && request.resource.data.createdBy == request.auth.uid;
+      allow create: if isSignedIn() && request.resource.data.createdBy == request.auth.uid
+                    && request.resource.data.get('visibility', 'private') in ['private', 'shared', 'public'];
       allow update: if isSignedIn()
                     && resource.data.createdBy == request.auth.uid
-                    && request.resource.data.createdBy == request.auth.uid;
+                    && request.resource.data.createdBy == request.auth.uid
+                    && request.resource.data.get('visibility', 'private') in ['private', 'shared', 'public'];
       allow delete: if isSignedIn() && resource.data.createdBy == request.auth.uid;
     }
 

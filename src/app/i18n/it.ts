@@ -136,4 +136,7 @@ export const IT: Record<TranslationKey, string> = {
   "homeSettingsDialog.myTranslations": "Le mie traduzioni",
   "homeSettingsDialog.myTranslationsInfo": "{0} traduzioni personali salvate in questo browser. Esportale per farne un backup o condividerle.",
   "homeSettingsDialog.exportTranslations": "Esporta",
+  "notifications.authError": "Impossibile completare l'accesso o la disconnessione. Riprova.",
+  "deckBuilderPage.deckNotAvailable": "Questo mazzo non esiste o non è disponibile per te.",
+  "deckBuilderPage.backToDecks": "Torna ai mazzi",
 };

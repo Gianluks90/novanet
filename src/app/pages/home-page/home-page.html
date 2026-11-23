@@ -33,7 +33,7 @@
                     [routerLink]="'/decks/list'"></app-ui-button>
                 <app-ui-button [text]="'homePage.play' | t" [disabled]="true" icon="group"></app-ui-button>
                 <app-ui-button [text]="firebase.$user() ? 'logout' : 'login/register'"
-                    [icon]="firebase.$user() ? 'logout' : 'login'" (click)="loginRegister()"></app-ui-button>
+                    [icon]="firebase.$user() ? 'logout' : 'login'" (click)="toggleSession()"></app-ui-button>
                 <p class="version">v {{appVersion}}</p>
             </div>
             @if (!firebase.$user()?.customBackgroundURL) {

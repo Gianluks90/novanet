@@ -1,7 +1,7 @@
-import { Injectable, signal, WritableSignal } from '@angular/core';
+import { effect, Injectable, signal, WritableSignal } from '@angular/core';
 import { FirebaseService } from './firebase-service';
 import { Deck } from '../models/deck';
-import { collection, deleteDoc, doc, getDoc, onSnapshot, query, setDoc, Timestamp, where } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDoc, limit, onSnapshot, query, setDoc, Timestamp, where } from 'firebase/firestore';
 
 @Injectable({
   providedIn: 'root',
@@ -10,35 +10,61 @@ export class DeckService {
   public $decks: WritableSignal<Deck[]> = signal<Deck[]>([]);
   public $publicDecks: WritableSignal<Deck[]> = signal<Deck[]>([]);
 
-  constructor(private firebase: FirebaseService) { }
+  private unsubscribeMine: (() => void) | null = null;
+  private mineUid: string | null = null;
+  private unsubscribePublic: (() => void) | null = null;
 
+  /** Maximum number of public decks listed in the gallery. */
+  private static readonly GALLERY_LIMIT = 100;
+
+  constructor(private firebase: FirebaseService) {
+    // Stop listening (and forget the data) when the user signs out.
+    effect(() => {
+      if (!this.firebase.$user()) {
+        this.unsubscribeMine?.();
+        this.unsubscribeMine = null;
+        this.mineUid = null;
+        this.$decks.set([]);
+      }
+    });
+  }
+
+  /** Live list of the signed-in user's decks. Idempotent: calling it again for the same user is a no-op. */
   public getDecksByUser(): void {
-     const colRef = collection(this.firebase.database, 'decks');
-     const q = query(colRef, where('createdBy', '==', this.firebase.$user()!.uid));
-     const unsub = onSnapshot(q, (snapshot) => {
-       const decks: Deck[] = [];
-       snapshot.forEach((doc) => {
-         decks.push(doc.data() as Deck);
-       });
-       this.$decks.set(decks);
-     });
+    const uid = this.firebase.$user()?.uid;
+    if (!uid) return;
+    if (this.unsubscribeMine && this.mineUid === uid) return;
+
+    this.unsubscribeMine?.();
+    this.mineUid = uid;
+    const q = query(collection(this.firebase.database, 'decks'), where('createdBy', '==', uid));
+    this.unsubscribeMine = onSnapshot(q, (snapshot) => {
+      this.$decks.set(snapshot.docs.map(d => d.data() as Deck));
+    });
   }
 
   /**
-   * Community gallery: decks anyone can browse. `visibility: 'shared'` decks
-   * are deliberately not queryable here -- they're only reachable via a
-   * direct link (getDeckById), never listed.
+   * Community gallery: decks anyone can browse (most recently updated of the first
+   * GALLERY_LIMIT). `visibility: 'shared'` decks are deliberately not queryable here --
+   * they're only reachable via a direct link (getDeckById), never listed.
+   * Idempotent: the listener is created once per session.
    */
   public getPublicDecks(): void {
-     const colRef = collection(this.firebase.database, 'decks');
-     const q = query(colRef, where('visibility', '==', 'public'));
-     const unsub = onSnapshot(q, (snapshot) => {
-       const decks: Deck[] = [];
-       snapshot.forEach((doc) => {
-         decks.push(doc.data() as Deck);
-       });
-       this.$publicDecks.set(decks);
-     });
+    if (this.unsubscribePublic) return;
+
+    const q = query(
+      collection(this.firebase.database, 'decks'),
+      where('visibility', '==', 'public'),
+      limit(DeckService.GALLERY_LIMIT)
+    );
+    this.unsubscribePublic = onSnapshot(q, (snapshot) => {
+      const decks = snapshot.docs.map(d => d.data() as Deck);
+      decks.sort((a, b) => (b.updatedAt?.toMillis?.() ?? 0) - (a.updatedAt?.toMillis?.() ?? 0));
+      this.$publicDecks.set(decks);
+    }, () => {
+      // e.g. permission denied after sign-out: allow a retry on the next call
+      this.unsubscribePublic = null;
+    });
   }
 
   public async getDeckById(deckId: string): Promise<Deck | null> {
@@ -75,7 +101,7 @@ export class DeckService {
    * account as a brand new private deck. Never mutates the source deck.
    */
   public async cloneDeck(source: Deck): Promise<string> {
-    const newId = Math.random().toString(36).substring(2, 15);
+    const newId = crypto.randomUUID();
     const cloned: Deck = {
       ...source,
       id: newId,
