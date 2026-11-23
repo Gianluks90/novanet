@@ -20,6 +20,8 @@ import { TranslatePipe } from '../../../i18n/translate-pipe';
 import { I18nService } from '../../../i18n/i18n-service';
 import { AuthService } from '../../../services/auth-service';
 
+import { parseCardList } from '../../../utils/card-list';
+
 @Component({
   selector: 'app-decks-list-page',
   imports: [TranslatePipe, FormsModule, UIButton, UiBadge, UiIconButton, UiSegmented, FilterDecksBySidePipe],
@@ -165,7 +167,12 @@ export class DecksListPage {
   private dialog = inject(Dialog);
   private dialogRef: DialogRef<DialogResult, any> | null = null;
 
-  public openNewDeckDialog(side?: 'runner' | 'corp'): void {
+  /** New deck from a pasted card list (side, identity and storage are asked in the same dialog). */
+  public openImportDeckDialog(): void {
+    this.openNewDeckDialog(undefined, true);
+  }
+
+  public openNewDeckDialog(side?: 'runner' | 'corp', importList = false): void {
     this.dialogRef = this.dialog.open<DialogResult>(NewDeckDialog, {
       ...DIALOGS_CONFIG,
       panelClass: 'dialog-container',
@@ -173,14 +180,25 @@ export class DecksListPage {
       data: {
         sides: this.sides,
         signedIn: !!this.firebase.$user(),
-        side: side ? side : undefined
+        side: side ? side : undefined,
+        importList,
       }
     });
 
     this.dialogRef.closed.subscribe((result: DialogResult | undefined) => {
       if (result?.status === 'confirmed') {
-        this.deckService.newDeck(result.data.deck).then(() => {
-          this.notification.notify(this.i18n.t('notifications.newDeckCreated'), 'check');
+        const deck = result.data.deck;
+        let unknown: string[] = [];
+        if (result.data.cardList) {
+          const parsed = parseCardList(result.data.cardList, this.cardsMap);
+          deck.cards = parsed.cards;
+          unknown = parsed.unknown;
+        }
+        this.deckService.newDeck(deck).then(() => {
+          this.notification.notify(this.i18n.t(result.data.cardList ? 'notifications.deckImported' : 'notifications.newDeckCreated'), 'check');
+          if (unknown.length > 0) {
+            this.notification.notify(this.i18n.t('notifications.cardListUnknown', [unknown.length]), 'warning');
+          }
         }).catch(err => {
           this.notification.notify(this.i18n.t('notifications.errorCreatingDeck', [err.message]), 'dangerous');
         });

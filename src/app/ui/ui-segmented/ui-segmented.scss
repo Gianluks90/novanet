@@ -13,12 +13,23 @@
 
     .segment {
         flex: 1 1 0;
+        min-width: 0;
         justify-content: center;
     }
 }
 
 :host:has(.fill) {
     display: block;
+    // also when the host is a flex item: take the whole row, so the segments split it equally
+    width: 100%;
+}
+
+.ui-segmented.borderless {
+    border: 0;
+
+    .segment {
+        border-left: 0;
+    }
 }
 
 .ui-segmented.sm .segment {

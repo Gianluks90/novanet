@@ -21,7 +21,8 @@ import { CardTitlePipe } from '../../../pipes/card-title-pipe';
 })
 export class NewDeckDialog {
   public dialogRef = inject<DialogRef<DialogResult, NewDeckDialog>>(DialogRef);
-  public data = inject(DIALOG_DATA) as { sides: Side[], signedIn: boolean, side?: 'runner' | 'corp' };
+  /** `importList`: the dialog also asks for a card list and the new deck is created from it. */
+  public data = inject(DIALOG_DATA) as { sides: Side[], signedIn: boolean, side?: 'runner' | 'corp', importList?: boolean };
   public form: FormGroup;
   public sides: Side[] = [];
   private allCards: Card[] = [];
@@ -36,7 +37,8 @@ export class NewDeckDialog {
       name: ['', [Validators.required, Validators.minLength(3)]],
       // decks are saved on this device unless the user is signed in and picks their account
       storage: [this.data.signedIn ? 'cloud' : 'local'],
-      customBackImageURL: ['']
+      customBackImageURL: [''],
+      cardList: ['', this.data.importList ? Validators.required : []],
     });
 
     if (this.data.side) {
@@ -61,7 +63,7 @@ export class NewDeckDialog {
 
   onSubmit() {
     if (this.form.valid) {
-      const { storage, ...formValue } = this.form.value;
+      const { storage, cardList, ...formValue } = this.form.value;
       const local = storage !== 'cloud' || !this.data.signedIn;
       const newDeckData = {
         ...formValue,
@@ -80,7 +82,7 @@ export class NewDeckDialog {
       // console.log(newDeckData);
       
 
-      this.dialogRef.close({ status: 'confirmed', data: { deck: newDeckData } });
+      this.dialogRef.close({ status: 'confirmed', data: { deck: newDeckData, cardList: this.data.importList ? cardList : null } });
 
     }
   }

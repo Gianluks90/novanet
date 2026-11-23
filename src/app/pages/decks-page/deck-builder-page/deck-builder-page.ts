@@ -34,6 +34,8 @@ import { CardTitlePipe } from '../../../pipes/card-title-pipe';
 import { AuthService } from '../../../services/auth-service';
 import { getAuth } from 'firebase/auth';
 
+import { parseCardList } from '../../../utils/card-list';
+
 @Component({
   selector: 'app-deck-builder-page',
   imports: [TranslatePipe, CardTitlePipe, UiBadge, UiIconButton, UiSegmented, CardDetail, FormsModule, ReactiveFormsModule, FactionLabelPipe, TypeLabelPipe, DotsPipe, CheckAgendaPointsPipe, CheckInfluencePipe, RouterLink, UIButton],
@@ -501,30 +503,14 @@ this.selectedCards.forEach((qty, code) => {
     });
 
     this.dialogRef?.closed.subscribe((result: DialogResult | undefined) => {
-  if (result?.status === 'confirmed' && result.data?.list) {
-    const lines = result.data.list.split('\n');
-    const next = new Map<string, number>();
-
-    lines.forEach((line: string) => {
-      // es: "2x Card Name"
-      const match = line.match(/^(\d+)x\s+(.+)$/);
-      if (!match) return;
-      const qty = parseInt(match[1], 10);
-      const title = match[2].trim();
-
-      // trova la carta corrispondente dal title
-      const cardEntry = Array.from(this.cardsMap.entries())
-        .find(([code, card]) => card.title === title);
-      if (cardEntry) {
-        const [code, card] = cardEntry;
-        const limit = card.deck_limit && card.deck_limit > 0 ? card.deck_limit : Infinity;
-        next.set(code, Math.min(limit, qty));
+      if (result?.status === 'confirmed' && result.data?.list) {
+        const { cards, unknown } = parseCardList(result.data.list, this.cardsMap);
+        this.selectedCards = new Map(Object.entries(cards));
+        if (unknown.length > 0) {
+          this.notification.notify(this.i18n.t('notifications.cardListUnknown', [unknown.length]), 'warning');
+        }
+        this.cd.detectChanges();
       }
     });
-
-    this.selectedCards = next;
-    this.cd.detectChanges();
-  }
-});
   }
 }

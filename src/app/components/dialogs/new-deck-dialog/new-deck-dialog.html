@@ -1,4 +1,4 @@
-<app-ui-dialog-container [dialogTitle]="'newDeckDialog.newDeck' | t">
+<app-ui-dialog-container [dialogTitle]="(data.importList ? 'newDeckDialog.importDeck' : 'newDeckDialog.newDeck') | t">
     <p>{{ 'newDeckDialog.fillInTheFieldsBelow' | t }}</p>
     <br>
     @if (identities.length === 0) {
@@ -39,6 +39,13 @@
             <label for="name">{{ 'nameLabel' | t }}</label>
             <input type="text" id="name" formControlName="name" [placeholder]="'enterTextPlaceholder' | t" autocorrect="off" autocomplete="off">
         </div>
+        @if (data.importList) {
+        <div class="form-group">
+            <label for="cardList">{{ 'importExportCardListDialog.cardList' | t }}</label>
+            <textarea id="cardList" formControlName="cardList" rows="8" spellcheck="false" placeholder="3x Hedge Fund"></textarea>
+            <p class="form-hint">{{ 'newDeckDialog.importHint' | t }}</p>
+        </div>
+        }
         <div class="form-group">
             <label for="customBackImageURL">{{ 'customBackImageURLLabel' | t }}</label>
             <input type="text" id="customBackImageURL" formControlName="customBackImageURL" [placeholder]="'enterURLValidPlaceholder' | t" autocorrect="off" autocomplete="off">
@@ -47,7 +54,7 @@
     </form>
     }
     <div dialog-actions-container>
-        <app-ui-button [text]="'saveChangesButton' | t" icon="save" [disabled]="!form.valid || form.pristine" (click)="onSubmit()"></app-ui-button>
+        <app-ui-button [text]="(data.importList ? 'importButton' : 'saveChangesButton') | t" [icon]="data.importList ? 'bottom_panel_close' : 'save'" [disabled]="!form.valid || form.pristine" (click)="onSubmit()"></app-ui-button>
         <app-ui-button [text]="'closeButton' | t" icon="close" (click)="dialogRef.close()"></app-ui-button>
     </div>
 </app-ui-dialog-container>

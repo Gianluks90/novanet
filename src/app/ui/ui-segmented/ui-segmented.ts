@@ -32,6 +32,8 @@ export class UiSegmented {
   public size = input<'md' | 'sm'>('md');
   /** Stretch to the full width of the container, segments sharing it equally. */
   public fill = input<boolean>(false);
+  /** No outer frame and no dividers: for a segmented control placed inside a bordered block. */
+  public borderless = input<boolean>(false);
   /** Translation key of the group's accessible name. */
   public groupLabel = input<TranslationKey | null>(null);
 

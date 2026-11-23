@@ -1,10 +1,13 @@
 <div class="decks-list-page-main-container">
+    <div class="toolbar">
+    <div class="view-container">
+        <app-ui-segmented [options]="viewModeOptions" [value]="viewMode" [fill]="true" [borderless]="true"
+            (valueChange)="switchViewMode($any($event))"></app-ui-segmented>
+    </div>
     <div class="filter-container">
         <div class="side-line"></div>
         <p class="section-title">{{ 'filtersSectionTitle' | t }}</p>
         <input type="text" [placeholder]="'searchTextInputPlaceholder' | t" (keyup)="onChangeTextSearch($event)">
-        <app-ui-segmented size="sm" [options]="viewModeOptions" [value]="viewMode"
-            (valueChange)="switchViewMode($any($event))"></app-ui-segmented>
         <!-- @if (sides.length > 0) {
         <select name="side" id="side-select" [(ngModel)]="filters.side" (change)="onChangeSideFilter($event)">
             <option i18n value="all">All Sides</option>
@@ -13,9 +16,19 @@
             }
         </select>
         } -->
-        <div class="reset-icon" (click)="resetFilters()">
-            <span class="material-symbols-rounded">refresh</span>
+        <button type="button" class="ghost-btn reset-btn" (click)="resetFilters()"
+            [attr.aria-label]="'cardsPage.resetFilters' | t" [title]="'cardsPage.resetFilters' | t">
+            <span class="material-symbols-rounded" aria-hidden="true">refresh</span>
+        </button>
+    </div>
+    @if (viewMode === 'mine' && decks.length > 0) {
+        <div class="import-container">
+            <button type="button" class="ghost-btn" (click)="openImportDeckDialog()"
+                [attr.aria-label]="'decksListPage.importDeck' | t" [title]="'decksListPage.importDeck' | t">
+                <span class="material-symbols-rounded" aria-hidden="true">bottom_panel_close</span>
+            </button>
         </div>
+    }
     </div>
     <div class="content-container" [class.empty-list]="decks.length <= 0">
             @if (decks.length > 0) {
@@ -32,9 +45,16 @@
                             <div class="deck-container">
                                 <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + d.identity.id + '.jpg'" alt="">
                                 <div class="info-container">
-                                    <p>{{d.name}} <app-ui-badge [icon]="d.local ? 'computer' : 'cloud'" [label]="(d.local ? 'decksListPage.thisDevice' : 'decksListPage.myAccount') | t" [iconOnly]="true"></app-ui-badge> <span class="material-symbols-rounded validity-icon" [title]="deckSize(d) < d.identity.minimum_deck_size! ? 'Deck is too small' : 'Deck size is valid'">{{deckSize(d) < d.identity.minimum_deck_size! ? 'close' : 'check'}}</span></p>
-                                    @if (authorOf(d); as author) {
-                                        <p class="p-note deck-author">{{ 'decksListPage.by' | t: [author] }}</p>
+                                    <p>{{d.name}} <span class="material-symbols-rounded validity-icon" [title]="deckSize(d) < d.identity.minimum_deck_size! ? 'Deck is too small' : 'Deck size is valid'">{{deckSize(d) < d.identity.minimum_deck_size! ? 'close' : 'check'}}</span></p>
+                                    @if (canEdit(d) || authorOf(d)) {
+                                        <div class="deck-subtitle">
+                                            @if (canEdit(d)) {
+                                                <app-ui-badge [icon]="d.local ? 'computer' : 'cloud'" [label]="(d.local ? 'decksListPage.thisDevice' : 'decksListPage.myAccount') | t"></app-ui-badge>
+                                            }
+                                            @if (authorOf(d); as author) {
+                                                <span class="deck-author">{{ 'decksListPage.by' | t: [author] }}</span>
+                                            }
+                                        </div>
                                     }
                                     <!-- <p i18n class="info-line">Influence limit: {{d.cards | checkInfluence:cardsMap:d.identity.faction_id! }}/{{d.identity.influence_limit}} Agenda points: {{ d.cards | checkAgendaPoints:cardsMap }}</p> -->
                                 </div>
@@ -63,9 +83,16 @@
                             <div class="deck-container">
                                 <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + d.identity.id + '.jpg'" alt="">
                                 <div class="info-container">
-                                    <p>{{d.name}} <app-ui-badge [icon]="d.local ? 'computer' : 'cloud'" [label]="(d.local ? 'decksListPage.thisDevice' : 'decksListPage.myAccount') | t" [iconOnly]="true"></app-ui-badge> <span class="material-symbols-rounded validity-icon" [title]="deckSize(d) < d.identity.minimum_deck_size! ? 'Deck is too small' : 'Deck size is valid'">{{deckSize(d) < d.identity.minimum_deck_size! ? 'close' : 'check'}}</span></p>
-                                    @if (authorOf(d); as author) {
-                                        <p class="p-note deck-author">{{ 'decksListPage.by' | t: [author] }}</p>
+                                    <p>{{d.name}} <span class="material-symbols-rounded validity-icon" [title]="deckSize(d) < d.identity.minimum_deck_size! ? 'Deck is too small' : 'Deck size is valid'">{{deckSize(d) < d.identity.minimum_deck_size! ? 'close' : 'check'}}</span></p>
+                                    @if (canEdit(d) || authorOf(d)) {
+                                        <div class="deck-subtitle">
+                                            @if (canEdit(d)) {
+                                                <app-ui-badge [icon]="d.local ? 'computer' : 'cloud'" [label]="(d.local ? 'decksListPage.thisDevice' : 'decksListPage.myAccount') | t"></app-ui-badge>
+                                            }
+                                            @if (authorOf(d); as author) {
+                                                <span class="deck-author">{{ 'decksListPage.by' | t: [author] }}</span>
+                                            }
+                                        </div>
                                     }
                                     <!-- <p i18n class="info-line">Influence limit: {{d.cards | checkInfluence:cardsMap:d.identity.faction_id! }}/{{d.identity.influence_limit}} Agenda points: {{ d.cards | checkAgendaPoints:cardsMap }}</p> -->
                                 </div>
@@ -85,7 +112,10 @@
                 <div class="empty-message-container">
                 @if (viewMode === 'mine') {
                     <p>{{ 'noDecksMessage' | t }}</p>
-                    <app-ui-button [text]="'decksListPage.newDeck' | t" icon="add_notes" (click)="openNewDeckDialog()"></app-ui-button>
+                    <div class="empty-actions">
+                        <app-ui-button [text]="'decksListPage.newDeck' | t" icon="add_notes" align="center" (click)="openNewDeckDialog()"></app-ui-button>
+                        <app-ui-button [text]="'decksListPage.importDeck' | t" icon="bottom_panel_close" align="center" (click)="openImportDeckDialog()"></app-ui-button>
+                    </div>
                 } @else if (!firebase.$user()) {
                     <p>{{ 'decksListPage.signInForGallery' | t }}</p>
                     <div class="sign-in-action">
