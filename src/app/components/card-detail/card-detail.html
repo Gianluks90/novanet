@@ -9,6 +9,7 @@
     <section>
         <div class="inspector-header">
             <div class="side-label">{{c?.side_id}}</div>
+            <span class="header-separator" aria-hidden="true">|</span>
             <div class="set-label" [attr.aria-label]="(c?.card_set_id | packCode: packs()) + ' #' + c?.position">{{c?.card_set_id | packCode: packs()}}</div>
         </div>
         @if(c?.card_type_id?.endsWith('_identity')) {

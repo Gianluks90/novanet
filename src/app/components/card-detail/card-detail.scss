@@ -32,7 +32,7 @@
         z-index: 0;
         height: 3.5rem;
         overflow: hidden;
-        font-size: 6rem;
+        font-size: 3.5rem;
         font-weight: bold;
         line-height: .85;
         color: var(--accent-color);
@@ -95,11 +95,18 @@
 
 .inspector-header {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: flex-start;
+    align-items: baseline;
+    gap: 8px;
+    // keep clear of the card number watermark in the corner
+    padding-right: 4rem;
 
     .set-label {
-        text-align: right;
+        min-width: 0;
+    }
+
+    .header-separator {
+        opacity: .5;
     }
 
     .side-label {
