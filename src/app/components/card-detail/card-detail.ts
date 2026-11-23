@@ -5,16 +5,9 @@ import { NrIconsPipe } from '../../pipes/nr-icons-pipe';
 import { PackCodePipe } from '../../pipes/pack-code-pipe';
 import { Pack } from '../../models/pack';
 import { UIButton } from '../../ui';
-import { Dialog, DialogRef } from '@angular/cdk/dialog';
-import { DIALOGS_CONFIG } from '../../const/dialogConfig';
-import { DialogResult } from '../../models/DialogResult';
-import { TranslateDialog } from '../dialogs/translate-dialog/translate-dialog';
 import { FirebaseService } from '../../services/firebase-service';
 import { NotificationService } from '../../services/notification-service';
 import { TypeLabelPipe } from '../../pipes/type-label-pipe';
-import { ConfirmDialog } from '../dialogs/confirm-dialog/confirm-dialog';
-import { CardService } from '../../services/card-service';
-import { NetrunnerDbService } from '../../db/netrunner-db-service';
 import { KeywordLabelPipe } from '../../pipes/keyword-label-pipe';
 import { FactionLabelPipe } from "../../pipes/faction-label-pipe";
 import { UserService } from '../../services/user-service';
@@ -49,8 +42,6 @@ export class CardDetail {
   constructor(
     public firebase: FirebaseService,
     private notification: NotificationService,
-    private cardService: CardService,
-    private nrdbService: NetrunnerDbService,
     private userService: UserService) {
 
     effect(() => {
@@ -91,82 +82,6 @@ export class CardDetail {
 
   public zoomCard() {
     this.zoomCardEmit.emit(true);
-  }
-
-  // DIALOG
-
-  private dialog = inject(Dialog);
-  private dialogRef: DialogRef<DialogResult, any> | null = null;
-
-  public openTranslateDialog() {
-    this.dialogRef = this.dialog.open<DialogResult>(TranslateDialog, {
-      ...DIALOGS_CONFIG,
-      panelClass: 'big-dialog-container',
-      disableClose: true,
-      data: { user: this.firebase.$user(), card: this.selectedCard },
-    });
-
-    this.dialogRef.closed.subscribe((result: DialogResult | undefined) => {
-      if (result?.status === 'confirmed') {
-        this.notification.notify($localize`Translation submitted. Thank you.`, 'check')
-      }
-    });
-  }
-
-  public openConfirmTranslation() {
-    this.dialogRef = this.dialog.open<DialogResult>(ConfirmDialog, {
-      ...DIALOGS_CONFIG,
-      panelClass: 'dialog-container',
-      disableClose: true,
-    });
-
-    this.dialogRef.closed.subscribe(async (result: DialogResult | undefined) => {
-      if (result?.status !== 'confirmed' || !this.selectedCard()) {
-        return;
-      }
-
-      try {
-
-        const existingTranslation =
-          this.selectedCard()!.translations?.[this.locale as string];
-
-        if (!existingTranslation) {
-          throw new Error('Trying to approve a non-existing translation');
-        }
-
-        const updatedCard: Card = {
-          ...this.selectedCard()!,
-          translations: {
-            ...this.selectedCard()!.translations,
-            [this.locale]: {
-              ...existingTranslation,
-              approved: true
-            }
-          }
-        };
-        await this.cardService.approveTranslation(
-          this.selectedCard()!,
-          this.locale as string
-        );
-
-        await this.nrdbService.mergeAndSaveTranslations(
-          this.selectedCard()!.code,
-          {
-            [this.locale]: {
-              ...this.selectedCard()!.translations?.[this.locale as string],
-              approved: true,
-            },
-            updatedAt: new Date()
-          }
-        );
-
-        // this.card.set(updatedCard);
-
-        this.notification.notify($localize`Translation confirmed, soon it will be visible for everyone (or refresh the page to see the changes).`, 'check', 6000);
-      } catch (error) {
-        this.notification.notify($localize`Error approving translation, please try again later.`, 'dangerous');
-      }
-    });
   }
 
   public updateUserFavoriteCaption() {

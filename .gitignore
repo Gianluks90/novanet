@@ -141,3 +141,6 @@ vite.config.ts.timestamp-*
 # Others
 .DS_Store
 /.angular
+
+# Local reference material (not for the repo)
+/public/Null_Signal_Games_Netrunner_Comprehensive_Rules_*.pdf

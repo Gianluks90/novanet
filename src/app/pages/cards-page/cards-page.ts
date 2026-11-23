@@ -324,39 +324,4 @@ export class CardsPage {
     this.selectedCard = null;
     this.cardZoomed = false;
   }
-
-  public async showToApprove() {
-    // Fetch not approved translations from Firebase
-    const notApprovedTranslations = await this.cardService.getNotApprovedTranslationsCards(this.locale);
-
-    // Create a map for faster lookup by card code
-    const translationMap = new Map<string, any>();
-    notApprovedTranslations.forEach(t => translationMap.set(t.code, t.translations));
-
-    // Merge the translations into the existing cards
-    this.cards = this.allCards.map(card => {
-      const translationsForCard = translationMap.get(card.code);
-      if (translationsForCard) {
-        // Merge only the specific locale info into card.translations
-        card.translations = {
-          ...card.translations,
-          [this.locale]: {
-            ...card.translations?.[this.locale],
-            ...translationsForCard[this.locale]
-          }
-        };
-      }
-      return card;
-    });
-
-    // Optionally, filter to show only cards with not approved translations
-    this.cards = this.cards.filter(card =>
-      card.translations &&
-      card.translations[this.locale] &&
-      card.translations[this.locale].approved === false
-    );
-
-    this.notification.notify($localize`Showing ${this.cards.length} cards with translations to approve.`);
-    this.cd.detectChanges();
-  }
 }

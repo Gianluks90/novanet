@@ -139,11 +139,6 @@
 
 <ng-template #menu>
     <div class="lang-menu-container" cdkMenu>
-        @if (selectedCard()?.translations && !selectedCard()?.translations?.[locale]?.approved && firebase.$user() && firebase.$user()?.role === 'admin') {
-            <app-ui-button i18n-text text="Approve" icon="translate" (click)="openConfirmTranslation()"></app-ui-button>
-        } @else {
-            <app-ui-button i18n-text text="Translate" icon="translate" [disabled]="!firebase.$user() || !!(selectedCard()?.translations?.[locale]?.approved)" (click)="openTranslateDialog()"></app-ui-button>
-        }
         @if(firebase.$user() && card()?.flavor) {
              <app-ui-button i18n-text text="Add caption to profile" icon="format_quote" (click)="updateUserFavoriteCaption()"></app-ui-button>
         }

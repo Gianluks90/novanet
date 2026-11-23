@@ -4,7 +4,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project overview
 
-Novanet is an Angular 21 single-page app: a card browser and deck builder for **Android: Netrunner** (the card game). Card/cycle/faction/pack/side/type data comes from the public NetrunnerDB API; user accounts, decks, and community card translations are stored in Firebase (Auth + Firestore). Card data is cached locally in IndexedDB via `idb` so the app doesn't refetch the full card set on every load.
+Novanet is an Angular 21 single-page app: a card browser and deck builder for **Android: Netrunner** (the card game). Card/cycle/faction/pack/side/type data comes from the public NetrunnerDB API; user accounts and decks are stored in Firebase (Auth + Firestore). Card data is cached locally in IndexedDB via `idb` so the app doesn't refetch the full card set on every load.
+
+## Reference material
+
+The complete, up-to-date game rules are available locally at `public/Null_Signal_Games_Netrunner_Comprehensive_Rules_v26.03.pdf` (Null Signal Games Comprehensive Rules v26.03). The file is gitignored and is large — don't read it by default; open it only (with the `pages` parameter) when a task actually depends on a rules question, e.g. deck legality, influence, or agenda points.
+
+## Working agreements
+
+- Do not start the dev server (`npm start` etc.) — the user runs it themselves to check changes.
+- [README.md](README.md) doubles as the project TODO list; keep it updated when work is done or new items emerge.
 
 ## Commands
 
@@ -27,20 +36,20 @@ To run a single test file once specs exist, use Vitest's own filtering, e.g. `np
 
 **Two data sources feed the app, joined at runtime:**
 1. **NetrunnerDB public API** (`https://netrunnerdb.com/api/2.0/public/...`) — canonical card/cycle/faction/pack/side/type data, fetched once and cached.
-2. **Firestore** — user accounts, decks, and a community-driven card-translation system layered on top of the NRDB card data.
+2. **Firestore** — user accounts and decks. (The old community card-translation system was removed; card-text translations are being moved to static files from `netrunner-cards-json` — see the plan in README.md.)
 
 **Card data bootstrap flow** (runs on the home route via router resolvers, in [src/app/resolvers/](src/app/resolvers/)):
 - `cardsConfigResolver` fetches `cycles`, `factions`, `packs`, `sides`, `types` from NRDB on every load (small, static-ish reference data).
-- `nrdbResolver` is the heavier one: on first run it bulk-fetches all cards from NRDB into IndexedDB (`nrdb` DB, stores `cards` and `meta`, opened in [src/app/db/nrdb-indexed-db.ts](src/app/db/nrdb-indexed-db.ts)) and marks `meta.installed`. On every run after that it reconciles **translations**: it compares a global translation version (`configs/translationsConfig` in Firestore) against a version cached in `localStorage`, and either bootstraps (full fetch of all approved translations) or incrementally merges only what changed — including a check for cards missing translations that a naive version-diff would skip. This logic lives across [nrdb-resolver.ts](src/app/resolvers/nrdb-resolver.ts) and [netrunner-db-service.ts](src/app/db/netrunner-db-service.ts); treat it as one unit when touching either file.
+- `nrdbResolver` is the heavier one: it fetches the NRDB `packs` list on every load and compares a signature of pack codes with the one stored in IndexedDB (`nrdb` DB, stores `cards` and `meta`, opened in [src/app/db/nrdb-indexed-db.ts](src/app/db/nrdb-indexed-db.ts)); when it changed (or on first run) it bulk-fetches all cards from NRDB into IndexedDB.
 - `CardService.loadCards()` ([src/app/services/card-service.ts](src/app/services/card-service.ts)) then reads everything out of IndexedDB into an in-memory `$cardsMap` signal that components consume.
 
-**Translation workflow** (also in `CardService`): a user submits a translation (`submitTranslation`) which writes an unapproved entry to `translations/{cardCode}` in Firestore; an admin approves it (`approveTranslation`), which atomically bumps a global version counter (`configs/translationsConfig.version`). Every non-admin client detects the version bump on next load and syncs down the delta via the bootstrap flow above. Do not add a new way to write translations without going through `setTranslation`/the version counter, or clients will silently miss the update.
+**Card translations**: there is currently no translation source (the Firestore-based submit/approve workflow and version counter were removed). `Card.translations?.[lang]` is still read by the UI for display and will be populated from static translation files in the next planned step (see README.md). Don't reintroduce Firestore writes for card text.
 
 **State management is signals-first**, not a store/NgRx. Services expose `signal`/`WritableSignal` state directly (e.g. `FirebaseService.$user`, `CardService.$cardsMap`, `DeckService.$decks`, `ThemeService` via `toSignal`), and components/effects react to those. Firestore reads mostly use `onSnapshot` for live updates rather than one-off `getDoc` where state needs to stay current.
 
 **Auth** is Google Sign-In only ([src/app/services/auth-service.ts](src/app/services/auth-service.ts)), guarded by `AuthGuardService` on the `/decks` route tree. `FirebaseService` listens for `onAuthStateChanged`, ensures a `users/{uid}` Firestore doc exists, and mirrors it into the `$user` signal via a live snapshot listener.
 
-**i18n**: Angular's built-in `$localize`/XLIFF i18n, not ngx-translate. Source strings are English; `src/locale/messages.it.xlf` holds Italian translations. `ng build --localize` produces both locale bundles; `LOCALE_ID` is injected where needed (e.g. to pick the translation language when talking to Firestore). This is a separate system from the card-text translation feature described above — don't conflate the two when working on either.
+**i18n**: Angular's built-in `$localize`/XLIFF i18n, not ngx-translate. Source strings are English; `src/locale/messages.it.xlf` holds Italian translations. `ng build --localize` produces both locale bundles; `LOCALE_ID` is injected where needed (e.g. to pick the translation language when talking to Firestore). Card-text translations (see above) are a separate concern from UI strings.
 
 **Routing** uses hash location strategy (`withHashLocation()` in [src/app/app.config.ts](src/app/app.config.ts)), relevant for Firebase Hosting rewrites.
 

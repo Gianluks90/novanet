@@ -2,7 +2,67 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.3.
 
-## Known issues / TODO
+## Next steps (open)
+
+Added 2026-11-23. This README is the project TODO list.
+
+### Decided plan (2026-11-23): data layer + translations
+
+Decisions taken: move to NRDB **v3** and drop 2.0 for us; use the official `netrunner-cards-json` translation files as the card-text base layer; Firestore is **no longer** used for card translations; one build with runtime language switching (EN + IT enabled for now). Suggested order (each step shippable on its own):
+
+1. [x] **Strip the Firestore translation sync** (done 2026-11-23, `ng build` passes). Removed: submit/approve/report flow and version counter (`CardService` is now just `loadCards`/`$cardsMap`), translation bootstrap/incremental sync in `nrdbResolver` (now only the pack-signature catalog refresh), `NetrunnerDbService` (became dead code), `TranslateDialog`, `AdminService` + the admin "Fix" button, the Translate/Approve menu items in card detail, the admin "Show to approve" filter in cards page, and the `translations`/`configs` blocks + `isAdmin()` in `firestore.rules`. `Card.translations?.[lang]` and `CardTranslation` (now just `title/text/flavor?/keywords?`) are **kept** because the UI still reads them — step 4 will populate them from files. CLAUDE.md updated.
+   - **Manual follow-ups for you**: deploy the new rules (`firebase deploy --only firestore:rules`), and delete the `translations/` and `configs/` collections in the Firebase console (optionally export the approved translations first and compare with `translations/it/pack/core.it.json`). Leftover `localStorage.translationsVersion` and any `translations` fields already cached in your IndexedDB are harmless (the cache is rebuilt at the next catalog refresh).
+   - Left untouched on purpose: `xlf` files still contain strings of the removed UI (stale units are ignored; the whole i18n system goes away in step 3), and the `role: 'admin'` field on users (still gates the Firebase link in settings).
+2. [ ] **Migrate to v3 with a v3-native model.** Fetch `/printings` (+ `card_sets`, `card_cycles`, `factions`, `card_types`, `sides`) and rename the `Card`/`Pack`/`Faction`/… models to the v3 field names in one pass (`code`→`id`, `pack_code`→`card_set_id`, `faction_code`→`faction_id` with underscores, `cost` as string, `is_unique`, `influence_cost`, `advancement_requirement`, `display_subtypes`, …; mapping table in the API review above), updating the ~11 files that use the old names (components, pipes, `const/` label maps). **No backward compatibility needed**: there are no active users, so existing Firestore decks (which embed a full 2.0-shaped `Card` in `Deck.identity`) and users' IndexedDB caches will simply be wiped — still bump the IndexedDB schema version so the local cache is rebuilt. Keep the pack/set signature check as the refresh trigger; consider the ETag for revalidation. Unify to a single base URL constant and remove the 2.0 calls. Open question for this step: decks are keyed by printing id (`Deck.cards: Record<code, qty>`); v3's `card_id` (slug) would count reprints as the same card — decide which to use for deck contents.
+3. [ ] **Runtime translation system (replace Angular i18n).** Replace build-time `$localize`/XLIFF (`messages.xlf`, `messages.it.xlf`, `ng build --localize`, `npm run startit`) with a signal-based pipe (e.g. `{{ 'key' | t }}`; custom, no ngx-translate) and a language signal. Migrate the ~120 existing strings (XLIFF + `$localize` calls in TS). Single build; adjust `LOCALE_ID` usage and Firebase Hosting config.
+4. [ ] **Card-text translations from files.** `npm run sync:translations` script pulls the chosen languages from `Null-Signal-Games/netrunner-cards-json` (`translations/<lang>/…`) into a single merged file per language (not one folder per language per set); loaded lazily on language change and cached in IndexedDB keyed by a content hash. Vendor `de ja fr es pl zh-hans ko it`, enable only EN + IT in the UI. Re-run the script when a new set is released and review the diff. Check `COPYRIGHT.md` of that repo and add attribution; check how card text (`<strong>` HTML) is rendered.
+5. [ ] **Personal translations (user tool).** Per-user overrides on top of the file layer (precedence: user override > official file > machine translation > English), stored locally (IndexedDB) with JSON export/import; optional later sync via the user's own `users/{uid}` Firestore doc. Community translations to be re-planned afterwards.
+6. [ ] **Fill missing Italian cards** (~25 newer sets absent from the files): machine-translated by Claude in batches per set, using a glossary extracted from the existing Italian files (run → incursione, HQ → QG, R&D → R&S, grip/heap kept), each marked `machine: true`, first batch reviewed by the user before continuing; replaced when official translations arrive.
+
+Notes: UI strings (step 3) and card text (step 4) are separate layers sharing only the language signal.
+
+### Game rules reference
+
+- [x] Comprehensive Rules v26.03 PDF added at `public/` (gitignored) and noted in CLAUDE.md.
+- [ ] Use it to review deck-builder legality rules (min deck size, influence limit, agenda points, `deck_limit`) — currently `saveDeck()` intentionally doesn't validate, so consider a non-blocking "legality" indicator instead.
+
+### NetrunnerDB API review (checked 2026-11-23)
+
+Currently used: `https://netrunnerdb.com/api/2.0/public/{cards,packs,cycles,factions,sides,types}` (also `api.netrunnerdb.com/api/2.0/public/cards` in `netrunner-db-service.ts` — two different hosts for the same API) and images from `https://card-images.netrunnerdb.com/v2/large/{code}.jpg`.
+
+Findings:
+- A **v3 API** exists and is live in production at `https://api.netrunnerdb.com/api/v3/public/` (JSON:API format, `application/vnd.api+json`). Docs: <https://api-preview.netrunnerdb.com> (preview host; its sample data is older than production). The server is still labelled "experimental"; latest release `api-preview-0.8.7.9` (Nov 2026).
+- v3 endpoints: `cards`, `printings`, `card_cycles`, `card_sets`, `card_set_types`, `card_subtypes`, `card_types`, `card_pools`, `factions`, `sides`, `formats`, `snapshots`, `restrictions`, `illustrators`, `rulings`, `reviews`, `decklists`. "Packs" most likely maps to `card_sets` (inferred, not stated in the docs).
+- Useful new data over 2.0: `formats`/`card_pools`/`restrictions`/`snapshots` (legality per format — ties in with the deck-legality item above), `rulings`, multi-face cards (`faces`), `stripped_text`, `display_subtypes`, `latest_printing_images`.
+- Shape changes to expect: JSON:API envelope (`{id, type, attributes, relationships}`), slug ids for cards/factions (e.g. `adonis_campaign`, `haas_bioroid`) while printings keep the 5-digit code (`01056`) — our whole app keys on the 5-digit `code`, so a migration needs a mapping layer (printing id ↔ card).
+- Images: same `card-images.netrunnerdb.com/v2/{size}/{printing_id}.jpg` scheme still works; sizes tiny/small/medium/large (jpg), plus `xlarge` (webp) only for some Null Signal Games cards.
+- **Not confirmed** (checked docs, couldn't verify): any deprecation notice or end-of-life date for `api/2.0`, pagination size/params, an `updated_after`-style filter for incremental sync, ETag/Last-Modified support (open issue about `If-None-Match`), rate limits, CORS headers, and a `flavor` attribute. Known open issues: results unsorted by default, invalid filter syntax returns HTTP 500.
+
+Proposed follow-ups:
+- [ ] Quick, low-risk: unify the two 2.0 hosts into one shared constant (`netrunnerdb.com` vs `api.netrunnerdb.com` are both used today).
+- [x] Spike (read-only, no app changes), done 2026-11-23 — results:
+  - **Reachable from the browser**: `access-control-allow-origin: *` (GET/OPTIONS/HEAD), `etag` present, `If-None-Match` returns **304** (but the server still takes ~5 s to answer, so it saves bandwidth, not latency).
+  - **Pagination**: JSON:API `links` (`first/last/next`) + `meta.stats.total.count`; default page size 1000 for cards/printings/card_sets/card_cycles, 20 for factions/types/sides (all fit in one page). `page[size]=5000` is accepted: **all 2460 printings in one 11 MB response** (~12 s for 1000 → slow; 2.0 returns the same 2460 cards in 1.8 MB / 0.7 s). Total counts match: 2460 printings in v3 = 2460 cards in 2.0, and every 2.0 `code` exists as a v3 printing id.
+  - **Freshness**: 2.0 `last_updated` is `2026-05-04`; v3 data is updated `2026-11-16` — 2.0 looks no longer maintained (still no official deprecation notice found).
+  - **Which endpoint maps to our `Card`**: v3 `/cards` is one record per *card* (2054, slug id `adonis_campaign`), while our model is one record per *printing* (5-digit `code`, `pack_code`, `position`, `quantity`, `illustrator`, `flavor`). The equivalent is **`/printings`** (id = 5-digit code, `card_id` = slug) — it carries both printing and card attributes in one flat record.
+  - **Field mapping 2.0 → v3 `/printings`**: `code`→`id`; `pack_code`→`card_set_id`; `cycle_code`→`card_cycle_id`; `faction_code`→`faction_id` (underscores: `haas_bioroid`, not `haas-bioroid`); `side_code`→`side_id`; `type_code`→`card_type_id`; `uniqueness`→`is_unique`; `faction_cost`→`influence_cost`; `advancement_cost`→`advancement_requirement`; `keywords`→`display_subtypes`; `illustrator`→`display_illustrators`/`illustrator_names[]`; `flavor`, `position`, `quantity`, `deck_limit`, `strength`, `trash_cost`, `base_link`, `memory_cost`, `minimum_deck_size`, `agenda_points`, `text`, `stripped_text`, `title`, `stripped_title` unchanged. **`cost` is now a string** (`"4"`, can be `"X"`/null) instead of a number. Fields not nullable-aware in our model now arrive as `null` instead of absent. `influence_limit` is on identities as before.
+  - **Reference data**: `packs`→`card_sets` (`/packs` is 404 in v3; has `card_cycle_id`, `date_release`, `size`, `position`, `legacy_code`), `cycles`→`card_cycles`, plus `factions`, `card_types` (was `types`), `sides`. `faction_id`/`card_type_id` are slugs, so the faction/type pipes and label maps in `const/` need re-keying (`haas-bioroid` → `haas_bioroid`).
+  - **Filters**: `filter[card_set_id]=double_time` works (20 results). `filter[updated_at]=>2026-11-10` returned 0 results — an incremental "changed since" filter is **not confirmed** (syntax unknown; the documented "Printing Search Operator" page wasn't read). Without it, change detection = re-download when the ETag changes or when the pack/set signature changes (our existing mechanism).
+  - **New, useful**: `format_ids`/`card_pool_ids`/`snapshot_ids`/`restrictions` (banlist/legality per format), `card_abilities` flags, `faces` for multi-face cards, `images` per printing.
+  - **Verdict**: technically feasible and a one-for-one data swap via an adapter, but v3 is heavier and slower per request, so keep our IndexedDB cache strategy and don't fetch it on every load. Main costs: re-keying faction/type/pack codes everywhere, `cost` string, and the translation sync keyed by 5-digit code (unchanged, since printing ids = old codes — good news).
+- [ ] If the spike is positive, migrate behind an adapter that maps v3 responses to the existing `Card` model so the IndexedDB/translation sync and the rest of the app stay untouched; keep 2.0 as the fallback until its deprecation status is clear.
+- [ ] Optionally use `xlarge`/`small` image sizes where appropriate (e.g. `small` for lists, `large` for detail) to cut bandwidth.
+
+### Existing card translations (checked 2026-11-23)
+
+- The NRDB APIs (2.0 and v3) have **no** locale support: `?locale=`/`Accept-Language` are ignored, no `locales`/`translations` endpoints.
+- Translations do exist as static JSON in the official data repo [Null-Signal-Games/netrunner-cards-json](https://github.com/Null-Signal-Games/netrunner-cards-json) (moved from NetrunnerDB/), under `translations/<lang>/`: `ca de es fr it ja ko pl pt ru zh-hans zh-hant`. Per language: `cycles|factions|packs|sides|types.<lang>.json` plus `pack/<setcode>.<lang>.json`.
+- Card entries are keyed by the 5-digit printing `code` (same as our `Card.code`) with `title`, `text` (HTML, e.g. `<strong>virus</strong>`), `flavor`, `keywords` — e.g. `translations/it/pack/core.it.json`.
+- **Italian coverage**: 50 pack files vs 75 base packs (only older sets: core, DD, SanSan… up to ~2023); missing the newer sets (`sc19`, `su21`, `sm`, `ss`, `elev`, `ur`, `mor`, …). Spanish 50, French 56, German 60, Japanese 60, Polish 50, Korean 49, Chinese (simplified) 50; `ca`/`pt`/`zh-hant`/`ru` are almost empty.
+- Last change to `translations/it`: 2026-07-19 ("Normalize some translation titles").
+- [ ] Idea: seed/merge these files as a base layer under the community (Firestore) translations — import `it` (and other languages) at build or first install, keep Firestore approved translations as the override. Needs a decision on how to handle the `<strong>` HTML vs. our `text` format, licensing/attribution check, and CORS/raw-hosting (use a build-time copy or jsDelivr rather than hitting GitHub raw from the client).
+
+## Known issues / TODO (previous review)
 
 Tracked from a codebase review on 2026-07-17. Check items off as they're fixed.
 

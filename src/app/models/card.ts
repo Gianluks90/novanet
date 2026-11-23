@@ -35,12 +35,5 @@ export interface CardTranslation {
     title: string;
     text: string;
     flavor?: string;
-    approved: boolean;
-    reported: boolean;
-    translatedAt: any; // Timestamp
-    translatedBy: string;
-    approvedBy?: string;
-    // Only set once approved -- the version the global translations counter
-    // was at when this entry was approved (used for incremental sync).
-    version?: number;
+    keywords?: string;
 }
