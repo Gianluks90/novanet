@@ -1,0 +1,131 @@
+<div class="ds-page">
+    <h1>Design system</h1>
+    <p class="p-note">Living reference of the NovaNet tokens and shared components. Switch theme (sun/moon in the header) and
+        language to check both. Tokens live in <code>src/styles/_tokens.scss</code>, shared components in
+        <code>src/app/ui/</code>.</p>
+
+    <section>
+        <h2>Colors</h2>
+        <p class="p-note">Defined per theme on <code>body</code> (<code>.light</code> / <code>.dark</code>). Never use raw hex values in components.</p>
+        <div class="swatches">
+            @for (c of colors; track c.token) {
+                <div class="swatch">
+                    <div class="chip" [style.background]="'var(' + c.token + ')'"></div>
+                    <code>{{ c.token }}</code>
+                    <span>{{ c.note }}</span>
+                </div>
+            }
+        </div>
+    </section>
+
+    <section>
+        <h2>Typography</h2>
+        <p class="p-note">Font: Genos. Titles are uppercase in the UI.</p>
+        @for (s of fontSizes; track s) {
+            <div class="type-row">
+                <code>{{ s }}</code>
+                <span [style.font-size]="'var(' + s + ')'">Corporate intrigue and shadowy netrunning</span>
+            </div>
+        }
+        <p class="p-subtitle">Subtitle (<code>p.p-subtitle</code>)</p>
+        <p class="p-note">Note text (<code>p.p-note</code>)</p>
+    </section>
+
+    <section>
+        <h2>Spacing &amp; radius</h2>
+        <div class="row">
+            @for (s of spacing; track s) {
+                <div class="space-sample"><div class="bar" [style.width]="'var(' + s + ')'"></div><code>{{ s }}</code></div>
+            }
+        </div>
+        <div class="row">
+            @for (r of radii; track r) {
+                <div class="radius-sample" [style.border-radius]="'var(' + r + ')'"><code>{{ r }}</code></div>
+            }
+        </div>
+    </section>
+
+    <section>
+        <h2>Buttons</h2>
+        <p class="p-note"><code>app-ui-button</code> — text buttons (uppercase, accent border, fills on hover).</p>
+        <div class="row narrow">
+            <app-ui-button text="Default"></app-ui-button>
+            <app-ui-button text="With icon" icon="save"></app-ui-button>
+            <app-ui-button text="Small" icon="add" size="small"></app-ui-button>
+            <app-ui-button text="Disabled" icon="block" [disabled]="true"></app-ui-button>
+        </div>
+        <p class="p-note"><code>app-ui-icon-button</code> — icon-only actions. Always pass a <code>label</code> (accessible name + tooltip); <code>link</code> renders an anchor.</p>
+        <div class="row">
+            <app-ui-icon-button icon="save" label="Save"></app-ui-icon-button>
+            <app-ui-icon-button icon="delete" label="Delete"></app-ui-icon-button>
+            <app-ui-icon-button icon="share" label="Toggle (active)" [active]="activeIcon()" (click)="activeIcon.set(!activeIcon())"></app-ui-icon-button>
+            <app-ui-icon-button icon="info" label="Small" size="sm"></app-ui-icon-button>
+            <app-ui-icon-button icon="block" label="Disabled" [disabled]="true"></app-ui-icon-button>
+            <app-ui-icon-button icon="arrow_back" label="Link to home" [link]="['/']"></app-ui-icon-button>
+        </div>
+    </section>
+
+    <section>
+        <h2>Choices</h2>
+        <p class="p-note"><code>app-ui-segmented</code> — one option out of a few (keyboard: arrows, Home, End).</p>
+        <div class="row">
+            <app-ui-segmented [options]="segmentedOptions" [(value)]="segment"></app-ui-segmented>
+            <app-ui-segmented [options]="iconSegmentedOptions" [(value)]="visibility"></app-ui-segmented>
+        </div>
+        <p class="p-note"><code>app-ui-toggle</code> — on/off setting.</p>
+        <div class="row">
+            <app-ui-toggle label="cardsPage.translatedOnly" [(value)]="toggle"></app-ui-toggle>
+            <app-ui-toggle label="cardsPage.translatedOnly" [value]="true" [disabled]="true"></app-ui-toggle>
+        </div>
+    </section>
+
+    <section>
+        <h2>Badges</h2>
+        <div class="row">
+            <app-ui-badge icon="computer" label="This device"></app-ui-badge>
+            <app-ui-badge icon="cloud" label="My account" tone="accent"></app-ui-badge>
+            <app-ui-badge icon="warning" label="Warning" tone="warn"></app-ui-badge>
+            <app-ui-badge icon="computer" label="Icon only" [iconOnly]="true"></app-ui-badge>
+        </div>
+    </section>
+
+    <section>
+        <h2>Form controls</h2>
+        <p class="p-note">Native elements styled globally (<code>styles.scss</code>, <code>_base.scss</code>). Use <code>form.form-container &gt; .form-group</code> for label + control + hint.</p>
+        <form class="form-container">
+            <div class="form-group">
+                <label for="ds-text">Text</label>
+                <input id="ds-text" type="text" placeholder="Placeholder">
+                <span class="form-hint">Hint text under the control.</span>
+            </div>
+            <div class="form-group">
+                <label for="ds-select">Select</label>
+                <select id="ds-select"><option>One</option><option>Two</option></select>
+            </div>
+            <div class="form-group">
+                <label for="ds-area">Textarea</label>
+                <textarea id="ds-area" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="ds-disabled">Disabled</label>
+                <input id="ds-disabled" type="text" value="Disabled" disabled>
+            </div>
+            <div class="row">
+                <label><input type="checkbox" checked> Checkbox</label>
+                <label><input type="radio" name="ds-radio" checked> Radio A</label>
+                <label><input type="radio" name="ds-radio"> Radio B</label>
+            </div>
+        </form>
+    </section>
+
+    <section>
+        <h2>Guidelines</h2>
+        <ul>
+            <li>Use tokens (<code>var(--space-3)</code>, <code>var(--radius-sm)</code>, <code>var(--duration-base)</code>) instead of literal values.</li>
+            <li>Clickable things are real <code>button</code>/<code>a</code> elements: use <code>app-ui-icon-button</code> / <code>app-ui-button</code>, not a clickable <code>span</code>.</li>
+            <li>Every UI string goes through the <code>t</code> pipe and exists in both <code>en.ts</code> and <code>it.ts</code>.</li>
+            <li>Keep keyboard focus visible (do not remove outlines); motion must respect <code>prefers-reduced-motion</code> (handled globally).</li>
+            <li>Check both themes: light uses a black accent, dark uses the yellow one (customizable per user).</li>
+        </ul>
+    </section>
+</div>

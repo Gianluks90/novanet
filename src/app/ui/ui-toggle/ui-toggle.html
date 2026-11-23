@@ -1,0 +1,5 @@
+<button type="button" class="ui-toggle" role="switch" [class.on]="value()" [attr.aria-checked]="value()"
+    [disabled]="disabled()" (click)="toggle()">
+    <span class="track" aria-hidden="true"><span class="thumb"></span></span>
+    <span class="text">{{ label() | t }}</span>
+</button>

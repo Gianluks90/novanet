@@ -76,9 +76,9 @@
         <div class="action-controls">
             <div [innerHTML]="'cardsPage.gridViewGrid' | t: [(zoomLevel | zoomLevelLabel)]" class="control-container" (click)="zoomRotation()"></div>
             <div [innerHTML]="'cardsPage.sortSortByFound' | t: [(sortBy | sortByLabel), cards.length]" class="control-container" (click)="sortRotation()"></div>
-            <div class="control-container" (click)="toggleTranslated()">
-                <span class="material-symbols-rounded">language</span>
-                <span>{{ (filters.translated === 'only' ? 'cardsPage.yourLanguages' : 'cardsPage.allLanguages') | t }}</span>
+            <div class="control-container">
+                <app-ui-toggle label="cardsPage.translatedOnly" [value]="filters.translated === 'only'"
+                    (valueChange)="setTranslatedOnly($event)"></app-ui-toggle>
             </div>
         </div>
         <div class="cards-container" [class.small-size]="zoomLevel === 'small-size'"

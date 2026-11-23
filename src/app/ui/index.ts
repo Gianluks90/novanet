@@ -2,3 +2,7 @@ export * from './ui-button/ui-button';
 export * from './ui-diagonal-line/ui-diagonal-line';
 export * from './ui-image-container/ui-image-container';
 export * from './ui-dialog-container/ui-dialog-container';
+export * from './ui-icon-button/ui-icon-button';
+export * from './ui-segmented/ui-segmented';
+export * from './ui-toggle/ui-toggle';
+export * from './ui-badge/ui-badge';

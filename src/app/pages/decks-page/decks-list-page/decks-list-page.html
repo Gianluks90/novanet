@@ -1,12 +1,10 @@
 <div class="decks-list-page-main-container">
-    <div class="view-mode-container">
-        <button type="button" [class.active]="viewMode === 'mine'" (click)="switchViewMode('mine')">{{ 'decksListPage.myDecks' | t }}</button>
-        <button type="button" [class.active]="viewMode === 'public'" (click)="switchViewMode('public')">{{ 'decksListPage.publicGallery' | t }}</button>
-    </div>
     <div class="filter-container">
         <div class="side-line"></div>
         <p class="section-title">{{ 'filtersSectionTitle' | t }}</p>
         <input type="text" [placeholder]="'searchTextInputPlaceholder' | t" (keyup)="onChangeTextSearch($event)">
+        <app-ui-segmented size="sm" [options]="viewModeOptions" [value]="viewMode"
+            (valueChange)="switchViewMode($any($event))"></app-ui-segmented>
         <!-- @if (sides.length > 0) {
         <select name="side" id="side-select" [(ngModel)]="filters.side" (change)="onChangeSideFilter($event)">
             <option i18n value="all">All Sides</option>
@@ -34,13 +32,13 @@
                             <div class="deck-container">
                                 <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + d.identity.id + '.jpg'" alt="">
                                 <div class="info-container">
-                                    <p>{{d.name}} <span class="material-symbols-rounded storage-icon" [title]="(d.local ? 'decksListPage.thisDevice' : 'decksListPage.myAccount') | t">{{ d.local ? 'computer' : 'cloud' }}</span> <span class="material-symbols-rounded validity-icon" [title]="deckSize(d) < d.identity.minimum_deck_size! ? 'Deck is too small' : 'Deck size is valid'">{{deckSize(d) < d.identity.minimum_deck_size! ? 'close' : 'check'}}</span></p>
+                                    <p>{{d.name}} <app-ui-badge [icon]="d.local ? 'computer' : 'cloud'" [label]="(d.local ? 'decksListPage.thisDevice' : 'decksListPage.myAccount') | t" [iconOnly]="true"></app-ui-badge> <span class="material-symbols-rounded validity-icon" [title]="deckSize(d) < d.identity.minimum_deck_size! ? 'Deck is too small' : 'Deck size is valid'">{{deckSize(d) < d.identity.minimum_deck_size! ? 'close' : 'check'}}</span></p>
                                     <!-- <p i18n class="info-line">Influence limit: {{d.cards | checkInfluence:cardsMap:d.identity.faction_id! }}/{{d.identity.influence_limit}} Agenda points: {{ d.cards | checkAgendaPoints:cardsMap }}</p> -->
                                 </div>
                                 <div class="deck-actions">
-                                    <span class="material-symbols-rounded" [title]="(canEdit(d) ? 'decksListPage.edit' : 'decksListPage.view') | t" [routerLink]="['/decks/builder', d.id]">{{ canEdit(d) ? 'edit' : 'visibility' }}</span>
+                                    <app-ui-icon-button [icon]="canEdit(d) ? 'edit' : 'visibility'" [label]="(canEdit(d) ? 'decksListPage.edit' : 'decksListPage.view') | t" [link]="['/decks/builder', d.id]"></app-ui-icon-button>
                                     @if (canEdit(d)) {
-                                        <span class="material-symbols-rounded" (click)="openConfirmDeleteDeckDialog(d)">delete</span>
+                                        <app-ui-icon-button icon="delete" [label]="'decksListPage.delete' | t" (click)="openConfirmDeleteDeckDialog(d)"></app-ui-icon-button>
                                     }
                                 </div>
                             </div>
@@ -62,13 +60,13 @@
                             <div class="deck-container">
                                 <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + d.identity.id + '.jpg'" alt="">
                                 <div class="info-container">
-                                    <p>{{d.name}} <span class="material-symbols-rounded storage-icon" [title]="(d.local ? 'decksListPage.thisDevice' : 'decksListPage.myAccount') | t">{{ d.local ? 'computer' : 'cloud' }}</span> <span class="material-symbols-rounded validity-icon" [title]="deckSize(d) < d.identity.minimum_deck_size! ? 'Deck is too small' : 'Deck size is valid'">{{deckSize(d) < d.identity.minimum_deck_size! ? 'close' : 'check'}}</span></p>
+                                    <p>{{d.name}} <app-ui-badge [icon]="d.local ? 'computer' : 'cloud'" [label]="(d.local ? 'decksListPage.thisDevice' : 'decksListPage.myAccount') | t" [iconOnly]="true"></app-ui-badge> <span class="material-symbols-rounded validity-icon" [title]="deckSize(d) < d.identity.minimum_deck_size! ? 'Deck is too small' : 'Deck size is valid'">{{deckSize(d) < d.identity.minimum_deck_size! ? 'close' : 'check'}}</span></p>
                                     <!-- <p i18n class="info-line">Influence limit: {{d.cards | checkInfluence:cardsMap:d.identity.faction_id! }}/{{d.identity.influence_limit}} Agenda points: {{ d.cards | checkAgendaPoints:cardsMap }}</p> -->
                                 </div>
                                 <div class="deck-actions">
-                                    <span class="material-symbols-rounded" [title]="(canEdit(d) ? 'decksListPage.edit' : 'decksListPage.view') | t" [routerLink]="['/decks/builder', d.id]">{{ canEdit(d) ? 'edit' : 'visibility' }}</span>
+                                    <app-ui-icon-button [icon]="canEdit(d) ? 'edit' : 'visibility'" [label]="(canEdit(d) ? 'decksListPage.edit' : 'decksListPage.view') | t" [link]="['/decks/builder', d.id]"></app-ui-icon-button>
                                     @if (canEdit(d)) {
-                                        <span class="material-symbols-rounded" (click)="openConfirmDeleteDeckDialog(d)">delete</span>
+                                        <app-ui-icon-button icon="delete" [label]="'decksListPage.delete' | t" (click)="openConfirmDeleteDeckDialog(d)"></app-ui-icon-button>
                                     }
                                 </div>
                             </div>

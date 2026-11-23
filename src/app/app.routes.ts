@@ -52,6 +52,11 @@ export const routes: Routes = [
         ]
     },
     {
+        path: 'design-system',
+        title: 'Design System - NovaNet',
+        loadComponent: () => import('./pages/design-system-page/design-system-page').then(m => m.DesignSystemPage),
+    },
+    {
         path: '**',
         redirectTo: '',
     }

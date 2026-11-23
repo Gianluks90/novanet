@@ -72,8 +72,6 @@ export const EN = {
   "deckBuilderPage.format": "Format",
   "deckBuilderPage.searchCard": "Search Card",
   "deckBuilderPage.youReViewingSomeoneElse": "You're viewing someone else's deck in read-only mode.",
-  "decksListPage.myDecks": "My decks",
-  "decksListPage.publicGallery": "Public gallery",
   "runnerDecksColumnTitle": "Runner Decks",
   "noRunnerDecksMessage": "No <strong>Runner</strong> decks found.",
   "corpDecksColumnTitle": "Corp Decks",
@@ -96,8 +94,6 @@ export const EN = {
   "importExportCardListDialog.exportCardList": "Export card list",
   "importExportCardListDialog.importCardList": "Import card list",
   "importExportCardListDialog.overwriteWarning": "Import cards overwrite previous deck list.",
-  "cardsPage.yourLanguages": "Your languages",
-  "cardsPage.allLanguages": "All languages",
   "deckBuilderPage.manageVisibility": "Manage visibility",
   "deckBuilderPage.backToEditing": "Back to editing",
   "decksListPage.edit": "Edit",
@@ -148,6 +144,13 @@ export const EN = {
   "notifications.errorSavingDeck": "Error saving deck: {0}",
   "notifications.deckUploaded": "Deck saved to your account.",
   "notifications.errorUploadingDeck": "Error saving the deck online: {0}",
+  "decksListPage.delete": "Delete",
+  "deckBuilderPage.visibilityPrivate": "Private",
+  "deckBuilderPage.visibilityShared": "Shared",
+  "deckBuilderPage.visibilityPublic": "Public",
+  "cardsPage.translatedOnly": "Translated only",
+  "decksListPage.viewPersonal": "Personal",
+  "decksListPage.viewPublic": "Public",
 } as const;
 
 export type TranslationKey = keyof typeof EN;

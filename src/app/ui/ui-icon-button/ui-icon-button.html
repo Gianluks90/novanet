@@ -1,0 +1,11 @@
+@if (link(); as target) {
+    <a class="ui-icon-btn" [class.sm]="size() === 'sm'" [class.active]="active()" [routerLink]="target"
+        [attr.aria-label]="label()" [title]="label()">
+        <span class="material-symbols-rounded" aria-hidden="true">{{ icon() }}</span>
+    </a>
+} @else {
+    <button type="button" class="ui-icon-btn" [class.sm]="size() === 'sm'" [class.active]="active()"
+        [disabled]="disabled()" [attr.aria-label]="label()" [title]="label()">
+        <span class="material-symbols-rounded" aria-hidden="true">{{ icon() }}</span>
+    </button>
+}

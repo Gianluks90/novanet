@@ -1,9 +1,9 @@
 import { ChangeDetectorRef, Component, computed, effect, inject } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Deck } from '../../../models/deck';
 import { FormsModule } from '@angular/forms';
 import { Side } from '../../../models/side';
-import { UIButton } from '../../../ui';
+import { UIButton, UiBadge, UiIconButton, UiSegmented, SegmentedOption } from '../../../ui';
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { DialogResult } from '../../../models/DialogResult';
 import { NewDeckDialog } from '../../../components/dialogs/new-deck-dialog/new-deck-dialog';
@@ -21,7 +21,7 @@ import { I18nService } from '../../../i18n/i18n-service';
 
 @Component({
   selector: 'app-decks-list-page',
-  imports: [TranslatePipe, FormsModule, UIButton, FilterDecksBySidePipe, RouterLink],
+  imports: [TranslatePipe, FormsModule, UIButton, UiBadge, UiIconButton, UiSegmented, FilterDecksBySidePipe],
   templateUrl: './decks-list-page.html',
   styleUrl: './decks-list-page.scss',
 })
@@ -34,6 +34,10 @@ export class DecksListPage {
   public decks: Deck[] = [];
   public cardsMap: Map<string, any> = new Map();
   public viewMode: 'mine' | 'public' = 'mine';
+  public readonly viewModeOptions: SegmentedOption[] = [
+    { value: 'mine', label: 'decksListPage.viewPersonal' },
+    { value: 'public', label: 'decksListPage.viewPublic' },
+  ];
   private myDecks: Deck[] = [];
   private publicDecks: Deck[] = [];
 

@@ -1,0 +1,50 @@
+// Foundation: accessibility defaults and form control basics shared by the whole app.
+
+// Keyboard focus is always visible (mouse clicks don't draw a ring thanks to :focus-visible).
+:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
+// Text fields already have a border that changes on focus: no extra outline there.
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+  border-color: var(--fg-color);
+  box-shadow: 0 0 0 1px var(--fg-color);
+}
+
+input[type='checkbox'],
+input[type='radio'] {
+  accent-color: var(--accent-color);
+  cursor: pointer;
+}
+
+::placeholder {
+  color: var(--fg-color-muted);
+  opacity: 1;
+}
+
+input:disabled,
+textarea:disabled,
+select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+select:hover:not(:disabled) {
+  border-color: var(--fg-color);
+}
+
+// Respect the OS "reduce motion" setting everywhere.
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

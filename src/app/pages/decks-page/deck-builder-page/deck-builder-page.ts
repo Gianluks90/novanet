@@ -1,3 +1,5 @@
+import { UiIconButton, UiSegmented, SegmentedOption } from '../../../ui';
+import { TranslationKey } from '../../../i18n/en';
 import { ChangeDetectorRef, Component, effect, inject, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FirebaseService } from '../../../services/firebase-service';
@@ -33,7 +35,7 @@ import { getAuth } from 'firebase/auth';
 
 @Component({
   selector: 'app-deck-builder-page',
-  imports: [TranslatePipe, CardTitlePipe, CardDetail, FormsModule, ReactiveFormsModule, FactionLabelPipe, TypeLabelPipe, DotsPipe, CheckAgendaPointsPipe, CheckInfluencePipe, RouterLink, UIButton],
+  imports: [TranslatePipe, CardTitlePipe, UiIconButton, UiSegmented, CardDetail, FormsModule, ReactiveFormsModule, FactionLabelPipe, TypeLabelPipe, DotsPipe, CheckAgendaPointsPipe, CheckInfluencePipe, RouterLink, UIButton],
   templateUrl: './deck-builder-page.html',
   styleUrl: './deck-builder-page.scss',
 })
@@ -174,6 +176,21 @@ export class DeckBuilderPage {
     } catch (err: any) {
       console.error('Error uploading deck:', err);
       this.notification.notify(this.i18n.t('notifications.errorUploadingDeck', [err?.message ?? '']), 'dangerous');
+    }
+  }
+
+  public readonly visibilityOptions: SegmentedOption[] = [
+    { value: 'private', label: 'deckBuilderPage.visibilityPrivate', icon: 'lock' },
+    { value: 'shared', label: 'deckBuilderPage.visibilityShared', icon: 'link' },
+    { value: 'public', label: 'deckBuilderPage.visibilityPublic', icon: 'public' },
+  ];
+
+  /** Explains what the currently selected visibility means. */
+  public get visibilityHint(): TranslationKey {
+    switch (this.deck?.visibility) {
+      case 'public': return 'deckBuilderPage.publicListedInTheCommunity';
+      case 'shared': return 'deckBuilderPage.sharedAnyoneWithTheDirect';
+      default: return 'deckBuilderPage.privateOnlyYouCanSee';
     }
   }
 

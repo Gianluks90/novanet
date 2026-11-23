@@ -1,0 +1,9 @@
+<span class="ui-badge" [class.accent]="tone() === 'accent'" [class.warn]="tone() === 'warn'" [title]="label()"
+    [attr.aria-label]="iconOnly() ? label() : null">
+    @if (icon()) {
+        <span class="material-symbols-rounded" aria-hidden="true">{{ icon() }}</span>
+    }
+    @if (!iconOnly()) {
+        <span>{{ label() }}</span>
+    }
+</span>

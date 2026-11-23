@@ -1,5 +1,6 @@
-/* You can add global styles to this file, and also import other style files */
-@import url('https://fonts.googleapis.com/css2?family=Genos:ital,wght@0,100..900;1,100..900&display=swap');
+/* Global styles. Design tokens and foundation live in src/styles/ (see /#/design-system). */
+@use './styles/tokens';
+@use './styles/base';
 
 * {
   font-family: 'Genos', sans-serif;
@@ -8,11 +9,6 @@
   /* Firefox */
   -ms-overflow-style: none;
   /* IE and Edge */
-
-  &:focus {
-    outline: none;
-    /* Remove default focus outline from everything */
-  }
 }
 
 html,
@@ -55,8 +51,6 @@ p {
 
   --bg-container-color: #272931;
 
-  --warn-color: orange;
-  --error-color: crimson;
   --fg-color-muted: rgb(184, 184, 184);
   --bg-color-muted: rgb(77, 77, 77);
 }

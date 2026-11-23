@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, effect, inject } from '@angular/core';
-import { UIDiagonalLine } from '../../ui';
+import { UIDiagonalLine, UiToggle } from '../../ui';
 import { nrdbDb } from '../../db/nrdb-indexed-db';
 import { Card } from '../../models/card';
 import { ActivatedRoute, Route } from '@angular/router';
@@ -30,6 +30,7 @@ import { CardTranslationService } from '../../services/card-translation-service'
     FormsModule,
     CardComponent,
     CardBack,
+    UiToggle,
     CardDetail,
     FactionLabelPipe,
     TypeLabelPipe,
@@ -127,9 +128,8 @@ export class CardsPage {
     this.showAttribution = !this.showAttribution;
   }
 
-  toggleTranslated() {
-    this.filters.translated =
-      this.filters.translated === 'none' ? 'only' : 'none';
+  setTranslatedOnly(only: boolean) {
+    this.filters.translated = only ? 'only' : 'none';
     this.applyFilters();
   }
 

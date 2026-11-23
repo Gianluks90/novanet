@@ -1,0 +1,76 @@
+// =====================================================================
+// NovaNet design tokens
+//
+// Static tokens live on :root. Anything derived from the theme colors
+// (--fg-color, --bg-color, --accent-color are set on <body> by the
+// `.light` / `.dark` classes and by ThemeService) must be declared on
+// `body`, otherwise it would be resolved at :root where they don't exist.
+//
+// Rule of thumb: components use these variables, never raw colors,
+// pixel spacings or durations. See /#/design-system for the live guide.
+// =====================================================================
+
+:root {
+  // ---- brand / status colors (theme colors are in styles.scss) ----
+  --warn-color: orange;
+  --error-color: crimson;
+  --success-color: #4cd964;
+
+  // ---- spacing scale ----
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  // ---- radius (the UI is mostly sharp-edged; rounding is for small controls) ----
+  --radius-none: 0;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-pill: 999px;
+
+  // ---- type scale (font: Genos) ----
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.5rem;
+  --font-size-2xl: 2rem;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --letter-spacing-caps: 0.05em;
+
+  // ---- motion ----
+  --duration-fast: 150ms;
+  --duration-base: 300ms;
+  --duration-slow: 600ms;
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  // ---- elevation ----
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.2);
+
+  // ---- layering ----
+  --z-raised: 1;
+  --z-sticky: 2;
+  --z-overlay: 1000;
+
+  // ---- controls ----
+  --control-height: 32px;
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+}
+
+body {
+  // borders: `--border-color` is the signature accent line, `--border-muted` a quiet divider
+  --border-color: var(--accent-color);
+  --border-muted: color-mix(in srgb, var(--fg-color) 25%, transparent);
+
+  // interactive surfaces
+  --surface-hover: color-mix(in srgb, var(--accent-color) 14%, transparent);
+  --surface-active: var(--accent-color);
+  --on-accent: var(--bg-color);
+
+  --focus-ring-color: var(--accent-color);
+}

@@ -57,6 +57,15 @@ To run a single test file once specs exist, use Vitest's own filtering, e.g. `np
 
 **Directory map**: `components/` (reusable pieces incl. `dialogs/` for Angular CDK/Material-style dialogs), `pages/` (routed views, some nested like `decks-page/decks-list-page` and `decks-page/deck-builder-page`), `services/` (injectable app state/business logic), `db/` (NRDB IndexedDB access), `models/` (plain TS interfaces mirroring Firestore/NRDB shapes), `directives/` (e.g. `appCardTilt`, pointer-follow 3D tilt that only sets CSS variables), `pipes/` (display-formatting pipes for card fields — faction labels, icons, influence checks, etc.), `resolvers/` (route data preloading), `const/` (label maps and config constants), `ui/` (small presentational primitives re-exported from `ui/index.ts`), `environment/` (Firebase config).
 
+## Design system
+
+Live style guide at `#/design-system` (lazy route, not linked from the UI): tokens, typography, spacing and every shared component in the current theme. Keep it up to date when you add or change a shared piece.
+
+- **Tokens**: [src/styles/_tokens.scss](src/styles/_tokens.scss) (spacing `--space-1..6`, radius, type scale, motion, elevation, `--control-height`, plus `--border-color`, `--border-muted`, `--surface-hover`, `--surface-active`, `--on-accent`). Theme colors (`--accent-color`, `--fg-color`, `--bg-color`, `--bg-container-color`, muted variants) are still set on `<body>` by the `.light`/`.dark` classes and `ThemeService`; tokens derived from them must be declared on `body`, not `:root`. Use tokens, not raw colors/pixels/durations, in new styles.
+- **Foundation**: [src/styles/_base.scss](src/styles/_base.scss) — visible keyboard focus (`:focus-visible`; never remove outlines), checkbox/radio/placeholder/disabled basics, global `prefers-reduced-motion`. Form field look (input/select/textarea, `form.form-container > .form-group`) is in `styles.scss`.
+- **Shared components** (`src/app/ui/`, exported from `ui/index.ts`): `app-ui-button` (text button), `app-ui-icon-button` (icon-only, **required `label`** = accessible name + tooltip, `link` renders an anchor), `app-ui-segmented` (one-of-few choice; options are `{value, label: TranslationKey, icon?}`), `app-ui-toggle` (on/off, `label` is a TranslationKey), `app-ui-badge` (status chip), `app-ui-dialog-container`, `app-ui-diagonal-line`, `app-ui-image-container`. Clickable things must be real `button`/`a` elements: use these instead of a `span` with `(click)`.
+- Visual identity: terminal/cyberpunk — 1px accent borders, uppercase labels, sharp edges (rounding only on small controls), accent fills on hover/selection, Genos font.
+
 ## Conventions
 
 - Components are generated with `style: scss` and a separate `.html` template file (not inline) — follow this split for new components rather than inlining templates/styles.

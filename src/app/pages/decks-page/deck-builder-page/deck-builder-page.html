@@ -3,17 +3,18 @@
         <div class="section-header">
             <div class="side-line"></div>
             <div class="header-content">
-                <span class="material-symbols-rounded" [routerLink]="['/decks']">arrow_back</span>
+                <app-ui-icon-button icon="arrow_back" [label]="'deckBuilderPage.backToDecks' | t" [link]="['/decks']"></app-ui-icon-button>
                 <h1>{{ 'deckBuilderPage.deckView' | t: [form.get('name')?.value] }}</h1>
                 <div class="actions-container">
                     @if (isOwner && deck?.local) {
-                        <span class="material-symbols-rounded" [title]="'deckBuilderPage.saveOnline' | t" (click)="uploadDeck()">cloud_upload</span>
+                        <app-ui-icon-button icon="cloud_upload" [label]="'deckBuilderPage.saveOnline' | t" (click)="uploadDeck()"></app-ui-icon-button>
                     } @else if (isOwner) {
-                        <span
-                          class="material-symbols-rounded"
-                          [title]="(mode === 'edit' ? 'deckBuilderPage.manageVisibility' : 'deckBuilderPage.backToEditing') | t"
+                        <app-ui-icon-button
+                          [icon]="mode === 'edit' ? 'share' : 'close'"
+                          [label]="(mode === 'edit' ? 'deckBuilderPage.manageVisibility' : 'deckBuilderPage.backToEditing') | t"
+                          [active]="mode === 'visibility'"
                           (click)="mode = mode === 'edit' ? 'visibility' : 'edit'"
-                        >{{ mode === 'edit' ? 'share' : 'close' }}</span>
+                        ></app-ui-icon-button>
                     } @else {
                         <p>{{ 'deckBuilderPage.viewOnly' | t }}</p>
                         <app-ui-button [text]="'deckBuilderPage.copyToMyAccount' | t" icon="content_copy" size="small" (click)="cloneDeck()"></app-ui-button>
@@ -24,18 +25,9 @@
         @if (isOwner && mode === 'visibility') {
         <div class="visibility-panel">
             <p class="section-label">{{ 'deckBuilderPage.deckVisibility' | t }}</p>
-            <label>
-                <input type="radio" name="visibility" [checked]="deck?.visibility !== 'public' && deck?.visibility !== 'shared'" (change)="setVisibility('private')">
-                <span>{{ 'deckBuilderPage.privateOnlyYouCanSee' | t }}</span>
-            </label>
-            <label>
-                <input type="radio" name="visibility" [checked]="deck?.visibility === 'shared'" (change)="setVisibility('shared')">
-                <span>{{ 'deckBuilderPage.sharedAnyoneWithTheDirect' | t }}</span>
-            </label>
-            <label>
-                <input type="radio" name="visibility" [checked]="deck?.visibility === 'public'" (change)="setVisibility('public')">
-                <span>{{ 'deckBuilderPage.publicListedInTheCommunity' | t }}</span>
-            </label>
+            <app-ui-segmented [options]="visibilityOptions" [value]="deck?.visibility || 'private'"
+                (valueChange)="setVisibility($any($event))"></app-ui-segmented>
+            <p class="p-note visibility-hint">{{ visibilityHint | t }}</p>
         </div>
         }
         @if (deck) {
@@ -86,7 +78,7 @@
                 </div>
                 <p class="cards-container-title">
                     <span>{{ 'deckBuilderPage.cards' | t }}</span>
-                    <span [title]="'deckBuilderPage.exportCardList' | t" class="material-symbols-rounded" (click)="exportCardList()">bottom_panel_open</span>
+                    <app-ui-icon-button icon="bottom_panel_open" size="sm" [label]="'deckBuilderPage.exportCardList' | t" (click)="exportCardList()"></app-ui-icon-button>
                 </p>
                 <div class="cards-container">
                     @for (entry of selectedCardsList; track entry.card.id) {
@@ -131,8 +123,8 @@
             <div class="header-content">
                 <h1>{{ 'deckBuilderPage.deckBuilder' | t }}</h1>
                 <div class="actions-container">
-                    <span class="material-symbols-rounded" (click)="importCardList()">bottom_panel_close</span>
-                    <span class="material-symbols-rounded" (click)="saveDeck()">save</span>
+                    <app-ui-icon-button icon="bottom_panel_close" [label]="'importExportCardListDialog.importCardList' | t" (click)="importCardList()"></app-ui-icon-button>
+                    <app-ui-icon-button icon="save" [label]="'saveChangesButton' | t" (click)="saveDeck()"></app-ui-icon-button>
                 </div>
             </div>
         </div>

@@ -6,6 +6,11 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 
 Added 2026-11-23. This README is the project TODO list.
 
+### Design system (2026-11-23)
+
+- [x] **Done 2026-11-23** (`ng build` passes; **not reviewed visually — please open `#/design-system` in both themes and the pages below**): tokens (`src/styles/_tokens.scss`), foundation (`_base.scss`: visible keyboard focus instead of `outline: none` everywhere, checkbox/radio/placeholder/disabled, global reduced-motion), new components `app-ui-icon-button`, `app-ui-segmented`, `app-ui-toggle`, `app-ui-badge`, and the living style guide page (`/design-system`). Applied to: decks list (view-mode tabs were unstyled → segmented; device/cloud badge; edit/view/delete icon buttons), deck builder (visibility radios were unstyled → segmented + explanatory hint; header actions and export as labelled icon buttons), cards page ("Your/All languages" → "Translated only" toggle). The Genos font moved from a CSS `@import` to `<link>` in `index.html` (needed for `@use`, also faster). Documented in CLAUDE.md ("Design system").
+- [ ] Next (do together with the header/navigation work): rebuild the header with the design system (nav links, user menu, language menu as a shared menu component — `.lang-menu-container` is currently duplicated in several component stylesheets); migrate the remaining clickable `span`s with `(click)` to `app-ui-icon-button` (card detail menu/zoom/center, cards page reset/close/zoom, deck builder card rows, theme toggle); tokenize `ui-button`, `ui-dialog-container`, home page and card-detail styles; remaining hard-coded colors/px in page stylesheets; a shared `ui-field` (label + control + hint + error) once forms get validation messages.
+
 ### Product decisions (2026-11-23)
 
 - The app is meant to be **public** (expected small audience); there is currently a single user (the owner), so schema/rule changes need no migration.
