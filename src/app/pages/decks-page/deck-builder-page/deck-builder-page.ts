@@ -196,8 +196,10 @@ export class DeckBuilderPage {
 
   public setVisibility(visibility: 'private' | 'public' | 'shared') {
     if (!this.deck || !this.isOwner) return;
-    this.deck.visibility = visibility;
-    this.deckService.updateDeck(this.deck.id, { visibility });
+    // Decks created before authors were tracked get theirs recorded the first time they are shared.
+    const author = this.deck.originalAuthorId ? {} : this.deckService.authorFields(this.deck);
+    Object.assign(this.deck, author, { visibility });
+    this.deckService.updateDeck(this.deck.id, { visibility, ...author });
   }
 
   public cloneDeck() {

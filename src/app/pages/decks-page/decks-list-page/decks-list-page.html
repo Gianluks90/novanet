@@ -33,6 +33,9 @@
                                 <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + d.identity.id + '.jpg'" alt="">
                                 <div class="info-container">
                                     <p>{{d.name}} <app-ui-badge [icon]="d.local ? 'computer' : 'cloud'" [label]="(d.local ? 'decksListPage.thisDevice' : 'decksListPage.myAccount') | t" [iconOnly]="true"></app-ui-badge> <span class="material-symbols-rounded validity-icon" [title]="deckSize(d) < d.identity.minimum_deck_size! ? 'Deck is too small' : 'Deck size is valid'">{{deckSize(d) < d.identity.minimum_deck_size! ? 'close' : 'check'}}</span></p>
+                                    @if (authorOf(d); as author) {
+                                        <p class="p-note deck-author">{{ 'decksListPage.by' | t: [author] }}</p>
+                                    }
                                     <!-- <p i18n class="info-line">Influence limit: {{d.cards | checkInfluence:cardsMap:d.identity.faction_id! }}/{{d.identity.influence_limit}} Agenda points: {{ d.cards | checkAgendaPoints:cardsMap }}</p> -->
                                 </div>
                                 <div class="deck-actions">
@@ -61,6 +64,9 @@
                                 <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + d.identity.id + '.jpg'" alt="">
                                 <div class="info-container">
                                     <p>{{d.name}} <app-ui-badge [icon]="d.local ? 'computer' : 'cloud'" [label]="(d.local ? 'decksListPage.thisDevice' : 'decksListPage.myAccount') | t" [iconOnly]="true"></app-ui-badge> <span class="material-symbols-rounded validity-icon" [title]="deckSize(d) < d.identity.minimum_deck_size! ? 'Deck is too small' : 'Deck size is valid'">{{deckSize(d) < d.identity.minimum_deck_size! ? 'close' : 'check'}}</span></p>
+                                    @if (authorOf(d); as author) {
+                                        <p class="p-note deck-author">{{ 'decksListPage.by' | t: [author] }}</p>
+                                    }
                                     <!-- <p i18n class="info-line">Influence limit: {{d.cards | checkInfluence:cardsMap:d.identity.faction_id! }}/{{d.identity.influence_limit}} Agenda points: {{ d.cards | checkAgendaPoints:cardsMap }}</p> -->
                                 </div>
                                 <div class="deck-actions">

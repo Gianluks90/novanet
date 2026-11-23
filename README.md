@@ -6,6 +6,12 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 
 Added 2026-11-23. This README is the project TODO list.
 
+### Deck authorship and the public gallery (2026-11-23)
+
+- Public/shared decks are readable only by **signed-in** users (rules require `isSignedIn()`; the app doesn't even start the gallery listener for guests, who see "sign in to browse the public gallery").
+- [x] **Original author is always known** — `originalAuthorId` + `originalAuthorName` (snapshot of nickname/display name: user docs are private) are recorded on creation/upload, preserved by "copy to my account" (`clonedFrom` points to the source), shown in the gallery list and in the builder ("by …" / "Original author: …"), immutable and mandatory for public decks in `firestore.rules`. Not tested against the emulator: **deploy the rules and try: create deck → make public → copy from a second account → try to change the author** (should be denied). Privacy note: the name is public once a deck is public; consider an explicit "publish with name / anonymously" choice later. If the author changes nickname, old public decks keep the old name.
+- [ ] Open: a way to report a public deck and remove it (moderation); optionally keep the author's current nickname in sync.
+
 ### Design system (2026-11-23)
 
 - [x] **Done 2026-11-23** (`ng build` passes; **not reviewed visually — please open `#/design-system` in both themes and the pages below**): tokens (`src/styles/_tokens.scss`), foundation (`_base.scss`: visible keyboard focus instead of `outline: none` everywhere, checkbox/radio/placeholder/disabled, global reduced-motion), new components `app-ui-icon-button`, `app-ui-segmented`, `app-ui-toggle`, `app-ui-badge`, and the living style guide page (`/design-system`). Applied to: decks list (view-mode tabs were unstyled → segmented; device/cloud badge; edit/view/delete icon buttons), deck builder (visibility radios were unstyled → segmented + explanatory hint; header actions and export as labelled icon buttons), cards page ("Your/All languages" → "Translated only" toggle). The Genos font moved from a CSS `@import` to `<link>` in `index.html` (needed for `@use`, also faster). Documented in CLAUDE.md ("Design system").

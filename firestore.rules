@@ -31,6 +31,32 @@ service cloud.firestore {
     // of their own (DeckService.cloneDeck -> a normal `create` below, always
     // as a fresh 'private' doc). Deletion is a real delete, owner-only
     // (DeckService.deckRemove).
+    // The original author of a deck is recorded in originalAuthorId/originalAuthorName and must
+    // survive copies and edits: it is immutable once set, a new deck must either be authored by its
+    // creator or be a copy (clonedFrom) of a deck with that same original author, and a deck can only
+    // be public if its original author is known.
+    function authorIsValidOnCreate() {
+      let d = request.resource.data;
+      return d.get('originalAuthorId', null) == request.auth.uid
+        || (d.get('clonedFrom', null) != null
+            && exists(/databases/$(database)/documents/decks/$(d.clonedFrom))
+            && get(/databases/$(database)/documents/decks/$(d.clonedFrom)).data
+                 .get('originalAuthorId', get(/databases/$(database)/documents/decks/$(d.clonedFrom)).data.createdBy)
+               == d.get('originalAuthorId', null));
+    }
+
+    function authorIsPreservedOnUpdate() {
+      let before = resource.data.get('originalAuthorId', null);
+      let after = request.resource.data.get('originalAuthorId', null);
+      // legacy decks (no author yet) may get their owner recorded once
+      return before == after || (before == null && after == resource.data.createdBy);
+    }
+
+    function publicNeedsAuthor() {
+      return request.resource.data.get('visibility', 'private') != 'public'
+        || request.resource.data.get('originalAuthorId', null) != null;
+    }
+
     match /decks/{deckId} {
       allow read: if isSignedIn() && (
         resource.data.createdBy == request.auth.uid ||
@@ -38,11 +64,16 @@ service cloud.firestore {
         resource.data.visibility == 'shared'
       );
       allow create: if isSignedIn() && request.resource.data.createdBy == request.auth.uid
-                    && request.resource.data.get('visibility', 'private') in ['private', 'shared', 'public'];
+                    && request.resource.data.get('visibility', 'private') in ['private', 'shared', 'public']
+                    && authorIsValidOnCreate()
+                    && publicNeedsAuthor();
       allow update: if isSignedIn()
                     && resource.data.createdBy == request.auth.uid
                     && request.resource.data.createdBy == request.auth.uid
-                    && request.resource.data.get('visibility', 'private') in ['private', 'shared', 'public'];
+                    && request.resource.data.get('visibility', 'private') in ['private', 'shared', 'public']
+                    && authorIsPreservedOnUpdate()
+                    && request.resource.data.get('originalAuthorName', null) == resource.data.get('originalAuthorName', request.resource.data.get('originalAuthorName', null))
+                    && publicNeedsAuthor();
       allow delete: if isSignedIn() && resource.data.createdBy == request.auth.uid;
     }
 

@@ -85,6 +85,13 @@ export class DecksListPage {
     return Object.values(deck.cards ?? {}).reduce((total, qty) => total + Number(qty), 0);
   }
 
+  /** Name of the original author to show on a deck, or null when it is the user's own deck. */
+  public authorOf(deck: Deck): string | null {
+    if (!deck.originalAuthorName) return null;
+    if (deck.originalAuthorId === this.firebase.$user()?.uid) return null;
+    return deck.originalAuthorName;
+  }
+
   /** True for decks the current user can edit: saved on this device or owned online. */
   public canEdit(deck: Deck): boolean {
     return !!deck.local || deck.createdBy === this.firebase.$user()?.uid;

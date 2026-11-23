@@ -153,4 +153,6 @@ export const IT: Record<TranslationKey, string> = {
   "cardsPage.translatedOnly": "Solo tradotte",
   "decksListPage.viewPersonal": "Personali",
   "decksListPage.viewPublic": "Pubblici",
+  "decksListPage.by": "di {0}",
+  "deckBuilderPage.originalAuthor": "Autore originale: {0}",
 };

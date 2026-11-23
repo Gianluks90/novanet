@@ -151,6 +151,8 @@ export const EN = {
   "cardsPage.translatedOnly": "Translated only",
   "decksListPage.viewPersonal": "Personal",
   "decksListPage.viewPublic": "Public",
+  "decksListPage.by": "by {0}",
+  "deckBuilderPage.originalAuthor": "Original author: {0}",
 } as const;
 
 export type TranslationKey = keyof typeof EN;

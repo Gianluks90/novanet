@@ -97,14 +97,24 @@ export class DeckService {
     return docSnap.exists() ? (docSnap.data() as Deck) : null;
   }
 
-  /** Creates a deck: on this device when `deck.local`, otherwise online. */
+  /** Original author fields for a deck: kept if the deck already has them, otherwise the current user. */
+  public authorFields(deck: Pick<Deck, 'originalAuthorId' | 'originalAuthorName' | 'createdBy'>): { originalAuthorId: string; originalAuthorName: string } {
+    const user = this.firebase.$user();
+    const auth = getAuth().currentUser;
+    return {
+      originalAuthorId: deck.originalAuthorId ?? auth?.uid ?? deck.createdBy,
+      originalAuthorName: deck.originalAuthorName ?? (user?.nickname || user?.displayName || auth?.displayName || ''),
+    };
+  }
+
+  /** Creates a deck: on this device when `deck.local`, otherwise online (always recording its original author). */
   public async newDeck(deck: Deck): Promise<void> {
     const { local, ...data } = deck;
     if (local) {
       await this.putLocal({ ...data, local: true });
       return;
     }
-    await setDoc(doc(this.firebase.database, 'decks', deck.id), { ...data }, { merge: true });
+    await setDoc(doc(this.firebase.database, 'decks', deck.id), { ...data, ...this.authorFields(data) }, { merge: true });
   }
 
   public async deckRemove(deckId: string): Promise<void> {
@@ -135,6 +145,10 @@ export class DeckService {
     const newId = crypto.randomUUID();
     const cloned: Deck = {
       ...base,
+      // a copy keeps the original author (never the person copying it)
+      originalAuthorId: base.originalAuthorId ?? base.createdBy,
+      originalAuthorName: base.originalAuthorName ?? '',
+      clonedFrom: source.id,
       id: newId,
       createdBy: this.firebase.$user()!.uid,
       visibility: 'private',
@@ -157,7 +171,13 @@ export class DeckService {
     if (!uid) throw new Error('Not signed in');
 
     const { local: _ignored, ...base } = local;
-    const online: Deck = { ...base, createdBy: uid, visibility: 'private', updatedAt: Timestamp.now() };
+    const online: Deck = {
+      ...base,
+      ...this.authorFields({ ...base, createdBy: uid }),
+      createdBy: uid,
+      visibility: 'private',
+      updatedAt: Timestamp.now(),
+    };
     await setDoc(doc(this.firebase.database, 'decks', deckId), { ...online });
 
     await (await userDb).delete('decks', deckId);

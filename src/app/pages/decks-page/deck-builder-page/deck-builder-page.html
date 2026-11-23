@@ -32,6 +32,9 @@
         }
         @if (deck) {
         <div class="section-content view-content">
+            @if (deck.originalAuthorName && deck.originalAuthorId !== firebase.$user()?.uid) {
+                <p class="p-note deck-author">{{ 'deckBuilderPage.originalAuthor' | t: [deck.originalAuthorName] }}</p>
+            }
             @if (deck.identity) {
             <section>
                 <div class="identity-container" (click)="onCardClick(deck.identity)">
