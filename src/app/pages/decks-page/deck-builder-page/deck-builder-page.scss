@@ -155,6 +155,16 @@ $wide-breakpoint: 1360px;
     }
 }
 
+// Right half of the deck view when there is room: format/identity selects above the card detail.
+// Narrower, the wrapper disappears (display: contents) and the detail is the drawer below.
+.detail-column {
+    display: contents;
+}
+
+.settings-wide {
+    display: none;
+}
+
 // Card detail sliding in from the right over the deck list
 .detail-drawer {
     position: absolute;
@@ -194,11 +204,31 @@ $wide-breakpoint: 1360px;
 }
 
 @media (min-width: $wide-breakpoint) {
+    .detail-column {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+        min-width: 0;
+        min-height: 0;
+    }
+
+    .settings-wide {
+        display: block;
+        flex-shrink: 0;
+        padding: var(--space-2) var(--space-3);
+        border: 1px solid var(--accent-color);
+    }
+
+    .settings-narrow {
+        display: none;
+    }
+
     .detail-drawer,
     .detail-drawer.open {
         display: flex;
         position: static;
         width: auto;
+        flex: 1;
         min-height: 0;
         border-left: 0;
         box-shadow: none;

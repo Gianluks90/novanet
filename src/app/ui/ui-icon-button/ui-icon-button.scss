@@ -3,6 +3,7 @@
 }
 
 .ui-icon-btn {
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -43,5 +44,30 @@
         .material-symbols-rounded {
             font-size: 1.1rem;
         }
+    }
+}
+
+// Attention dot. It blinks between full and faint; with "reduce motion" the animation is
+// effectively off and the dot simply stays visible.
+.indicator {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--warn-color);
+    box-shadow: 0 0 0 1px var(--bg-container-color);
+    animation: indicatorBlink 1.4s ease-in-out infinite;
+}
+
+@keyframes indicatorBlink {
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: .2;
     }
 }

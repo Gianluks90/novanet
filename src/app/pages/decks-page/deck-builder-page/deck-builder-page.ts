@@ -1,4 +1,4 @@
-import { UiBadge, UiIconButton, UiSegmented, UiStepper, SegmentedOption } from '../../../ui';
+import { UiIconButton, UiSegmented, UiStepper, SegmentedOption } from '../../../ui';
 import { HasUnsavedChanges } from '../../../guards/unsaved-changes-guard';
 import { TranslationKey } from '../../../i18n/en';
 import { AfterViewInit, ChangeDetectorRef, Component, effect, inject, ViewChild, ElementRef, HostListener, untracked } from '@angular/core';
@@ -38,7 +38,7 @@ import { agendaRequirement } from '../../../utils/deck-rules';
 
 @Component({
   selector: 'app-deck-builder-page',
-  imports: [TranslatePipe, CardTitlePipe, UiBadge, UiIconButton, UiSegmented, UiStepper, CardDetail, CardZoom, NgTemplateOutlet, FormsModule, ReactiveFormsModule, FactionLabelPipe, TypeLabelPipe, DotsPipe, RouterLink, UIButton],
+  imports: [TranslatePipe, CardTitlePipe, UiIconButton, UiSegmented, UiStepper, CardDetail, CardZoom, NgTemplateOutlet, FormsModule, ReactiveFormsModule, FactionLabelPipe, TypeLabelPipe, DotsPipe, RouterLink, UIButton],
   templateUrl: './deck-builder-page.html',
   styleUrl: './deck-builder-page.scss',
 })
@@ -510,6 +510,18 @@ export class DeckBuilderPage implements AfterViewInit {
         entries: entries.sort((a, b) => a.card.title.localeCompare(b.card.title)),
         total: entries.reduce((sum, e) => sum + e.qty, 0),
       }));
+  }
+
+  /** `null`: follow the app language (translated unless it is English); the button overrides it. */
+  private translatedOverride: boolean | null = null;
+
+  /** Card titles and texts in the app language (when translations exist) or English only. */
+  public get showTranslated(): boolean {
+    return this.translatedOverride ?? this.locale !== 'en';
+  }
+
+  public toggleTranslated() {
+    this.translatedOverride = !this.showTranslated;
   }
 
   /** How the deck's cards are shown; remembered on this device. */

@@ -54,12 +54,13 @@
             <app-ui-button text="Small" icon="add" size="small"></app-ui-button>
             <app-ui-button text="Disabled" icon="block" [disabled]="true"></app-ui-button>
         </div>
-        <p class="p-note"><code>app-ui-icon-button</code> — icon-only actions. Always pass a <code>label</code> (accessible name + tooltip); <code>link</code> renders an anchor.</p>
+        <p class="p-note"><code>app-ui-icon-button</code> — icon-only actions. Always pass a <code>label</code> (accessible name + tooltip); <code>link</code> renders an anchor; <code>indicator</code> adds a blinking attention dot (say what it means in the label).</p>
         <div class="row">
             <app-ui-icon-button icon="save" label="Save"></app-ui-icon-button>
             <app-ui-icon-button icon="delete" label="Delete"></app-ui-icon-button>
             <app-ui-icon-button icon="share" label="Toggle (active)" [active]="activeIcon()" (click)="activeIcon.set(!activeIcon())"></app-ui-icon-button>
             <app-ui-icon-button icon="info" label="Small" size="sm"></app-ui-icon-button>
+            <app-ui-icon-button icon="save" label="Save — unsaved changes" [indicator]="true"></app-ui-icon-button>
             <app-ui-icon-button icon="block" label="Disabled" [disabled]="true"></app-ui-icon-button>
             <app-ui-icon-button icon="arrow_back" label="Link to home" [link]="['/']"></app-ui-icon-button>
         </div>

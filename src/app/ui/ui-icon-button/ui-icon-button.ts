@@ -20,6 +20,8 @@ export class UiIconButton {
   /** Highlights the button (e.g. the mode it toggles is on). */
   public active = input<boolean>(false);
   public disabled = input<boolean>(false);
+  /** Blinking dot on the corner: something needs attention (e.g. unsaved changes). Say what in `label`. */
+  public indicator = input<boolean>(false);
   /** Router link: renders an anchor instead of a button. */
   public link = input<string | any[] | null>(null);
 }

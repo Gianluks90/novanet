@@ -60,6 +60,8 @@ export const IT: Record<TranslationKey, string> = {
   "deckBuilderPage.addCopy": "Aggiungi una copia",
   "deckBuilderPage.viewGrid": "Vista a griglia",
   "deckBuilderPage.viewList": "Vista a elenco",
+  "deckBuilderPage.showEnglish": "Titoli tradotti: mostra solo l'inglese",
+  "deckBuilderPage.showTranslated": "Solo inglese: mostra le traduzioni",
   "deckBuilderPage.removeCopy": "Rimuovi una copia",
   "deckBuilderPage.missingCards": "Mancano {0} carte",
   "deckBuilderPage.influenceOver": "{0} di influenza oltre il limite",

@@ -49,6 +49,8 @@ export class CardDetail {
   public disableZoom = input<boolean>(false);
   public disableCenter = input<boolean>(false);
   public disableMenu = input<boolean>(false);
+  /** Show the card in the current language when a translation exists (`false`: English only). */
+  public translated = input<boolean>(true);
 
   constructor(
     public firebase: FirebaseService,
@@ -62,7 +64,7 @@ export class CardDetail {
       this.initFactionCostArray();
 
       // Upstream translations are often partial (e.g. title only): fall back field by field.
-      const translation = this.translations.translation(card.id);
+      const translation = this.translated() ? this.translations.translation(card.id) : undefined;
 
       if (translation) {
         this.card.set({

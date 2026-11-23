@@ -58,6 +58,8 @@ export const EN = {
   "deckBuilderPage.addCopy": "Add a copy",
   "deckBuilderPage.viewGrid": "Grid view",
   "deckBuilderPage.viewList": "List view",
+  "deckBuilderPage.showEnglish": "Showing translations: show English only",
+  "deckBuilderPage.showTranslated": "Showing English only: show translations",
   "deckBuilderPage.removeCopy": "Remove a copy",
   "deckBuilderPage.missingCards": "{0} cards missing",
   "deckBuilderPage.influenceOver": "{0} influence over the limit",
