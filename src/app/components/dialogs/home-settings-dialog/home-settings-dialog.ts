@@ -15,10 +15,12 @@ import { CdkObserveContent } from "@angular/cdk/observers";
 import { Faction } from '../../../models/faction';
 import { FactionLabelPipe } from "../../../pipes/faction-label-pipe";
 import { TranslatePipe } from '../../../i18n/translate-pipe';
+import { CardBackService } from '../../../services/card-back-service';
+import { CardBackPicker } from '../../card-back-picker/card-back-picker';
 
 @Component({
   selector: 'app-home-settings-dialog',
-  imports: [TranslatePipe, UiDialogContainer, UIButton, UiSegmented, FormsModule, ReactiveFormsModule, FactionLabelPipe],
+  imports: [TranslatePipe, UiDialogContainer, UIButton, UiSegmented, CardBackPicker, FormsModule, ReactiveFormsModule, FactionLabelPipe],
   templateUrl: './home-settings-dialog.html',
   styleUrl: './home-settings-dialog.scss',
 })
@@ -31,6 +33,8 @@ export class HomeSettingsDialog {
   public theme = inject(ThemeService);
   private notification = inject(NotificationService);
   public i18n = inject(I18nService);
+  public cardBacks = inject(CardBackService);
+  public readonly backSides = ['runner', 'corp'] as const;
 
   constructor(private fb: FormBuilder, private userService: UserService) {
     this.form = this.fb.group({

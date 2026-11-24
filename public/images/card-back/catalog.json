@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "defaults": {
+    "runner": "runner-base",
+    "corp": "corp-base"
+  },
+  "backs": [
+    { "id": "runner-base", "side": "runner", "file": "runner-base.webp", "names": { "en": "Base", "it": "Base" } },
+    { "id": "runner-ghost", "side": "runner", "file": "runner-ghost.webp", "names": { "en": "Ghost", "it": "Fantasma" } },
+    { "id": "runner-neural", "side": "runner", "file": "runner-neural.webp", "names": { "en": "Neural", "it": "Neurale" } },
+    { "id": "runner-underground", "side": "runner", "file": "runner-underground.webp", "names": { "en": "Underground", "it": "Underground" } },
+    { "id": "corp-base", "side": "corp", "file": "corp-base.webp", "names": { "en": "Base", "it": "Base" } },
+    { "id": "corp-blacksite", "side": "corp", "file": "corp-blacksite.webp", "names": { "en": "Blacksite", "it": "Blacksite" } },
+    { "id": "corp-core", "side": "corp", "file": "corp-core.webp", "names": { "en": "Core", "it": "Core" } },
+    { "id": "corp-executive", "side": "corp", "file": "corp-executive.webp", "names": { "en": "Executive", "it": "Esecutivo" } }
+  ]
+}

@@ -1,0 +1,9 @@
+<app-ui-dialog-container [dialogTitle]="'cardBack.dialogTitle' | t">
+    <p class="p-note">{{ 'cardBack.dialogNote' | t }}</p>
+    <br>
+    <app-card-back-picker [side]="data.side" [allowDefault]="true" [(value)]="selected"></app-card-back-picker>
+    <div dialog-actions-container>
+        <app-ui-button [text]="'saveChangesButton' | t" icon="save" (click)="confirm()"></app-ui-button>
+        <app-ui-button [text]="'closeButton' | t" icon="close" (click)="dialogRef.close()"></app-ui-button>
+    </div>
+</app-ui-dialog-container>

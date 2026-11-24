@@ -31,6 +31,8 @@ export interface Deck {
     /** Runtime flag (never stored): the deck lives on this device, not in Firestore. */
     local?: boolean;
     customBackImageURL?: string;
+    /** Card back chosen for this deck (id in the card back catalog); none: the player's preferred one. */
+    cardBack?: string | null;
     visibility: 'private' | 'public' | 'shared';
     deckStatistics?: DeckStatistics;
 }

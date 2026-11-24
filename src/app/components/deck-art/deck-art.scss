@@ -1,0 +1,23 @@
+:host {
+    position: relative;
+    display: block;
+    aspect-ratio: 2 / 3;
+}
+
+// the back: same box as the identity, turned and shifted so a strip of it shows on the right
+// (percentages, so it looks the same at any size)
+.back {
+    position: absolute;
+    inset: 0;
+    width: auto;
+    height: auto;
+    border-radius: var(--radius-sm);
+    transform: translate(18%, 2%) rotate(9deg);
+    box-shadow: var(--shadow-sm);
+}
+
+app-card-image {
+    position: relative; // above the back
+    width: 100%;
+    height: 100%;
+}

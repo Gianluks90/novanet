@@ -1,0 +1,12 @@
+<div class="picker" role="group">
+    @for (back of options(); track back.id) {
+        <button type="button" class="option" [class.selected]="isSelected(back)" [attr.aria-pressed]="isSelected(back)"
+            [title]="service.name(back)" (click)="pick(back)">
+            <img [src]="service.url(back)" alt="" loading="lazy">
+            <span class="label">{{ service.name(back) }}</span>
+            @if (allowDefault() && back.id === defaultBack()?.id) {
+                <span class="default-tag">{{ 'cardBack.default' | t }}</span>
+            }
+        </button>
+    }
+</div>

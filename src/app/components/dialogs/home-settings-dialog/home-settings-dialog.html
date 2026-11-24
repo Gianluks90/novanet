@@ -56,6 +56,15 @@
             groupLabel="homeSettingsDialog.accentColor" (valueChange)="theme.setAccent($event)"></app-ui-segmented>
         <span class="field-hint">{{ 'homeSettingsDialog.accentColorHint' | t: [(theme.theme() === 'light' ? 'homeSettingsDialog.themeLight' : 'homeSettingsDialog.themeDark') | t] }}</span>
     </div>
+    <div class="option-group">
+        <span class="option-label">{{ 'homeSettingsDialog.cardBacks' | t }}</span>
+        @for (side of backSides; track side) {
+            <span class="field-hint">{{ (side === 'runner' ? 'cardBack.runner' : 'cardBack.corp') | t }}</span>
+            <app-card-back-picker [side]="side" [value]="cardBacks.preferredId(side)"
+                (valueChange)="cardBacks.setPreferred(side, $event!)"></app-card-back-picker>
+        }
+        <span class="field-hint">{{ 'homeSettingsDialog.cardBacksHint' | t }}</span>
+    </div>
     <p class="p-subtitle">{{ 'homeSettingsDialog.myTranslations' | t }}</p>
     <p class="p-note">{{ 'homeSettingsDialog.myTranslationsInfo' | t: [translations.userCount()] }}</p>
     <div class="translations-actions">

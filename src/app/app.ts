@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, effect, HostListener, inject, signal } from '@angular/core';
-import { NavigationEnd, NavigationStart, Router, RouterOutlet } from '@angular/router';
+import { NavigationStart, Router, RouterOutlet } from '@angular/router';
 import { Header } from './components/header/header';
 import { UnsupportedPage } from './pages/unsupported-page/unsupported-page';
 import { initializeApp } from 'firebase/app';
@@ -9,6 +9,7 @@ import { getFirestore } from 'firebase/firestore';
 import { NotificationService } from './services/notification-service';
 import { I18nService } from './i18n/i18n-service';
 import { ThemeService } from './services/theme-service';
+import { CardBackService } from './services/card-back-service';
 
 @Component({
   selector: 'app-root',
@@ -23,17 +24,14 @@ export class App {
   public backgroundImageUrl: string | null = null;
   /** Instantiated here so the saved theme and accent color are applied on startup, whatever the page. */
   private theme = inject(ThemeService);
+  /** Created at startup: loads the card back catalog and preloads the images. */
+  private cardBacks = inject(CardBackService);
 
   constructor(private firebaseService: FirebaseService, private router: Router, private notification: NotificationService, private cd: ChangeDetectorRef) {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
         if (event.url.includes('cards')) {
           this.notification.notify(this.i18n.t('notifications.cardsLoading'), 'cards_stack')
-        }
-      }
-      if (event instanceof NavigationEnd) {
-        if (event.url.includes('cards')) {
-          this.notification.notify(this.i18n.t('notifications.cardsLoaded'), 'cards_stack', 5000);
         }
       }
     });

@@ -226,12 +226,11 @@ input[type="number"] {
 
     }
 
-    app-card-image {
-        // a size container: width comes from the height and the 2:3 ratio
+    // identity over the deck's card back (the back sticks out on the right: room in the margin)
+    app-deck-art {
         height: 52px;
-        width: auto;
         flex-shrink: 0;
-        margin-right: 12px;
+        margin-right: var(--space-4);
     }
 }
 

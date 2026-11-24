@@ -37,3 +37,21 @@
     inset: 0;
     opacity: .75;
 }
+
+// the artwork of a back covers the plain back (and its frame and border)
+.back-art {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+:host(.has-art) {
+    border: 0;
+
+    &::before {
+        display: none;
+    }
+}

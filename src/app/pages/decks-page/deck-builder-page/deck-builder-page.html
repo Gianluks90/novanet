@@ -81,6 +81,7 @@
                 @if (isOwner) {
                     <app-ui-icon-button icon="bottom_panel_close" [label]="'importExportCardListDialog.importCardList' | t" (click)="importCardList()"></app-ui-icon-button>
                     <app-ui-icon-button icon="bottom_panel_open" [label]="'deckBuilderPage.exportCardList' | t" (click)="exportCardList()"></app-ui-icon-button>
+                    <app-ui-icon-button icon="palette" [label]="'cardBack.deckButton' | t" (click)="openCardBackDialog()"></app-ui-icon-button>
                     <app-ui-icon-button icon="save" [indicator]="dirty"
                         [label]="dirty ? (('saveChangesButton' | t) + ' — ' + ('unsavedChanges.title' | t)) : ('saveChangesButton' | t)"
                         (click)="saveDeck()"></app-ui-icon-button>
@@ -121,7 +122,8 @@
                 <div class="identity-strip">
                     <div class="identity-art-column">
                         <button type="button" class="identity-art" (click)="onCardClick(deck.identity)">
-                            <app-card-image [card]="deck.identity" size="large" [lazy]="true" [title]="deck.identity | cardTitle: showTranslated"></app-card-image>
+                            <app-deck-art [identity]="deck.identity" [side]="deck.side" [back]="form.get('cardBack')?.value || null"
+                                [size]="'large'" [title]="deck.identity | cardTitle: showTranslated"></app-deck-art>
                         </button>
                         @if (isOwner) {
                             <button type="button" class="ghost-btn change-identity" [cdkMenuTriggerFor]="identityMenu"

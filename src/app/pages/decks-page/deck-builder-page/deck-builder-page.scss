@@ -131,8 +131,8 @@ $wide-breakpoint: 1360px;
 // Compact identity strip: small art, name and the three meters side by side
 .identity-strip {
     display: grid;
-    grid-template-columns: 72px 1fr;
-    gap: var(--space-3);
+    grid-template-columns: 104px 1fr;
+    gap: var(--space-5); // the card back sticks out on the right of the art
     align-items: start;
 
     // the art with the "change identity" button under it
@@ -153,8 +153,9 @@ $wide-breakpoint: 1360px;
         cursor: pointer;
         line-height: 0;
 
-        app-card-image {
-            width: 100%;
+        app-deck-art {
+            // leave room on the right for the tilted back
+            width: calc(100% - var(--space-4));
         }
     }
 

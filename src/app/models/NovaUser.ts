@@ -10,6 +10,8 @@ export interface NovaUser {
   customBackgroundURL?: string;
   /** Accent preset id chosen for each theme (see const/accent-colors.ts). */
   accentColors?: { light?: string; dark?: string };
+  /** Preferred card back per side (ids of images/card-back/catalog.json); a deck's own choice wins. */
+  cardBacks?: { runner?: string; corp?: string };
   nickname?: string;
   favoriteCaption?: {
     [lang: string]: string;

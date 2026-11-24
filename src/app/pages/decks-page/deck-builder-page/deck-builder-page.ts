@@ -24,6 +24,8 @@ import { DialogResult } from '../../../models/DialogResult';
 import { DIALOGS_CONFIG } from '../../../const/dialogConfig';
 import { CardZoom } from '../../../components/card-zoom/card-zoom';
 import { CardImage } from '../../../components/card-image/card-image';
+import { DeckArt } from '../../../components/deck-art/deck-art';
+import { CardBackDialog } from '../../../components/dialogs/card-back-dialog/card-back-dialog';
 import { Timestamp } from 'firebase/firestore';
 import { DeckService } from '../../../services/deck-service';
 import { ImportExportCardListDialog } from '../../../components/dialogs/import-export-card-list-dialog/import-export-card-list-dialog';
@@ -45,7 +47,7 @@ import { DeckFormatStatus } from '../../../components/deck-format-status/deck-fo
 
 @Component({
   selector: 'app-deck-builder-page',
-  imports: [TranslatePipe, CardTitlePipe, UiIconButton, UiSegmented, UiStepper, UiToggle, DetailDrawer, CardZoom, CardImage, DeckMeters, DeckFormatStatus, NgTemplateOutlet, CdkMenu, CdkMenuItem, CdkMenuTrigger, FormsModule, ReactiveFormsModule, FactionLabelPipe, TypeLabelPipe, DotsPipe, RouterLink, UIButton],
+  imports: [TranslatePipe, CardTitlePipe, UiIconButton, UiSegmented, UiStepper, UiToggle, DetailDrawer, CardZoom, CardImage, DeckArt, DeckMeters, DeckFormatStatus, NgTemplateOutlet, CdkMenu, CdkMenuItem, CdkMenuTrigger, FormsModule, ReactiveFormsModule, FactionLabelPipe, TypeLabelPipe, DotsPipe, RouterLink, UIButton],
   templateUrl: './deck-builder-page.html',
   styleUrl: './deck-builder-page.scss',
 })
@@ -99,7 +101,9 @@ export class DeckBuilderPage implements AfterViewInit {
       format: [''],
       identity: ['', Validators.required],
       cardInput: [''],
-      notes: ['']
+      notes: [''],
+      // id of a card back of the catalog, '' = the player's preferred one
+      cardBack: [''],
     });
 
     this.cardForm = this.fb.group({
@@ -183,7 +187,8 @@ export class DeckBuilderPage implements AfterViewInit {
       name: this.deck?.name || '',
       format: this.formatService.normalize(this.deck?.format),
       identity: this.deck?.identity.id || '',
-      notes: this.deck?.notes || ''
+      notes: this.deck?.notes || '',
+      cardBack: this.deck?.cardBack || '',
     });
     this.routeDeckResolved = true;
   }
@@ -208,6 +213,7 @@ export class DeckBuilderPage implements AfterViewInit {
       format: v.format ?? '',
       identity: v.identity ?? '',
       notes: v.notes ?? '',
+      cardBack: v.cardBack ?? '',
       cards: Array.from(this.selectedCards.entries()).sort(([a], [b]) => a.localeCompare(b)),
     });
   }
@@ -245,7 +251,8 @@ export class DeckBuilderPage implements AfterViewInit {
       name: deck.name || '',
       format: this.formatService.normalize(deck.format),
       identity: deck.identity?.id || '',
-      notes: deck.notes || ''
+      notes: deck.notes || '',
+      cardBack: deck.cardBack || '',
     });
     this.selectedCards = new Map();
     this.cardsParsed = false;
@@ -661,6 +668,7 @@ export class DeckBuilderPage implements AfterViewInit {
       format: this.form.get('format')?.value,
       identity: this.deck.identity,
       notes: this.form.get('notes')?.value,
+      cardBack: this.form.get('cardBack')?.value || null,
       cards: cardsPayload,
       updatedAt: Timestamp.now()
     };
@@ -669,6 +677,8 @@ export class DeckBuilderPage implements AfterViewInit {
       await this.deckService.updateDeck(this.deck.id, updatedDeck);
       this.deck = { ...updatedDeck };
       this.baseline = this.currentSnapshot();
+      // no zone.js: the "unsaved changes" badge only goes away if the view is refreshed by hand
+      this.cd.detectChanges();
       this.notification.notify(this.i18n.t('notifications.deckSaved'), 'check');
     } catch (err: any) {
       console.error('Errore durante il salvataggio del deck:', err);
@@ -707,6 +717,21 @@ this.selectedCards.forEach((qty, code) => {
     this.openImportExportDialog(exportData.join('\n'));
   }
 
+
+  /** Opens the chooser of the deck's card back (none chosen = the player's preferred one). */
+  public openCardBackDialog() {
+    if (!this.deck || !this.isOwner) return;
+    this.dialogRef = this.dialog.open<DialogResult>(CardBackDialog, {
+      ...DIALOGS_CONFIG,
+      panelClass: 'dialog-container',
+      data: { side: this.deck.side, value: this.form.get('cardBack')?.value || null },
+    });
+    this.dialogRef.closed.subscribe((result: DialogResult | undefined) => {
+      if (result?.status !== 'confirmed') return;
+      this.form.get('cardBack')?.setValue(result.data?.cardBack ?? '');
+      this.cd.detectChanges();
+    });
+  }
 
   private openImportExportDialog(data?: any) {
     this.dialogRef = this.dialog.open<DialogResult>(ImportExportCardListDialog, {

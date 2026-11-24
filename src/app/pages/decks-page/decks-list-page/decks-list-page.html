@@ -43,7 +43,7 @@
                     <div class="decks-list" [class.empty-list]="(decks | filterDecksBySide:'runner').length <= 0">
                         @for(d of decks | filterDecksBySide:'runner'; track d.id) {
                             <div class="deck-container">
-                                <app-card-image [card]="d.identity" size="medium" [lazy]="true" [title]="d.identity | cardTitle"></app-card-image>
+                                <app-deck-art [identity]="d.identity" [side]="d.side" [back]="d.cardBack" [title]="d.identity | cardTitle"></app-deck-art>
                                 <div class="info-container">
                                     <p>{{d.name}} <span class="material-symbols-rounded validity-icon" [title]="(deckSize(d) < d.identity.minimum_deck_size! ? 'decksListPage.deckTooSmall' : 'decksListPage.deckSizeValid') | t">{{deckSize(d) < d.identity.minimum_deck_size! ? 'close' : 'check'}}</span></p>
                                     <!-- Both pill rows are always rendered (even empty) so every deck has the same height -->
@@ -89,7 +89,7 @@
                     <div class="decks-list" [class.empty-list]="(decks | filterDecksBySide:'corp').length <= 0">
                         @for(d of decks | filterDecksBySide:'corp'; track d.id) {
                             <div class="deck-container">
-                                <app-card-image [card]="d.identity" size="medium" [lazy]="true" [title]="d.identity | cardTitle"></app-card-image>
+                                <app-deck-art [identity]="d.identity" [side]="d.side" [back]="d.cardBack" [title]="d.identity | cardTitle"></app-deck-art>
                                 <div class="info-container">
                                     <p>{{d.name}} <span class="material-symbols-rounded validity-icon" [title]="(deckSize(d) < d.identity.minimum_deck_size! ? 'decksListPage.deckTooSmall' : 'decksListPage.deckSizeValid') | t">{{deckSize(d) < d.identity.minimum_deck_size! ? 'close' : 'check'}}</span></p>
                                     <!-- Both pill rows are always rendered (even empty) so every deck has the same height -->

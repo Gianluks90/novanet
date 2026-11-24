@@ -21,7 +21,7 @@ import { I18nService } from '../../../i18n/i18n-service';
 import { AuthService } from '../../../services/auth-service';
 import { Pack } from '../../../models/pack';
 import { CardTranslationService } from '../../../services/card-translation-service';
-import { CardImage } from '../../../components/card-image/card-image';
+import { DeckArt } from '../../../components/deck-art/deck-art';
 import { CardTitlePipe } from '../../../pipes/card-title-pipe';
 
 import { parseCardList } from '../../../utils/card-list';
@@ -30,7 +30,7 @@ import { FormatService } from '../../../services/format-service';
 
 @Component({
   selector: 'app-decks-list-page',
-  imports: [TranslatePipe, CardTitlePipe, CardImage, FormsModule, UIButton, UiBadge, UiIconButton, UiSegmented, FilterDecksBySidePipe],
+  imports: [TranslatePipe, CardTitlePipe, DeckArt, FormsModule, UIButton, UiBadge, UiIconButton, UiSegmented, FilterDecksBySidePipe],
   templateUrl: './decks-list-page.html',
   styleUrl: './decks-list-page.scss',
 })

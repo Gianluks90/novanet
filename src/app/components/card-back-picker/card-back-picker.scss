@@ -1,0 +1,52 @@
+.picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+}
+
+.option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-1);
+    width: 88px;
+    padding: var(--space-1);
+    border: 1px solid var(--border-muted);
+    background: transparent;
+    color: var(--fg-color);
+    font: inherit;
+    cursor: pointer;
+    transition: border-color var(--duration-fast), background-color var(--duration-fast);
+
+    &:hover {
+        background-color: var(--surface-hover);
+    }
+
+    &.selected {
+        border-color: var(--border-color);
+        background-color: var(--surface-hover);
+    }
+
+    img {
+        display: block;
+        width: 100%;
+        aspect-ratio: 2 / 3;
+        object-fit: cover;
+        border-radius: var(--radius-sm);
+    }
+
+    .label {
+        font-size: var(--font-size-xs);
+        text-transform: uppercase;
+        letter-spacing: var(--letter-spacing-caps);
+        text-align: center;
+    }
+
+    // marks the player's preferred back, in a deck's chooser
+    .default-tag {
+        font-size: var(--font-size-xs);
+        text-transform: uppercase;
+        letter-spacing: var(--letter-spacing-caps);
+        color: var(--accent-color);
+    }
+}

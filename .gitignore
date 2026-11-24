@@ -144,3 +144,6 @@ vite.config.ts.timestamp-*
 
 # Local reference material (not for the repo)
 /public/Null_Signal_Games_Netrunner_Comprehensive_Rules_*.pdf
+
+# Original artwork (PNG sources); the app serves the converted WebP files in public/
+art-src/

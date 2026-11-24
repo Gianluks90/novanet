@@ -2,3 +2,6 @@
     [style.background-color]="'var(--accent-color)'"
     [style.mask]="'url(./images/logo/novanet.svg) no-repeat center / 55%'"
     [style.-webkit-mask]="'url(./images/logo/novanet.svg) no-repeat center / 55%'"></div>
+@if (artUrl(); as url) {
+    <img class="back-art" [src]="url" alt="" decoding="async" (error)="failed.set(true)">
+}
