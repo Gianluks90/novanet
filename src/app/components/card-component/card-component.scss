@@ -48,52 +48,48 @@
     }
 }
 
-// flip: starts showing the back, turns to the face when the image is loaded
-.card-flip {
+// the plain back (placeholder) and the picture share the card's box; the picture covers the back
+// once it has loaded, and its own placeholder covers it if it fails
+.card-back,
+app-card-image {
     position: absolute;
     inset: 0;
-    transform-style: preserve-3d;
-    transform: perspective(600px) rotateY(180deg);
-    transition: transform 600ms cubic-bezier(0.2, 0.7, 0.2, 1);
-
-    &.flipped {
-        transform: perspective(600px) rotateY(0deg);
-    }
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+    --card-image-radius: 8px;
 }
 
-.card-face {
-    position: absolute;
-    inset: 0;
-    border-radius: 8px;
-    overflow: hidden;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-
-    &.card-back-face {
-        transform: rotateY(180deg);
-    }
-
-    & > app-card-image {
-        height: 100%;
-        aspect-ratio: auto;
-        --card-image-radius: 8px;
-    }
+app-card-image {
+    z-index: 1;
 }
 
 .card-glare {
     position: absolute;
     inset: 0;
     border-radius: 8px;
+    z-index: 2;
     pointer-events: none;
     opacity: var(--glare-opacity, 0);
     transition: opacity 250ms ease;
     background: radial-gradient(circle at var(--glare-x, 50%) var(--glare-y, 50%), rgba(255, 255, 255, 0.35), transparent 55%);
+}
+
+// A blend mode forces a separate compositing group per card, which is costly (Safari, tablets)
+// with hundreds of cards: blend only while the pointer is over the card, and not at all on
+// touch screens, where there is no tilt/glare.
+.card-item.tilting .card-glare {
     mix-blend-mode: soft-light;
 }
 
+@media (hover: none) {
+    .card-glare {
+        display: none;
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
-    .card-item,
-    .card-flip {
+    .card-item {
         transition: none;
     }
 }

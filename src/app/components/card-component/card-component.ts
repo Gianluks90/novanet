@@ -1,4 +1,4 @@
-import { Component, input, signal } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { Card } from '../../models/card';
 import { CardBack } from '../card-back/card-back';
 import { CardImage, CardImageSize } from '../card-image/card-image';
@@ -20,7 +20,4 @@ export class CardComponent {
   public notSelectedCardClass = input<boolean | null>(false);
   /** Image size to download: pick the smallest one that still looks sharp at the displayed size. */
   public imageSize = input<CardImageSize>('large');
-
-  /** The card shows its back until the face image has loaded (or failed: the placeholder is its face), then flips. */
-  public loaded = signal(false);
 }

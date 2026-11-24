@@ -78,7 +78,7 @@
                             [notSelectedCardClass]="selectedCard && selectedCard.id !== card.id"
                             [id]="card.id"></app-card-component>
                     } @placeholder {
-                        <app-card-back class="card-placeholder" [side]="card.side_id" [id]="card.id"></app-card-back>
+                        <app-card-back class="card-placeholder" [side]="card.side_id" [art]="false" [id]="card.id"></app-card-back>
                     }
                 }
             </div>

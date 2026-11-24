@@ -19,8 +19,14 @@ export class CardBack {
   public side = input<string | null | undefined>(null);
   /** Id of a back in the catalog that wins over the player's preference (the deck's back). */
   public back = input<string | null | undefined>(null);
+  /**
+   * Show the artwork. Turn it off for long lists (the cards grid has thousands of cards): the plain
+   * back costs nothing, an image per element froze Safari on an iPad.
+   */
+  public art = input<boolean>(true);
 
   public artUrl = computed(() => {
+    if (!this.art()) return null;
     const side = this.side();
     if (side !== 'runner' && side !== 'corp') return null;
     const back = this.backs.resolve(side, this.back());

@@ -60,7 +60,8 @@ export class CardBackService {
 
   private async loadCatalog(): Promise<void> {
     try {
-      const res = await fetch(CATALOG_URL);
+      // revalidated on every load (it is tiny): a cached old catalog would hide new backs
+      const res = await fetch(CATALOG_URL, { cache: 'no-cache' });
       if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
       const catalog: CardBackCatalog = await res.json();
       this.catalog.set(catalog);
