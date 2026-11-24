@@ -42,9 +42,11 @@
         background-color: var(--bg-color);
         padding: 4px;
 
-        img {
+        // the large picture is 300 px wide (the host is a size container: it needs an explicit width)
+        app-card-image {
+            width: 300px;
             border: 1px solid var(--accent-color);
-            border-radius: 16px;
+            --card-image-radius: 16px;
         }
     }
 }

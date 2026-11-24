@@ -59,8 +59,8 @@
     <div class="content-container">
         <div class="grid-section">
             <div class="action-controls">
-                <div [innerHTML]="'cardsPage.gridViewGrid' | t: [(zoomLevel | zoomLevelLabel)]" class="control-container" (click)="zoomRotation()"></div>
-                <div [innerHTML]="'cardsPage.sortSortByFound' | t: [(sortBy | sortByLabel), cards.length]" class="control-container" (click)="sortRotation()"></div>
+                <button type="button" [innerHTML]="'cardsPage.gridViewGrid' | t: [(zoomLevel | zoomLevelLabel)]" class="control-container" (click)="zoomRotation()"></button>
+                <button type="button" [innerHTML]="'cardsPage.sortSortByFound' | t: [(sortBy | sortByLabel), cards.length]" class="control-container" (click)="sortRotation()"></button>
                 <div class="control-container">
                     <app-ui-toggle label="cardsPage.translatedOnly" [value]="filters.translated === 'only'"
                         (valueChange)="setTranslatedOnly($event)"></app-ui-toggle>
@@ -83,17 +83,21 @@
                 }
             </div>
             <div class="footer-container">
-                <div class="attribution-container" (click)="toggleAttribution()">
+                <div class="attribution-container">
                     @if(showAttribution) {
                     <div [innerHTML]="'cardsPage.cardImagesAndDataProvided' | t" class="attribution-text"></div>
                     }
-                    <span class="material-symbols-rounded">info</span>
+                    <button type="button" class="info-toggle" [attr.aria-expanded]="showAttribution"
+                        [attr.aria-label]="'cardsPage.attribution' | t" [title]="'cardsPage.attribution' | t"
+                        (click)="toggleAttribution()">
+                        <span class="material-symbols-rounded" aria-hidden="true">info</span>
+                    </button>
                 </div>
                 @if(selectedCard) {
-                    <div class="deselect-card" (click)="selectedCard = null">
+                    <button type="button" class="deselect-card" (click)="selectedCard = null">
                         <span>{{ 'cardsPage.deselectCard' | t }}</span>
-                        <span class="material-symbols-rounded">close</span>
-                    </div>
+                        <span class="material-symbols-rounded" aria-hidden="true">close</span>
+                    </button>
                 }
             </div>
         </div>

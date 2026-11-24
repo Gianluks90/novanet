@@ -1,17 +1,20 @@
 import { Card } from '../models/card';
 import { GameFormat } from '../models/format';
-import { agendaRequirement } from './deck-rules';
+import { agendaRequirement, isLearningIdentity } from './deck-rules';
+
+/** The only constructed format a deck with a learning identity can be valid in (NetrunnerDB's format id). */
+const LEARNING_FORMAT = 'system_gateway';
 
 /**
  * - `deckSize`, `influence`, `agenda`, `copies`, `side`: the basic deck building rules (every format).
- * - `pool`, `banned`, `restricted`, `points`: rules of a format; see {@link FORMAT_RULES}.
+ * - `pool`, `banned`, `restricted`, `points`, `learning`: rules of a format; see {@link FORMAT_RULES}.
  */
 export type ViolationCode =
   | 'deckSize' | 'influence' | 'agenda' | 'copies' | 'side'
-  | 'pool' | 'banned' | 'restricted' | 'points';
+  | 'pool' | 'banned' | 'restricted' | 'points' | 'learning';
 
 /** The rules that only exist because of a format (the rest apply to any deck). */
-export const FORMAT_RULES: readonly ViolationCode[] = ['pool', 'banned', 'restricted', 'points'];
+export const FORMAT_RULES: readonly ViolationCode[] = ['pool', 'banned', 'restricted', 'points', 'learning'];
 
 export interface Violation {
   code: ViolationCode;
@@ -83,7 +86,7 @@ export function validateDeck(
     violations.push({ code: 'influence', amount: influence - identity.influence_limit, limit: identity.influence_limit });
   }
 
-  if (identity.side_id === 'corp') {
+  if (identity.side_id === 'corp' && !isLearningIdentity(identity)) {
     const points = list.reduce((sum, { card, qty }) => sum + (card.agenda_points ?? 0) * qty, 0);
     const { min, max } = agendaRequirement(size);
     if (points < min || points > max) violations.push({ code: 'agenda', amount: points, limit: min });
@@ -103,6 +106,10 @@ export function validateDeck(
   if (!format) return violations;
   const inPool = pool ?? poolOf(format, catalog);
   const everything = [{ card: identity, qty: 1 }, ...list];
+
+  if (isLearningIdentity(identity) && format.id !== LEARNING_FORMAT) {
+    violations.push({ code: 'learning', printingId: identity.id });
+  }
 
   for (const { card } of everything) {
     if (!inPool.has(card.card_id)) violations.push({ code: 'pool', printingId: card.id });

@@ -23,7 +23,7 @@
             <div class="content">
                 <div class="title-container">
                     <h2>Menu</h2>
-                    <div class="material-symbols-rounded menu-icon" (click)="openDialog()">settings</div>
+                    <app-ui-icon-button icon="settings" size="sm" [label]="'header.settings' | t" (click)="openDialog()"></app-ui-icon-button>
                 </div>
                 <app-ui-button [text]="'homePage.cards' | t" icon="cards_stack" [routerLink]="'/cards'"></app-ui-button>
                 <app-ui-button [text]="'homePage.deckBuilder' | t" icon="stack_hexagon"

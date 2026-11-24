@@ -153,9 +153,8 @@ $wide-breakpoint: 1360px;
         cursor: pointer;
         line-height: 0;
 
-        img {
+        app-card-image {
             width: 100%;
-            border-radius: 4px;
         }
     }
 
@@ -186,12 +185,6 @@ $wide-breakpoint: 1360px;
             color: var(--accent-color);
             margin-bottom: var(--space-2);
         }
-
-        &>.meters {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: var(--space-3);
-        }
     }
 }
 
@@ -201,44 +194,6 @@ $wide-breakpoint: 1360px;
     display: contents;
 }
 
-// Card detail sliding in from the right over the deck list
-.detail-drawer {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 2;
-    width: 320px;
-    display: none;
-    flex-direction: column;
-    background-color: var(--bg-container-color);
-    border-left: 1px solid var(--accent-color);
-    box-shadow: -4px 0 8px rgba(0, 0, 0, .25);
-
-    &.open {
-        display: flex;
-        animation: drawerIn var(--duration-base) ease-out;
-    }
-
-    &>.drawer-header {
-        display: flex;
-        justify-content: flex-end;
-        padding: var(--space-1) var(--space-2);
-        border-bottom: 1px solid var(--accent-color);
-    }
-
-    &>.drawer-body {
-        flex: 1;
-        min-height: 0;
-        display: flex;
-
-        app-card-detail {
-            flex: 1;
-            height: auto;
-        }
-    }
-}
-
 @media (min-width: $wide-breakpoint) {
     .detail-column {
         display: flex;
@@ -246,32 +201,6 @@ $wide-breakpoint: 1360px;
         gap: var(--space-2);
         min-width: 0;
         min-height: 0;
-    }
-
-    .detail-drawer,
-    .detail-drawer.open {
-        display: flex;
-        position: static;
-        width: auto;
-        flex: 1;
-        min-height: 0;
-        border-left: 0;
-        box-shadow: none;
-        animation: none;
-    }
-
-    .detail-drawer>.drawer-header {
-        display: none;
-    }
-}
-
-@keyframes drawerIn {
-    from {
-        transform: translateX(100%);
-    }
-
-    to {
-        transform: translateX(0);
     }
 }
 
@@ -284,43 +213,6 @@ $wide-breakpoint: 1360px;
             var(--accent-color) 1px,
             transparent 4px,
             transparent 4px)
-}
-
-// Deck validity meters: size, influence, agenda points
-.meter {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-1);
-    margin-bottom: var(--space-2);
-
-    .meter-labels {
-        display: flex;
-        justify-content: space-between;
-        font-size: 0.9em;
-    }
-
-    .meter-hint {
-        font-size: .8rem;
-        opacity: .85;
-
-        &.warn {
-            color: var(--warn-color);
-            opacity: 1;
-        }
-
-        &.error {
-            color: var(--error-color);
-            opacity: 1;
-        }
-    }
-
-    .agenda-points-value {
-        font-weight: bold;
-
-        &.error {
-            color: var(--error-color);
-        }
-    }
 }
 
 select {
@@ -480,57 +372,14 @@ select {
             line-height: 0;
             cursor: pointer;
 
-            img {
+            app-card-image {
                 width: 100%;
-                aspect-ratio: 2 / 3;
-                object-fit: cover;
-                border-radius: 4px;
             }
         }
 
         .read-only-qty {
             font-size: .9rem;
         }
-    }
-}
-
-// Is the deck legal in the chosen format, and what breaks the format's rules
-.format-status {
-    padding-top: var(--space-2);
-    border-top: 1px solid var(--border-muted);
-    font-size: .9rem;
-    color: var(--error-color);
-
-    &.legal {
-        color: var(--accent-color);
-    }
-
-    .format-verdict {
-        display: flex;
-        align-items: center;
-        gap: var(--space-2);
-        font-weight: bold;
-
-        .material-symbols-rounded {
-            font-size: 1.2rem;
-        }
-    }
-
-    .format-issues,
-    .format-incomplete {
-        color: var(--fg-color);
-    }
-
-    .format-issues {
-        margin: var(--space-1) 0 0;
-        padding-left: var(--space-5);
-        font-size: .85rem;
-    }
-
-    .format-incomplete {
-        margin: var(--space-1) 0 0;
-        font-size: .85rem;
-        opacity: .85;
     }
 }
 

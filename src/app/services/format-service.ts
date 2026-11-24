@@ -8,6 +8,9 @@ import { DeckToValidate, poolOf, validateDeck, Violation } from '../utils/deck-v
 /** Order the formats are listed in (the ones not named go last, by name). */
 const FORMAT_ORDER = ['standard', 'startup', 'system_gateway', 'core', 'eternal', 'snapshot', 'ram'];
 
+/** Bump when `validateDeck` / `agendaRequirement` change what is legal, so saved `Deck.legalFormats` are recomputed. */
+const VALIDATION_RULES_VERSION = 2;
+
 /** Formats before the app used NetrunnerDB's: where they map to now ("casual" for the ones that no longer exist). */
 const LEGACY_FORMATS: Record<string, string> = { 'system gateway': 'system_gateway' };
 
@@ -19,9 +22,15 @@ const LEGACY_FORMATS: Record<string, string> = { 'system gateway': 'system_gatew
 export class FormatService {
   private readonly _formats = signal<GameFormat[]>([]);
   public readonly formats = this._formats.asReadonly();
-  /** Changes whenever a card pool or restriction list does: decks validated under another one are stale. */
-  public readonly signature = computed(() =>
-    this._formats().map(f => `${f.id}:${f.snapshotId}:${f.restriction?.id ?? ''}`).join('|'));
+  /**
+   * Changes whenever a card pool or restriction list does, or the validation rules of the app
+   * (`VALIDATION_RULES_VERSION`): decks validated under another one are stale.
+   */
+  public readonly signature = computed(() => {
+    const formats = this._formats();
+    if (formats.length === 0) return '';
+    return `r${VALIDATION_RULES_VERSION}|` + formats.map(f => `${f.id}:${f.snapshotId}:${f.restriction?.id ?? ''}`).join('|');
+  });
 
   private loading: Promise<void> | null = null;
   private pools = new WeakMap<Map<string, Card>, Map<string, Set<string>>>();

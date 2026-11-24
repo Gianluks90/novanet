@@ -1,13 +1,17 @@
-<div class="card-item" appCardTilt
+<!-- A real button: focusable, Enter/Space click it (the host's (click) handler picks that up). -->
+<button type="button" class="card-item" appCardTilt [attr.aria-label]="card() | cardTitle"
+    [attr.aria-pressed]="selectedCard() && selectedCard()?.id === card()?.id"
     [class.selected-card]="selectedCard() && selectedCard()?.id === card()?.id"
-    [class.not-selected-card]="selectedCard() && selectedCard()?.id !== card()?.id" [id]="card()?.id">
+    [class.not-selected-card]="selectedCard() && selectedCard()?.id !== card()?.id">
     <div class="card-flip" [class.flipped]="loaded()">
         <div class="card-face card-back-face">
             <app-card-back [side]="card()?.side_id"></app-card-back>
         </div>
         <div class="card-face card-front-face">
-            <img [src]="imageUrl()" alt="" decoding="async" (load)="loaded.set(true)">
+            @if (card(); as c) {
+            <app-card-image [card]="c" [size]="imageSize()" [title]="c | cardTitle" (settled)="loaded.set(true)"></app-card-image>
+            }
         </div>
     </div>
     <div class="card-glare"></div>
-</div>
+</button>

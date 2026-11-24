@@ -70,6 +70,11 @@
                     align-items: center;
                     justify-content: flex-end;
                     gap: 4px;
+                    padding: 0;
+                    border: 0;
+                    background: none;
+                    color: inherit;
+                    font: inherit;
                     cursor: pointer;
 
                     &>.material-symbols-rounded {
@@ -98,7 +103,18 @@
                     align-items: center;
                     gap: 4px;
                     font-size: .7rem;
+                    font-family: inherit;
                     cursor: pointer;
+
+                    // the info icon is the only control of the attribution box (its text has links)
+                    &>.info-toggle {
+                        display: inline-flex;
+                        padding: 0;
+                        border: 0;
+                        background: none;
+                        color: inherit;
+                        cursor: pointer;
+                    }
 
                     &>.attribution-text {
                         flex-grow: 1;

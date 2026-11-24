@@ -52,14 +52,4 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-
-    .material-symbols-rounded {
-        cursor: pointer;
-    }
-}
-
-.lang-menu-container {
-    display: flex;
-    flex-direction: column;
-    background-color: var(--bg-container-color);
 }

@@ -14,7 +14,8 @@ Added 2026-11-23. This README is the project TODO list.
 ### Navigation and header (2026-11-23)
 
 - [x] **Done 2026-11-23** (`ng build` passes; not verified in the browser): the header now has the logo (home), main navigation **Cards · Decks · Play (disabled, "soon")** with the active page highlighted, a language menu (shows the current code), the theme toggle (now a labelled icon button) and an account area — "Sign in" button when signed out, avatar menu (name, Settings, Sign out) when signed in. Settings can be opened from any page (`SettingsService`, factions read from the cached reference data). Shared dropdown styles live in `src/styles/_menu.scss` on top of the CDK menu (keyboard navigation for free) and are shown in `#/design-system`. The home page's buttons got translated "sign in/out" labels and use the same settings service. The sign-in/sign-out flow shows a notification on errors.
-- [ ] Open: the card-detail and personal-translation menus still use the old per-component `.lang-menu-container` (migrate them to `.ui-menu`); the header is hidden-on-blur/scroll behaviour and a compact layout for narrow windows are not designed (the app blocks < 768 px anyway); an "unsaved changes" guard in the deck builder and the `returnUrl` after login are still open.
+- [x] The card-detail and personal-translation menus now use `.ui-menu` (2026-11-24; `.lang-menu-container` is gone).
+- [ ] Open: the header's hide-on-scroll behaviour and a compact layout for narrow windows are not designed (the app blocks < 768 px anyway). (The "unsaved changes" guard and `returnUrl` are done, see above.)
 
 ### Deck editor: one toolbar (2026-11-23)
 
@@ -57,7 +58,9 @@ Added 2026-11-23. This README is the project TODO list.
 ### Design system (2026-11-23)
 
 - [x] **Done 2026-11-23** (`ng build` passes; **not reviewed visually — please open `#/design-system` in both themes and the pages below**): tokens (`src/styles/_tokens.scss`), foundation (`_base.scss`: visible keyboard focus instead of `outline: none` everywhere, checkbox/radio/placeholder/disabled, global reduced-motion), new components `app-ui-icon-button`, `app-ui-segmented`, `app-ui-toggle`, `app-ui-badge`, and the living style guide page (`/design-system`). Applied to: decks list (view-mode tabs were unstyled → segmented; device/cloud badge; edit/view/delete icon buttons), deck builder (visibility radios were unstyled → segmented + explanatory hint; header actions and export as labelled icon buttons), cards page ("Your/All languages" → "Translated only" toggle). The Genos font moved from a CSS `@import` to `<link>` in `index.html` (needed for `@use`, also faster). Documented in CLAUDE.md ("Design system").
-- [ ] Next (do together with the header/navigation work): rebuild the header with the design system (nav links, user menu, language menu as a shared menu component — `.lang-menu-container` is currently duplicated in several component stylesheets); migrate the remaining clickable `span`s with `(click)` to `app-ui-icon-button` (card detail menu/zoom/center, cards page reset/close/zoom, deck builder card rows, theme toggle); tokenize `ui-button`, `ui-dialog-container`, home page and card-detail styles; remaining hard-coded colors/px in page stylesheets; a shared `ui-field` (label + control + hint + error) once forms get validation messages.
+- [x] Header rebuilt with the design system and shared menu (see "Navigation and header"); deck builder card rows and the theme toggle already use real buttons.
+- [x] **Cleanup 2026-11-24** (`ng build --configuration development` passes; **not tried in the browser**): the clickable spans/divs are real buttons (card detail zoom/center/menu, cards page zoom/sort/info/deselect, decks list "add", home settings icon, and each card in the grid is a `button` with the title as accessible name), the leftover menus use `.ui-menu`, the hard-coded strings are translated (settings labels, unsupported page, page titles through `AppTitleStrategy` in `src/app/i18n/title-strategy.ts`: a route's `title` is a translation key). New `app-card-image` (`components/card-image/`): the card picture with the title as `alt`; when it can't load it shows a card-shaped placeholder with the `broken_image` icon and, only when the card is at least 110 px wide (container query on the host), the title. Used in the cards grid (the card flips to the placeholder as for any image), zoom, deck builder (tiles, identity) and decks list.
+- [ ] Next: tokenize `ui-button`, `ui-dialog-container`, home page and card-detail styles; remaining hard-coded colors/px in page stylesheets; a shared `ui-field` (label + control + hint + error) once forms get validation messages.
 
 ### Product decisions (2026-11-23)
 
@@ -66,7 +69,7 @@ Added 2026-11-23. This README is the project TODO list.
 - **Login only where Firestore is involved**: online persistence (decks, collection sync, profile) and the game engine/matches. Everything else must work signed out.
   - [x] **Decks without login — done 2026-11-23** (`ng build` passes; not verified in the browser): `AuthGuardService` removed; decks can be saved on this device (IndexedDB `novanet-user`/`decks`) or online; the new-deck dialog asks where (online only if signed in); the list shows both with a device/cloud icon; in the builder a local deck has a "save online" button (asks to sign in, then moves it to the account as private); the public gallery asks guests to sign in; saving a deck now gives feedback. Also fixed: the list's deck-size validity icon (it read `cards.length` of a map). **Still open from that item**: (returnUrl is no longer needed, see "Unsaved changes and sign-in flow"), a collection manager for guests (same local-first approach), a "download online deck to this device" action, and moving a deck back from the account to the device. Original item:
   - [ ] ~~Consequence to plan: deck building (and later the collection) for guests, stored locally in IndexedDB, with "sign in to save online/share"; today `/decks` is behind `AuthGuardService` and the whole deck flow needs an account. Also remember the requested URL (`returnUrl`) across login.
-  - [ ] Legality indicator for decks using the v3 `formats`/`card_pools`/`restrictions` data and the Comprehensive Rules (non-blocking).
+  - [x] Legality indicator for decks using the v3 `formats`/`card_pools`/`restrictions` data and the Comprehensive Rules (non-blocking) — done, see "Formats and deck validation".
   - [ ] Game vs bot: keep the rules engine/game state independent from the renderer (Pixi vs DOM prototype still to be decided) and decide what a match stores in Firestore.
 
 ### Code audit (2026-11-23, by reading the code — nothing was run)
@@ -88,13 +91,14 @@ Added 2026-11-23. This README is the project TODO list.
 - [ ] Hosting hardening: add security headers (CSP, `X-Content-Type-Options`, `Referrer-Policy`, frame-ancestors) and cache headers in `firebase.json` (immutable for hashed assets, short for `translations/index.json`); consider Firebase **App Check** and restricting the web API key/authorized domains (the Firebase web config is public by design, so these are the real protections). Material Symbols are loaded from Google Fonts (privacy/CSP consideration — could be self-hosted).
 
 **Flow / usability**
-- [ ] Signed-out user clicking "Deck builder" is silently redirected home (guard has no message and drops the target URL). Show "sign in to build decks" and return to the requested route after login (also fixes shared-deck links).
-- [ ] No navigation in the header: to go from Cards to Decks you must return to the home page; settings, login/logout and profile only exist on the home page. Add header nav (Cards · Decks · Play) and a user menu.
-- [ ] Deck builder: `saveDeck()` gives no success/error feedback, no "unsaved changes" guard when leaving, `formats` is a hard-coded list that isn't validated; text import matches by English title only and picks an arbitrary printing for reprints.
-- [ ] Mobile/tablet are fully blocked by `UnsupportedPage` (width < 768 or Android/Mobi user agent) with no way through — fine if intentional, but state it on the home page.
-- [ ] Accessibility: cards and several controls are clickable `div`s (no keyboard focus/role), card images have `alt=""`.
-- [ ] Some UI strings are still hard-coded English: settings labels ("Nickname", "Custom Profile Pic (URL)", "Custom Background (URL)"), login/logout button text, zoom header, unsupported page, route titles.
-- [ ] Deck rules are not enforced by design (saving drafts is allowed) but there is no legality *indicator* yet (see the rules/formats item above).
+- [x] Signed-out user clicking "Deck builder" is redirected home — **obsolete/done**: the guard is gone, decks work signed out, and links that need an account show a "Sign in" button.
+- [x] No navigation in the header — **done** (Cards · Decks · Play, settings, account menu).
+- [ ] Deck builder: save feedback, the unsaved-changes guard and the validated format list are **done**. Still open: text import matches by English title only and picks an arbitrary printing for reprints.
+- [x] Mobile/tablet blocked by `UnsupportedPage` (width < 768 or Android/Mobi user agent): intentional; the overlay replaces the whole app and says so (checked 2026-11-24). Only its text is still hard-coded English (see below).
+- [x] Accessibility of clickable elements and card images — done 2026-11-24, see "Design system → Cleanup" (faction icons and the avatar keep `alt=""`: they are decorative).
+- [x] Hard-coded English UI strings — done 2026-11-24 (settings labels, unsupported page, page titles). The earlier note about `i18n-text` in `card-detail.html` was wrong: it was inside a commented-out block (now deleted). Left on purpose: the "ID / Ruolo" footnote of the settings dialog (admin/debug info) and the English-only design-system page.
+- [x] **`ng build` (production) failed on the component-style budget** (`deck-builder-page.scss` 9.4 kB vs the 8 kB error limit). Fixed 2026-11-24 by splitting the stylesheet: new components `app-deck-meters` (size/influence/agenda meters; derives the limits from the identity and the totals), `app-deck-format-status` (legal/not legal + the first five violations) and `app-detail-drawer` (the card detail column/drawer, host `display: contents`); the stylesheet is now 7.4 kB. Production build passes (warnings only: it is still over the 4 kB warning, like several other components). **Not tried in the browser**: check the identity strip meters, the format verdict, and the detail drawer both below and above 1360 px (open/close with a card, Esc, zoom).
+- [x] Deck legality indicator — done (see "Formats and deck validation").
 
 ### Decided plan (2026-11-23): data layer + translations
 
@@ -117,7 +121,8 @@ Notes: UI strings (step 3) and card text (step 4) are separate layers sharing on
 ### Game rules reference
 
 - [x] Comprehensive Rules v26.03 PDF added at `public/` (gitignored) and noted in CLAUDE.md.
-- [ ] Use it to review deck-builder legality rules (min deck size, influence limit, agenda points, `deck_limit`) — currently `saveDeck()` intentionally doesn't validate, so consider a non-blocking "legality" indicator instead.
+- [x] **Learning identities and agenda points (2026-11-24)**: the System Gateway Corp starter (identity "The Syndicate", minimum 30 cards; 34 cards, 14 points) was never valid because the agenda range is clamped to the 40-card one (18–19). Decision: stay with the rules — `agendaRequirement` is unchanged (Comprehensive Rules 1.4.6, 40 cards minimum) and the two *learning* identities (`isLearningIdentity` in `utils/deck-rules.ts`: from the System Gateway set with a minimum deck size under 40: The Catalyst, The Syndicate) are handled apart: no agenda range is checked and they are valid only in System Gateway (new `learning` violation, shown in the deck editor), never in Eternal/Core/Standard/Startup. **This mirrors jinteki.net's verdict for the starter decks; it is not in the Comprehensive Rules.** The 9 Draft identities also have a minimum of 30 but are in no card pool (Draft is not an app format). Checked against real data with the Runner (40 cards) and Corp (44 cards) booster lists, both with their learning identity: valid in System Gateway; with a normal identity they only fit when the influence allows it (Nova Initiumia / Cyber Bureau: Eternal). `FormatService.signature` now carries `VALIDATION_RULES_VERSION` so saved `Deck.legalFormats` are recomputed when the rules change. **Not tried in the browser.**
+- [x] Used for the deck-builder legality rules (min deck size, influence limit, agenda points, `deck_limit`) as a non-blocking indicator; `saveDeck()` intentionally doesn't block. Remaining rule work is listed under "Formats and deck validation".
 
 ### NetrunnerDB API review (checked 2026-11-23)
 
@@ -132,7 +137,7 @@ Findings:
 - **Not confirmed** (checked docs, couldn't verify): any deprecation notice or end-of-life date for `api/2.0`, pagination size/params, an `updated_after`-style filter for incremental sync, ETag/Last-Modified support (open issue about `If-None-Match`), rate limits, CORS headers, and a `flavor` attribute. Known open issues: results unsorted by default, invalid filter syntax returns HTTP 500.
 
 Proposed follow-ups:
-- [ ] Quick, low-risk: unify the two 2.0 hosts into one shared constant (`netrunnerdb.com` vs `api.netrunnerdb.com` are both used today).
+- [x] ~~Unify the two 2.0 hosts~~ — obsolete: no 2.0 call is left in `src` (checked 2026-11-24), everything goes through `nrdb-api.ts` (v3).
 - [x] Spike (read-only, no app changes), done 2026-11-23 — results:
   - **Reachable from the browser**: `access-control-allow-origin: *` (GET/OPTIONS/HEAD), `etag` present, `If-None-Match` returns **304** (but the server still takes ~5 s to answer, so it saves bandwidth, not latency).
   - **Pagination**: JSON:API `links` (`first/last/next`) + `meta.stats.total.count`; default page size 1000 for cards/printings/card_sets/card_cycles, 20 for factions/types/sides (all fit in one page). `page[size]=5000` is accepted: **all 2460 printings in one 11 MB response** (~12 s for 1000 → slow; 2.0 returns the same 2460 cards in 1.8 MB / 0.7 s). Total counts match: 2460 printings in v3 = 2460 cards in 2.0, and every 2.0 `code` exists as a v3 printing id.
@@ -143,7 +148,7 @@ Proposed follow-ups:
   - **Filters**: `filter[card_set_id]=double_time` works (20 results). `filter[updated_at]=>2026-11-10` returned 0 results — an incremental "changed since" filter is **not confirmed** (syntax unknown; the documented "Printing Search Operator" page wasn't read). Without it, change detection = re-download when the ETag changes or when the pack/set signature changes (our existing mechanism).
   - **New, useful**: `format_ids`/`card_pool_ids`/`snapshot_ids`/`restrictions` (banlist/legality per format), `card_abilities` flags, `faces` for multi-face cards, `images` per printing.
   - **Verdict**: technically feasible and a one-for-one data swap via an adapter, but v3 is heavier and slower per request, so keep our IndexedDB cache strategy and don't fetch it on every load. Main costs: re-keying faction/type/pack codes everywhere, `cost` string, and the translation sync keyed by 5-digit code (unchanged, since printing ids = old codes — good news).
-- [ ] If the spike is positive, migrate behind an adapter that maps v3 responses to the existing `Card` model so the IndexedDB/translation sync and the rest of the app stay untouched; keep 2.0 as the fallback until its deprecation status is clear.
+- [x] ~~Migrate behind an adapter, keep 2.0 as fallback~~ — superseded: the app migrated to a v3-native model and dropped 2.0 (step 2 of the decided plan).
 - [ ] Optionally use `xlarge`/`small` image sizes where appropriate (e.g. `small` for lists, `large` for detail) to cut bandwidth.
 
 ### Card visuals and playable board (idea, 2026-11-23)
@@ -161,7 +166,7 @@ Wanted: more "physical" cards — loading state, flips, slight tilt following th
 - Card entries are keyed by the 5-digit printing `code` (same as our `Card.code`) with `title`, `text` (HTML, e.g. `<strong>virus</strong>`), `flavor`, `keywords` — e.g. `translations/it/pack/core.it.json`.
 - **Italian coverage**: 50 pack files vs 75 base packs (only older sets: core, DD, SanSan… up to ~2023); missing the newer sets (`sc19`, `su21`, `sm`, `ss`, `elev`, `ur`, `mor`, …). Spanish 50, French 56, German 60, Japanese 60, Polish 50, Korean 49, Chinese (simplified) 50; `ca`/`pt`/`zh-hant`/`ru` are almost empty.
 - Last change to `translations/it`: 2026-07-19 ("Normalize some translation titles").
-- [ ] Idea: seed/merge these files as a base layer under the community (Firestore) translations — import `it` (and other languages) at build or first install, keep Firestore approved translations as the override. Needs a decision on how to handle the `<strong>` HTML vs. our `text` format, licensing/attribution check, and CORS/raw-hosting (use a build-time copy or jsDelivr rather than hitting GitHub raw from the client).
+- [x] Done differently (steps 1, 4 and 5 of the decided plan: static files as base layer, no Firestore, personal overrides locally). Original idea: seed/merge these files as a base layer under the community (Firestore) translations — import `it` (and other languages) at build or first install, keep Firestore approved translations as the override. Needs a decision on how to handle the `<strong>` HTML vs. our `text` format, licensing/attribution check, and CORS/raw-hosting (use a build-time copy or jsDelivr rather than hitting GitHub raw from the client).
 
 ## Known issues / TODO (previous review)
 

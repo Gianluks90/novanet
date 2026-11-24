@@ -1,0 +1,9 @@
+<aside class="detail-drawer" [class.open]="open()">
+    <div class="drawer-header">
+        <app-ui-icon-button icon="close" size="sm" [label]="'closeButton' | t" (click)="closed.emit()"></app-ui-icon-button>
+    </div>
+    <div class="drawer-body">
+        <app-card-detail [selectedCard]="card()" [disableMenu]="true" [disableCenter]="true"
+            [translated]="translated()" [packs]="packs()" (zoomCardEmit)="zoomed.emit($event)"></app-card-detail>
+    </div>
+</aside>

@@ -19,6 +19,8 @@ import { ConfirmDialog } from '../../../components/dialogs/confirm-dialog/confir
 import { TranslatePipe } from '../../../i18n/translate-pipe';
 import { I18nService } from '../../../i18n/i18n-service';
 import { AuthService } from '../../../services/auth-service';
+import { CardImage } from '../../../components/card-image/card-image';
+import { CardTitlePipe } from '../../../pipes/card-title-pipe';
 
 import { parseCardList } from '../../../utils/card-list';
 
@@ -26,7 +28,7 @@ import { FormatService } from '../../../services/format-service';
 
 @Component({
   selector: 'app-decks-list-page',
-  imports: [TranslatePipe, FormsModule, UIButton, UiBadge, UiIconButton, UiSegmented, FilterDecksBySidePipe],
+  imports: [TranslatePipe, CardTitlePipe, CardImage, FormsModule, UIButton, UiBadge, UiIconButton, UiSegmented, FilterDecksBySidePipe],
   templateUrl: './decks-list-page.html',
   styleUrl: './decks-list-page.scss',
 })
@@ -213,6 +215,9 @@ export class DecksListPage {
   }
 
   /** Display names of formats, in the order of the format list. */
+  /** Format pills shown on a deck before collapsing the rest into a "+N". */
+  public readonly maxFormatPills = 3;
+
   public formatNames(ids: string[]): string[] {
     return this.formatService.formats().filter(f => ids.includes(f.id)).map(f => f.name);
   }

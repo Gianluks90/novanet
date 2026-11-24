@@ -7,7 +7,7 @@ import { unsavedChangesGuard } from './guards/unsaved-changes-guard';
 export const routes: Routes = [
     {
         path: '',
-        title: 'Home - NovaNet',
+        title: 'routeTitle.home',
         loadComponent: () => import('./pages/home-page/home-page').then(m => m.HomePage),
         resolve: {
             nrdb: nrdbResolver,
@@ -16,7 +16,7 @@ export const routes: Routes = [
     },
     {
         path: 'cards',
-        title: 'Cards - NovaNet',
+        title: 'routeTitle.cards',
         loadComponent: () => import('./pages/cards-page/cards-page').then(m => m.CardsPage),
         resolve: {
             nrdb: nrdbResolver,
@@ -25,7 +25,7 @@ export const routes: Routes = [
     },
     {
         path: 'decks',
-        title: 'Decks - NovaNet',
+        title: 'routeTitle.decks',
         loadComponent: () => import('./pages/decks-page/decks-page').then(m => m.DecksPage),
         resolve: {
             nrdb: nrdbResolver,
@@ -39,12 +39,12 @@ export const routes: Routes = [
             },
             {
                 path: 'list',
-                title: 'Decks List - NovaNet',
+                title: 'routeTitle.decksList',
                 loadComponent: () => import('./pages/decks-page/decks-list-page/decks-list-page').then(m => m.DecksListPage),
             },
             {
                 path: 'builder/:id',
-                title: 'Deck Builder - NovaNet',
+                title: 'routeTitle.deckBuilder',
                 loadComponent: () => import('./pages/decks-page/deck-builder-page/deck-builder-page').then(m => m.DeckBuilderPage),
                 canDeactivate: [unsavedChangesGuard],
                 resolve: {
@@ -55,7 +55,7 @@ export const routes: Routes = [
     },
     {
         path: 'design-system',
-        title: 'Design System - NovaNet',
+        title: 'Design System', // developer page, not translated
         loadComponent: () => import('./pages/design-system-page/design-system-page').then(m => m.DesignSystemPage),
     },
     {

@@ -1,0 +1,73 @@
+:host {
+    // the host is the container the title query below measures
+    container-type: inline-size;
+    display: block;
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    overflow: hidden;
+    border-radius: var(--card-image-radius, 4px);
+}
+
+img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.missing {
+    --missing-from: #1f2a3a;
+    --missing-to: #0d121a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 8%;
+    border: 1px solid var(--border-color);
+    border-radius: inherit;
+    background: linear-gradient(155deg, var(--missing-from), var(--missing-to));
+    color: var(--fg-color-muted);
+    text-align: center;
+
+    &[data-side='corp'] {
+        --missing-from: #3a1f26;
+        --missing-to: #140a0d;
+    }
+
+    &[data-side='runner'] {
+        --missing-from: #1c3340;
+        --missing-to: #0a1218;
+    }
+}
+
+.missing-icon {
+    font-size: clamp(1rem, 30cqw, 3rem);
+    color: var(--accent-color);
+    opacity: .8;
+}
+
+// The title is only worth showing when the card is big enough to read it.
+.missing-title {
+    display: none;
+    max-width: 100%;
+    overflow: hidden;
+    font-size: var(--font-size-sm);
+    line-height: 1.25;
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-caps);
+    color: var(--fg-color);
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+}
+
+@container (min-width: 110px) {
+    .missing-title {
+        display: -webkit-box;
+    }
+}

@@ -4,14 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { NrIconsPipe } from '../../pipes/nr-icons-pipe';
 import { PackCodePipe } from '../../pipes/pack-code-pipe';
 import { Pack } from '../../models/pack';
-import { UIButton } from '../../ui';
+import { UiIconButton } from '../../ui';
 import { FirebaseService } from '../../services/firebase-service';
 import { NotificationService } from '../../services/notification-service';
 import { TypeLabelPipe } from '../../pipes/type-label-pipe';
 import { KeywordLabelPipe } from '../../pipes/keyword-label-pipe';
 import { FactionLabelPipe } from "../../pipes/faction-label-pipe";
 import { UserService } from '../../services/user-service';
-import { CdkMenu, CdkMenuTrigger } from '@angular/cdk/menu';
+import { CdkMenu, CdkMenuItem, CdkMenuTrigger } from '@angular/cdk/menu';
 import { TranslatePipe } from '../../i18n/translate-pipe';
 import { I18nService } from '../../i18n/i18n-service';
 import { Dialog } from '@angular/cdk/dialog';
@@ -27,12 +27,13 @@ import { scrollToCenter } from '../../utils/scroll';
     FormsModule,
     NrIconsPipe,
     PackCodePipe,
-    UIButton,
+    UiIconButton,
     TypeLabelPipe,
     KeywordLabelPipe,
     FactionLabelPipe,
-    CdkMenuTrigger, 
-    CdkMenu
+    CdkMenuTrigger,
+    CdkMenu,
+    CdkMenuItem
   ],
   templateUrl: './card-detail.html',
   styleUrl: './card-detail.scss',

@@ -115,25 +115,18 @@
         <p>{{c?.illustrator_names?.join(", ") || '-'}}</p>
     </section>
     }
-    <!-- <div class="actions-container">
-        @if (selectedCard()) {
-        <app-ui-button i18n-text text="Focus" icon="recenter" size="small" (click)="scrollToSelected()"></app-ui-button>
-        <app-ui-button i18n-text text="Zoom" icon="search" size="small" (click)="zoomCard()"></app-ui-button>
-
-    }
-    </div> -->
     @if (selectedCard()) {
         <div class="card-menu-button">
         <div class="code-container">{{card()?.id}}</div>
         <div class="actions-icons">
             @if (!disableZoom()) {
-                <span class="material-symbols-rounded" (click)="zoomCard()">search</span>
+                <app-ui-icon-button icon="search" size="sm" [label]="'cardDetail.zoom' | t" (click)="zoomCard()"></app-ui-icon-button>
             }
             @if (!disableCenter()) {
-                <span class="material-symbols-rounded" (click)="scrollToSelected()">recenter</span>
+                <app-ui-icon-button icon="recenter" size="sm" [label]="'cardDetail.showInList' | t" (click)="scrollToSelected()"></app-ui-icon-button>
             }
             @if (!disableMenu()) {
-                <span class="material-symbols-rounded" [cdkMenuTriggerFor]="menu">menu</span>
+                <app-ui-icon-button icon="menu" size="sm" [label]="'cardDetail.actions' | t" [cdkMenuTriggerFor]="menu"></app-ui-icon-button>
             }
             </div>
     </div>
@@ -141,12 +134,18 @@
 </div>
 
 <ng-template #menu>
-    <div class="lang-menu-container" cdkMenu>
+    <div class="ui-menu" cdkMenu>
         @if (locale !== 'en') {
-            <app-ui-button [text]="(hasPersonalTranslation() ? 'cardDetail.editMyTranslation' : 'cardDetail.translate') | t" icon="translate" (click)="openTranslationDialog()"></app-ui-button>
+            <button type="button" class="ui-menu-item" cdkMenuItem (cdkMenuItemTriggered)="openTranslationDialog()">
+                <span class="material-symbols-rounded" aria-hidden="true">translate</span>
+                {{ (hasPersonalTranslation() ? 'cardDetail.editMyTranslation' : 'cardDetail.translate') | t }}
+            </button>
         }
         @if(firebase.$user() && card()?.flavor) {
-             <app-ui-button [text]="'cardDetail.addCaptionToProfile' | t" icon="format_quote" (click)="updateUserFavoriteCaption()"></app-ui-button>
+            <button type="button" class="ui-menu-item" cdkMenuItem (cdkMenuItemTriggered)="updateUserFavoriteCaption()">
+                <span class="material-symbols-rounded" aria-hidden="true">format_quote</span>
+                {{ 'cardDetail.addCaptionToProfile' | t }}
+            </button>
         }
     </div>
 </ng-template>

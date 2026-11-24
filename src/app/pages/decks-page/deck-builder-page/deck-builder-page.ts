@@ -8,7 +8,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FirebaseService } from '../../../services/firebase-service';
 import { NotificationService } from '../../../services/notification-service';
 import { Deck } from '../../../models/deck';
-import { CardDetail } from "../../../components/card-detail/card-detail";
+import { DetailDrawer } from "../../../components/detail-drawer/detail-drawer";
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Pack } from '../../../models/pack';
 import { Card } from '../../../models/card';
@@ -23,6 +23,7 @@ import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { DialogResult } from '../../../models/DialogResult';
 import { DIALOGS_CONFIG } from '../../../const/dialogConfig';
 import { CardZoom } from '../../../components/card-zoom/card-zoom';
+import { CardImage } from '../../../components/card-image/card-image';
 import { Timestamp } from 'firebase/firestore';
 import { DeckService } from '../../../services/deck-service';
 import { ImportExportCardListDialog } from '../../../components/dialogs/import-export-card-list-dialog/import-export-card-list-dialog';
@@ -38,11 +39,12 @@ import { parseCardList } from '../../../utils/card-list';
 import { FormatService } from '../../../services/format-service';
 import { CASUAL_FORMAT, GameFormat } from '../../../models/format';
 import { cardIssue, FORMAT_RULES, Violation } from '../../../utils/deck-validation';
-import { agendaRequirement } from '../../../utils/deck-rules';
+import { DeckMeters } from '../../../components/deck-meters/deck-meters';
+import { DeckFormatStatus } from '../../../components/deck-format-status/deck-format-status';
 
 @Component({
   selector: 'app-deck-builder-page',
-  imports: [TranslatePipe, CardTitlePipe, UiIconButton, UiSegmented, UiStepper, UiToggle, CardDetail, CardZoom, NgTemplateOutlet, CdkMenu, CdkMenuItem, CdkMenuTrigger, FormsModule, ReactiveFormsModule, FactionLabelPipe, TypeLabelPipe, DotsPipe, RouterLink, UIButton],
+  imports: [TranslatePipe, CardTitlePipe, UiIconButton, UiSegmented, UiStepper, UiToggle, DetailDrawer, CardZoom, CardImage, DeckMeters, DeckFormatStatus, NgTemplateOutlet, CdkMenu, CdkMenuItem, CdkMenuTrigger, FormsModule, ReactiveFormsModule, FactionLabelPipe, TypeLabelPipe, DotsPipe, RouterLink, UIButton],
   templateUrl: './deck-builder-page.html',
   styleUrl: './deck-builder-page.scss',
 })
@@ -466,12 +468,16 @@ export class DeckBuilderPage implements AfterViewInit {
   }
 
   /** A format rule the deck breaks, as a sentence. */
+  /** Stable function reference for `app-deck-format-status` (an input must not change on every check). */
+  public violationLabel = (violation: Violation): string => this.violationText(violation);
+
   public violationText(violation: Violation): string {
     const card = violation.printingId ? this.cardsMap.get(violation.printingId) : undefined;
     const name = card ? (this.showTranslated ? this.translations.title(card) : card.title) : '';
     switch (violation.code) {
       case 'pool': return this.i18n.t('deckBuilderPage.violationPool', [name]);
       case 'banned': return this.i18n.t('deckBuilderPage.violationBanned', [name]);
+      case 'learning': return this.i18n.t('deckBuilderPage.violationLearning', [name]);
       case 'restricted': return this.i18n.t('deckBuilderPage.violationRestricted', [name]);
       case 'points': return this.i18n.t('deckBuilderPage.violationPoints', [violation.amount ?? 0, violation.limit ?? 0]);
       default: return '';
@@ -557,36 +563,11 @@ export class DeckBuilderPage implements AfterViewInit {
 
   // ---- deck validity ---------------------------------------------------------------
 
-  /** Cards still needed to reach the identity's minimum deck size. */
-  public get missingCards(): number {
-    return Math.max(0, (this.deck?.identity.minimum_deck_size ?? 0) - this.totalCards);
-  }
-
-  /** The identity's influence limit (`null`: unlimited). */
-  public get influenceLimit(): number | null {
-    return this.deck?.identity.influence_limit ?? null;
-  }
-
-  public get influenceOver(): number {
-    const limit = this.influenceLimit;
-    return limit === null ? 0 : Math.max(0, this.totalInfluence - limit);
-  }
-
   /** Agenda points in the deck (Corp). */
   public get agendaPoints(): number {
     let total = 0;
     this.selectedCards.forEach((qty, code) => total += (this.cardsMap.get(code)?.agenda_points ?? 0) * qty);
     return total;
-  }
-
-  /** Agenda points the deck needs for its current size. */
-  public get agendaNeeded(): { min: number; max: number } {
-    return agendaRequirement(this.totalCards);
-  }
-
-  public get agendaValid(): boolean {
-    const { min, max } = this.agendaNeeded;
-    return this.agendaPoints >= min && this.agendaPoints <= max;
   }
 
   // ---- deck list: groups by type, list or grid ------------------------------------------
@@ -642,11 +623,6 @@ export class DeckBuilderPage implements AfterViewInit {
   public toggleDeckView() {
     this.deckView = this.deckView === 'list' ? 'grid' : 'list';
     try { localStorage.setItem('deckListView', this.deckView); } catch { /* not remembered */ }
-  }
-
-  /** Card picture for the grid tiles. */
-  public tileImage(card: Card): string {
-    return 'https://card-images.netrunnerdb.com/v2/medium/' + card.id + '.jpg';
   }
 
   public get selectedCardsList(): { card: Card; qty: number }[] {

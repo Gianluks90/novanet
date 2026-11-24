@@ -3,6 +3,15 @@
 }
 
 .card-item {
+    // reset the button look
+    display: block;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: inherit;
+
     position: relative;
     width: 100%;
     aspect-ratio: 2/3;
@@ -64,11 +73,10 @@
         transform: rotateY(180deg);
     }
 
-    & > img {
-        display: block;
-        width: 100%;
+    & > app-card-image {
         height: 100%;
-        object-fit: cover;
+        aspect-ratio: auto;
+        --card-image-radius: 8px;
     }
 }
 

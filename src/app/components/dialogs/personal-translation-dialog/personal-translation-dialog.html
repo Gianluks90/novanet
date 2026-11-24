@@ -21,7 +21,7 @@
                 <div class="form-group">
                     <div class="effect-header">
                         <label for="text">{{ 'personalTranslationDialog.effectLabel' | t }}</label>
-                        <span [cdkMenuTriggerFor]="menu" class="material-symbols-rounded">add</span>
+                        <app-ui-icon-button icon="add" size="sm" [label]="'personalTranslationDialog.insert' | t" [cdkMenuTriggerFor]="menu"></app-ui-icon-button>
                     </div>
                     <textarea id="text" formControlName="text" rows="5"></textarea>
                 </div>
@@ -42,10 +42,22 @@
 </app-ui-dialog-container>
 
 <ng-template #menu>
-    <div class="lang-menu-container" cdkMenu>
-        <app-ui-button [text]="'personalTranslationDialog.boldText' | t" icon="format_bold" (click)="insert('<strong>text</strong>')"></app-ui-button>
-        <app-ui-button [text]="'personalTranslationDialog.creditIcon' | t" pipeIcon="[credit]" (click)="insert('[credit]')"></app-ui-button>
-        <app-ui-button [text]="'personalTranslationDialog.clickIcon' | t" pipeIcon="[click]" (click)="insert('[click]')"></app-ui-button>
-        <app-ui-button [text]="'personalTranslationDialog.memoryIcon' | t" pipeIcon="[mu]" (click)="insert('[mu]')"></app-ui-button>
+    <div class="ui-menu" cdkMenu>
+        <button type="button" class="ui-menu-item" cdkMenuItem (cdkMenuItemTriggered)="insert('<strong>text</strong>')">
+            <span class="material-symbols-rounded" aria-hidden="true">format_bold</span>
+            {{ 'personalTranslationDialog.boldText' | t }}
+        </button>
+        <button type="button" class="ui-menu-item" cdkMenuItem (cdkMenuItemTriggered)="insert('[credit]')">
+            <span class="nr-icon nr-credit" aria-hidden="true"></span>
+            {{ 'personalTranslationDialog.creditIcon' | t }}
+        </button>
+        <button type="button" class="ui-menu-item" cdkMenuItem (cdkMenuItemTriggered)="insert('[click]')">
+            <span class="nr-icon nr-click" aria-hidden="true"></span>
+            {{ 'personalTranslationDialog.clickIcon' | t }}
+        </button>
+        <button type="button" class="ui-menu-item" cdkMenuItem (cdkMenuItemTriggered)="insert('[mu]')">
+            <span class="nr-icon nr-mu" aria-hidden="true"></span>
+            {{ 'personalTranslationDialog.memoryIcon' | t }}
+        </button>
     </div>
 </ng-template>

@@ -37,34 +37,33 @@
                         <div class="side-line"></div>
                         <p class="column-title">{{ 'runnerDecksColumnTitle' | t }}</p>
                         @if (viewMode === 'mine') {
-                            <span class="material-symbols-rounded" (click)="openNewDeckDialog('runner')">add</span>
+                            <app-ui-icon-button icon="add" size="sm" [label]="'decksListPage.newDeck' | t" (click)="openNewDeckDialog('runner')"></app-ui-icon-button>
                         }
                     </div>
                     <div class="decks-list" [class.empty-list]="(decks | filterDecksBySide:'runner').length <= 0">
                         @for(d of decks | filterDecksBySide:'runner'; track d.id) {
                             <div class="deck-container">
-                                <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + d.identity.id + '.jpg'" alt="">
+                                <app-card-image [card]="d.identity" size="medium" [lazy]="true" [title]="d.identity | cardTitle"></app-card-image>
                                 <div class="info-container">
                                     <p>{{d.name}} <span class="material-symbols-rounded validity-icon" [title]="(deckSize(d) < d.identity.minimum_deck_size! ? 'decksListPage.deckTooSmall' : 'decksListPage.deckSizeValid') | t">{{deckSize(d) < d.identity.minimum_deck_size! ? 'close' : 'check'}}</span></p>
-                                    @if (formatNames(legalFormatsOf(d)); as names) {
-                                        @if (names.length > 0) {
-                                            <div class="deck-formats" [title]="'decksListPage.legalIn' | t">
-                                                @for (name of names; track name) {
-                                                    <app-ui-badge [label]="name" tone="accent"></app-ui-badge>
-                                                }
-                                            </div>
+                                    <!-- Both pill rows are always rendered (even empty) so every deck has the same height -->
+                                    @let names = formatNames(legalFormatsOf(d));
+                                    <div class="deck-formats" [title]="names.length > 0 ? ('decksListPage.legalIn' | t) : ''">
+                                        @for (name of names.slice(0, maxFormatPills); track name) {
+                                            <app-ui-badge [label]="name" tone="accent"></app-ui-badge>
                                         }
-                                    }
-                                    @if (canEdit(d) || authorOf(d)) {
-                                        <div class="deck-subtitle">
-                                            @if (canEdit(d)) {
-                                                <app-ui-badge [icon]="d.local ? 'computer' : 'cloud'" [label]="(d.local ? 'decksListPage.thisDevice' : 'decksListPage.myAccount') | t"></app-ui-badge>
-                                            }
-                                            @if (authorOf(d); as author) {
-                                                <span class="deck-author">{{ 'decksListPage.by' | t: [author] }}</span>
-                                            }
-                                        </div>
-                                    }
+                                        @if (names.length > maxFormatPills) {
+                                            <span class="more-formats" [title]="names.slice(maxFormatPills).join(', ')">+{{ names.length - maxFormatPills }}</span>
+                                        }
+                                    </div>
+                                    <div class="deck-subtitle">
+                                        @if (canEdit(d)) {
+                                            <app-ui-badge [icon]="d.local ? 'computer' : 'cloud'" [label]="(d.local ? 'decksListPage.thisDevice' : 'decksListPage.myAccount') | t"></app-ui-badge>
+                                        }
+                                        @if (authorOf(d); as author) {
+                                            <span class="deck-author">{{ 'decksListPage.by' | t: [author] }}</span>
+                                        }
+                                    </div>
                                     <!-- <p i18n class="info-line">Influence limit: {{d.cards | checkInfluence:cardsMap:d.identity.faction_id! }}/{{d.identity.influence_limit}} Agenda points: {{ d.cards | checkAgendaPoints:cardsMap }}</p> -->
                                 </div>
                                 <div class="deck-actions">
@@ -84,34 +83,33 @@
                         <div class="side-line"></div>
                         <p class="column-title">{{ 'corpDecksColumnTitle' | t }}</p>
                         @if (viewMode === 'mine') {
-                            <span class="material-symbols-rounded" (click)="openNewDeckDialog('corp')">add</span>
+                            <app-ui-icon-button icon="add" size="sm" [label]="'decksListPage.newDeck' | t" (click)="openNewDeckDialog('corp')"></app-ui-icon-button>
                         }
                     </div>
                     <div class="decks-list" [class.empty-list]="(decks | filterDecksBySide:'corp').length <= 0">
                         @for(d of decks | filterDecksBySide:'corp'; track d.id) {
                             <div class="deck-container">
-                                <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + d.identity.id + '.jpg'" alt="">
+                                <app-card-image [card]="d.identity" size="medium" [lazy]="true" [title]="d.identity | cardTitle"></app-card-image>
                                 <div class="info-container">
                                     <p>{{d.name}} <span class="material-symbols-rounded validity-icon" [title]="(deckSize(d) < d.identity.minimum_deck_size! ? 'decksListPage.deckTooSmall' : 'decksListPage.deckSizeValid') | t">{{deckSize(d) < d.identity.minimum_deck_size! ? 'close' : 'check'}}</span></p>
-                                    @if (formatNames(legalFormatsOf(d)); as names) {
-                                        @if (names.length > 0) {
-                                            <div class="deck-formats" [title]="'decksListPage.legalIn' | t">
-                                                @for (name of names; track name) {
-                                                    <app-ui-badge [label]="name" tone="accent"></app-ui-badge>
-                                                }
-                                            </div>
+                                    <!-- Both pill rows are always rendered (even empty) so every deck has the same height -->
+                                    @let names = formatNames(legalFormatsOf(d));
+                                    <div class="deck-formats" [title]="names.length > 0 ? ('decksListPage.legalIn' | t) : ''">
+                                        @for (name of names.slice(0, maxFormatPills); track name) {
+                                            <app-ui-badge [label]="name" tone="accent"></app-ui-badge>
                                         }
-                                    }
-                                    @if (canEdit(d) || authorOf(d)) {
-                                        <div class="deck-subtitle">
-                                            @if (canEdit(d)) {
-                                                <app-ui-badge [icon]="d.local ? 'computer' : 'cloud'" [label]="(d.local ? 'decksListPage.thisDevice' : 'decksListPage.myAccount') | t"></app-ui-badge>
-                                            }
-                                            @if (authorOf(d); as author) {
-                                                <span class="deck-author">{{ 'decksListPage.by' | t: [author] }}</span>
-                                            }
-                                        </div>
-                                    }
+                                        @if (names.length > maxFormatPills) {
+                                            <span class="more-formats" [title]="names.slice(maxFormatPills).join(', ')">+{{ names.length - maxFormatPills }}</span>
+                                        }
+                                    </div>
+                                    <div class="deck-subtitle">
+                                        @if (canEdit(d)) {
+                                            <app-ui-badge [icon]="d.local ? 'computer' : 'cloud'" [label]="(d.local ? 'decksListPage.thisDevice' : 'decksListPage.myAccount') | t"></app-ui-badge>
+                                        }
+                                        @if (authorOf(d); as author) {
+                                            <span class="deck-author">{{ 'decksListPage.by' | t: [author] }}</span>
+                                        }
+                                    </div>
                                     <!-- <p i18n class="info-line">Influence limit: {{d.cards | checkInfluence:cardsMap:d.identity.faction_id! }}/{{d.identity.influence_limit}} Agenda points: {{ d.cards | checkAgendaPoints:cardsMap }}</p> -->
                                 </div>
                                 <div class="deck-actions">

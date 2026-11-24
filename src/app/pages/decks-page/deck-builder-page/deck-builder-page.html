@@ -31,7 +31,7 @@
     @let copies = qtyOf(card.id);
     <div class="card-tile" [class.selected]="selectedCard?.id === card.id">
         <button type="button" class="tile-art" [attr.aria-label]="card | cardTitle: showTranslated" (click)="selectCard(card)">
-            <img loading="lazy" [src]="tileImage(card)" [alt]="card | cardTitle: showTranslated">
+            <app-card-image [card]="card" size="medium" [lazy]="true" [title]="card | cardTitle: showTranslated"></app-card-image>
         </button>
         @if (isOwner) {
             <app-ui-stepper [value]="copies" [max]="limitOf(card)"
@@ -121,7 +121,7 @@
                 <div class="identity-strip">
                     <div class="identity-art-column">
                         <button type="button" class="identity-art" (click)="onCardClick(deck.identity)">
-                            <img loading="lazy" [src]="'https://card-images.netrunnerdb.com/v2/large/' + deck.identity.id + '.jpg'" [alt]="deck.identity | cardTitle: showTranslated">
+                            <app-card-image [card]="deck.identity" size="large" [lazy]="true" [title]="deck.identity | cardTitle: showTranslated"></app-card-image>
                         </button>
                         @if (isOwner) {
                             <button type="button" class="ghost-btn change-identity" [cdkMenuTriggerFor]="identityMenu"
@@ -141,62 +141,13 @@
                         <div class="identity-subtitle">
                             {{(deck.identity | cardTitle: showTranslated).split(':')[1]}}
                         </div>
-                        <div class="meters">
-                            <div class="meter">
-                                <div class="meter-labels">
-                                    <span>{{ 'deckBuilderPage.deckSizeMinimumDeckSize' | t }}</span>
-                                    <span>{{ totalCards }} / {{ deck.identity.minimum_deck_size }}</span>
-                                </div>
-                                <progress [class.warn]="missingCards > 0" [value]="totalCards" [max]="deck.identity.minimum_deck_size" min="0"></progress>
-                                @if (missingCards > 0) {
-                                    <span class="meter-hint warn">{{ 'deckBuilderPage.missingCards' | t: [missingCards] }}</span>
-                                }
-                            </div>
-                            <div class="meter">
-                                <div class="meter-labels">
-                                    <span>{{ 'deckBuilderPage.influenceInfluenceLimit' | t }}</span>
-                                    <span>{{ totalInfluence }} / {{ deck.identity.influence_limit ?? '∞' }}</span>
-                                </div>
-                                @if (influenceLimit !== null) {
-                                    <progress [class.error]="influenceOver > 0" [value]="totalInfluence" [max]="influenceLimit" min="0"></progress>
-                                }
-                                @if (influenceOver > 0) {
-                                    <span class="meter-hint error">{{ 'deckBuilderPage.influenceOver' | t: [influenceOver] }}</span>
-                                }
-                            </div>
-                            @if (deck.identity.side_id === 'corp') {
-                                <div class="meter">
-                                    <div class="meter-labels">
-                                        <span>{{ 'deckBuilderPage.agendaPoints' | t }}</span>
-                                        <span class="agenda-points-value" [class.error]="!agendaValid">{{ agendaPoints }}</span>
-                                    </div>
-                                    <span class="meter-hint" [class.error]="!agendaValid">{{ 'deckBuilderPage.agendaRequired' | t: [agendaNeeded.min, agendaNeeded.max] }}</span>
-                                </div>
-                            }
-                        </div>
+                        <app-deck-meters [identity]="deck.identity" [totalCards]="totalCards"
+                            [totalInfluence]="totalInfluence" [agendaPoints]="agendaPoints"></app-deck-meters>
                     </div>
                 </div>
                 @if (formatVerdict; as verdict) {
-                    <div class="format-status" [class.legal]="verdict.legal">
-                        <div class="format-verdict">
-                            <span class="material-symbols-rounded" aria-hidden="true">{{ verdict.legal ? 'check_circle' : 'cancel' }}</span>
-                            {{ (verdict.legal ? 'deckBuilderPage.validInFormat' : 'deckBuilderPage.notValidInFormat') | t: [verdict.name] }}
-                        </div>
-                        @if (!verdict.legal) {
-                            @if (formatViolations.length > 0) {
-                                <ul class="format-issues">
-                                    @for (violation of formatViolations.slice(0, 5); track $index) {
-                                        <li>{{ violationText(violation) }}</li>
-                                    }
-                                    @if (formatViolations.length > 5) {
-                                        <li>{{ 'deckBuilderPage.formatIssuesMore' | t: [formatViolations.length - 5] }}</li>
-                                    }
-                                </ul>
-                            } @else {
-                                <p class="format-incomplete">{{ 'deckBuilderPage.formatIncomplete' | t }}</p>
-                            }
-                        }
-                    </div>
+                    <app-deck-format-status [formatName]="verdict.name" [legal]="verdict.legal"
+                        [violations]="formatViolations" [describe]="violationLabel"></app-deck-format-status>
                 }
                 <div class="cards-container-title">
                     <span>{{ 'deckBuilderPage.cards' | t }}</span>
@@ -239,14 +190,8 @@
             <!-- Wide window: a column next to the list (empty until a card is selected). Narrower: it only
                  exists while a card is selected and slides in from the right over the list (button or Esc to close). -->
             <div class="detail-column">
-                <aside class="detail-drawer" [class.open]="!!selectedCard">
-                    <div class="drawer-header">
-                        <app-ui-icon-button icon="close" size="sm" [label]="'closeButton' | t" (click)="closeDetail()"></app-ui-icon-button>
-                    </div>
-                    <div class="drawer-body">
-                        <app-card-detail [selectedCard]="selectedCard" [disableMenu]="true" [disableCenter]="true" [translated]="showTranslated" [packs]="packs" (zoomCardEmit)="onCardZoomEmitted($event)"></app-card-detail>
-                    </div>
-                </aside>
+                <app-detail-drawer [card]="selectedCard" [packs]="packs" [translated]="showTranslated"
+                    [open]="!!selectedCard" (closed)="closeDetail()" (zoomed)="onCardZoomEmitted($event)"></app-detail-drawer>
             </div>
         </div>
         }

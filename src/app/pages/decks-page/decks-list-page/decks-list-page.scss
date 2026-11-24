@@ -94,12 +94,11 @@
                     padding: 8px;
                 }
 
-                &>.material-symbols-rounded {
+                &>app-ui-icon-button {
                     position: absolute;
                     right: 8px;
                     top: 50%;
                     transform: translateY(-50%);
-                    cursor: pointer;
                 }
             }
 
@@ -210,6 +209,7 @@ input[type="number"] {
 
     .info-container {
         flex-grow: 1;
+        min-width: 0; // long pills are cut, they don't push the buttons out
 
         &>.info-line {
             display: flex;
@@ -226,20 +226,39 @@ input[type="number"] {
 
     }
 
-    img {
+    app-card-image {
+        // a size container: width comes from the height and the 2:3 ratio
         height: 52px;
+        width: auto;
+        flex-shrink: 0;
         margin-right: 12px;
     }
 }
 
 
-.deck-subtitle {
+// The two pill rows under the deck name. Each has a fixed height (also when empty) and never wraps,
+// so all decks are as tall as one with both rows full.
+.deck-subtitle,
+.deck-formats {
     display: flex;
     align-items: center;
-    gap: var(--space-2);
+    flex-wrap: nowrap;
+    height: 1.5rem;
     margin-top: var(--space-1);
+    overflow: hidden;
+}
+
+.deck-subtitle {
+    gap: var(--space-2);
     font-size: var(--font-size-sm);
     opacity: .85;
+
+    &>.deck-author {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
 }
 
 .sign-in-action {
@@ -249,8 +268,18 @@ input[type="number"] {
 
 // formats the deck is legal in
 .deck-formats {
-    display: flex;
-    flex-wrap: wrap;
     gap: var(--space-1);
-    margin-top: var(--space-1);
+
+    &>app-ui-badge {
+        flex-shrink: 0;
+    }
+
+    // more formats than the pills shown: the count, in the accent color (the names are its tooltip)
+    &>.more-formats {
+        flex-shrink: 0;
+        color: var(--accent-color);
+        font-weight: bold;
+        font-size: var(--font-size-sm);
+        cursor: help;
+    }
 }

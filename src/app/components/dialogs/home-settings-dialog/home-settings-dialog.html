@@ -6,7 +6,7 @@
     @if (data.user) {
         <form class="form-container" [formGroup]="form">
             <div class="form-group">
-                <label for="nickname">Nickname</label>
+                <label for="nickname">{{ 'homeSettingsDialog.nickname' | t }}</label>
                 <input type="text" id="nickname" formControlName="nickname"
                     [placeholder]="'enterTextPlaceholder' | t" autocorrect="off" autocomplete="off">
             </div>
@@ -24,12 +24,12 @@
                 </div>
             }
             <div class="form-group">
-                <label for="customPhotoURL">Custom Profile Pic (URL)</label>
+                <label for="customPhotoURL">{{ 'homeSettingsDialog.customPhotoURL' | t }}</label>
                 <input type="text" id="customPhotoURL"
                     formControlName="customPhotoURL" [placeholder]="'enterURLValidPlaceholder' | t" autocorrect="off" autocomplete="off">
             </div>
             <div class="form-group">
-                <label for="customBackgroundURL">Custom Background (URL)</label>
+                <label for="customBackgroundURL">{{ 'homeSettingsDialog.customBackgroundURL' | t }}</label>
                 <input type="text" id="customBackgroundURL"
                     formControlName="customBackgroundURL" [placeholder]="'enterURLValidPlaceholder' | t" autocorrect="off" autocomplete="off">
             </div>

@@ -1,0 +1,42 @@
+:host {
+    display: block;
+}
+
+.format-status {
+    padding-top: var(--space-2);
+    border-top: 1px solid var(--border-muted);
+    font-size: .9rem;
+    color: var(--error-color);
+
+    &.legal {
+        color: var(--accent-color);
+    }
+
+    .format-verdict {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        font-weight: bold;
+
+        .material-symbols-rounded {
+            font-size: 1.2rem;
+        }
+    }
+
+    .format-issues,
+    .format-incomplete {
+        color: var(--fg-color);
+    }
+
+    .format-issues {
+        margin: var(--space-1) 0 0;
+        padding-left: var(--space-5);
+        font-size: .85rem;
+    }
+
+    .format-incomplete {
+        margin: var(--space-1) 0 0;
+        font-size: .85rem;
+        opacity: .85;
+    }
+}

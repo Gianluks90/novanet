@@ -1,8 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CdkMenu, CdkMenuTrigger } from '@angular/cdk/menu';
+import { CdkMenu, CdkMenuItem, CdkMenuTrigger } from '@angular/cdk/menu';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { UiDialogContainer, UIButton } from '../../../ui';
+import { UiDialogContainer, UIButton, UiIconButton } from '../../../ui';
 import { DialogResult } from '../../../models/DialogResult';
 import { Card } from '../../../models/card';
 import { NrIconsPipe } from '../../../pipes/nr-icons-pipe';
@@ -17,7 +17,7 @@ import { NotificationService } from '../../../services/notification-service';
  */
 @Component({
   selector: 'app-personal-translation-dialog',
-  imports: [TranslatePipe, UiDialogContainer, UIButton, ReactiveFormsModule, NrIconsPipe, CdkMenuTrigger, CdkMenu],
+  imports: [TranslatePipe, UiDialogContainer, UIButton, UiIconButton, ReactiveFormsModule, NrIconsPipe, CdkMenuTrigger, CdkMenu, CdkMenuItem],
   templateUrl: './personal-translation-dialog.html',
   styleUrl: './personal-translation-dialog.scss',
 })

@@ -1,0 +1,10 @@
+@if (failed()) {
+<div class="missing" role="img" [attr.aria-label]="label()" [title]="'cardImage.unavailable' | t"
+    [attr.data-side]="card().side_id">
+    <span class="material-symbols-rounded missing-icon" aria-hidden="true">broken_image</span>
+    <span class="missing-title" aria-hidden="true">{{ label() }}</span>
+</div>
+} @else {
+<img [src]="url()" [alt]="label()" [attr.loading]="lazy() ? 'lazy' : null" decoding="async"
+    (load)="settled.emit()" (error)="onError()">
+}

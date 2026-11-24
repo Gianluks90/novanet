@@ -1,0 +1,42 @@
+// the meters side by side, as many per row as fit
+:host {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--space-3);
+}
+
+.meter {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    margin-bottom: var(--space-2);
+
+    .meter-labels {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.9em;
+    }
+
+    .meter-hint {
+        font-size: .8rem;
+        opacity: .85;
+
+        &.warn {
+            color: var(--warn-color);
+            opacity: 1;
+        }
+
+        &.error {
+            color: var(--error-color);
+            opacity: 1;
+        }
+    }
+
+    .agenda-points-value {
+        font-weight: bold;
+
+        &.error {
+            color: var(--error-color);
+        }
+    }
+}

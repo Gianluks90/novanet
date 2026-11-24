@@ -1,0 +1,33 @@
+<div class="meter">
+    <div class="meter-labels">
+        <span>{{ 'deckBuilderPage.deckSizeMinimumDeckSize' | t }}</span>
+        <span>{{ totalCards() }} / {{ identity().minimum_deck_size }}</span>
+    </div>
+    <progress [class.warn]="missingCards() > 0" [value]="totalCards()" [max]="identity().minimum_deck_size" min="0"></progress>
+    @if (missingCards() > 0) {
+        <span class="meter-hint warn">{{ 'deckBuilderPage.missingCards' | t: [missingCards()] }}</span>
+    }
+</div>
+<div class="meter">
+    <div class="meter-labels">
+        <span>{{ 'deckBuilderPage.influenceInfluenceLimit' | t }}</span>
+        <span>{{ totalInfluence() }} / {{ identity().influence_limit ?? '∞' }}</span>
+    </div>
+    @if (influenceLimit() !== null) {
+        <progress [class.error]="influenceOver() > 0" [value]="totalInfluence()" [max]="influenceLimit()" min="0"></progress>
+    }
+    @if (influenceOver() > 0) {
+        <span class="meter-hint error">{{ 'deckBuilderPage.influenceOver' | t: [influenceOver()] }}</span>
+    }
+</div>
+@if (identity().side_id === 'corp') {
+    <div class="meter">
+        <div class="meter-labels">
+            <span>{{ 'deckBuilderPage.agendaPoints' | t }}</span>
+            <span class="agenda-points-value" [class.error]="!agendaValid()">{{ agendaPoints() }}</span>
+        </div>
+        @if (!learning()) {
+            <span class="meter-hint" [class.error]="!agendaValid()">{{ 'deckBuilderPage.agendaRequired' | t: [agendaNeeded().min, agendaNeeded().max] }}</span>
+        }
+    </div>
+}

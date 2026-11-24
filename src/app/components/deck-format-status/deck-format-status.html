@@ -1,0 +1,20 @@
+<div class="format-status" [class.legal]="legal()">
+    <div class="format-verdict">
+        <span class="material-symbols-rounded" aria-hidden="true">{{ legal() ? 'check_circle' : 'cancel' }}</span>
+        {{ (legal() ? 'deckBuilderPage.validInFormat' : 'deckBuilderPage.notValidInFormat') | t: [formatName()] }}
+    </div>
+    @if (!legal()) {
+        @if (violations().length > 0) {
+            <ul class="format-issues">
+                @for (violation of violations().slice(0, maxShown); track $index) {
+                    <li>{{ describe()(violation) }}</li>
+                }
+                @if (violations().length > maxShown) {
+                    <li>{{ 'deckBuilderPage.formatIssuesMore' | t: [violations().length - maxShown] }}</li>
+                }
+            </ul>
+        } @else {
+            <p class="format-incomplete">{{ 'deckBuilderPage.formatIncomplete' | t }}</p>
+        }
+    }
+</div>

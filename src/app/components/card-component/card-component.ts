@@ -1,14 +1,15 @@
-import { Component, computed, input, signal } from '@angular/core';
+import { Component, input, signal } from '@angular/core';
 import { Card } from '../../models/card';
 import { CardBack } from '../card-back/card-back';
+import { CardImage, CardImageSize } from '../card-image/card-image';
 import { CardTiltDirective } from '../../directives/card-tilt';
+import { CardTitlePipe } from '../../pipes/card-title-pipe';
 
-/** Sizes served by card-images.netrunnerdb.com: 51x71, 116x162, 165x230 and 300x418 px. */
-export type CardImageSize = 'tiny' | 'small' | 'medium' | 'large';
+export type { CardImageSize };
 
 @Component({
   selector: 'app-card-component',
-  imports: [CardBack, CardTiltDirective],
+  imports: [CardBack, CardImage, CardTiltDirective, CardTitlePipe],
   templateUrl: './card-component.html',
   styleUrl: './card-component.scss',
 })
@@ -20,9 +21,6 @@ export class CardComponent {
   /** Image size to download: pick the smallest one that still looks sharp at the displayed size. */
   public imageSize = input<CardImageSize>('large');
 
-  /** The card shows its back until the face image has loaded, then flips. */
+  /** The card shows its back until the face image has loaded (or failed: the placeholder is its face), then flips. */
   public loaded = signal(false);
-
-  public imageUrl = computed(() =>
-    `https://card-images.netrunnerdb.com/v2/${this.imageSize()}/${this.card()?.id}.jpg`);
 }
