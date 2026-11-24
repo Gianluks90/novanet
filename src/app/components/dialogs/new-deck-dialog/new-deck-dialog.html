@@ -2,7 +2,7 @@
     <p>{{ 'newDeckDialog.fillInTheFieldsBelow' | t }}</p>
     <br>
     @if (identities.length === 0) {
-        <p>Loading identities...</p>
+        <p>{{ 'newDeckDialog.loadingIdentities' | t }}</p>
     } @else {
         <form [formGroup]="form" class="form-container">
         <div class="form-group">
@@ -43,6 +43,9 @@
         <div class="form-group">
             <label for="cardList">{{ 'importExportCardListDialog.cardList' | t }}</label>
             <textarea id="cardList" formControlName="cardList" rows="8" spellcheck="false" placeholder="3x Hedge Fund"></textarea>
+            @if (detectedIdentity) {
+                <p class="form-hint">{{ 'newDeckDialog.identityDetected' | t: [detectedIdentity | cardTitle] }}</p>
+            }
             <p class="form-hint">{{ 'newDeckDialog.importHint' | t }}</p>
         </div>
         }

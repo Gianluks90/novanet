@@ -49,7 +49,7 @@
         <p class="ui-menu-title">{{ 'identityLabel' | t }}</p>
         @for (identity of identities; track identity.id) {
             <button type="button" class="ui-menu-item" cdkMenuItem (cdkMenuItemTriggered)="setIdentity(identity.id)">
-                <span class="material-symbols-rounded" aria-hidden="true">{{ identity.id === deck?.identity?.id ? 'check' : '' }}</span>
+                <span class="material-symbols-rounded" aria-hidden="true">{{ identity.card_id === deck?.identity?.card_id ? 'check' : '' }}</span>
                 {{ identity | cardTitle: showTranslated }}
             </button>
         }

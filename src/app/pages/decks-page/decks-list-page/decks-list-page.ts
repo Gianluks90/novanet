@@ -19,6 +19,8 @@ import { ConfirmDialog } from '../../../components/dialogs/confirm-dialog/confir
 import { TranslatePipe } from '../../../i18n/translate-pipe';
 import { I18nService } from '../../../i18n/i18n-service';
 import { AuthService } from '../../../services/auth-service';
+import { Pack } from '../../../models/pack';
+import { CardTranslationService } from '../../../services/card-translation-service';
 import { CardImage } from '../../../components/card-image/card-image';
 import { CardTitlePipe } from '../../../pipes/card-title-pipe';
 
@@ -48,6 +50,8 @@ export class DecksListPage {
   ];
   private myDecks: Deck[] = [];
   private publicDecks: Deck[] = [];
+  private packs: Pack[] = [];
+  private translations = inject(CardTranslationService);
 
   constructor(
     private cd: ChangeDetectorRef,
@@ -59,6 +63,7 @@ export class DecksListPage {
   ) {
     this.route.parent?.data.subscribe(data => {
       this.sides = data['configs'].sides;
+      this.packs = data['configs'].packs || [];
     });
 
     // only re-run when the signed-in user changes, not on every profile update
@@ -240,7 +245,10 @@ export class DecksListPage {
         const deck = result.data.deck;
         let unknown: string[] = [];
         if (result.data.cardList) {
-          const parsed = parseCardList(result.data.cardList, this.cardsMap);
+          const parsed = parseCardList(result.data.cardList, this.cardsMap, {
+            packs: this.packs,
+            altTitle: card => this.translations.title(card),
+          });
           deck.cards = parsed.cards;
           unknown = parsed.unknown;
         }

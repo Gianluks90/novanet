@@ -1,0 +1,10 @@
+<div class="label-container">
+    <label [for]="forId()">{{ label() | t }}</label>
+    <ng-content select="[field-extra]"></ng-content>
+</div>
+<ng-content></ng-content>
+@if (error(); as errorKey) {
+    <span class="field-error" [id]="forId() + '-error'" role="alert">{{ errorKey | t }}</span>
+} @else if (hint(); as hintKey) {
+    <span class="field-hint" [id]="forId() + '-hint'">{{ hintKey | t }}</span>
+}

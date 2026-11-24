@@ -36,6 +36,7 @@ import { AuthService } from '../../../services/auth-service';
 import { getAuth } from 'firebase/auth';
 
 import { parseCardList } from '../../../utils/card-list';
+import { identitiesOfSide } from '../../../utils/card-sort';
 import { FormatService } from '../../../services/format-service';
 import { CASUAL_FORMAT, GameFormat } from '../../../models/format';
 import { cardIssue, FORMAT_RULES, Violation } from '../../../utils/deck-validation';
@@ -68,7 +69,11 @@ export class DeckBuilderPage implements AfterViewInit {
   public cardsMap: Map<string, Card> = new Map();
   public formatService = inject(FormatService);
   public filteredCards: Card[] = [];
-  public identities: Card[] = [];
+  /** The identities of the deck's side for the "change identity" menu: alphabetical by displayed title. */
+  public get identities(): Card[] {
+    return identitiesOfSide(this.cardsMap.values(), this.deck?.side,
+      c => this.showTranslated ? this.translations.title(c) : c.title, this.i18n.lang());
+  }
   public selectedCards = new Map<string, number>();
 
   constructor(
@@ -136,7 +141,6 @@ export class DeckBuilderPage implements AfterViewInit {
       if (!this.cardService.$cardsMap()) return;
 
       this.cardsMap = this.cardService.$cardsMap();
-      this.identities = Array.from(this.cardsMap.values()).filter(c => c.card_type_id.endsWith('_identity') && c.side_id === this.deck?.side);
       this.applyFilters();
       this.parseCards();
       this.cd.detectChanges();
@@ -245,7 +249,6 @@ export class DeckBuilderPage implements AfterViewInit {
     });
     this.selectedCards = new Map();
     this.cardsParsed = false;
-    this.identities = Array.from(this.cardsMap.values()).filter(c => c.card_type_id.endsWith('_identity') && c.side_id === deck.side);
     this.applyFilters();
     this.parseCards();
     this.cd.detectChanges();
@@ -713,7 +716,10 @@ this.selectedCards.forEach((qty, code) => {
 
     this.dialogRef?.closed.subscribe((result: DialogResult | undefined) => {
       if (result?.status === 'confirmed' && result.data?.list) {
-        const { cards, unknown } = parseCardList(result.data.list, this.cardsMap);
+        const { cards, unknown } = parseCardList(result.data.list, this.cardsMap, {
+          packs: this.packs,
+          altTitle: card => this.translations.title(card),
+        });
         this.selectedCards = new Map(Object.entries(cards));
         this.updateLegality();
         if (unknown.length > 0) {

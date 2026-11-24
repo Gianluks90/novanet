@@ -1,28 +1,22 @@
 .header-title {
-    padding: 16px;
+    padding: var(--space-4);
     background-color: var(--bg-color);
     position: sticky;
     top: 0;
-    z-index: 10;
-    border-bottom: 1px solid var(--accent-color);
+    z-index: var(--z-sticky);
+    border-bottom: 1px solid var(--border-color);
 }
 
-// hr {
-//     width: 100%;
-//     border: 1px solid var(--fg-color);
-//     margin: 0;
-// }
-
 .inner-content {
-    padding: 0 16px;
+    padding: 0 var(--space-4);
 
     ::ng-deep p {
         color: var(--fg-color);
-        font-size: 1.2rem;
+        font-size: var(--font-size-lg);
         margin: 0;
         line-height: 1.5;
     }
-    
+
     ::ng-deep h2,
     ::ng-deep h3,
     ::ng-deep h4,

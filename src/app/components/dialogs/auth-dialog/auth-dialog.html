@@ -12,50 +12,32 @@
         }
         <form class="form-container" [formGroup]="form" (ngSubmit)="submit()" novalidate>
             @if (mode() === 'register') {
-                <div class="form-group">
-                    <label for="auth-name">{{ 'authDialog.displayName' | t }}</label>
-                    <input type="text" id="auth-name" formControlName="name" autocomplete="nickname" autocorrect="off"
-                        [attr.aria-invalid]="showError('name')">
-                    @if (showError('name')) {
-                        <span class="field-error">{{ 'authDialog.errorNameRequired' | t }}</span>
-                    }
-                </div>
+                <app-ui-field label="authDialog.displayName" forId="auth-name"
+                    [error]="showError('name') ? 'authDialog.errorNameRequired' : null">
+                    <input type="text" id="auth-name" formControlName="name" autocomplete="nickname" autocorrect="off">
+                </app-ui-field>
             }
-            <div class="form-group">
-                <label for="auth-email">{{ 'authDialog.email' | t }}</label>
+            <app-ui-field label="authDialog.email" forId="auth-email"
+                [error]="showError('email') ? 'authDialog.errorEmailInvalid' : null">
                 <input type="email" id="auth-email" formControlName="email" autocomplete="email" autocorrect="off"
-                    autocapitalize="off" spellcheck="false" [attr.aria-invalid]="showError('email')">
-                @if (showError('email')) {
-                    <span class="field-error">{{ 'authDialog.errorEmailInvalid' | t }}</span>
-                }
-            </div>
+                    autocapitalize="off" spellcheck="false">
+            </app-ui-field>
             @if (mode() !== 'reset') {
-                <div class="form-group">
-                    <div class="label-container">
-                        <label for="auth-password">{{ 'authDialog.password' | t }}</label>
-                        @if (mode() === 'signin') {
-                            <button type="button" class="link-btn" (click)="setMode('reset')">{{ 'authDialog.forgotPassword' | t }}</button>
-                        }
-                    </div>
-                    <input type="password" id="auth-password" formControlName="password"
-                        [attr.autocomplete]="mode() === 'register' ? 'new-password' : 'current-password'"
-                        [attr.aria-invalid]="showError('password')">
-                    @if (showError('password')) {
-                        <span class="field-error">{{ (mode() === 'register' ? 'authDialog.errorPasswordShort' : 'authDialog.errorPasswordRequired') | t }}</span>
-                    } @else if (mode() === 'register') {
-                        <span class="field-hint">{{ 'authDialog.passwordHint' | t }}</span>
+                <app-ui-field label="authDialog.password" forId="auth-password"
+                    [error]="showError('password') ? (mode() === 'register' ? 'authDialog.errorPasswordShort' : 'authDialog.errorPasswordRequired') : null"
+                    [hint]="mode() === 'register' ? 'authDialog.passwordHint' : null">
+                    @if (mode() === 'signin') {
+                        <button type="button" class="link-btn" field-extra (click)="setMode('reset')">{{ 'authDialog.forgotPassword' | t }}</button>
                     }
-                </div>
+                    <input type="password" id="auth-password" formControlName="password"
+                        [attr.autocomplete]="mode() === 'register' ? 'new-password' : 'current-password'">
+                </app-ui-field>
             }
             @if (mode() === 'register') {
-                <div class="form-group">
-                    <label for="auth-confirm">{{ 'authDialog.confirmPassword' | t }}</label>
-                    <input type="password" id="auth-confirm" formControlName="confirm" autocomplete="new-password"
-                        [attr.aria-invalid]="passwordMismatch">
-                    @if (passwordMismatch) {
-                        <span class="field-error">{{ 'authDialog.errorPasswordMismatch' | t }}</span>
-                    }
-                </div>
+                <app-ui-field label="authDialog.confirmPassword" forId="auth-confirm"
+                    [error]="passwordMismatch ? 'authDialog.errorPasswordMismatch' : null">
+                    <input type="password" id="auth-confirm" formControlName="confirm" autocomplete="new-password">
+                </app-ui-field>
             }
             <!-- no (click): a plain submit button, so Enter in any field submits the form too -->
             <app-ui-button [text]="submitLabel() | t" [icon]="mode() === 'reset' ? 'mail' : 'login'" [disabled]="busy()"></app-ui-button>

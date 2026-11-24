@@ -1,7 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DialogRef } from '@angular/cdk/dialog';
-import { UiDialogContainer, UIButton } from '../../../ui';
+import { UiDialogContainer, UIButton, UiField } from '../../../ui';
 import { TranslatePipe } from '../../../i18n/translate-pipe';
 import { TranslationKey } from '../../../i18n/en';
 import { DialogResult } from '../../../models/DialogResult';
@@ -33,7 +33,7 @@ const SUBMIT_LABELS: Record<AuthMode, TranslationKey> = {
  */
 @Component({
   selector: 'app-auth-dialog',
-  imports: [TranslatePipe, UiDialogContainer, UIButton, ReactiveFormsModule],
+  imports: [TranslatePipe, UiDialogContainer, UIButton, UiField, ReactiveFormsModule],
   templateUrl: './auth-dialog.html',
   styleUrl: './auth-dialog.scss',
 })

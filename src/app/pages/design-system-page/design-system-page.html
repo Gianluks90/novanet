@@ -144,6 +144,15 @@
                 <label><input type="radio" name="ds-radio"> Radio B</label>
             </div>
         </form>
+        <p class="p-note"><code>app-ui-field</code>: label + control + hint or error, with the control wired to the message (<code>aria-describedby</code>, <code>aria-invalid</code>). The caller only decides when the error shows; keys are translation keys.</p>
+        <form class="form-container">
+            <app-ui-field label="authDialog.email" forId="ds-field-hint" hint="authDialog.passwordHint">
+                <input id="ds-field-hint" type="text" value="With a hint">
+            </app-ui-field>
+            <app-ui-field label="authDialog.email" forId="ds-field-error" error="authDialog.errorEmailInvalid">
+                <input id="ds-field-error" type="text" value="With an error">
+            </app-ui-field>
+        </form>
     </section>
 
     <section>
