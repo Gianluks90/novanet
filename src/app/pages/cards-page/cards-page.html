@@ -2,71 +2,95 @@
     <div class="filter-container">
         <div class="side-line"></div>
         <p class="section-title">{{ 'filtersSectionTitle' | t }}</p>
-        <input type="text" [placeholder]="'searchTextInputPlaceholder' | t" (keyup)="onChangeTextSearch($event)">
-        <input type="number" inputmode="numeric" [placeholder]="'costInputPlaceholder' | t" min="0" (input)="onChangeCostFilter($event)">
-        <div class="line-divider"></div>
-        <!-- <p>Info</p> -->
-        @if (factions.length > 0) {
-        <select name="faction" id="faction-select" [(ngModel)]="filters.faction"
-            (change)="onChangeFactionFilter($event)">
-            <option value="all">{{ 'cardsPage.allFactions' | t }}</option>
-            @for(faction of factions; track faction.id) {
-            <option [value]="faction.id">{{ faction.id | factionLabel}}</option>
-            }
-        </select>
-        }
-        @if (sides.length > 0) {
-        <select name="side" id="side-select" [(ngModel)]="filters.side" (change)="onChangeSideFilter($event)">
-            <option value="all">{{ 'cardsPage.allSides' | t }}</option>
-            @for(side of sides; track side.id) {
-            <option [value]="side.id">{{ side.name }}</option>
-            }
-        </select>
-        }
-        <!-- <div class="line-divider"></div> -->
-        <!-- <p>Meta</p> -->
-        @if(this.cycles.length > 0 && this.packs.length > 0) {
-        <select name="pack" id="pack-select" [(ngModel)]="filters.pack" (change)="onChangePackFilter($event)">
-            <option value="all">{{ 'cardsPage.allPacks' | t }}</option>
-
-            @for(cycle of cycles; track cycle.id) {
-            <optgroup [label]="cycle.name">
-                @for (pack of packs; track pack.id) {
-                @if (pack.card_cycle_id === cycle.id) {
-                <option [value]="pack.id">
-                    {{ pack.name }}
-                </option>
-                }
-                }
-            </optgroup>
-            }
-
-        </select>
-        }
-        @if (types.length > 0) {
-        <select name="type" id="type-select" [(ngModel)]="filters.type" (change)="onChangeTypeFilter($event)">
-            <option value="all">{{ 'cardsPage.allTypes' | t }}</option>
-            @for(type of types; track type.id) {
-            <option [value]="type.id">{{ type.id | typeLabel }}</option>
-            }
-        </select>
-        }
-        <button type="button" class="ghost-btn reset-btn" (click)="resetFilters()"
-            [attr.aria-label]="'cardsPage.resetFilters' | t" [title]="'cardsPage.resetFilters' | t">
-            <span class="material-symbols-rounded" aria-hidden="true">refresh</span>
+        <input #search type="text" [placeholder]="'searchTextInputPlaceholder' | t" (keyup)="onChangeTextSearch($event)"
+            (focus)="filtersOpen = false">
+        <button type="button" class="ghost-btn sort-toggle" [attr.aria-label]="'cardsPage.sort' | t"
+            [title]="'cardsPage.sort' | t" (click)="onSortClick()">
+            <span class="material-symbols-rounded" aria-hidden="true">sort</span>
         </button>
+        <button type="button" class="ghost-btn filters-toggle" [class.has-active]="activeFilters > 0"
+            [attr.aria-expanded]="filtersOpen" [attr.aria-label]="'filtersSectionTitle' | t"
+            [title]="'filtersSectionTitle' | t" (click)="filtersOpen = !filtersOpen">
+            <span class="material-symbols-rounded" aria-hidden="true">tune</span>
+            @if (activeFilters > 0) {
+            <span class="filters-count">{{ activeFilters }}</span>
+            }
+        </button>
+        @if (filtersOpen) {
+        <div class="filters-backdrop" (click)="filtersOpen = false"></div>
+        }
+        <!-- desktop: the fields sit in the bar; mobile: they open as a panel over the page, one field per row -->
+        <div class="filter-extra" [class.open]="filtersOpen">
+            <input #cost type="number" inputmode="numeric" [placeholder]="'costInputPlaceholder' | t" min="0" (input)="onChangeCostFilter($event)">
+            <div class="line-divider"></div>
+            <!-- <p>Info</p> -->
+            @if (factions.length > 0) {
+            <select name="faction" id="faction-select" [(ngModel)]="filters.faction"
+                (change)="onChangeFactionFilter($event)">
+                <option value="all">{{ 'cardsPage.allFactions' | t }}</option>
+                @for(faction of factions; track faction.id) {
+                <option [value]="faction.id">{{ faction.id | factionLabel}}</option>
+                }
+            </select>
+            }
+            @if (sides.length > 0) {
+            <select name="side" id="side-select" [(ngModel)]="filters.side" (change)="onChangeSideFilter($event)">
+                <option value="all">{{ 'cardsPage.allSides' | t }}</option>
+                @for(side of sides; track side.id) {
+                <option [value]="side.id">{{ side.name }}</option>
+                }
+            </select>
+            }
+            <!-- <div class="line-divider"></div> -->
+            <!-- <p>Meta</p> -->
+            @if(this.cycles.length > 0 && this.packs.length > 0) {
+            <select name="pack" id="pack-select" [(ngModel)]="filters.pack" (change)="onChangePackFilter($event)">
+                <option value="all">{{ 'cardsPage.allPacks' | t }}</option>
+
+                @for(cycle of cycles; track cycle.id) {
+                <optgroup [label]="cycle.name">
+                    @for (pack of packs; track pack.id) {
+                    @if (pack.card_cycle_id === cycle.id) {
+                    <option [value]="pack.id">
+                        {{ pack.name }}
+                    </option>
+                    }
+                    }
+                </optgroup>
+                }
+
+            </select>
+            }
+            @if (types.length > 0) {
+            <select name="type" id="type-select" [(ngModel)]="filters.type" (change)="onChangeTypeFilter($event)">
+                <option value="all">{{ 'cardsPage.allTypes' | t }}</option>
+                @for(type of types; track type.id) {
+                <option [value]="type.id">{{ type.id | typeLabel }}</option>
+                }
+            </select>
+            }
+            <button type="button" class="ghost-btn reset-btn" (click)="resetFilters()"
+                [attr.aria-label]="'cardsPage.resetFilters' | t" [title]="'cardsPage.resetFilters' | t">
+                <span class="material-symbols-rounded" aria-hidden="true">refresh</span>
+                <span class="reset-label">{{ 'cardsPage.resetFilters' | t }}</span>
+            </button>
+    
+        </div>
     </div>
     <div class="content-container">
         <div class="grid-section">
             <div class="action-controls">
+                @if (!viewport.isMobile()) {
                 <button type="button" [innerHTML]="'cardsPage.gridViewGrid' | t: [(zoomLevel | zoomLevelLabel)]" class="control-container" (click)="zoomRotation()"></button>
-                <button type="button" [innerHTML]="'cardsPage.sortSortByFound' | t: [(sortBy | sortByLabel), cards.length]" class="control-container" (click)="sortRotation()"></button>
-                <div class="control-container">
+                }
+                <button type="button" [innerHTML]="'cardsPage.sortSortByFound' | t: [(sortBy | sortByLabel), cards.length]" class="control-container sort-control" (click)="sortRotation()"></button>
+                <span class="control-container found-count">{{ 'cardsPage.found' | t: [cards.length] }}</span>
+                <div class="control-container translated-control">
                     <app-ui-toggle label="cardsPage.translatedOnly" [value]="filters.translated === 'only'"
                         (valueChange)="setTranslatedOnly($event)"></app-ui-toggle>
                 </div>
             </div>
-            <div class="cards-container" [class.small-size]="zoomLevel === 'small-size'"
+            <div #grid class="cards-container" [class.small-size]="zoomLevel === 'small-size'"
                 [class.medium-size]="zoomLevel === 'medium-size'" [class.large-size]="zoomLevel === 'large-size'"
                 [class.standard-size]="zoomLevel === 'standard-size'">
                 @for(card of cards; track card.id) {
@@ -82,17 +106,16 @@
                     }
                 }
             </div>
+            <button type="button" class="translate-circle" [class.active]="filters.translated === 'only'"
+                [attr.aria-pressed]="filters.translated === 'only'" [attr.aria-label]="'cardsPage.translatedOnly' | t"
+                [title]="'cardsPage.translatedOnly' | t" (click)="setTranslatedOnly(filters.translated !== 'only')">
+                <span class="material-symbols-rounded" aria-hidden="true">translate</span>
+            </button>
             <div class="footer-container">
-                <div class="attribution-container">
-                    @if(showAttribution) {
-                    <div [innerHTML]="'cardsPage.cardImagesAndDataProvided' | t" class="attribution-text"></div>
-                    }
-                    <button type="button" class="info-toggle" [attr.aria-expanded]="showAttribution"
-                        [attr.aria-label]="'cardsPage.attribution' | t" [title]="'cardsPage.attribution' | t"
-                        (click)="toggleAttribution()">
-                        <span class="material-symbols-rounded" aria-hidden="true">info</span>
-                    </button>
-                </div>
+                <button type="button" class="info-circle" [attr.aria-label]="'cardsPage.attribution' | t"
+                    [title]="'cardsPage.attribution' | t" (click)="openAttribution()">
+                    <span class="material-symbols-rounded" aria-hidden="true">info</span>
+                </button>
                 @if(selectedCard) {
                     <button type="button" class="deselect-card" (click)="selectedCard = null">
                         <span>{{ 'cardsPage.deselectCard' | t }}</span>
@@ -101,7 +124,13 @@
                 }
             </div>
         </div>
-        <app-card-detail [selectedCard]="selectedCard" [packs]="packs" (zoomCardEmit)="onCardZoomEmitted($event)"></app-card-detail>
+        <!-- desktop: a column next to the grid; mobile: a sheet sliding in from the right while a card is selected -->
+        <div class="detail-panel" [class.open]="!!selectedCard">
+            <!-- mobile: touching the strip left beside the sheet closes it -->
+            <div class="sheet-backdrop" (click)="selectedCard = null"></div>
+            <app-card-detail [selectedCard]="viewport.isMobile() ? detailCard : selectedCard" [packs]="packs"
+                (zoomCardEmit)="onCardZoomEmitted($event)"></app-card-detail>
+        </div>
     </div>
 </div>
 

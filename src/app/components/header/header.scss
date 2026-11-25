@@ -83,19 +83,15 @@
     overflow: hidden;
 }
 
+.avatar-btn .material-symbols-rounded {
+    font-size: calc(var(--control-height) - 4px);
+}
+
 .avatar {
     width: calc(var(--control-height) - 4px);
     height: calc(var(--control-height) - 4px);
     border-radius: 50%;
     object-fit: cover;
-}
-
-.sign-in-btn {
-    padding: 0 var(--space-3);
-    gap: var(--space-2);
-    text-transform: uppercase;
-    letter-spacing: var(--letter-spacing-caps);
-    white-space: nowrap;
 }
 
 // Mobile layout: the logo and the actions stay on top, the main navigation becomes a bottom tab
@@ -107,28 +103,6 @@
 
     .action-section {
         margin-left: auto;
-    }
-
-    // Settings leave the top bar: a round button floating over the tab bar, on the right.
-    .settings-btn {
-        position: fixed;
-        right: var(--space-3);
-        bottom: calc(var(--bottom-nav-height) + var(--space-3));
-        z-index: var(--z-nav);
-        width: 48px;
-        height: 48px;
-        border: 1px solid var(--border-color);
-        border-radius: 50%;
-        background-color: var(--bg-container-color);
-        box-shadow: var(--shadow-md);
-    }
-
-    .sign-in-btn {
-        padding: 0;
-
-        .sign-in-label {
-            display: none;
-        }
     }
 
     .main-nav {

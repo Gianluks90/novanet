@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, effect, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, effect, inject, viewChild } from '@angular/core';
 import { UiToggle } from '../../ui';
 import { nrdbDb } from '../../db/nrdb-indexed-db';
 import { Card } from '../../models/card';
@@ -26,6 +26,11 @@ import { CardTranslationService } from '../../services/card-translation-service'
 import { scrollToCenter } from '../../utils/scroll';
 
 import { CardZoom } from '../../components/card-zoom/card-zoom';
+import { Dialog } from '@angular/cdk/dialog';
+import { AttributionDialog } from '../../components/dialogs/attribution-dialog/attribution-dialog';
+import { DIALOGS_CONFIG } from '../../const/dialogConfig';
+import { ViewportService } from '../../services/viewport-service';
+import { SORT_BY_LABELS } from '../../const/sortByLabels';
 
 @Component({
   selector: 'app-cards-page',
@@ -49,15 +54,29 @@ export class CardsPage {
   public cards: Card[] = [];
   public zoomLevel: 'small-size' | 'medium-size' | 'large-size' | 'standard-size' = 'standard-size';
   public sortBy: 'faction' | 'title' | 'type' | 'faction cost' | 'cost' | 'set number' | 'default' = 'default';
-  public showAttribution: boolean = false;
   public selectedCard: Card | null = null;
   public cardZoomed: boolean = false;
+  private lastSelectedCard: Card | null = null;
+  private searchBox = viewChild<ElementRef<HTMLInputElement>>('search');
+  private costBox = viewChild<ElementRef<HTMLInputElement>>('cost');
+  private grid = viewChild<ElementRef<HTMLElement>>('grid');
+  /** Mobile sheet: the card stays in it while it slides out, after the selection is cleared. */
+  public get detailCard(): Card | null {
+    if (this.selectedCard) this.lastSelectedCard = this.selectedCard;
+    return this.selectedCard ?? this.lastSelectedCard;
+  }
+  /** Mobile layout: the filter fields are folded under the search box until this is on. */
+  public filtersOpen = false;
   private i18n = inject(I18nService);
+  private dialog = inject(Dialog);
+  public viewport = inject(ViewportService);
   private translations = inject(CardTranslationService);
   public get locale(): string { return this.i18n.lang(); }
 
   /** Thumbnail resolution matching the grid zoom (card widths: ~75-110px, 100-150px, 170-250px, 220px+). */
   public get thumbnailSize(): CardImageSize {
+    // mobile: always 3 columns (about 110px wide cards)
+    if (this.viewport.isMobile()) return 'medium';
     switch (this.zoomLevel) {
       case 'small-size': return 'small';
       case 'standard-size': return 'medium';
@@ -80,6 +99,13 @@ export class CardsPage {
     translated: 'none' as 'none' | 'only',
     cost: null as number | null
   };
+
+  /** How many of the filters besides the search text are not at their default (shown on the mobile toggle). */
+  public get activeFilters(): number {
+    const f = this.filters;
+    return [f.cost !== null, f.pack !== 'all', f.faction !== 'all', f.side !== 'all', f.type !== 'all', f.translated === 'only']
+      .filter(Boolean).length;
+  }
 
   constructor(
     private cd: ChangeDetectorRef,
@@ -128,8 +154,9 @@ export class CardsPage {
     this.cd.detectChanges();
   }
 
-  toggleAttribution() {
-    this.showAttribution = !this.showAttribution;
+  /** Credits for the images, the data and the translations. */
+  openAttribution() {
+    this.dialog.open(AttributionDialog, { ...DIALOGS_CONFIG });
   }
 
   setTranslatedOnly(only: boolean) {
@@ -149,6 +176,13 @@ export class CardsPage {
     }
 
     localStorage.setItem('zoomLevel', this.zoomLevel);
+  }
+
+  /** Mobile sort button: next order, announced in a notification (the order is not shown anywhere else). */
+  public onSortClick() {
+    this.sortRotation();
+    const label = SORT_BY_LABELS[this.sortBy.toLowerCase()]?.[this.i18n.lang()] ?? this.sortBy;
+    this.notification.notify(this.i18n.t('cardsPage.sortApplied', [label]), 'info');
   }
 
   public sortRotation() {
@@ -343,5 +377,14 @@ export class CardsPage {
     this.cards = [...this.originalCards];
     this.selectedCard = null;
     this.cardZoomed = false;
+
+    // the text boxes are not bound to the filters: clear them by hand
+    const search = this.searchBox();
+    if (search) search.nativeElement.value = '';
+    const cost = this.costBox();
+    if (cost) cost.nativeElement.value = '';
+    // mobile: the panel closes, and the list starts from the top again
+    this.filtersOpen = false;
+    this.grid()?.nativeElement.scrollTo({ top: 0 });
   }
 }

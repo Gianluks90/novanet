@@ -18,6 +18,8 @@ import { Dialog } from '@angular/cdk/dialog';
 import { DIALOGS_CONFIG } from '../../const/dialogConfig';
 import { PersonalTranslationDialog } from '../dialogs/personal-translation-dialog/personal-translation-dialog';
 import { CardTranslationService } from '../../services/card-translation-service';
+import { CardImage } from '../card-image/card-image';
+import { ViewportService } from '../../services/viewport-service';
 
 import { scrollToCenter } from '../../utils/scroll';
 
@@ -33,7 +35,8 @@ import { scrollToCenter } from '../../utils/scroll';
     FactionLabelPipe,
     CdkMenuTrigger,
     CdkMenu,
-    CdkMenuItem
+    CdkMenuItem,
+    CardImage
   ],
   templateUrl: './card-detail.html',
   styleUrl: './card-detail.scss',
@@ -46,6 +49,8 @@ export class CardDetail {
   private i18n = inject(I18nService);
   private translations = inject(CardTranslationService);
   private dialog = inject(Dialog);
+  /** Mobile layout: the large picture closes the detail (no zoom button). */
+  public viewport = inject(ViewportService);
   public get locale(): string { return this.i18n.lang(); }
   public disableZoom = input<boolean>(false);
   public disableCenter = input<boolean>(false);

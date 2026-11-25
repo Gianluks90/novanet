@@ -1,0 +1,6 @@
+<app-ui-dialog-container [dialogTitle]="'cardsPage.attribution' | t">
+    <p class="credits" [innerHTML]="'cardsPage.cardImagesAndDataProvided' | t"></p>
+    <div dialog-actions-container>
+        <app-ui-button [text]="'closeButton' | t" icon="close" (click)="dialogRef.close()"></app-ui-button>
+    </div>
+</app-ui-dialog-container>

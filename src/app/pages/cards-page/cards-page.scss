@@ -1,3 +1,5 @@
+@use '../../../styles/breakpoints' as bp;
+
 .cards-page-main-container {
     // the one gap between the filter bar, the grid and the detail column
     --page-gap: var(--space-2);
@@ -92,7 +94,7 @@
                 align-items: center;
                 gap: 4px;
 
-                &>.attribution-container, &>.deselect-card {
+                &>.deselect-card {
                     border: 1px solid var(--accent-color);
                     text-transform: uppercase;
                     background-color: var(--bg-container-color);
@@ -106,29 +108,31 @@
                     font-family: inherit;
                     cursor: pointer;
 
-                    // the info icon is the only control of the attribution box (its text has links)
-                    &>.info-toggle {
-                        display: inline-flex;
-                        padding: 0;
-                        border: 0;
-                        background: none;
-                        color: inherit;
-                        cursor: pointer;
+                    &>.material-symbols-rounded {
+                        font-size: 1rem;
                     }
+                }
 
-                    &>.attribution-text {
-                        flex-grow: 1;
-                        text-align: left;
+                // credits: a round button that opens a dialog
+                &>.info-circle {
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: var(--control-height);
+                    height: var(--control-height);
+                    padding: 0;
+                    border: 1px solid var(--accent-color);
+                    border-radius: 50%;
+                    background-color: var(--bg-container-color);
+                    color: var(--accent-color);
+                    cursor: pointer;
 
-                        &>a {
-                            color: var(--fg-color);
-                            text-decoration: underline;
-                            cursor: pointer;
-                        }
+                    &:hover {
+                        background-color: var(--surface-hover);
                     }
 
                     &>.material-symbols-rounded {
-                        font-size: 1rem;
+                        font-size: 1.25rem;
                     }
                 }
             }
@@ -223,7 +227,7 @@ input[type="number"] {
     border-radius: 4px;
     background-color: var(--bg-color);
     color: var(--fg-color);
-    height: 32px;
+    height: var(--control-height);
 
     &::placeholder {
         color: var(--text-secondary-color);
@@ -242,7 +246,7 @@ select {
     border-radius: 4px;
     background-color: var(--bg-color);
     color: var(--fg-color);
-    height: 32px;
+    height: var(--control-height);
     cursor: pointer;
 }
 
@@ -354,5 +358,265 @@ select {
 
     &>.material-symbols-rounded {
         font-size: 1rem;
+    }
+}
+
+// Desktop: the filter fields live in the bar itself, the detail is a column, no toggle or sheet.
+.filter-extra {
+    display: contents;
+}
+
+.filters-toggle,
+.sort-toggle,
+.filters-backdrop,
+.found-count,
+.translate-circle,
+.reset-label {
+    display: none;
+}
+
+.detail-panel {
+    display: contents;
+
+    &>.sheet-backdrop {
+        display: none;
+    }
+}
+
+// Mobile layout: a search box with a filters toggle (the other fields fold into a two-column
+// panel), a one-column page, and the card detail as a full-screen sheet over everything
+// (tab bar included) while a card is selected.
+@include bp.mobile {
+    .cards-page-main-container {
+        padding: var(--space-2);
+
+        &>.filter-container {
+            height: auto;
+            flex-wrap: wrap;
+            padding: var(--space-2);
+
+            &>.side-line,
+            &>.section-title {
+                display: none;
+            }
+
+            &>input[type="text"] {
+                flex: 1;
+                min-width: 0;
+            }
+
+            &>.filters-toggle {
+                display: inline-flex;
+                position: relative;
+                flex-shrink: 0;
+
+                &.has-active {
+                    background-color: var(--surface-hover);
+                }
+
+                &>.filters-count {
+                    position: absolute;
+                    top: 2px;
+                    right: 2px;
+                    min-width: 16px;
+                    height: 16px;
+                    padding: 0 4px;
+                    border-radius: var(--radius-pill);
+                    background-color: var(--surface-active);
+                    color: var(--on-accent);
+                    font-size: var(--font-size-xs);
+                    line-height: 16px;
+                    text-align: center;
+                }
+            }
+
+            // the search box and the two icon buttons stay above the backdrop
+            &>input[type="text"],
+            &>.sort-toggle,
+            &>.filters-toggle {
+                position: relative;
+                z-index: calc(var(--z-sticky) + 2);
+            }
+
+            &>.sort-toggle {
+                display: inline-flex;
+                flex-shrink: 0;
+            }
+
+            // closes the panel when the page behind it is touched
+            &>.filters-backdrop {
+                display: block;
+                position: fixed;
+                inset: 0;
+                z-index: calc(var(--z-sticky) + 1);
+            }
+
+            // the filters: a panel hanging from the bar over the page, one field per row
+            &>.filter-extra {
+                display: none;
+
+                &.open {
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--space-2);
+                    position: absolute;
+                    top: 100%;
+                    left: -1px;
+                    right: -1px;
+                    z-index: calc(var(--z-sticky) + 2);
+                    max-height: 70dvh;
+                    overflow-y: auto;
+                    padding: var(--space-3);
+                    border: 1px solid var(--accent-color);
+                    background-color: var(--bg-container-color);
+                }
+
+                .line-divider {
+                    display: none;
+                }
+
+                // the system picker of the device: no custom dropdown, just the closed box
+                select {
+                    appearance: auto;
+                    font-size: 1rem;
+                    min-width: 0;
+                }
+
+                select,
+                input[type="number"] {
+                    flex-grow: 0;
+                    flex-shrink: 0;
+                    width: 100%;
+                    max-width: none;
+                }
+
+                // reset: a labelled button, last in the panel
+                .reset-btn {
+                    width: 100%;
+                    gap: var(--space-2);
+                    border: 1px solid var(--border-color);
+                    text-transform: uppercase;
+
+                    .reset-label {
+                        display: inline;
+                    }
+                }
+            }
+        }
+
+        &>.content-container {
+            grid-template-columns: minmax(0, 1fr);
+
+            &>.grid-section {
+                &>.action-controls {
+                    flex-wrap: wrap;
+                    gap: var(--space-1) var(--space-4);
+                    padding: var(--space-1) var(--space-3);
+
+                    &>.control-container {
+                        min-height: var(--control-height);
+                    }
+
+                    // sort lives next to the filters toggle, translated-only is the round button
+                    &>.sort-control,
+                    &>.translated-control {
+                        display: none;
+                    }
+
+                    &>.found-count {
+                        display: inline-flex;
+                        cursor: default;
+                    }
+                }
+
+                // "translated only": round button, bottom right, lit while on
+                &>.translate-circle {
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    position: absolute;
+                    right: var(--space-2);
+                    bottom: var(--space-2);
+                    z-index: 2;
+                    width: var(--control-height);
+                    height: var(--control-height);
+                    padding: 0;
+                    border: 1px solid var(--accent-color);
+                    border-radius: 50%;
+                    background-color: var(--bg-container-color);
+                    color: var(--accent-color);
+                    cursor: pointer;
+
+                    &.active {
+                        background-color: var(--surface-active);
+                        color: var(--on-accent);
+                        box-shadow: 0 0 6px var(--accent-color);
+                    }
+
+                    &>.material-symbols-rounded {
+                        font-size: 1.25rem;
+                    }
+                }
+
+                &>.cards-container {
+                    // always 3 columns, whatever the grid zoom chosen on a larger screen
+                    grid-template-columns: repeat(3, minmax(0, 1fr));
+                    gap: var(--space-2);
+                    padding: var(--space-2);
+                }
+            }
+        }
+    }
+
+    // The card detail slides in from the right over a dimmed page, leaving a strip on the left:
+    // touching it closes the detail. It covers the tab bar too.
+    .detail-panel {
+        display: flex;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: calc(var(--header-height) + var(--safe-top));
+        z-index: calc(var(--z-nav) + 10);
+        padding-bottom: var(--safe-bottom);
+        visibility: hidden;
+        pointer-events: none;
+        // hidden only once the slide-out has finished
+        transition: visibility 0s linear var(--duration-base);
+
+        &.open {
+            visibility: visible;
+            pointer-events: auto;
+            transition-delay: 0s;
+        }
+
+        &>.sheet-backdrop {
+            display: block;
+            position: absolute;
+            inset: 0;
+            background-color: rgba(0, 0, 0, .45);
+            opacity: 0;
+            transition: opacity var(--duration-base);
+        }
+
+        &.open>.sheet-backdrop {
+            opacity: 1;
+        }
+
+        &>app-card-detail {
+            position: relative;
+            flex: 1;
+            min-width: 0;
+            min-height: 0;
+            height: auto;
+            margin-left: var(--space-5);
+            background-color: var(--bg-color);
+            transform: translateX(100%);
+            transition: transform var(--duration-base) var(--ease-out);
+        }
+
+        &.open>app-card-detail {
+            transform: translateX(0);
+        }
     }
 }

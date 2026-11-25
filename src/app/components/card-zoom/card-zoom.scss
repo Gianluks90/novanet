@@ -1,3 +1,5 @@
+@use '../../../styles/breakpoints' as bp;
+
 :host {
     display: contents;
 }
@@ -60,5 +62,17 @@
     100% {
         transform: scale(1);
         opacity: 1;
+    }
+}
+
+// Mobile layout: centered over the whole screen (above the card sheet).
+@include bp.mobile {
+    .zoom-card-container {
+        position: fixed;
+        inset: 0;
+        margin: auto;
+        width: fit-content;
+        height: fit-content;
+        z-index: calc(var(--z-nav) + 20);
     }
 }

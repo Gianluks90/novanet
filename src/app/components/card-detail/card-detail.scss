@@ -299,6 +299,17 @@
     }
 }
 
+// the large picture (mobile): as wide as the column, up to its natural size (the image host is a
+// size container, so it needs a width of its own)
+.illustration {
+    width: min(100%, 300px);
+    margin: 0 auto var(--space-3);
+
+    app-card-image {
+        --card-image-radius: 12px;
+    }
+}
+
 .unique-icon {
     font-size: 1.2rem;
     cursor: default;

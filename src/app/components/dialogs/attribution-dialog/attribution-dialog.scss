@@ -1,0 +1,5 @@
+// Links in the credits: the text color, underlined (not the browser's blue).
+.credits ::ng-deep a {
+    color: var(--fg-color);
+    text-decoration: underline;
+}

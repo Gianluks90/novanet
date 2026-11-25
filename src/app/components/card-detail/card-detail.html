@@ -116,13 +116,19 @@
         @if (machineTranslated()) {
         <app-ui-badge icon="translate" tone="warn" [label]="'cardDetail.machineTranslated' | t"></app-ui-badge>
         }
+        @if (c && viewport.isMobile()) {
+        <p class="section-subtitle">{{ 'cardDetail.illustration' | t }}</p>
+        <div class="illustration">
+            <app-card-image [card]="c" size="large" [title]="c.title"></app-card-image>
+        </div>
+        }
     </section>
     }
     @if (selectedCard()) {
         <div class="card-menu-button">
         <div class="code-container">{{card()?.id}}</div>
         <div class="actions-icons">
-            @if (!disableZoom()) {
+            @if (!disableZoom() && !viewport.isMobile()) {
                 <app-ui-icon-button icon="search" size="sm" [label]="'cardDetail.zoom' | t" (click)="zoomCard()"></app-ui-icon-button>
             }
             @if (!disableCenter()) {

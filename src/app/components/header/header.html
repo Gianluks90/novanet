@@ -22,42 +22,43 @@
     </nav>
 
     <section class="action-section">
-        @if (firebase.$user()) {
-            <button type="button" class="ghost-btn avatar-btn" [cdkMenuTriggerFor]="userMenu"
-                [attr.aria-label]="'header.userMenu' | t" [title]="userName">
-                @if (avatarUrl) {
-                    <img class="avatar" [src]="avatarUrl" alt="" referrerpolicy="no-referrer">
-                } @else {
-                    <span class="material-symbols-rounded" aria-hidden="true">account_circle</span>
-                }
-            </button>
-        } @else {
-            <button type="button" class="ghost-btn sign-in-btn" (click)="signIn()">
-                <span class="material-symbols-rounded" aria-hidden="true">login</span>
-                <span class="sign-in-label">{{ 'header.signInOrRegister' | t }}</span>
-            </button>
-        }
-
-        <button type="button" class="ghost-btn settings-btn" (click)="openSettings()"
-            [attr.aria-label]="'header.settings' | t" [title]="'header.settings' | t">
-            <span class="material-symbols-rounded" aria-hidden="true">settings</span>
+        <button type="button" class="ghost-btn avatar-btn" [cdkMenuTriggerFor]="userMenu"
+            [attr.aria-label]="'header.userMenu' | t" [title]="userName || ('header.userMenu' | t)">
+            @if (avatarUrl) {
+                <img class="avatar" [src]="avatarUrl" alt="" referrerpolicy="no-referrer">
+            } @else {
+                <span class="material-symbols-rounded" aria-hidden="true">account_circle</span>
+            }
         </button>
     </section>
 </div>
 
 <ng-template #userMenu>
     <div class="ui-menu" cdkMenu>
-        <p class="ui-menu-title">{{ userName }}</p>
-        <button type="button" class="ui-menu-item" cdkMenuItem (cdkMenuItemTriggered)="openAccount()">
-            <span class="material-symbols-rounded" aria-hidden="true">manage_accounts</span>
-            {{ 'header.account' | t }}
-            @if (unverified) {
-                <app-ui-badge icon="warning" tone="warn" [iconOnly]="true" [label]="'account.unverified' | t"></app-ui-badge>
-            }
+        @if (firebase.$user()) {
+            <p class="ui-menu-title">{{ userName }}</p>
+            <button type="button" class="ui-menu-item" cdkMenuItem (cdkMenuItemTriggered)="openAccount()">
+                <span class="material-symbols-rounded" aria-hidden="true">manage_accounts</span>
+                {{ 'header.account' | t }}
+                @if (unverified) {
+                    <app-ui-badge icon="warning" tone="warn" [iconOnly]="true" [label]="'account.unverified' | t"></app-ui-badge>
+                }
+            </button>
+        } @else {
+            <button type="button" class="ui-menu-item" cdkMenuItem (cdkMenuItemTriggered)="signIn()">
+                <span class="material-symbols-rounded" aria-hidden="true">login</span>
+                {{ 'header.signInOrRegister' | t }}
+            </button>
+        }
+        <button type="button" class="ui-menu-item" cdkMenuItem (cdkMenuItemTriggered)="openSettings()">
+            <span class="material-symbols-rounded" aria-hidden="true">settings</span>
+            {{ 'header.settings' | t }}
         </button>
-        <button type="button" class="ui-menu-item" cdkMenuItem (cdkMenuItemTriggered)="signOut()">
-            <span class="material-symbols-rounded" aria-hidden="true">logout</span>
-            {{ 'header.signOut' | t }}
-        </button>
+        @if (firebase.$user()) {
+            <button type="button" class="ui-menu-item" cdkMenuItem (cdkMenuItemTriggered)="signOut()">
+                <span class="material-symbols-rounded" aria-hidden="true">logout</span>
+                {{ 'header.signOut' | t }}
+            </button>
+        }
     </div>
 </ng-template>

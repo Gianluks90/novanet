@@ -19,6 +19,7 @@ export const routes: Routes = [
         path: 'cards',
         title: 'routeTitle.cards',
         loadComponent: () => import('./pages/cards-page/cards-page').then(m => m.CardsPage),
+        data: { responsive: true },
         resolve: {
             nrdb: nrdbResolver,
             configs: cardsConfigResolver

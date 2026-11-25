@@ -1,3 +1,5 @@
+@use '../../../styles/breakpoints' as bp;
+
 :host {
     display: inline-flex;
 }
@@ -40,6 +42,11 @@
     &.sm {
         width: 24px;
         height: 24px;
+
+        @include bp.mobile {
+            width: 36px;
+            height: 36px;
+        }
 
         .material-symbols-rounded {
             font-size: 1.1rem;
