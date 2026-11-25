@@ -152,6 +152,16 @@ Decisions taken: move to NRDB **v3** and drop 2.0 for us; use the official `netr
 
 Notes: UI strings (step 3) and card text (step 4) are separate layers sharing only the language signal.
 
+### Game engine (started 2026-11-25)
+
+Decisions: engine in pure TypeScript (`src/app/engine/`, no Angular), starting with the 77 **System Gateway** cards, automated tests **yes** for the engine only (Vitest scenarios, one per card behaviour; the project-wide "no tests" decision stays for the rest of the app), local play only (no bot/online yet). Spec: [docs/engine-spec.md](docs/engine-spec.md) (read from the Comprehensive Rules: turn, run, breach, install/play, priority windows, checkpoints, damage, tags, trace, counters).
+- [x] Rules reading + spec draft (step 1, 2026-11-25).
+- [x] Spec reviewed (2026-11-25): priority windows without options pass automatically; interrupt/replacement points predisposed but completed with the first real case; local-only state for now (authority client/server decided when online play comes); Vitest for the engine.
+- [x] **Phase 1: core without cards (2026-11-25)** in `src/app/engine/` (`types`, `zones`, `catalog`, `engine`, `testing`, `engine.spec`; 52 tests): immutable state + `apply`/`legalCommands`, mulligan, turn/discard, basic actions, install/advance/score, play with no effect, runs over unrezzed ICE (movement + jack out), breach/access (random HQ/R&D, Archives, trash decision, bad publicity fund), memory limit, damage/flatline, win by 7 points / empty R&D. Not done yet: rez and encounters (phase 2), unique/console replacement, optional trashing of ICE when installing, scoring/play windows during the Runner's turn, `Deck` → `DeckList` adapter and `view(state, player)` for hidden information. **Run the tests from PowerShell/cmd: `npm test` fails from Git Bash with a lowercase drive letter (`c:`) path.**
+- [ ] ICE and encounters, installation, rez, breakers.
+- [ ] Shared primitives in frequency order, then the 77 cards and the two starter-deck games as integration tests.
+- [ ] Later: Midnight Sun/Parhelion mechanics, bot, online.
+
 ### Game rules reference
 
 - [x] Comprehensive Rules v26.03 PDF added at `public/` (gitignored) and noted in CLAUDE.md.

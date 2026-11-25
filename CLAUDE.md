@@ -22,11 +22,11 @@ npm start            # ng serve — dev server at http://localhost:4200/ (Englis
 npm run build         # ng build — production build, output to dist/novanet/browser (single build, runtime i18n)
 npm run sync:translations  # refresh public/translations/*.json from netrunner-cards-json (optionally: -- it fr)
 npm run watch         # ng build --watch --configuration development
-npm test              # ng test — runs unit tests with Vitest
+npm test              # vitest run — unit tests (currently the game engine in src/app/engine/)
 npm run host          # firebase deploy --only hosting
 ```
 
-There is no lint script configured. There are currently no spec files in the repo; `ng generate` schematics are configured with `skipTests: true` project-wide, so new components/services do not scaffold a spec by default.
+There is no lint script configured. The only spec files are the game engine's (`src/app/engine/*.spec.ts`; Vitest runs directly, there is no `ng test` target; run from PowerShell/cmd, not Git Bash); `ng generate` schematics are configured with `skipTests: true` project-wide, so new components/services do not scaffold a spec by default.
 
 To run a single test file once specs exist, use Vitest's own filtering, e.g. `npx vitest run path/to/file.spec.ts`.
 
