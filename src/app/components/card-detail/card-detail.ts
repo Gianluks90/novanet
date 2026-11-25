@@ -1,4 +1,4 @@
-import { Component, effect, inject, input, output, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, output, signal } from '@angular/core';
 import { Card } from '../../models/card';
 import { FormsModule } from '@angular/forms';
 import { NrIconsPipe } from '../../pipes/nr-icons-pipe';
@@ -45,6 +45,9 @@ export class CardDetail {
   public selectedCard = input<Card | null>(null);
   public card = signal<Card | null>(null);
   public packs = input<Pack[]>([]);
+  /** The card's subtypes, one per label ("Icebreaker - Decoder" gives two; "G-mod" stays whole). */
+  public subtypes = computed(() =>
+    (this.card()?.display_subtypes ?? '').split(/\s+-\s+/).map(s => s.trim()).filter(s => s.length > 0));
   public zoomCardEmit = output<boolean>();
   private i18n = inject(I18nService);
   private translations = inject(CardTranslationService);

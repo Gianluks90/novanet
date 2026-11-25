@@ -1,7 +1,28 @@
+@use '../../../styles/hud-mixins' as hud;
+
 :host {
+    --cut: 14px;
+    --stroke: color-mix(in srgb, var(--accent-color) 45%, transparent);
+
     height: 100%;
     min-height: 0; // lets the inner scroll area shrink inside the flex container
     display: flex;
+    // a quiet chamfered frame like .hud-panel; the scroll area is inside it (a scrolling box can't
+    // carry the frame: the fill would scroll away)
+    position: relative;
+    isolation: isolate;
+    padding: 1px;
+    background: var(--stroke);
+    @include hud.shape(var(--cut), var(--cut));
+
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 1px;
+        z-index: -1;
+        background: var(--panel-bg);
+        @include hud.shape(calc(var(--cut) - 0.586px), calc(var(--cut) - 0.586px));
+    }
 }
 
 .section-title {
@@ -12,8 +33,9 @@
 }
 
 .inspector-container {
-    border: 1px solid var(--border-color);
-    background-color: var(--bg-container-color);
+    // same chamfer as the fill, so the sticky footer doesn't hide the outline's diagonal
+    @include hud.shape(calc(var(--cut) - 0.586px), calc(var(--cut) - 0.586px));
+
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
@@ -150,6 +172,15 @@
 .type-label {
     text-transform: uppercase;
     // font-weight: bold;
+}
+
+// subtypes: one label each, like the format labels of the decks list
+.subtypes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+    // closer to the type above than to the rest
+    margin-top: calc(var(--space-2) * -1);
 }
 
 .effect-container {

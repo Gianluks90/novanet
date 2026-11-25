@@ -9,12 +9,13 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 24px;
+    padding: var(--space-3);
 
+    // the filter bar: a quiet panel (hud-panel on desktop), as tall as a control plus the outline
     &>.filter-container {
-        border: 1px solid var(--accent-color);
-        background-color: var(--bg-container-color);
-        height: 50px;
+        --cut: 8px;
+
+        height: calc(var(--control-height) + 2px);
         flex-shrink: 0;
         margin-bottom: var(--page-gap);
         position: relative;
@@ -22,14 +23,17 @@
         max-width: 1200px;
         display: flex;
         align-items: center;
-        gap: 8px;
-        // the reset button is square: only the bar's natural padding after it
-        padding-right: var(--space-2);
+        gap: var(--space-2);
+        // room for the chamfer on the left; the reset button sits against the right edge
+        padding: 0 0 0 var(--space-3);
+
+        &>.filters-title {
+            flex-shrink: 0;
+        }
 
         &>.line-divider {
-            border-left: 1px solid var(--accent-color);
-            height: 80%;
-            opacity: .5;
+            border-left: 1px solid var(--border-muted);
+            height: 60%;
         }
     }
 
@@ -47,8 +51,9 @@
 
         // left column: header with the grid controls, the scrolling grid, floating footer
         &>.grid-section {
-            border: 1px solid var(--accent-color);
-            background-color: var(--bg-container-color);
+            --cut: 14px;
+
+            padding: 0;
             display: flex;
             flex-direction: column;
             min-height: 0;
@@ -62,10 +67,12 @@
                 align-items: center;
                 gap: 24px;
                 min-height: 40px;
-                padding: 4px 16px;
-                border-bottom: 1px solid var(--accent-color);
+                // room for the chamfer on the left
+                padding: var(--space-1) var(--space-4) var(--space-1) var(--space-5);
+                border-bottom: 1px solid var(--border-muted);
                 user-select: none;
-                font-size: .8rem;
+                font-family: var(--font-display);
+                font-size: var(--font-size-xs);
 
                 &>.control-container {
                     display: flex;
@@ -76,10 +83,17 @@
                     border: 0;
                     background: none;
                     color: inherit;
-                    font: inherit;
+                    // the same type on every control (the count is a span, the others buttons):
+                    // plain, not spaced capitals
+                    font-family: var(--font-display);
+                    font-size: var(--font-size-xs);
+                    letter-spacing: normal;
+                    text-transform: none;
                     cursor: var(--cursor-pointer, pointer);
 
-                    &>.material-symbols-rounded {
+                    // (the icon of the translated labels is inserted with innerHTML, so it has no
+                    // scoping attribute: ::ng-deep reaches it)
+                    ::ng-deep .material-symbols-rounded {
                         font-size: 1rem;
                     }
                 }
@@ -94,42 +108,27 @@
                 align-items: center;
                 gap: 4px;
 
+                // "deselect": a small kit button
                 &>.deselect-card {
-                    border: 1px solid var(--accent-color);
-                    text-transform: uppercase;
-                    background-color: var(--bg-container-color);
-                    padding: 4px 8px;
-                    color: var(--text-secondary-color);
-                    display: flex;
+                    --cut: 6px;
+
+                    min-height: 0;
+                    padding: var(--space-1) var(--space-2);
+                    gap: var(--space-1);
                     flex-direction: row-reverse;
-                    align-items: center;
-                    gap: 4px;
-                    font-size: .7rem;
-                    font-family: inherit;
-                    cursor: var(--cursor-pointer, pointer);
+                    font-size: var(--font-size-xs);
 
                     &>.material-symbols-rounded {
                         font-size: 1rem;
                     }
                 }
 
-                // credits: a round button that opens a dialog
+                // credits: a square icon button that opens a dialog
                 &>.info-circle {
-                    display: inline-flex;
-                    align-items: center;
-                    justify-content: center;
-                    width: var(--control-height);
-                    height: var(--control-height);
-                    padding: 0;
-                    border: 1px solid var(--accent-color);
-                    border-radius: 50%;
-                    background-color: var(--bg-container-color);
-                    color: var(--accent-color);
-                    cursor: var(--cursor-pointer, pointer);
+                    --cut: 8px;
 
-                    &:hover {
-                        background-color: var(--surface-hover);
-                    }
+                    width: var(--control-height);
+                    padding: 0;
 
                     &>.material-symbols-rounded {
                         font-size: 1.25rem;
@@ -208,30 +207,11 @@
     }
 }
 
-.side-line {
-    width: 20px;
-    background-color: var(--accent-color);
-    height: 100%;
-    background: repeating-linear-gradient(to right,
-            var(--accent-color) 1px,
-            var(--accent-color) 1px,
-            transparent 4px,
-            transparent 4px)
-}
-
+// the search box and the number field of the bar (the look comes from the global input styles)
 input[type="text"],
 input[type="number"] {
     flex-grow: 1;
-    padding: 4px 8px;
-    border: 1px solid var(--accent-color);
-    border-radius: 4px;
-    background-color: var(--bg-color);
-    color: var(--fg-color);
     height: var(--control-height);
-
-    &::placeholder {
-        color: var(--text-secondary-color);
-    }
 }
 
 input[type="number"] {
@@ -239,15 +219,7 @@ input[type="number"] {
 }
 
 select {
-    width: 128px;
-    font-size: 1rem;
-    padding: 4px 8px;
-    border: 1px solid var(--accent-color);
-    border-radius: 4px;
-    background-color: var(--bg-color);
-    color: var(--fg-color);
     height: var(--control-height);
-    cursor: var(--cursor-pointer, pointer);
 }
 
 // the icon-only reset button of the filter bar (shape and hover come from .ghost-btn)
@@ -255,115 +227,52 @@ select {
     flex-shrink: 0;
 }
 
-.section-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: var(--fg-color);
-    text-transform: uppercase;
-    padding: 0 8px;
-}
-
-.inspector-container {
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    overflow-y: auto;
-
-    position: relative;
-
-    .actions-container {
-        width: 100%;
-        position: sticky;
-        bottom: 0;
-        left: 4px;
-        display: flex;
-        gap: 4px;
-    }
-}
-
-.inspector-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.empty-ispector {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-}
-
-.section-subtitle {
-    text-decoration: underline;
-}
-
-.identity-container {
-    display: flex;
-    align-items: center;
-
-    .material-symbols-rounded {
-        cursor: var(--cursor-default, default);
-    }
-
-    .card-cost {
-        font-size: 1.5rem;
-    }
-}
-
-.identity-item {
-    flex-direction: column;
-    align-items: normal;
-    width: 100%;
-
-    hr {
-        width: 100%;
-        color: var(--accent-color);
-    }
-}
-
-.type-label {
-    text-transform: uppercase;
-    font-weight: bold;
-}
-
-.effect-container {
-    border-left: 3px solid var(--accent-color);
-    padding: 0 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.card-text {
-    line-height: 1.5;
-}
-
-.flavor-text {
-    font-style: italic;
-    opacity: .7;
-}
-
-.faction-influence-container {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-
-    &>img {
-        height: 24px;
-        width: 24px;
-    }
-
-    &>.material-symbols-rounded {
-        font-size: 1rem;
-    }
-}
-
 // Desktop: the filter fields live in the bar itself, the detail is a column, no toggle or sheet.
 .filter-extra {
     display: contents;
+}
+
+// Desktop bar, as in the decks list: no gaps, the search box and the selects are flush segments as
+// tall as the bar, split by a single line on their left; the reset button closes the bar.
+@include bp.desktop {
+    .cards-page-main-container>.filter-container {
+        gap: 0;
+
+        &>.filters-title {
+            margin-right: var(--space-2);
+        }
+
+        input,
+        select {
+            align-self: stretch;
+            height: auto;
+            border-width: 0 0 0 1px;
+        }
+
+        // the native select widget draws rounded corners and curves the separator: draw it flat
+        // (appearance: none) with a small accent arrow
+        select {
+            appearance: none;
+            border-radius: 0;
+            padding-right: var(--space-6);
+            background-image:
+                linear-gradient(45deg, transparent 50%, var(--accent-color) 50%),
+                linear-gradient(135deg, var(--accent-color) 50%, transparent 50%);
+            background-position:
+                calc(100% - 17px) 50%,
+                calc(100% - 12px) 50%;
+            background-size: 5px 5px, 5px 5px;
+            background-repeat: no-repeat;
+        }
+
+        .line-divider {
+            display: none;
+        }
+
+        .reset-btn {
+            border-left: 1px solid color-mix(in srgb, var(--accent-color) 55%, transparent);
+        }
+    }
 }
 
 .filters-toggle,
@@ -394,9 +303,11 @@ select {
             height: auto;
             flex-wrap: wrap;
             padding: var(--space-2);
+            // a plain quiet outline (no panel: the dropdown below hangs outside the bar)
+            border: 1px solid color-mix(in srgb, var(--accent-color) 45%, transparent);
+            background-color: var(--panel-bg);
 
-            &>.side-line,
-            &>.section-title {
+            &>.filters-title {
                 display: none;
             }
 
@@ -467,8 +378,8 @@ select {
                     max-height: 70dvh;
                     overflow-y: auto;
                     padding: var(--space-3);
-                    border: 1px solid var(--accent-color);
-                    background-color: var(--bg-container-color);
+                    border: 1px solid color-mix(in srgb, var(--accent-color) 45%, transparent);
+                    background-color: var(--panel-bg);
                 }
 
                 .line-divider {
@@ -529,29 +440,15 @@ select {
                     }
                 }
 
-                // "translated only": round button, bottom right, lit while on
+                // "translated only": a square kit button, bottom right, filled while on
                 &>.translate-circle {
                     display: inline-flex;
-                    align-items: center;
-                    justify-content: center;
                     position: absolute;
                     right: var(--space-2);
                     bottom: var(--space-2);
                     z-index: 2;
                     width: var(--control-height);
-                    height: var(--control-height);
                     padding: 0;
-                    border: 1px solid var(--accent-color);
-                    border-radius: 50%;
-                    background-color: var(--bg-container-color);
-                    color: var(--accent-color);
-                    cursor: var(--cursor-pointer, pointer);
-
-                    &.active {
-                        background-color: var(--surface-active);
-                        color: var(--on-accent);
-                        box-shadow: 0 0 6px var(--accent-color);
-                    }
 
                     &>.material-symbols-rounded {
                         font-size: 1.25rem;
@@ -610,7 +507,6 @@ select {
             min-height: 0;
             height: auto;
             margin-left: var(--space-5);
-            background-color: var(--bg-color);
             transform: translateX(100%);
             transition: transform var(--duration-base) var(--ease-out);
         }

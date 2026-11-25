@@ -6,13 +6,14 @@
   outline-offset: var(--focus-ring-offset);
 }
 
-// Text fields already have a border that changes on focus: no extra outline there.
+// Text fields already have a border that changes on focus: no extra outline there. The focus is the
+// accent at full strength, doubled inward (an inset shadow, so a panel's clip-path can't cut it).
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
   outline: none;
-  border-color: var(--fg-color);
-  box-shadow: 0 0 0 1px var(--fg-color);
+  border-color: var(--accent-color);
+  box-shadow: inset 0 0 0 1px var(--accent-color);
 }
 
 input[type='checkbox'],
@@ -34,7 +35,7 @@ select:disabled {
 }
 
 select:hover:not(:disabled) {
-  border-color: var(--fg-color);
+  border-color: var(--accent-color);
 }
 
 // Respect the OS "reduce motion" setting everywhere.

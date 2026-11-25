@@ -25,13 +25,14 @@
                     class="unique-icon">{{c?.is_unique ? '◆' : ''}}</span> {{c?.title}}</p>
         </div>
         }
-        <p>
-            <span class="type-label">{{c?.card_type_id! | typeLabel}}</span>
-            @if (c?.display_subtypes) {
-            <br>
-            {{c?.display_subtypes | keywordLabel}}
+        <p class="type-label">{{c?.card_type_id! | typeLabel}}</p>
+        @if (subtypes().length > 0) {
+        <div class="subtypes">
+            @for (subtype of subtypes(); track subtype) {
+            <app-ui-badge [label]="subtype | keywordLabel" tone="accent"></app-ui-badge>
             }
-        </p>
+        </div>
+        }
         <div class="icons-container">
             @if (c?.card_type_id?.endsWith('_identity') && c?.faction_id !== 'neutral_runner' && c?.faction_id !==
             'neutral_corp') {

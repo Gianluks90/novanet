@@ -1,7 +1,7 @@
 <div class="cards-page-main-container">
-    <div class="filter-container">
-        <div class="side-line"></div>
-        <p class="section-title">{{ 'filtersSectionTitle' | t }}</p>
+    <!-- on desktop the bar is a panel; on mobile (where the filters hang from it as a dropdown, which a panel would clip) a plain outlined box -->
+    <div class="filter-container" [class.hud-panel]="!viewport.isMobile()" [class.is-quiet]="!viewport.isMobile()">
+        <p class="hud-eyebrow filters-title">{{ 'filtersSectionTitle' | t }}</p>
         <input #search type="text" [placeholder]="'searchTextInputPlaceholder' | t" (keyup)="onChangeTextSearch($event)"
             (focus)="filtersOpen = false">
         <button type="button" class="ghost-btn sort-toggle" [attr.aria-label]="'cardsPage.sort' | t"
@@ -78,7 +78,7 @@
         </div>
     </div>
     <div class="content-container">
-        <div class="grid-section">
+        <div class="grid-section hud-panel is-quiet">
             <div class="action-controls">
                 @if (!viewport.isMobile()) {
                 <button type="button" [innerHTML]="'cardsPage.gridViewGrid' | t: [(zoomLevel | zoomLevelLabel)]" class="control-container" (click)="zoomRotation()"></button>
@@ -109,19 +109,19 @@
                 }
             </div>
             @if (locale !== 'en') {
-            <button type="button" class="translate-circle" [class.active]="translations.enabled()"
+            <button type="button" class="translate-circle hud-btn" [class.is-primary]="translations.enabled()"
                 [attr.aria-pressed]="translations.enabled()" [attr.aria-label]="'homeSettingsDialog.translateCards' | t"
                 [title]="'homeSettingsDialog.translateCards' | t" (click)="translations.setEnabled(!translations.enabled())">
                 <span class="material-symbols-rounded" aria-hidden="true">translate</span>
             </button>
             }
             <div class="footer-container">
-                <button type="button" class="info-circle" [attr.aria-label]="'cardsPage.attribution' | t"
+                <button type="button" class="info-circle hud-btn" [attr.aria-label]="'cardsPage.attribution' | t"
                     [title]="'cardsPage.attribution' | t" (click)="openAttribution()">
                     <span class="material-symbols-rounded" aria-hidden="true">info</span>
                 </button>
                 @if(selectedCard) {
-                    <button type="button" class="deselect-card" (click)="selectedCard = null">
+                    <button type="button" class="deselect-card hud-btn" (click)="selectedCard = null">
                         <span>{{ 'cardsPage.deselectCard' | t }}</span>
                         <span class="material-symbols-rounded" aria-hidden="true">close</span>
                     </button>
