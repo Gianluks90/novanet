@@ -1,0 +1,15 @@
+// Mixins of the HUD kit (no output of their own, so components can `@use` them freely):
+//   @use '../../../styles/hud-mixins' as hud;
+//   .thing { @include hud.shape(var(--cut), var(--cut)); }
+
+// Chamfered shape: top-left and bottom-right corners cut.
+@mixin shape($cut-tl, $cut-br) {
+  clip-path: polygon(
+    #{$cut-tl} 0,
+    100% 0,
+    100% calc(100% - #{$cut-br}),
+    calc(100% - #{$cut-br}) 100%,
+    0 100%,
+    0 #{$cut-tl}
+  );
+}

@@ -1,30 +1,31 @@
 import { computed, effect, Injectable, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { BehaviorSubject } from 'rxjs';
-import { ACCENT_PRESETS, AccentPreset, accentPreset, ThemeName } from '../const/accent-colors';
+import { ACCENT_PRESETS, AccentPreset, accentPreset } from '../const/accent-colors';
 import { FirebaseService } from './firebase-service';
 import { UserService } from './user-service';
 
-type AccentChoice = Partial<Record<ThemeName, string>>;
+/** Accent id chosen; kept under `dark` because that is how it was stored when there were two themes. */
+type AccentChoice = { dark?: string };
 
 const ACCENT_STORAGE_KEY = 'accent';
 
+/**
+ * The look of the app: a single dark theme with a user-chosen accent color. (The light theme was
+ * removed: the cards read better on a dark background.)
+ */
 @Injectable({
   providedIn: 'root',
 })
 export class ThemeService {
-  private theme$ = new BehaviorSubject<ThemeName>('light');
-  public readonly theme = toSignal(this.theme$, { initialValue: 'light' });
-
-  /** Preset id picked for each theme: from this device, overridden by the profile when signed in. */
   private readonly choice = signal<AccentChoice>(ThemeService.loadChoice());
-  /** Accent presets of the current theme. */
-  public readonly accentPresets = computed<AccentPreset[]>(() => ACCENT_PRESETS[this.theme()]);
+  /** The accent presets to pick from. */
+  public readonly accentPresets = computed<AccentPreset[]>(() => ACCENT_PRESETS);
   /** Current accent preset id. */
-  public readonly accentId = computed(() => accentPreset(this.theme(), this.choice()[this.theme()]).id);
+  public readonly accentId = computed(() => accentPreset(this.choice().dark).id);
 
   constructor(private firebaseService: FirebaseService, private userService: UserService) {
-    this.initializeTheme();
+    document.body.classList.remove('light');
+    document.body.classList.add('dark');
+    localStorage.removeItem('theme');
     this.setupAccentEffects();
   }
 
@@ -40,18 +41,17 @@ export class ThemeService {
     // The profile wins over the device when the user is signed in and has chosen something.
     effect(() => {
       const saved = this.firebaseService.$user()?.accentColors;
-      if (saved) this.choice.set({ ...saved });
+      if (saved?.dark) this.choice.set({ dark: saved.dark });
     });
 
     effect(() => {
-      const accent = accentPreset(this.theme(), this.choice()[this.theme()]).color;
-      document.body.style.setProperty('--accent-color', accent);
+      document.body.style.setProperty('--accent-color', accentPreset(this.choice().dark).color);
     });
   }
 
-  /** Picks an accent for the current theme: applied at once, kept on this device and in the profile. */
+  /** Picks the accent: applied at once, kept on this device and in the profile. */
   public setAccent(id: string): void {
-    const choice = { ...this.choice(), [this.theme()]: id };
+    const choice: AccentChoice = { dark: id };
     this.choice.set(choice);
     try {
       localStorage.setItem(ACCENT_STORAGE_KEY, JSON.stringify(choice));
@@ -61,31 +61,5 @@ export class ThemeService {
       this.userService.updateUserInfo(uid, { accentColors: choice })
         .catch(err => console.error('Error saving the accent color:', err));
     }
-  }
-
-  private getCurrentTheme(): ThemeName {
-    return document.body.classList.contains('dark') ? 'dark' : 'light';
-  }
-
-  private initializeTheme(): void {
-    const savedTheme = localStorage.getItem('theme') as ThemeName | null;
-    this.setTheme(savedTheme ?? 'light');
-  }
-
-  setTheme(theme: ThemeName): void {
-    this.theme$.next(theme);
-    localStorage.setItem('theme', theme);
-
-    document.body.classList.remove('light', 'dark');
-    document.body.classList.add(theme);
-  }
-
-  toggleTheme(): void {
-    const newTheme = this.theme$.value === 'light' ? 'dark' : 'light';
-    this.setTheme(newTheme);
-  }
-
-  getTheme$() {
-    return this.theme$.asObservable();
   }
 }

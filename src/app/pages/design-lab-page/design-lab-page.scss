@@ -1,0 +1,229 @@
+// display font on the lab's own labels
+.lab .deck-name,
+.lab .meter-head {
+    font-family: var(--font-display);
+}
+
+.lab {
+    min-height: 100%;
+    padding: var(--space-4);
+    color: #e6edf5;
+
+    &>.lab-inner {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-6);
+        max-width: 980px;
+        margin: 0 auto;
+        padding-bottom: var(--space-6);
+    }
+
+    .block {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-3);
+    }
+
+    .body {
+        max-width: 60ch;
+        color: #aab4c2;
+        line-height: 1.55;
+        font-size: var(--font-size-md);
+
+        &.note {
+            font-size: var(--font-size-sm);
+        }
+    }
+
+    .hud-title {
+        color: #f2f6fb;
+
+        &.big {
+            font-size: clamp(2rem, 6vw, 3.25rem);
+        }
+
+        &.small {
+            font-size: var(--font-size-lg);
+            letter-spacing: 0.06em;
+            margin-bottom: var(--space-2);
+        }
+
+        // room under a tab label
+        &.tab-title {
+            margin-top: var(--space-3);
+        }
+    }
+
+    .numbers {
+        font-size: var(--font-size-xl);
+        color: #aab4c2;
+
+        .hud-num {
+            font-size: var(--font-size-2xl);
+        }
+    }
+
+    .controls {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        gap: var(--space-4);
+        padding-top: var(--space-5);
+
+        label {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-1);
+        }
+
+        .check {
+            flex-direction: row;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        select {
+            width: auto;
+            min-width: 12rem;
+        }
+    }
+
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--space-3);
+
+        &.small {
+            gap: var(--space-1);
+        }
+
+        &.end {
+            justify-content: flex-end;
+            margin-top: var(--space-4);
+        }
+    }
+
+    .panel-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: var(--space-4);
+    }
+
+    .hud-panel {
+        // two-diagonal chamfer needs a bit more room in the cut corners
+        &.hud-panel {
+            padding: var(--space-5) var(--space-4) var(--space-4);
+        }
+
+        .corner {
+            position: absolute;
+            top: 6px;
+            right: calc(var(--cut) + 8px);
+        }
+    }
+
+    .hud-btn:disabled {
+        opacity: .4;
+        cursor: not-allowed;
+    }
+
+    .meters {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: var(--space-4);
+
+        .meter-head {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--space-1);
+            font-size: var(--font-size-sm);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #aab4c2;
+
+            .hud-num {
+                font-size: var(--font-size-md);
+            }
+        }
+    }
+
+    .deck-row {
+        display: flex;
+        align-items: center;
+        gap: var(--space-4);
+        padding: var(--space-3);
+
+        .deck-art {
+            width: 36px;
+            aspect-ratio: 2 / 3;
+            background: linear-gradient(135deg, color-mix(in srgb, var(--accent-color) 40%, #0f1219), #0f1219);
+        }
+
+        .deck-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .deck-name {
+            margin: 0 0 var(--space-1);
+            font-size: var(--font-size-lg);
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .deck-actions {
+            display: flex;
+            gap: var(--space-3);
+            color: var(--accent-color);
+        }
+    }
+
+    .tiles {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 150px));
+        gap: var(--space-3);
+
+        .tile {
+            padding: 3px;
+
+            img {
+                display: block;
+                width: 100%;
+                aspect-ratio: 2 / 3;
+                object-fit: cover;
+            }
+        }
+    }
+
+    .dialog {
+        max-width: 420px;
+    }
+
+    .tabbar {
+        display: flex;
+        gap: var(--space-1);
+        max-width: 420px;
+
+        .tab {
+            --stroke: var(--accent-color);
+
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 64px;
+            color: var(--accent-color);
+
+            .material-symbols-rounded {
+                font-size: 2.25rem;
+            }
+
+            &.on {
+                --fill: var(--accent-color);
+                color: var(--on-accent);
+            }
+        }
+    }
+}

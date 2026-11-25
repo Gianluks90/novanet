@@ -54,18 +54,11 @@
             <span class="field-hint">{{ 'homeSettingsDialog.translateCardsHint' | t }}</span>
         </div>
     }
-    <app-ui-field label="homeSettingsDialog.theme" forId="theme-select">
-        <select id="theme-select" (change)="setTheme($any($event.target).value)">
-            @for (o of themeOptions; track o.value) {
-                <option [value]="o.value" [selected]="theme.theme() === o.value">{{ o.label | t }}</option>
-            }
-        </select>
-    </app-ui-field>
     <div class="option-group">
         <span class="option-label">{{ 'homeSettingsDialog.accentColor' | t }}</span>
         <app-ui-segmented [options]="accentOptions()" [value]="theme.accentId()" [fill]="true"
             groupLabel="homeSettingsDialog.accentColor" (valueChange)="theme.setAccent($event)"></app-ui-segmented>
-        <span class="field-hint">{{ 'homeSettingsDialog.accentColorHint' | t: [(theme.theme() === 'light' ? 'homeSettingsDialog.themeLight' : 'homeSettingsDialog.themeDark') | t] }}</span>
+        <span class="field-hint">{{ 'homeSettingsDialog.accentColorHint' | t }}</span>
     </div>
     <div class="option-group">
         <span class="option-label">{{ 'homeSettingsDialog.cardBacks' | t }}</span>

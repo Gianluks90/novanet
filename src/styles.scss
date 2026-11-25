@@ -5,9 +5,10 @@
 @use './styles/ghost-btn';
 @use './styles/form-feedback';
 @use './styles/breakpoints' as bp;
+@use './styles/hud';
 
 * {
-  font-family: 'Genos', sans-serif;
+  font-family: var(--font-body);
   box-sizing: border-box;
   scrollbar-width: none;
   /* Firefox */
@@ -23,6 +24,16 @@ body {
   background-color: var(--bg-color);
   color: var(--fg-color);
   font-size: 16px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+  letter-spacing: 0.02em;
 }
 
 h1,
@@ -57,16 +68,6 @@ p {
 
   --fg-color-muted: rgb(184, 184, 184);
   --bg-color-muted: rgb(77, 77, 77);
-}
-
-.light {
-  --fg-color: #000000;
-  --bg-color: #f0f0f0;
-  --accent-color: #000;
-  --bg-container-color: #e1e1e1;
-
-  --fg-color-muted: rgb(100, 100, 100);
-  --bg-color-muted: rgb(200, 200, 200);
 }
 
 .dark {

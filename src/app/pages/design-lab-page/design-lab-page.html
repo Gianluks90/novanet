@@ -1,0 +1,123 @@
+<div class="lab hud-grid-bg">
+    <div class="lab-inner">
+
+        <!-- controls -->
+        <section class="hud-panel is-quiet controls">
+            <span class="hud-tab">Lab</span>
+            <label>
+                <span class="hud-eyebrow">Accent</span>
+                <select (change)="theme.setAccent($any($event.target).value)">
+                    @for (p of theme.accentPresets(); track p.id) {
+                        <option [value]="p.id" [selected]="theme.accentId() === p.id">{{ p.id }} {{ p.color }}</option>
+                    }
+                </select>
+            </label>
+        </section>
+
+        <!-- typography -->
+        <section class="block">
+            <p class="hud-eyebrow">Typography</p>
+            <h1 class="hud-title big">Netrunner deck builder</h1>
+            <p class="body">The body font is for long texts: card effects, hints and dialogs. It has to stay readable at small sizes,
+                so it is a plain sans-serif; the display font is only for titles, labels and numbers.</p>
+            <p class="numbers"><span class="hud-num">47</span> / 45 &nbsp; <span class="hud-num">0</span> / 15 &nbsp; <span class="hud-num">12</span> ◆</p>
+        </section>
+
+        <!-- panels -->
+        <section class="block">
+            <p class="hud-eyebrow">Panels</p>
+            <div class="panel-grid">
+                <article class="hud-panel is-quiet">
+                    <h3 class="hud-title small">A · Quiet</h3>
+                    <p class="body">Muted outline, chamfered corners on two diagonals. The default container for lists and columns.</p>
+                </article>
+                <article class="hud-panel">
+                    <span class="hud-hatch corner" aria-hidden="true"></span>
+                    <h3 class="hud-title small">B · Hatch</h3>
+                    <p class="body">Full accent outline and a strip of stripes in a corner. For the main panel of a page.</p>
+                </article>
+                <article class="hud-panel is-raised">
+                    <span class="hud-tab">Status</span>
+                    <h3 class="hud-title small tab-title">C · Tab</h3>
+                    <p class="body">A label hanging from the top edge. For panels that say what they are: run, tags, server.</p>
+                </article>
+            </div>
+        </section>
+
+        <!-- buttons -->
+        <section class="block">
+            <p class="hud-eyebrow">Buttons and badges</p>
+            <div class="row">
+                <button type="button" class="hud-btn is-primary">Save changes</button>
+                <button type="button" class="hud-btn">Import deck</button>
+                <button type="button" class="hud-btn" disabled>Disabled</button>
+                <span class="hud-badge">Legal: Standard</span>
+                <span class="hud-badge">This device</span>
+            </div>
+        </section>
+
+        <!-- meters -->
+        <section class="block">
+            <p class="hud-eyebrow">Meters</p>
+            <div class="meters">
+                <div><div class="meter-head"><span>Deck size</span><span class="hud-num">47 / 45</span></div><div class="hud-meter" style="--v: 100%"></div></div>
+                <div><div class="meter-head"><span>Influence</span><span class="hud-num">9 / 15</span></div><div class="hud-meter" style="--v: 60%"></div></div>
+                <div><div class="meter-head"><span>Agenda points</span><span class="hud-num">18 / 20</span></div><div class="hud-meter is-warn" style="--v: 90%"></div></div>
+                <div><div class="meter-head"><span>Influence</span><span class="hud-num">17 / 15</span></div><div class="hud-meter is-error" style="--v: 100%"></div></div>
+            </div>
+        </section>
+
+        <!-- deck row -->
+        <section class="block">
+            <p class="hud-eyebrow">List row</p>
+            <div class="hud-panel is-quiet is-raised deck-row" style="--cut: 10px">
+                <div class="deck-art" aria-hidden="true"></div>
+                <div class="deck-info">
+                    <p class="deck-name">Sharper Core Set Starter</p>
+                    <div class="row small"><span class="hud-badge">Standard</span><span class="hud-badge">+2</span></div>
+                </div>
+                <div class="deck-actions"><span class="material-symbols-rounded">edit</span><span class="material-symbols-rounded">delete</span></div>
+            </div>
+        </section>
+
+        <!-- card tiles -->
+        <section class="block">
+            <p class="hud-eyebrow">Card frames</p>
+            <div class="tiles">
+                @for (t of tiles; track t; let i = $index) {
+                    <div class="tile hud-panel" [class.is-quiet]="i !== 1" style="--cut: 10px; padding: 3px">
+                        <img [src]="'https://card-images.netrunnerdb.com/v2/medium/' + t + '.jpg'" alt="">
+                    </div>
+                }
+            </div>
+            <p class="body note">Middle one selected (full accent outline).</p>
+        </section>
+
+        <!-- dialog -->
+        <section class="block">
+            <p class="hud-eyebrow">Dialog</p>
+            <div class="hud-panel is-raised dialog" style="--cut: 18px">
+                <span class="hud-tab">Settings</span>
+                <h3 class="hud-title small tab-title">Reset the deck?</h3>
+                <p class="body">This removes every card from the deck. It cannot be undone.</p>
+                <div class="row end">
+                    <button type="button" class="hud-btn">Cancel</button>
+                    <button type="button" class="hud-btn is-primary">Reset</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- mobile tab bar -->
+        <section class="block">
+            <p class="hud-eyebrow">Mobile tab bar</p>
+            <div class="tabbar">
+                @for (i of ['cards_stack', 'group', 'stack_hexagon']; track i; let n = $index) {
+                    <div class="hud-panel is-raised tab" [class.on]="n === 0" style="--cut: 10px; padding: 0">
+                        <span class="material-symbols-rounded">{{ i }}</span>
+                    </div>
+                }
+            </div>
+        </section>
+
+    </div>
+</div>

@@ -47,20 +47,11 @@ export class HomeSettingsDialog {
 
   public readonly languageOptions: SegmentedOption[] = SUPPORTED_LANGS.map(code => ({ value: code, label: `language.${code}` as const }));
 
-  public readonly themeOptions: SegmentedOption[] = [
-    { value: 'light', label: 'homeSettingsDialog.themeLight', icon: 'light_mode' },
-    { value: 'dark', label: 'homeSettingsDialog.themeDark', icon: 'dark_mode' },
-  ];
-
   public setLang(lang: string) {
     this.i18n.setLang(lang as Lang);
   }
 
-  public setTheme(theme: string) {
-    this.theme.setTheme(theme as 'light' | 'dark');
-  }
-
-  /** The accent colors of the current theme, as segments. The choice is applied and saved right away. */
+  /** The accent colors, as segments. The choice is applied and saved right away. */
   public accentOptions = computed<SegmentedOption[]>(() =>
     this.theme.accentPresets().map(p => ({ value: p.id, label: p.label, color: p.color })));
 

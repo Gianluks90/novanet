@@ -1,4 +1,5 @@
 @use '../../../styles/breakpoints' as bp;
+@use '../../../styles/hud-mixins' as hud;
 
 .header-main-container {
     // the top safe area (notch) is part of the bar
@@ -122,31 +123,49 @@
         pointer-events: none; // only the blocks catch touches
     }
 
+    // Each tab is a block of the HUD kit: outlined, two corners chamfered, filled with the accent
+    // while it is the current page (the fill is the ::before, the stroke the element itself).
     .nav-link {
+        --cut: 10px;
+        --stroke: var(--accent-color);
+        --fill: var(--panel-bg-raised);
+
+        position: relative;
+        isolation: isolate;
         flex: 1;
         justify-content: center;
         height: 100%;
         padding: 0;
-        border: 1px solid var(--border-color);
-        border-bottom: 0;
-        border-radius: 0 var(--radius-md) 0 0;
-        background-color: var(--bg-container-color);
+        border: 0;
+        border-radius: 0;
+        background-color: var(--stroke);
+        color: var(--accent-color);
         pointer-events: auto;
+        @include hud.shape(var(--cut), var(--cut));
+
+        &::before {
+            content: '';
+            position: absolute;
+            inset: 1px;
+            z-index: -1;
+            background: var(--fill);
+            @include hud.shape(calc(var(--cut) - 0.586px), calc(var(--cut) - 0.586px));
+        }
 
         .material-symbols-rounded {
             font-size: 2.25rem;
         }
 
-        // The base rules (header hover/active, 14% accent) would make a touched or current tab
-        // see-through: here the block keeps its own background, and the current page is filled
-        // with the accent also while the (sticky, on touch screens) hover applies.
-        &:hover:not(.disabled) {
-            background-color: var(--bg-container-color);
+        // the header's own hover/active backgrounds (14% accent) must not show through
+        &:hover:not(.disabled),
+        &.active,
+        &.active:hover:not(.disabled) {
+            background-color: var(--stroke);
         }
 
         &.active,
         &.active:hover:not(.disabled) {
-            background-color: var(--surface-active);
+            --fill: var(--accent-color);
             color: var(--on-accent);
         }
 

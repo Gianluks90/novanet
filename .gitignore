@@ -148,3 +148,6 @@ vite.config.ts.timestamp-*
 
 # Original artwork (PNG sources); the app serves the converted WebP files in public/
 art-src/
+
+# Reference images collected from the web for the new look (not ours to publish)
+/docs/ref/

@@ -1,0 +1,247 @@
+@use 'hud-mixins' as hud;
+
+// =====================================================================
+// HUD kit (design lab, see /#/design-lab)
+//
+// The visual language: thin accent outlines with chamfered corners, a notch or a hatch strip only
+// where it matters, small spaced capitals over big display titles, segmented meters. Everything is
+// CSS (no images), so it adapts to any size.
+//
+// The chamfered outline is drawn with two layers: the element is painted with the stroke color and
+// clipped to the chamfered shape; its ::before is the fill, inset by the line width and clipped to
+// the same shape (cut reduced by 0.586 * line so the diagonal has the same thickness). Nothing
+// outside the shape is painted, so shadows/glows must go on a wrapper or on text.
+//
+// Knobs (custom properties, set on the element or an ancestor):
+//   --cut   size of the chamfer          --line  outline width
+//   --stroke  outline color               --fill  fill color
+// =====================================================================
+
+body {
+  // surfaces: two levels of dark with a hint of blue
+  --panel-bg: #0f1219;
+  --panel-bg-raised: #151a24;
+  --hud-line: 1px;
+}
+
+// Outlined, chamfered box (top-left and bottom-right corners cut).
+.hud-panel {
+  --cut: 14px;
+  --line: var(--hud-line);
+  --stroke: var(--accent-color);
+  --fill: var(--panel-bg);
+
+  position: relative;
+  isolation: isolate;
+  padding: var(--space-4);
+  background: var(--stroke);
+  @include hud.shape(var(--cut), var(--cut));
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: var(--line);
+    z-index: -1;
+    background: var(--fill);
+    @include hud.shape(
+      calc(var(--cut) - var(--line) * 0.586),
+      calc(var(--cut) - var(--line) * 0.586)
+    );
+  }
+
+  // a quieter outline (the default for lists and containers)
+  &.is-quiet {
+    --stroke: color-mix(in srgb, var(--accent-color) 45%, transparent);
+  }
+
+  &.is-raised {
+    --fill: var(--panel-bg-raised);
+  }
+}
+
+// Label hanging from the top edge of a panel, on the right (put it first inside the panel).
+.hud-tab {
+  position: absolute;
+  top: 0;
+  right: calc(var(--cut, 14px) + var(--space-3));
+  padding: 1px var(--space-2) 1px var(--space-3);
+  background: var(--stroke, var(--accent-color));
+  color: var(--on-accent);
+  font-family: var(--font-display);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  line-height: 1.4;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 6px 100%);
+}
+
+// Strip of diagonal stripes, for a corner or a title (an empty element with this class).
+.hud-hatch {
+  display: inline-block;
+  width: 44px;
+  height: 8px;
+  background: repeating-linear-gradient(
+    -55deg,
+    var(--accent-color) 0 3px,
+    transparent 3px 7px
+  );
+}
+
+// Small spaced capitals over a display title.
+.hud-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  color: var(--accent-color);
+  font-family: var(--font-display);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+
+  &::before {
+    content: '';
+    width: 18px;
+    height: 2px;
+    background: currentColor;
+  }
+}
+
+// Glow: only on titles and big numbers.
+.hud-title,
+.hud-num {
+  text-shadow: 0 0 14px color-mix(in srgb, var(--accent-color) 55%, transparent);
+}
+
+.hud-num {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--accent-color);
+  font-variant-numeric: tabular-nums;
+}
+
+.hud-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+// Buttons: chamfered; the primary one is filled, the other has the outline.
+.hud-btn {
+  --cut: 9px;
+  --line: 1px;
+  --stroke: var(--accent-color);
+  --fill: var(--panel-bg);
+
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--control-height);
+  padding: 0 var(--space-4);
+  border: 0;
+  background: var(--stroke);
+  color: var(--accent-color);
+  font-family: var(--font-display);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  @include hud.shape(var(--cut), var(--cut));
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: var(--line);
+    z-index: -1;
+    background: var(--fill);
+    transition: background-color var(--duration-fast);
+    @include hud.shape(
+      calc(var(--cut) - var(--line) * 0.586),
+      calc(var(--cut) - var(--line) * 0.586)
+    );
+  }
+
+  &:hover::before {
+    --fill: color-mix(in srgb, var(--accent-color) 18%, var(--panel-bg));
+  }
+
+  &.is-primary {
+    --fill: var(--accent-color);
+    color: var(--on-accent);
+
+    &:hover::before {
+      --fill: color-mix(in srgb, var(--accent-color) 82%, white);
+    }
+  }
+}
+
+.hud-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 1px var(--space-2) 1px var(--space-2);
+  border-left: 2px solid var(--accent-color);
+  background: color-mix(in srgb, var(--accent-color) 14%, transparent);
+  color: var(--accent-color);
+  font-family: var(--font-display);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+// Segmented meter: `--v` is the filled share (0%..100%).
+.hud-meter {
+  --seg: 7px;
+  --gap: 2px;
+  --v: 50%;
+
+  position: relative;
+  height: 10px;
+  background: repeating-linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--accent-color) 20%, transparent) 0 var(--seg),
+    transparent var(--seg) calc(var(--seg) + var(--gap))
+  );
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    width: var(--v);
+    background: repeating-linear-gradient(
+      90deg,
+      var(--accent-color) 0 var(--seg),
+      transparent var(--seg) calc(var(--seg) + var(--gap))
+    );
+  }
+
+  &.is-warn {
+    --accent-color: var(--warn-color);
+  }
+
+  &.is-error {
+    --accent-color: var(--error-color);
+  }
+}
+
+// Page background: a faint grid with crosses and dashed diagonals. A static layer: no animation.
+.hud-grid-bg {
+  background-color: #07090d;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='112' height='112'%3E%3Cpath d='M56 49v14M49 56h14' stroke='%23ffffff' stroke-opacity='.28' stroke-width='1.2'/%3E%3Cpath d='M0 0L112 112M112 0L0 112' stroke='%23ffffff' stroke-opacity='.035' stroke-dasharray='3 7'/%3E%3C/svg%3E"),
+    linear-gradient(to right, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 112px 112px, 112px 112px, 112px 112px;
+  background-position: -0.5px -0.5px;
+}

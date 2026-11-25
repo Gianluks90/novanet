@@ -45,8 +45,8 @@ export class DesignSystemPage {
 
   public segment = signal('mine');
   public visibility = signal('private');
-  public swatchOptions: SegmentedOption[] = ACCENT_PRESETS.dark.map(p => ({ value: p.id, label: p.label, color: p.color }));
-  public swatch = signal('yellow');
+  public swatchOptions: SegmentedOption[] = ACCENT_PRESETS.map(p => ({ value: p.id, label: p.label, color: p.color }));
+  public swatch = signal('cyan');
   public copies = signal(1);
   public toggle = signal(false);
   public activeIcon = signal(false);
