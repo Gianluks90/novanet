@@ -312,6 +312,7 @@ export const EN = {
   "homeSettingsDialog.nickname": "Nickname",
   "homeSettingsDialog.customPhotoURL": "Custom profile picture (URL)",
   "homeSettingsDialog.customBackgroundURL": "Custom background (URL)",
+  "cardDetail.machineTranslated": "Machine translation (unofficial)",
 } as const;
 
 export type TranslationKey = keyof typeof EN;

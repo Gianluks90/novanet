@@ -45,15 +45,15 @@ export const KEYWORD_LABELS: Record<string, Record<string, string>> = {
     },
     'icebreaker': {
         en: 'Icebreaker', 
-        it: 'Rompighiaccio'
+        it: 'Icebreaker'
     },
     'fracter': {
         en: 'Fracter',
-        it: 'Fratturatore'
+        it: 'Fracter'
     },
     'decoder': {
         en: 'Decoder',
-        it: 'Decodificatore'
+        it: 'Decoder'
     },
     'killer': {
         en: 'Killer',
@@ -73,7 +73,7 @@ export const KEYWORD_LABELS: Record<string, Record<string, string>> = {
     },
     'AI': {
         en: 'AI',
-        it: 'IA'
+        it: 'AI'
     },
     'virus': {
         en: 'Virus',
@@ -113,7 +113,7 @@ export const KEYWORD_LABELS: Record<string, Record<string, string>> = {
     },
     'barrier': {
         en: 'Barrier',
-        it: 'Barriera'
+        it: 'Barrier'
     },
     'bioroid': {
         en: 'Bioroid',
@@ -125,7 +125,7 @@ export const KEYWORD_LABELS: Record<string, Record<string, string>> = {
     },
     'sentry': {
         en: 'Sentry',
-        it: 'Sentinella'
+        it: 'Sentry'
     },
     'tracer': {
         en: 'Tracer',
@@ -137,7 +137,7 @@ export const KEYWORD_LABELS: Record<string, Record<string, string>> = {
     },
     'code gate': {
         en: 'Code Gate',
-        it: 'Portale codificato'
+        it: 'Code Gate'
     },
     'initiative': {
         en: 'Initiative',
@@ -145,7 +145,7 @@ export const KEYWORD_LABELS: Record<string, Record<string, string>> = {
     },
     'grey ops': {
         en: 'Grey Ops',
-        it: 'Operazioni grigie'
+        it: 'Gray Ops'
     },
     'deflector': {
         en: 'Deflector',
@@ -189,7 +189,7 @@ export const KEYWORD_LABELS: Record<string, Record<string, string>> = {
     },
     'black ops': {
         en: 'Black Ops',
-        it: 'Operazioni nere'
+        it: 'Black Ops'
     },
     'weapon': {
         en: 'Weapon',
@@ -302,5 +302,13 @@ export const KEYWORD_LABELS: Record<string, Record<string, string>> = {
     'directive': {
         en: 'Directive',
         it: 'Direttiva'
+    },
+    'gray ops': {
+        en: 'Gray Ops',
+        it: 'Gray Ops'
+    },
+    'liability': {
+        en: 'Liability',
+        it: 'Illecito'
     }
 };

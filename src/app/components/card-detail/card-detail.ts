@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { NrIconsPipe } from '../../pipes/nr-icons-pipe';
 import { PackCodePipe } from '../../pipes/pack-code-pipe';
 import { Pack } from '../../models/pack';
-import { UiIconButton } from '../../ui';
+import { UiBadge, UiIconButton } from '../../ui';
 import { FirebaseService } from '../../services/firebase-service';
 import { NotificationService } from '../../services/notification-service';
 import { TypeLabelPipe } from '../../pipes/type-label-pipe';
@@ -23,7 +23,7 @@ import { scrollToCenter } from '../../utils/scroll';
 
 @Component({
   selector: 'app-card-detail',
-  imports: [TranslatePipe, 
+  imports: [TranslatePipe, UiBadge,
     FormsModule,
     NrIconsPipe,
     PackCodePipe,
@@ -52,6 +52,8 @@ export class CardDetail {
   public disableMenu = input<boolean>(false);
   /** Show the card in the current language when a translation exists (`false`: English only). */
   public translated = input<boolean>(true);
+  /** The effect text shown is a machine translation, not an official one. */
+  public machineTranslated = signal(false);
 
   constructor(
     public firebase: FirebaseService,
@@ -66,6 +68,7 @@ export class CardDetail {
 
       // Upstream translations are often partial (e.g. title only): fall back field by field.
       const translation = this.translated() ? this.translations.translation(card.id) : undefined;
+      this.machineTranslated.set(!!translation?.machine);
 
       if (translation) {
         this.card.set({

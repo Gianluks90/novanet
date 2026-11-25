@@ -50,7 +50,8 @@
                 "glob": "**/*",
                 "input": "public",
                 "ignore": [
-                  "**/Null_Signal_Games_*.pdf"
+                  "**/Null_Signal_Games_*.pdf",
+                  "**/Netrunner-regolamento.pdf"
                 ]
               }
             ],

@@ -1,0 +1,891 @@
+{
+  "23001": {
+    "title": "Diritti dei Lavoratori",
+    "text": "Elimina le prime 3 carte del tuo stack. Rimescola 3 carte dal tuo heap nel tuo stack. Pesca 1 carta. Rimuovi questo evento dal gioco invece di eliminarlo."
+  },
+  "23011": {
+    "title": "Embolo",
+    "text": "Quando il tuo turno inizia, puoi pagare 1[credit] per collocare 1 segnalino potere su questo upgrade.\nOgni volta che Runner effettua un'incursione riuscita, rimuovi 1 segnalino potere da questo upgrade.\n<strong>Segnalino potere ospitato</strong>: Termina l'incursione. Usa questa capacità solo durante un'incursione su questo server."
+  },
+  "23013": {
+    "title": "Crowdfunding",
+    "text": "Quando installi questa risorsa, carica 3[credit] su di essa. Quando è scarica, eliminala e pesca 1 carta.\nQuando il tuo turno inizia, prendi 1[credit] da questa risorsa.\nQuando il tuo turno termina, se questo turno hai effettuato almeno 3 incursioni riuscite e questa carta è nel tuo heap, puoi installarla, ignorando tutti i costi."
+  },
+  "23027": {
+    "title": "Rilascio Pubblico Tempestivo",
+    "text": "Quando riscuoti quest'obiettivo, colloca 1 segnalino obiettivo su di esso.\n<strong>Segnalino obiettivo ospitato</strong>: Installa 1 ICE dal QG o dagli Archivi in una qualsiasi posizione a protezione di un server, ignorando tutti i costi."
+  },
+  "23045": {
+    "title": "Slot Machine",
+    "text": "Quando Runner incontra questo ICE, mette in fondo la carta in cima allo stack, poi riveli le prime 3 carte dello stack.\n[subroutine] Runner perde 3[credit].\n[subroutine] Se all'inizio di questo incontro hai rivelato 2 o più carte che condividono un tipo, ottieni 3[credit].\n[subroutine] Se all'inizio di questo incontro hai rivelato 3 o più carte che condividono un tipo, colloca 3 segnalini progresso su una carta installata."
+  },
+  "23054": {
+    "title": "Controllo di Frontiera",
+    "text": "[trash]: Termina l'incursione. Usa questa capacità solo durante un'incursione su questo server.\n[subroutine] Ottieni 1[credit] per ogni ICE che protegge questo server.\n[subroutine] Termina l'incursione."
+  },
+  "23100": {
+    "title": "Guarda il Mondo Bruciare",
+    "text": "Dopo aver risolto questo evento, termina la tua fase d'azione.\nEffettua un'incursione in un server remoto. Se riuscita, rimuovi dal gioco la prima carta che non sia un obiettivo a cui accedi.\nFino alla fine della partita, ogni volta che accedi a una copia di quella carta, rimuovila dal gioco.\nLimite 1 per mazzo."
+  },
+  "23101": {
+    "title": "Manodopera Assoldata",
+    "text": "Come costo aggiuntivo per effettuare un'incursione in questo server, Runner deve eliminare 1 obiettivo dalla propria area punteggio. Ignora questa capacità se questo turno Runner ha effettuato un'incursione riuscita nel QG.\nLimite 1 per mazzo."
+  },
+  "28001": {
+    "title": "Diritti dei Lavoratori",
+    "text": "Elimina le prime 3 carte del tuo stack. Rimescola 3 carte dal tuo heap nel tuo stack. Pesca 1 carta. Rimuovi questo evento dal gioco invece di eliminarlo."
+  },
+  "28002": {
+    "title": "Crowdfunding",
+    "text": "Quando installi questa risorsa, carica 3[credit] su di essa. Quando è scarica, eliminala e pesca 1 carta.\nQuando il tuo turno inizia, prendi 1[credit] da questa risorsa.\nQuando il tuo turno termina, se questo turno hai effettuato almeno 3 incursioni riuscite e questa carta è nel tuo heap, puoi installarla, ignorando tutti i costi."
+  },
+  "28003": {
+    "title": "Embolo",
+    "text": "Quando il tuo turno inizia, puoi pagare 1[credit] per collocare 1 segnalino potere su questo upgrade.\nOgni volta che Runner effettua un'incursione riuscita, rimuovi 1 segnalino potere da questo upgrade.\n<strong>Segnalino potere ospitato</strong>: Termina l'incursione. Usa questa capacità solo durante un'incursione su questo server."
+  },
+  "28004": {
+    "title": "Slot Machine",
+    "text": "Quando Runner incontra questo ICE, mette in fondo la carta in cima allo stack, poi riveli le prime 3 carte dello stack.\n[subroutine] Runner perde 3[credit].\n[subroutine] Se all'inizio di questo incontro hai rivelato 2 o più carte che condividono un tipo, ottieni 3[credit].\n[subroutine] Se all'inizio di questo incontro hai rivelato 3 o più carte che condividono un tipo, colloca 3 segnalini progresso su una carta installata."
+  },
+  "28005": {
+    "title": "Controllo di Frontiera",
+    "text": "[trash]: Termina l'incursione. Usa questa capacità solo durante un'incursione su questo server.\n[subroutine] Ottieni 1[credit] per ogni ICE che protegge questo server.\n[subroutine] Termina l'incursione."
+  },
+  "28006": {
+    "title": "Rilascio Pubblico Tempestivo",
+    "text": "Quando riscuoti quest'obiettivo, colloca 1 segnalino obiettivo su di esso.\n<strong>Segnalino obiettivo ospitato</strong>: Installa 1 ICE dal QG o dagli Archivi in una qualsiasi posizione a protezione di un server, ignorando tutti i costi."
+  },
+  "30001": {
+    "text": "La prima volta ogni turno che elimini una carta a cui stai accedendo, ottieni 1[credit] e pesca 1 carta.",
+    "flavor": "Incursioni selvagge."
+  },
+  "30002": {
+    "text": "Risolvi 1 delle seguenti opzioni a scelta della Corp:<ul><li>Ottieni 6[credit].</li><li>Pesca 4 carte.</li></ul>",
+    "flavor": "Possono comprare i vertici sindacali, ma non possono impedirci di scioperare!"
+  },
+  "30003": {
+    "text": "+1[mu]\nAccesso, una volta per turno → <strong>Elimina 2 carte dal tuo grip:</strong> Elimina la carta a cui stai accedendo.\nLimite 1 <strong>console</strong> per giocatore.",
+    "flavor": "\"Ha fame di affondare i denti nei problemi.\"\n–Loup"
+  },
+  "30004": {
+    "text": "Installa solo su un ICE. <em>(Se l'ICE ospitante viene disinstallato, questo programma viene eliminato.)</em>\nQuando installi questo programma e quando il tuo turno inizia, colloca 1 segnalino virus su questo programma.\n<strong>Segnalino virus ospitato:</strong> Infrangi 1 subroutine sull'ICE ospitante.",
+    "flavor": "Sarà stato qualcosa che hai mangiato?"
+  },
+  "30005": {
+    "text": "Interfaccia → <strong>1[credit]:</strong> Infrangi fino a 2 subroutine <strong>code gate</strong>.\n<strong>3[credit]:</strong> +1 forza.",
+    "flavor": "La distruzione è un'arte."
+  },
+  "30006": {
+    "text": "Interfaccia → <strong>1[credit]:</strong> Infrangi fino a 2 subroutine <strong>barrier</strong>.\n<strong>2[credit]:</strong> +1 forza.",
+    "flavor": "La sottigliezza è un lusso."
+  },
+  "30007": {
+    "text": "Quando installi questo programma e quando il tuo turno inizia, colloca 1 segnalino virus su questo programma.\n[click], [trash]<strong>:</strong> Ottieni 2[credit] per ogni segnalino virus ospitato.",
+    "flavor": "\"C'è una tensione in chi cucina. Ogni ciclo di elaborazione rende più ricco il piatto e alza la fiamma. Io mescolo tutta la notte, ma pochi hanno il mio appetito per il pericolo.\"\n–René \"Loup\" Arcemont"
+  },
+  "30008": {
+    "text": "Ogni volta che effettui un'incursione riuscita su un server centrale, colloca 1 segnalino virus su questo programma.\n<strong>Segnalino virus ospitato:</strong> L'ICE che stai incontrando ha -1 forza per il resto di questo incontro.",
+    "flavor": "Il succhiasangue più avido da questa parte di un consiglio di amministrazione."
+  },
+  "30009": {
+    "text": "Ogni volta che installi un programma <strong>virus</strong>, puoi collocare 1 segnalino virus su di esso.",
+    "flavor": "\"Aspetta su una memstrip senza etichetta, molto sotto l'habitat più profondo. Anime arrabbiate e disperate la cercano, affamate del potere di cambiare un mondo brutale. Quando non riescono a digerire più amara vendetta, tornano in quel tunnel senza nome, e il libro ha una ricetta in più.\"\n–Leggenda urbana di Heinlein"
+  },
+  "30010": {
+    "text": "Una volta per turno → Quando un'incursione sul QG o su R&S termina, puoi ottenere 1[credit] per ogni volta che hai acceduto a una carta durante quell'incursione.",
+    "flavor": "Ottengo ciò che desideri."
+  },
+  "30011": {
+    "text": "Cerca nel tuo stack 1 <strong>icebreaker</strong> e rivelalo. <em>(Rimescola il tuo stack dopo averlo cercato.)</em> Se questo turno hai effettuato un'incursione riuscita, puoi installare quel programma. Se non lo fai, aggiungilo al tuo grip.",
+    "flavor": "La vera ricompensa sono gli amici che ti fai lungo il cammino."
+  },
+  "30012": {
+    "text": "Effettua un'incursione in un server qualsiasi. Durante quell'incursione, il costo di materializzazione di ogni ICE è aumentato di 3[credit].",
+    "flavor": "\"Una mod a fibra a specchio o un mantello di fascia alta possono aiutare, ma niente batte una buona dose di 'tenere la testa bassa'.\"\n–\"G0ph3r\" O'Ryan"
+  },
+  "30013": {
+    "text": "La prima volta ogni turno che violi il QG, accedi a 1 carta aggiuntiva.",
+    "flavor": "Zahya conosce il custode di ogni porta tra i Docklands e le Cupole. Cosa ancora più importante, ne conosce il prezzo."
+  },
+  "30014": {
+    "text": "+1[mu]\nOgni volta che effettui un'incursione riuscita, colloca 1[credit] su questo hardware.\n[click]<strong>:</strong> Colloca 1[credit] su questo hardware, poi prendi da esso tutti i crediti.\nLimite 1 <strong>console</strong> per giocatore.",
+    "flavor": "\"Gli sbruffoni inseguono i grandi colpi. La pazienza arricchisce sottraendo frazioni di credito alla volta.\" –Zahya"
+  },
+  "30015": {
+    "text": "Se questo turno hai effettuato un'incursione riuscita, questo programma costa 2[credit] in meno da installare.\nInterfaccia → <strong>1[credit]:</strong> Infrangi 1 subroutine <strong>sentry</strong>.\n<strong>2[credit]:</strong> +3 forza.",
+    "flavor": "Il vasto mondo è il tuo dominio\nPer legge hai la tua libera volontà."
+  },
+  "30016": {
+    "text": "Interfaccia → <strong>2[credit]:</strong> Infrangi 1 subroutine <strong>barrier</strong>. Se questo turno hai effettuato un'incursione riuscita, questa capacità costa 1[credit] in meno da usare.\n<strong>1[credit]:</strong> +1 forza.",
+    "flavor": "\"Non si governa un regno stando fermi.\"\n–Zahya Sadeghi"
+  },
+  "30017": {
+    "text": "Installa solo su un ICE. <em>(Se l'ICE ospitante viene disinstallato, questo programma viene eliminato.)</em>\nQuando installi questo programma e quando il tuo turno inizia, colloca 1 segnalino virus su questo programma. Poi, se ci sono 3 o più segnalini virus ospitati, smaterializza l'ICE ospitante.",
+    "flavor": "Shhhh. È l'ora della nanna."
+  },
+  "30018": {
+    "text": "Quando installi questa risorsa, carica 12[credit] su di essa. Quando è scarica, eliminala.\n[click]<strong>:</strong> Effettua un'incursione in un server centrale in cui non hai effettuato un'incursione questo turno. Se riuscita, prendi 3[credit] da questa risorsa.",
+    "flavor": "Le Cupole di Heinlein sono una pentola a pressione di capitalismo spietato. I potenziali datori di lavoro raramente hanno il tempo di controllare i precedenti."
+  },
+  "30019": {
+    "text": "Ogni volta che un obiettivo viene riscosso o rubato, puoi scambiare di posto 2 ICE installati.",
+    "flavor": "Un'abilità sufficiente è indistinguibile dalla magia."
+  },
+  "30020": {
+    "text": "Ottieni 5[credit]. Se hai ancora dei [click] rimanenti, perdi [click].",
+    "flavor": "La sfida della mia arte è ciò per cui vivo, ma non dirò di no a un mecenate di gusto."
+  },
+  "30021": {
+    "text": "Pesca 4 carte. Se hai ancora dei [click] rimanenti, perdi [click].",
+    "flavor": "\"Sai che nel Mare della Tranquillità non c'è acqua, vero?\"\n\"Questo non significa che non ci sia la spiaggia.\""
+  },
+  "30022": {
+    "text": "+1[mu]\nIl primo programma che installi ogni turno costa 1[credit] in meno da installare.",
+    "flavor": "Tāo espirò, mentre l'esoscheletro medico lo stabilizzava fedelmente. In quel respiro assente, allungò la mano attraverso strati di waldo e ottimizzatori e strappò la molecola vagante dal chip."
+  },
+  "30023": {
+    "text": "+1[mu]\nOgni volta che un obiettivo viene riscosso o rubato, ottieni 1[credit]. Poi puoi installare 1 carta dal tuo grip.\nLimite 1 <strong>console</strong> per giocatore.",
+    "flavor": "\"Con questa splendida bellezza posso destreggiarmi tra incursioni simultanee con il solo feedback aptico!\"\n–Tāo"
+  },
+  "30024": {
+    "text": "Ogni volta che un'incursione riuscita su R&S termina, puoi collocare 1 segnalino virus su questo programma.\n[click]<strong>:</strong> Effettua un'incursione in R&S. Se riuscita, accedi a X carte aggiuntive quando violi la R&S. X è pari al numero di segnalini virus ospitati.",
+    "flavor": "Flirtare con la verità è un sogno pernicioso\nBevi a fondo, o non assaggiare il flusso di dati grezzo."
+  },
+  "30025": {
+    "text": "Questo programma ha +1 forza per ogni <strong>icebreaker</strong> installato <em>(incluso questo)</em>.\nInterfaccia → <strong>1[credit]:</strong> Infrangi 1 subroutine <strong>sentry</strong>.\n<strong>3[credit]:</strong> +2 forza.",
+    "flavor": "La bellezza dei progetti aperti: ognuno poggia sui successi passati."
+  },
+  "30026": {
+    "text": "Interfaccia → <strong>1[credit]:</strong> Infrangi 1 subroutine <strong>code gate</strong>.\n<strong>1[credit]:</strong> +X forza. X è pari al numero di <strong>icebreaker</strong> installati <em>(incluso questo)</em>.",
+    "flavor": "La gioia del codice scritto a mano: ogni pezzo si incastra perfettamente nell'insieme."
+  },
+  "30027": {
+    "text": "Quando installi questa risorsa, carica 9[credit] su di essa. Quando è scarica, eliminala.\nUna volta per turno → [click]<strong>:</strong> Prendi 3[credit] da questa risorsa.",
+    "flavor": "\"Per quanto ne so, potrei passare un turno a scavare accanto al vecchio Weyland in persona.\"\n–Lane"
+  },
+  "30028": {
+    "text": "Effettua un'incursione nel QG o in R&S. Se riuscita, pesca 1 carta e quando violi il server attaccato, accedi a 1 carta aggiuntiva.",
+    "flavor": "\"Prenderemo i codici di accesso dal loro stesso prisec: escalation dei privilegi tramite applicazione locale della forza.\"\n–Il Catalizzatore"
+  },
+  "30029": {
+    "text": "Colloca 5[credit] su questo evento, poi effettua un'incursione in un server qualsiasi. Puoi spendere i crediti ospitati durante quell'incursione.",
+    "flavor": "\"Dopo che 381FS4 ha iniziato ad agire in modo indipendente, tutte le scommesse erano chiuse. Riconfigurava il proprio chip cerebrale... sondava persino <strong>i nostri</strong> nodi. Ho dovuto spegnerlo.\"\n–Linus Lovegood, NBN Novelties&Acquisitions"
+  },
+  "30030": {
+    "text": "Ottieni 9[credit].",
+    "flavor": "Chiunque può dedicare ore a pianificare, esercitarsi e prepararsi, ma far sembrare tutto fortuna richiede <strong>stile</strong>."
+  },
+  "30031": {
+    "text": "+1[mu]\nHai +1 limite massimo della mano.",
+    "flavor": "LLDS detiene ancora il brevetto, ma la buona tecnologia attira le imitazioni."
+  },
+  "30032": {
+    "text": "Interfaccia → <strong>1[credit]:</strong> Infrangi 1 subroutine. Quando questa incursione termina, elimina questo programma.\n<strong>1[credit]:</strong> +1 forza.",
+    "flavor": "Compilare anche la più piccola AI richiede settimane per pochi secondi di esecuzione, ma quel breve, luminoso istante permette... <strong>tutto</strong>."
+  },
+  "30033": {
+    "text": "[click]<strong>:</strong> Colloca 3[credit] su questa risorsa.\nQuando il tuo turno inizia, prendi 1[credit] da questa risorsa.",
+    "flavor": "La bellezza della tecnologia del XXII secolo: se funziona ancora dopo tutti questi decenni, sai che la qualità costruttiva è solida."
+  },
+  "30034": {
+    "text": "La prima volta ogni turno che compi l'azione di base per pescare 1 carta, pesca invece 2 carte.",
+    "flavor": "\"Ad alcuni ragazzi hanno dato g-mod per la bellezza, lo sport o per stare svegli tutta la notte. I miei genitori pensavano che le Broca-mod fossero fighe. Ah. Parlo fluentemente dieci lingue finora, e cerco ancora le parole per ringraziarli.\"\n–Patrick Blue, Artista Solare"
+  },
+  "30035": {
+    "text": "Hai +1 limite massimo della mano.\nOgni volta che riscuoti un obiettivo, puoi aggiungere 1 carta dagli Archivi al QG.",
+    "flavor": "Nemmeno un atomo fuori posto."
+  },
+  "30036": {
+    "text": "Quando riscuoti quest'obiettivo, ottieni [click][click][click]. Non puoi riscuotere obiettivi per il resto del turno.\nLimite 1 per mazzo.",
+    "flavor": "Siamo la luce di domani."
+  },
+  "30037": {
+    "text": "Quando materializzi questo asset, carica 9[credit] su di esso. Quando è scarico, eliminalo e pesca 1 carta.\nQuando il tuo turno inizia, prendi 3[credit] da questo asset.",
+    "flavor": "\"La Haas pensa di creare una nuova linea di prodotti androgini. In verità ci sta creando migliaia di nuovi fratelli da liberare.\"\n–Quetzal"
+  },
+  "30038": {
+    "text": "<strong>Perdi [click]:</strong> Infrangi 1 subroutine su questo ICE. Solo Runner può usare questa capacità.\n[subroutine] Elimina 1 carta Runner installata.\n[subroutine] Puoi installare 1 carta dal QG o dagli Archivi.\n[subroutine] Runner non può rubare né eliminare carte Corp per il resto di questa incursione."
+  },
+  "30039": {
+    "text": "<strong>Perdi [click]:</strong> Infrangi 1 subroutine su questo ICE. Solo Runner può usare questa capacità.\n[subroutine] Puoi installare 1 ICE dal QG o dagli Archivi direttamente più all'interno di questo ICE, ignorando tutti i costi.\n[subroutine] Termina l'incursione.\n[subroutine] Termina l'incursione.",
+    "flavor": "Un gigante si risveglia…"
+  },
+  "30040": {
+    "text": "Colloca 2 segnalini progresso su 1 carta installata che non hai installato questo turno.",
+    "flavor": "\"La prima lezione per gestire i bioroidi è semplice: non si deve permettere loro di provare emozioni.\"\n–Do Nhi Minh"
+  },
+  "30041": {
+    "text": "Pesca 3 carte. Rimescola 2 carte dal QG nella R&S.",
+    "flavor": "Ogni momento è il momento cruciale."
+  },
+  "30042": {
+    "text": "Ogni volta che Runner si avvicina a questo server, termina l'incursione a meno che non spenda [click][click] o paghi 5[credit].",
+    "flavor": "\"Di chi è il nastro di memoria che richiede una sicurezza così rigida?\"\n–Il Catalizzatore"
+  },
+  "30043": {
+    "text": "Quando la tua fase di scarto termina, se c'è una carta a faccia in giù negli Archivi, ottieni 1[credit].",
+    "flavor": "Una fine alla sofferenza."
+  },
+  "30044": {
+    "text": "Quando riscuoti quest'obiettivo, elimina un qualsiasi numero di carte dal QG. Rimescola fino a 3 carte dagli Archivi nella R&S.\nLimite 1 per mazzo.",
+    "flavor": "Ti rendiamo nuovo."
+  },
+  "30045": {
+    "text": "Puoi far progredire questo asset.\nQuando Runner accede a questo asset mentre è installato, infliggi 2 danni di rete più 1 danno di rete per ogni segnalino progresso ospitato.",
+    "flavor": "Una nuova derivazione della tecnologia Chronos mescolava dati sensibili con immagini cerebrali di personale infortunato, ottenute in modo etico. Pochi intrusi riescono a sopportare mille anni di ustioni cutanee in un solo istante."
+  },
+  "30046": {
+    "text": "[subroutine] Infliggi 1 danno di rete. Se in questo modo elimini una carta con un costo di gioco o di installazione stampato dispari, termina l'incursione. <em>(0 non è dispari.)</em>",
+    "flavor": "Legge il tuo futuro in un'unica scansione biometrica."
+  },
+  "30047": {
+    "text": "[subroutine] Infliggi 2 danni di rete. Runner può disconnettersi.\n[subroutine] Infliggi 2 danni di rete.",
+    "flavor": "Non sei scappato: ti è stata mostrata pietà."
+  },
+  "30048": {
+    "text": "Ottieni 10[credit]. Se ci sono carte nel QG, eliminane 1.",
+    "flavor": "\"La costante autoriflessione è la chiave dell'eccellenza. Ricordiamo le idee fallite, ma non le portiamo avanti.\"\n–Direttrice Kase, seminario di leadership non identificato"
+  },
+  "30049": {
+    "text": "Infliggi X danni di rete, dove X è pari alla somma dei punti obiettivo stampati sugli obiettivi che hai riscosso in questo turno.",
+    "flavor": "Gli sviluppi macroscala all'interno della Net disaccoppiano gli stati informativi precedenti: l'entropia in eccesso viene poi donata dove farà più bene."
+  },
+  "30050": {
+    "text": "Ogni volta che Runner si avvicina a questo server, puoi pagare 2[credit] ed eliminare 2 carte dal QG. Se lo fai, termina l'incursione.",
+    "flavor": "La Net, in continua evoluzione, si contorce in spazi non pensati e impensabili: regni di dèi e altri infopericoli, che deridono i nostri sacrifici alla meschina causalità.\n–Quadri Concettuali di Teologia Applicata"
+  },
+  "30051": {
+    "text": "La prima volta ogni turno che Runner riceve un tag, ottieni 2[credit] o pesca 2 carte.",
+    "flavor": "Perché accontentarsi del reale?"
+  },
+  "30052": {
+    "text": "Quando quest'obiettivo viene riscosso o rubato, assegna 1 tag a Runner.\nLimite 1 per mazzo.",
+    "flavor": "Non troviamo le notizie. Le facciamo."
+  },
+  "30053": {
+    "text": "Quando materializzi questo asset, pesca 2 carte.\n<strong>Rimuovi questo asset dal gioco:</strong> Rimescola fino a 2 carte dagli Archivi nella R&S.",
+    "flavor": "\"È peggio che carne morta: il tuo progetto è troppo tossico persino per darlo in pasto agli avvoltoi! Se non vuoi <strong>unirti</strong> a esso nel buco della memoria insanguinato, striscia in ogni programma economico che puoi e rotolati nella colpa come un maiale nel fango.\""
+  },
+  "30054": {
+    "text": "Quando Runner incontra questo ICE, termina l'incursione a meno che Runner riceva 1 tag.\n[subroutine] Assegna 1 tag a Runner a meno che non paghi 4[credit].",
+    "flavor": "\"Forse mi prenderò una pausa dalla RV dopo questa.\"\n–SeaOfRibaldry, streamer di sensie"
+  },
+  "30055": {
+    "text": "Quando materializzi questo ICE durante un'incursione contro questo server, assegna 1 tag a Runner.\n[subroutine] Termina l'incursione.",
+    "flavor": "AvID:??:73.174 time=0.632 ms\nAvID:??:73.174 time=0.201 ms\nAvID:??:73.174 time=0.000 ms <strong>ALLARME</strong>"
+  },
+  "30056": {
+    "text": "Risolvi 1 delle seguenti opzioni. Se Runner ha almeno 1 tag, puoi invece risolverle entrambe.<ul><li>Ottieni 3[credit].</li><li>Pesca 3 carte.</li></ul>",
+    "flavor": "Per la migliore esperienza di shopping in realtà aumentata, disattiva la protezione dal tracciamento."
+  },
+  "30057": {
+    "text": "Gioca solo se Runner ha effettuato un'incursione riuscita durante il suo ultimo turno.\nAssegna 1 tag a Runner a meno che non paghi 8[credit].",
+    "flavor": "\"Un runner impiega risorse considerevoli a cancellare le proprie tracce. A ogni ciclo è più difficile inchiodarlo. Ma il gioco cambia. A Heinlein nessuno resiste un giorno senza sfiorare <strong>la nostra</strong> rete RA.\"\n–Cassie LaRosa, Sysop di NetDefense Lunare"
+  },
+  "30058": {
+    "text": "Persistente → Ogni volta che un'incursione su questo server termina, se durante quell'incursione Runner ha rubato degli obiettivi, assegna 2 tag a Runner. <em>(Se Runner elimina questa carta mentre vi accede, questa capacità si applica comunque per il resto di questa incursione.)</em>",
+    "flavor": "Souvenir commemorativo gratuito!"
+  },
+  "30059": {
+    "text": "Ogni volta che fai progredire una carta, ottieni 2[credit] se non aveva segnalini progresso.",
+    "flavor": "Qui per restare."
+  },
+  "30060": {
+    "text": "Quando riscuoti quest'obiettivo, puoi eliminare 1 risorsa installata.\nLimite 1 per mazzo.",
+    "flavor": "Siamo giudice, giuria e boia."
+  },
+  "30061": {
+    "text": "Puoi far progredire questo asset.\nQuando il tuo turno inizia, puoi eliminare questo asset per infliggere 1 danno fisico per ogni segnalino progresso ospitato.",
+    "flavor": "\"Prima regola degli affari: assicurati di non essere 'personalmente responsabile' quando la transazione viene eseguita.\"\n–Ted J. Son, Compensazione Controparte Centrale"
+  },
+  "30062": {
+    "text": "[subroutine] Elimina 1 programma installato o termina l'incursione.",
+    "flavor": "\"Ti fa un buco nel rig <strong>e</strong> nei piani.\"\n–René \"Loup\" Arcemont"
+  },
+  "30063": {
+    "text": "Puoi far progredire questo ICE. Ha +5 forza finché ci sono 3 o più segnalini progresso ospitati.\n[subroutine] Assegna 1 tag a Runner.\n[subroutine] Termina l'incursione.\n[subroutine] Termina l'incursione."
+  },
+  "30064": {
+    "text": "Ottieni 15[credit].",
+    "flavor": "\"Se il governo spendesse l'1% dei fondi che ci fornisce per tracciare dove è finito l'altro 99%, io e i miei colleghi saremmo in prigione…\n…ma questo è un <strong>se</strong> molto grande.\"\n–Huey DeMora, seminario di facilitazione pubblico-privata W-Con"
+  },
+  "30065": {
+    "text": "Gioca solo se Runner ha almeno 1 tag.\nElimina 1 programma o 1 hardware installato.",
+    "flavor": "Pensavi davvero di farla franca?"
+  },
+  "30066": {
+    "text": "Ogni volta che riscuoti un obiettivo dalla radice di questo server, puoi cercare nella R&S 1 carta che non sia un obiettivo e rivelarla. <em>(Rimescola la R&S dopo averla cercata.)</em> Aggiungi quella carta al QG.",
+    "flavor": "La luce del sole non tocca il Cratere dell'Eterna Oscurità, dimora adatta ai segreti malefici del Consorzio."
+  },
+  "30067": {
+    "text": "Quando riscuoti quest'obiettivo, ottieni 7[credit].",
+    "flavor": "Prima città lunare, Heinlein fu costruita sui sogni di una nuova frontiera e di opportunità sconfinate, ma l'estrazione di He3 è troppo redditizia perché le corp ne cedano mai il controllo."
+  },
+  "30068": {
+    "text": "Quando riscuoti quest'obiettivo, se Runner ha almeno 1 tag, infliggi 4 danni fisici; altrimenti, assegna 1 tag a Runner.",
+    "flavor": "I mafiosi corrompono la polizia, le megacorp acquistano eserciti."
+  },
+  "30069": {
+    "text": "Quando quest'obiettivo viene riscosso o rubato, puoi materializzare 1 ICE installato, ignorando tutti i costi.",
+    "flavor": "Forse è finita, ma la prossima volta li prenderemo <strong>di sicuro</strong>."
+  },
+  "30070": {
+    "text": "Quando riscuoti quest'obiettivo, puoi pescare 2 carte.\nHai +2 limite massimo della mano.",
+    "flavor": "Con le comunicazioni Terra-Luna, risparmiare microsecondi rende megacrediti."
+  },
+  "30071": {
+    "text": "Quando materializzi questo asset, carica 15[credit] su di esso. Quando è scarico, eliminalo.\n[click]<strong>:</strong> Prendi 3[credit] da questo asset.",
+    "flavor": "\"L'economia di tre mondi si regge sull'estrazione di He3 dalla superficie lunare. Il vero fulcro del potere, la chiave della sopravvivenza collettiva, messo all'asta al miglior offerente.\"\n–Il Catalizzatore"
+  },
+  "30072": {
+    "text": "Mentre questo ICE protegge un server remoto, ha +2 forza.\n[subroutine] Termina l'incursione.",
+    "flavor": "Tieni onesti i vicini."
+  },
+  "30073": {
+    "text": "[subroutine] Infliggi 1 danno di rete.\n[subroutine] Ottieni 1[credit].",
+    "flavor": "\"Darai finché fa male... poi vorrà di più.\"\n–Red Comyn"
+  },
+  "30074": {
+    "text": "[subroutine] Runner perde 3[credit].\n[subroutine] Se Runner ha 6[credit] o meno, termina l'incursione.",
+    "flavor": "[questo spazio è lasciato intenzionalmente vuoto]"
+  },
+  "30075": {
+    "text": "Ottieni 9[credit].",
+    "flavor": "Uno strumento finanziario per dirottare denaro da chi sta fuori a chi sta dentro."
+  },
+  "30076": {
+    "text": "Solo per la partita introduttiva.",
+    "flavor": "Sei pronto a iniziare qualcosa di grosso?"
+  },
+  "30077": {
+    "text": "Solo per la partita introduttiva.",
+    "flavor": "Lavori per noi. Solo che ancora non lo sai."
+  },
+  "32001": {
+    "title": "Accendi il Fuoco!",
+    "text": "[click], [trash], <strong>subisci 1 danno vitale:</strong> Effettua un'incursione in un server remoto. Durante quell'incursione, le carte nella radice del server attaccato perdono tutte le capacità. Quando quell'incursione è riuscita, elimina tutte le carte nella radice del server attaccato.",
+    "flavor": "Basta una sola scintilla..."
+  },
+  "32002": {
+    "title": "Revolver",
+    "text": "Quando installi questo programma, colloca 6 segnalini potere su di esso.\nInterfaccia → [trash] o <strong>segnalino potere ospitato:</strong> Infrangi 1 subroutine <strong>sentry</strong>.\n<strong>2[credit]:</strong> +3 forza."
+  },
+  "32003": {
+    "title": "Approfondimento",
+    "text": "Gioca solo se questo turno hai effettuato un'incursione riuscita nel QG, in R&S e negli Archivi.\nLa Corp deve mettere da parte a faccia in su le prime 8 carte della R&S. Accedi a 1 di quelle carte. Puoi spendere [click] per accedere a un'altra di quelle carte. Poi la Corp rimescola le carte messe da parte nella R&S."
+  },
+  "32004": {
+    "title": "Hákarl 1.0",
+    "text": "Quando materializzi questo ICE durante un'incursione contro questo server, puoi smaterializzare un'altra carta installata. Se lo fai, Runner non può usare capacità a pagamento stampate sugli ICE <strong>bioroide</strong> per il resto di questo turno.\n<strong>Perdi [click]:</strong> Infrangi 1 subroutine su questo ICE. Solo Runner può usare questa capacità.\n[subroutine] Infliggi 1 danno vitale.\n[subroutine] Termina l'incursione."
+  },
+  "32005": {
+    "title": "Anemone",
+    "text": "Quando materializzi questo ICE durante un'incursione contro questo server, puoi eliminare 1 carta dal QG per infliggere 2 danni di rete.\n[subroutine] Infliggi 1 danno di rete.",
+    "flavor": "La bellezza eterea porta dolce morte con un solo breve tocco."
+  },
+  "32006": {
+    "title": "Vladisibirsk City Grid",
+    "text": "Puoi far progredire questo upgrade.\nUna volta per turno → <strong>2 segnalini progresso ospitati:</strong> Colloca 2 segnalini progresso su un'altra carta che puoi far progredire nella radice di questo server.\nLimite 1 <strong>regione</strong> per server."
+  },
+  "32007": {
+    "title": "Protocollo Azef",
+    "text": "Come costo aggiuntivo per riscuotere quest'obiettivo, elimina 1 delle tue altre carte installate.\nQuando riscuoti quest'obiettivo, infliggi 2 danni fisici.",
+    "flavor": "La Argus Security è sempre disposta a inviare agenti per assistere nella radicale riassegnazione dei beni."
+  },
+  "33001": {
+    "text": "La prima volta ogni turno che subisci danni vitali, puoi pescare 1 carta e sabotare 2. <em>(La Corp elimina 2 carte a scelta dal QG e/o dalla cima della R&S.)</em>",
+    "flavor": "Aspettare è inutile. La crisi è qui; scegli da che parte stare."
+  },
+  "33002": {
+    "text": "Effettua un'incursione nel QG. Se riuscita, invece di violare il QG, sabota 4. <em>(La Corp elimina 4 carte a scelta dal QG e/o dalla cima della R&S.)</em>",
+    "flavor": "Siamo tutti uguali quaggiù\nGli androidi sono amici che salutiamo\nDateci tutti una dannata tregua\nIl vecchio Jack è la m*** sul mio stivale."
+  },
+  "33003": {
+    "text": "Come costo aggiuntivo per giocare questo evento, subisci 1 danno vitale.\nOttieni [click][click][click].",
+    "flavor": "Possiamo cambiare il mondo, se siamo disposti a essere cambiati a nostra volta."
+  },
+  "33004": {
+    "text": "Pesca 3 carte.\nQuando questo evento viene eliminato dal tuo grip o dal tuo stack, puoi pescare 2 carte.",
+    "flavor": "Gli impianti reattivi recuperano i ricordi dei nostri compagni caduti. Il loro sacrificio è il nostro scudo."
+  },
+  "33005": {
+    "text": "Quando installi questo hardware, subisci 1 danno vitale.\nIl costo di gioco di ogni evento è ridotto di 1[credit].",
+    "flavor": "Armare la resistenza con un fascino disarmante."
+  },
+  "33006": {
+    "text": "+1[mu]\nHai +3 limite massimo della mano.\nQuando installi questo hardware, subisci 1 danno vitale.\nOgni volta che la Corp riscuote un obiettivo, sabota 1. <em>(La Corp elimina 1 carta a scelta dal QG o dalla cima della R&S.)</em>\nLimite 1 <strong>console</strong> per giocatore."
+  },
+  "33007": {
+    "text": "Quando installi questo programma, subisci 1 danno vitale.\nQuesto programma ha +1 forza per ogni danno vitale che hai subito in questa partita.\nInterfaccia → <strong>1[credit]:</strong> Infrangi un qualsiasi numero di subroutine <strong>barrier</strong>.",
+    "flavor": "Non parlava, ma sapevo esattamente cosa voleva e cosa dovevo fare."
+  },
+  "33008": {
+    "text": "La prima volta ogni turno che installi un programma <strong>virus</strong>, sabota 1. <em>(La Corp elimina 1 carta a scelta dal QG o dalla cima della R&S.)</em>",
+    "flavor": "\"A volte fare il rappresentante sindacale richiede un'azione ancora più... diretta.\""
+  },
+  "33009": {
+    "text": "[click], [trash], <strong>subisci 1 danno vitale:</strong> Effettua un'incursione in un server remoto. Durante quell'incursione, le carte nella radice del server attaccato perdono tutte le capacità. Quando quell'incursione è riuscita, elimina tutte le carte nella radice del server attaccato.",
+    "flavor": "Basta una sola scintilla per distruggere miliardi di crediti... o per bruciare la putredine che divora il nostro mondo."
+  },
+  "33010": {
+    "text": "La prima volta ogni turno che spendi crediti da una carta installata, colloca 1 segnalino potere su questa risorsa.\nOgni volta che violi il QG o la R&S, puoi rimuovere fino a 2 segnalini potere ospitati per accedere ad altrettante carte aggiuntive.",
+    "flavor": "Tutto si ripiega, sempre indietro; insieme come uno solo."
+  },
+  "33011": {
+    "text": "Quando il tuo turno inizia, identifica il tuo bersaglio. <em>(Se non hai un bersaglio, per questo turno il tuo bersaglio diventa un server centrale scelto a caso.)</em>\nLa prima volta ogni turno che effettui un'incursione riuscita sul tuo bersaglio, ottieni [click].",
+    "flavor": "I difetti racchiudono sia bellezza sia opportunità."
+  },
+  "33012": {
+    "text": "Identifica il tuo bersaglio. <em>(Se non hai un bersaglio, per questo turno il tuo bersaglio diventa un server centrale scelto a caso.)</em>\nOttieni 4[credit]. Puoi effettuare un'incursione sul tuo bersaglio.",
+    "flavor": "Il momento migliore per ascoltare è quando gli altri ascoltano te."
+  },
+  "33013": {
+    "text": "Effettua un'incursione in un server qualsiasi. Se riuscita, invece di violare il server attaccato, accedi a 1 carta nella radice di un altro server. Se quella carta è un obiettivo, durante questo accesso non puoi rubarla né eliminarla.",
+    "flavor": "Neneciğim sarebbe orgogliosa."
+  },
+  "33014": {
+    "text": "Quando installi questo hardware, subisci 1 danno fisico.\nLa prima volta ogni turno che effettui un'incursione riuscita nel QG, la Corp perde 1[credit]. Se li perde, ottieni 1[credit].",
+    "flavor": "Sottrarre crediti con il più lieve tocco."
+  },
+  "33015": {
+    "text": "+1[mu]\nQuando il tuo turno inizia, identifica il tuo bersaglio. <em>(Se non hai un bersaglio, per questo turno il tuo bersaglio diventa un server centrale scelto a caso.)</em>\nLa prima volta ogni turno che effettui un'incursione riuscita sul tuo bersaglio, se quel server è il QG, accedi a 1 carta aggiuntiva quando violi il QG. Altrimenti, viola il QG quando l'incursione termina.\nLimite 1 <strong>console</strong> per giocatore."
+  },
+  "33016": {
+    "text": "Il costo di materializzazione di ogni ICE <strong>code gate</strong> è aumentato di 1[credit].\nInterfaccia → <strong>1[credit]:</strong> Infrangi 1 subroutine <strong>code gate</strong>.\n<strong>1[credit]:</strong> +1 forza.",
+    "flavor": "Posso mostrarti un tappeto, un pesce, una fiaba magica..."
+  },
+  "33017": {
+    "text": "2[recurring-credit] <em>(Quando installi questa carta e prima che il tuo turno inizi, ricarica fino a 2 crediti ospitati.)</em>\nPuoi spendere i crediti ospitati durante le incursioni sui server centrali.",
+    "flavor": "La sensazione del caffè fine come farina, il profumo dello zucchero che caramella, il calore gentile della fiamma. Un rituale che non dimentico mai."
+  },
+  "33018": {
+    "text": "Quando installi questo programma, colloca 6 segnalini potere su di esso.\nInterfaccia → [trash] o <strong>segnalino potere ospitato:</strong> Infrangi 1 subroutine <strong>sentry</strong>.\n<strong>2[credit]:</strong> +3 forza.",
+    "flavor": "\"Mira con l'occhio. Spara con la mente. Infrangi con l'anima.\"\n–Sundog"
+  },
+  "33019": {
+    "text": "Quando il tuo turno inizia, identifica il tuo bersaglio. <em>(Se non hai un bersaglio, per questo turno il tuo bersaglio diventa un server centrale scelto a caso.)</em>\nOgni volta che incontri un ICE durante un'incursione sul tuo bersaglio, puoi eliminare questa risorsa per bypassarlo.",
+    "flavor": "Un passo indietro. Mettiti al riparo. Due passi avanti. Ripeti, poi metti tutto al sicuro."
+  },
+  "33020": {
+    "text": "[trash]<strong>:</strong> Ottieni 3[credit].\n[trash]<strong>:</strong> Rimuovi 1 tag.",
+    "flavor": "Se c'è qualcosa da imparare dai nostri cugini androidi, è che non esistono scorciatoie per la perfezione. Considera tutte le tue opzioni."
+  },
+  "33021": {
+    "text": "La prima volta ogni turno che un'incursione su R&S inizia, puoi caricare 1 delle tue carte installate. <em>(Aggiungi 1 segnalino potere a una carta che ne ha già uno.)</em>",
+    "flavor": "Il mare è tutto; il suo respiro deve restare puro e sano."
+  },
+  "33022": {
+    "text": "Gioca solo se questo turno hai effettuato un'incursione riuscita nel QG, in R&S e negli Archivi.\nLa Corp deve mettere da parte a faccia in su le prime 8 carte della R&S. Accedi a 1 di quelle carte. Puoi spendere [click] per accedere a un'altra di quelle carte. Poi la Corp rimescola le carte messe da parte nella R&S."
+  },
+  "33023": {
+    "text": "Effettua un'incursione in un server qualsiasi. Se riuscita, per ogni volta che hai superato un ICE in questa incursione, risolvi 1 delle seguenti opzioni che non hai ancora risolto in questa incursione:<ul><li>Ottieni 4[credit].</li><li>Cerca nel tuo stack un programma. Installalo. <em>(Rimescola il tuo stack dopo averlo cercato.)</em></li><li>Carica 1 delle tue carte installate. <em>(Aggiungi 1 segnalino potere a una carta che ne ha già uno.)</em></li></ul>"
+  },
+  "33024": {
+    "text": "Installa 1 programma o hardware dal tuo grip, pagando 3[credit] in meno. Puoi caricare quella carta, se possibile. <em>(Se ha un segnalino potere, aggiungine un altro.)</em>",
+    "flavor": "A Edie il rumore non dà fastidio. Le basta stare lì vicino."
+  },
+  "33025": {
+    "text": "+2[mu]\nQuando installi questo hardware, colloca 3 segnalini potere su di esso.\nLa prima volta ogni turno che effettui un'incursione riuscita, colloca 1 segnalino potere su questo hardware.\n<strong>2 segnalini potere ospitati:</strong> Infrangi fino a 2 subroutine.\nLimite 1 <strong>console</strong> per giocatore."
+  },
+  "33026": {
+    "text": "Quando installi questo programma, colloca 1 segnalino potere su di esso.\nQuesto programma ha +1 forza per ogni segnalino potere ospitato.\nInterfaccia → <strong>1[credit]:</strong> Infrangi 1 subroutine <strong>code gate</strong>.\n<strong>2[credit]:</strong> Colloca 1 segnalino potere su questo programma."
+  },
+  "33027": {
+    "text": "Quando installi questo programma, colloca 4 segnalini potere su di esso.\nInterfaccia → <strong>1[credit]:</strong> Infrangi 1 subroutine <strong>barrier</strong>.\n<strong>Segnalino potere ospitato:</strong> +2 forza.",
+    "flavor": "Nel netspace lo spazio tangibile può essere manipolato a piacere, e la fluidodinamica raramente entra nello sviluppo degli ICE."
+  },
+  "33028": {
+    "text": "Ogni volta che un obiettivo viene riscosso o rubato, puoi caricare 1 delle tue carte installate. <em>(Aggiungi 1 segnalino potere a una carta che ne ha già uno.)</em>",
+    "flavor": "\"Quello davanti è lui, poi ci sono Scout, Jonesy, Parker, Buča, Squee, Boots... hai capito.\""
+  },
+  "33029": {
+    "text": "Ogni volta che installi un programma o un hardware, colloca 1 segnalino potere su questa risorsa.\nQuando ci sono 4 o più segnalini potere ospitati, elimina questa risorsa e ottieni 9[credit].",
+    "flavor": "\"Perché siamo qui? Nessun altro farà test indipendenti, ecco perché.\"\n–Padma Isbister"
+  },
+  "33030": {
+    "text": "[trash]<strong>:</strong> Pesca 2 carte.\n[trash]<strong>:</strong> Carica 1 delle tue carte installate.",
+    "flavor": "Ogni nave è una casa, e ogni casa ha bisogno di un cuore."
+  },
+  "33031": {
+    "text": "Quando riscuoti quest'obiettivo, puoi smaterializzare 1 carta installata.",
+    "flavor": "I paradossi antichi sono storie per bambini per le più grandi menti mai progettate."
+  },
+  "33032": {
+    "text": "Quando riscuoti quest'obiettivo, pesca 3 carte. Salta la tua fase di scarto in questo turno.",
+    "flavor": "\"Il Midnight-3 brilla di un calore invitante che smentisce la promessa infranta al suo interno. Tutto ciò che ti attende lì è una vita di servitù debitoria.\"\n–Sundog"
+  },
+  "33033": {
+    "text": "Quando il tuo turno inizia, ottieni 2[credit].",
+    "flavor": "\"La promessa di una nuova casa, un lavoro sicuro e vicini amichevoli attirerà decine di migliaia di eco-rifugiati, da qualunque angolo del mondo provengano.\"\n–Manuale dei dipendenti Thule"
+  },
+  "33034": {
+    "text": "Quando materializzi questo asset, scegli 1 ICE <strong>bioroide</strong> materializzato.\nLe capacità delle carte Runner non possono infrangere subroutine sull'ICE scelto.",
+    "flavor": "A profondità che nessuna tecnologia umana può raggiungere, un proxy Trieste può manipolare un paesaggio mentale con precisione ineguagliabile."
+  },
+  "33035": {
+    "text": "Ogni volta che materializzi un ICE <strong>armonico</strong>, colloca 1 segnalino potere su questo ICE.\nQuesto ICE ottiene \"[subroutine] Termina l'incursione.\" per ogni segnalino potere ospitato.",
+    "flavor": "Termina l'incursione. Termina l'incursione. Termina l'incursione. Termina l'incursione."
+  },
+  "33036": {
+    "text": "Quando materializzi questo ICE durante un'incursione contro questo server, puoi smaterializzare un'altra carta installata. Se lo fai, Runner non può usare capacità a pagamento stampate sugli ICE <strong>bioroide</strong> per il resto di questo turno.\n<strong>Perdi [click]:</strong> Infrangi 1 subroutine su questo ICE. Solo Runner può usare questa capacità.\n[subroutine] Infliggi 1 danno vitale.\n[subroutine] Termina l'incursione."
+  },
+  "33037": {
+    "text": "Quando materializzi questo ICE durante un'incursione contro questo server, puoi cercare nella R&S un ICE e rivelarlo. <em>(Rimescola la R&S dopo averla cercata.)</em> Aggiungi quell'ICE al QG.\n[subroutine] Ottieni 1[credit] per ogni ICE <strong>armonico</strong> materializzato.",
+    "flavor": "Con le reti, la crescita è esponenziale."
+  },
+  "33038": {
+    "text": "Dopo aver risolto questa operazione, la tua fase d'azione termina.\nColloca 4 segnalini progresso su 1 carta installata. Puoi riscuotere quella carta, se possibile.\nRimuovi questa operazione dal gioco."
+  },
+  "33039": {
+    "text": "X è pari al numero di carte nel grip di Runner.",
+    "flavor": "Alcuni test richiedono condizioni <strong>specifiche</strong>."
+  },
+  "33040": {
+    "text": "Quando riscuoti quest'obiettivo, se nessuna carta Corp è stata aggiunta agli Archivi in questo turno, puoi rivelare 1 obiettivo a faccia in giù negli Archivi e aggiungerlo alla tua area punteggio.",
+    "flavor": "\"Stimati ospiti, alla fine di questa dimostrazione vedrete che l'estinzione è ormai soltanto uno stato temporaneo delle cose.\"\n–Vientiane Keeling"
+  },
+  "33041": {
+    "text": "Quando il tuo turno inizia, ottieni 1[credit]. Poi, se hai 4[credit] o meno, infliggi 1 danno di rete.",
+    "flavor": "Prede e acqua marina risucchiate, tutto nello spazio di un millisecondo."
+  },
+  "33042": {
+    "text": "<strong>Rimuovi questo asset dal gioco:</strong> Elimina fino a 2 carte dal QG. Rivela fino a 2 carte a faccia in giù negli Archivi e rimescolale nella R&S. Per ogni obiettivo rivelato in questo modo, puoi collocare 1 segnalino progresso su una carta installata."
+  },
+  "33043": {
+    "text": "Quando materializzi questo ICE durante un'incursione contro questo server, puoi eliminare 1 carta dal QG per infliggere 2 danni di rete.\n[subroutine] Infliggi 1 danno di rete.",
+    "flavor": "Bellezza eterea intrecciata al più elegante dei veleni."
+  },
+  "33044": {
+    "text": "Mentre questo ICE protegge gli Archivi, ha +3 forza.\n[subroutine] Infliggi 3 danni di rete.",
+    "flavor": "I rifiuti digitali sono il loro cibo, e non dovresti mai metterti tra un animale e il suo cibo."
+  },
+  "33045": {
+    "text": "Il costo di materializzazione di questo ICE è ridotto di 1[credit] per ogni ICE <strong>code gate</strong> materializzato.\n[subroutine] Infliggi 2 danni di rete.\n[subroutine] Termina l'incursione.",
+    "flavor": "Non calpestare l'erba."
+  },
+  "33046": {
+    "text": "Come costo aggiuntivo per giocare questa operazione, spendi [click].\nInstalla fino a 2 carte dal QG, creando ogni volta un nuovo server remoto. Colloca 2 segnalini progresso su ciascuna di quelle carte. Questo turno non puoi riscuotere né materializzare nessuna di quelle carte.",
+    "flavor": "Uno diventa molti."
+  },
+  "33047": {
+    "text": "Mentre Runner accede a questo upgrade nella R&S, deve rivelarlo.\nQuando Runner accede a questo upgrade, puoi epurare i segnalini virus. Se questo upgrade è materializzato, infliggi 1 danno di rete.\n[trash]<strong>:</strong> Epura i segnalini virus.",
+    "flavor": "Virus, runner; per loro tutto è cibo."
+  },
+  "33048": {
+    "text": "La prima volta ogni turno che Runner effettua un'incursione riuscita, puoi collocare 1 segnalino progresso su una carta installata che puoi far progredire.",
+    "flavor": "Notizie politiche, adatte al consumo pubblico."
+  },
+  "33049": {
+    "text": "Quando riscuoti quest'obiettivo, Runner perde 7[credit].",
+    "flavor": "La linea sale... finché non ci serve più."
+  },
+  "33050": {
+    "text": "Puoi far progredire questo asset.\nQuando Runner accede a questo asset mentre è installato, assegnagli 1 tag più 1 tag per ogni segnalino progresso ospitato.",
+    "flavor": "L'unica cosa che cambia è l'uniforme."
+  },
+  "33051": {
+    "text": "Puoi far progredire questo asset.\n<strong>2 segnalini progresso ospitati:</strong> Assegna 1 tag a Runner. Usa questa capacità solo durante il tuo turno.",
+    "flavor": "\"Digli che Drago vorrebbe scambiare due parole.\""
+  },
+  "33052": {
+    "text": "Puoi far progredire questo asset.\nQuando il tuo turno inizia, ottieni 1[credit] per ogni segnalino progresso ospitato.",
+    "flavor": "Dicono che ne prenderanno solo una manciata, ma che mani grandi che hanno!"
+  },
+  "33053": {
+    "text": "Puoi far progredire questo ICE.\nQuando Runner incontra questo ICE, puoi rimuovere 1 segnalino progresso ospitato. Se lo fai, Runner perde 3[credit].\n[subroutine] Runner perde 3[credit].\n[subroutine] Termina l'incursione.",
+    "flavor": "I nomi di un tempo oggi pesano poco, le loro eredità spezzate e spazzate via. Ora siamo noi i sovrani della verità."
+  },
+  "33054": {
+    "text": "Quando Runner incontra questo ICE, puoi pagare 1[credit]. Se lo fai, colloca 1 segnalino progresso su una carta installata che puoi far progredire.\n[subroutine] Assegna 1 tag a Runner.",
+    "flavor": "Nessun compito assegnato dalla strega sarebbe mai stato troppo grande, perché Vasilisa aveva la benedizione di sua madre."
+  },
+  "33055": {
+    "text": "Come costo aggiuntivo per giocare questa operazione, rimuovi 1 tag.\nAggiungi questa operazione alla tua area punteggio come obiettivo del valore di 1 punto obiettivo.",
+    "flavor": "\"Dispositivi di registrazione alla porta, prego!\""
+  },
+  "33056": {
+    "text": "Puoi far progredire questo upgrade.\nUna volta per turno → <strong>2 segnalini progresso ospitati:</strong> Colloca 2 segnalini progresso su un'altra carta che puoi far progredire nella radice di questo server.\nLimite 1 <strong>regione</strong> per server.",
+    "flavor": "A cavallo delle rive del fiume Ob, questa metropoli custodisce la speranza di un domani migliore."
+  },
+  "33057": {
+    "text": "Una volta per turno → Quando elimini una carta materializzata, tranne durante l'installazione, puoi cercare nella R&S 1 carta con un costo di materializzazione stampato esattamente di 1[credit] inferiore al costo di materializzazione stampato della carta eliminata. Installa e materializza la carta che hai trovato, ignorando i costi in crediti.",
+    "flavor": "Prendi tutto ciò che viene offerto, e di più."
+  },
+  "33058": {
+    "text": "Come costo aggiuntivo per riscuotere quest'obiettivo, elimina 1 delle tue altre carte installate.\nQuando riscuoti quest'obiettivo, infliggi 2 danni fisici.",
+    "flavor": "\"Non preoccupatevi, direttori, la sicurezza è sempre disposta a mandare agenti ad assistere nella radicale riassegnazione dei beni.\"\n–Yakov Avdakov"
+  },
+  "33059": {
+    "text": "Quando il tuo turno inizia, puoi eliminare 1 delle tue altre carte installate. Se lo fai, ottieni 3[credit].",
+    "flavor": "Non importa da quanto tempo possiedi la terra: è meglio sperare che sotto non ci sia nulla di prezioso."
+  },
+  "33060": {
+    "text": "Quando materializzi questo ICE, colloca 4 segnalini potere su di esso.\nQuando il tuo turno inizia, rimuovi 1 segnalino potere ospitato.\nQuesto ICE ottiene \"[subroutine] Termina l'incursione.\" prima delle sue altre subroutine per ogni segnalino potere ospitato.\n[subroutine] Elimina questo ICE."
+  },
+  "33061": {
+    "text": "[subroutine] Ottieni 2[credit].\n[subroutine] Termina l'incursione.",
+    "flavor": "Confondi il runner perché non veda le nostre vere intenzioni."
+  },
+  "33062": {
+    "text": "Quando materializzi questo ICE, puoi eliminare 1 delle tue altre carte installate. Se lo fai, questo ICE ha +5 forza per il resto dell'incursione.\n[subroutine] Elimina 1 programma installato.\n[subroutine] Elimina 1 programma installato.",
+    "flavor": "Secoli di tattica militare compressi in una singola entità."
+  },
+  "33063": {
+    "text": "Ottieni 6[credit]. Puoi eliminare 1 delle tue carte installate per ottenere 3[credit].",
+    "flavor": "Non lasciare nulla di valore."
+  },
+  "33064": {
+    "text": "Come costo aggiuntivo per giocare questa operazione, spendi [click][click].\nElimina un qualsiasi numero delle tue carte materializzate. Assegna 1 tag a Runner per ogni carta eliminata in questo modo."
+  },
+  "33065": {
+    "text": "Gioca solo se Runner ha almeno 1 tag.\nElimina 1 risorsa installata. Installa e materializza 1 carta dagli Archivi, ignorando tutti i costi.",
+    "flavor": "Identifica. Contatta. Intrappola. Il controspionaggio non cambia mai."
+  },
+  "33066": {
+    "text": "Come costo aggiuntivo per giocare questo evento, subisci 1 danno vitale.\nEffettua un'incursione in R&S. Se riuscita, accedi a 3 carte aggiuntive quando violi la R&S.",
+    "flavor": "\"La mia colpa non va mai messa in dubbio.\""
+  },
+  "33067": {
+    "text": "Effettua un'incursione in un server qualsiasi. Se riuscita, aggiungi 1 carta dal tuo heap al tuo grip.",
+    "flavor": "\"Ti ho fatto una promessa: tornare a prenderti, a qualunque costo.\"\n—Esâ Afontov"
+  },
+  "33068": {
+    "text": "Effettua un'incursione in un server qualsiasi. Ogni volta che una subroutine viene risolta durante quell'incursione <em>(inclusa una subroutine che termina l'incursione)</em>, colloca 1 segnalino potere su questo evento.\nQuando quell'incursione termina, pesca 1 carta per ogni segnalino potere ospitato e ottieni 3[credit].",
+    "flavor": "A ogni passo più vicino al premio, Bankhar sentì l'ICE tagliare, incandescente, le sue sinapsi. Ne valeva la pena."
+  },
+  "33069": {
+    "text": "Installa solo se questo turno hai effettuato un'incursione riuscita su un server centrale. Quando installi questo hardware, colloca 1 segnalino potere su di esso.\nQuando il tuo turno inizia, se ci sono 3 o più segnalini potere ospitati, elimina questo hardware e sabota 3. <em>(La Corp elimina 3 carte a scelta dal QG e/o dalla cima della R&S.)</em> Altrimenti, colloca 1 segnalino potere su questo hardware."
+  },
+  "33070": {
+    "text": "La prima volta ogni turno che questo programma infrange completamente un ICE, puoi eliminare 1 carta dal tuo grip per pescare 1 carta.\nInterfaccia → <strong>1[credit]:</strong> Infrangi 1 subroutine <strong>code gate</strong>.\n<strong>2[credit]:</strong> +2 forza.",
+    "flavor": "Ogni ICE che vedo, vedo Abaasy."
+  },
+  "33071": {
+    "text": "Installa solo su un ICE.\nL'ICE ospitante non può ottenere capacità e perde tutte le capacità tranne le sue subroutine stampate.\n<strong>[click]:</strong> Ospita questo programma su un altro ICE installato.",
+    "flavor": "Silenzio. Devo concentrarmi."
+  },
+  "33072": {
+    "text": "Quando installi questo programma, carica 3 segnalini potere su di esso. Quando è scarico, eliminalo.\nLa prima volta ogni turno che effettui un'incursione riuscita, puoi rimuovere 1 segnalino potere ospitato per sabotare 1. <em>(La Corp elimina 1 carta a scelta dal QG o dalla cima della R&S.)</em>",
+    "flavor": "Rinuncia alle tue folli illusioni di controllo."
+  },
+  "33073": {
+    "text": "Interfaccia → <strong>2[credit]:</strong> Infrangi 1 subroutine <strong>sentry</strong>.",
+    "flavor": "Ti dono la comprensione, affinché tu possa dominare ciò che altrimenti ti minaccerebbe."
+  },
+  "33074": {
+    "text": "Quando il tuo turno inizia, puoi scegliere un server.\nDurante il primo incontro di ogni turno con un ICE che protegge il server scelto, ogni volta che la Corp dovrebbe risolvere una subroutine, risolve invece \"[subroutine] Infliggi 1 danno di rete.\".",
+    "flavor": "\"Con questi due al mio fianco, ho giurato di non fallire mai. Posso sopportare qualsiasi dolore, purché abbia un significato.\""
+  },
+  "33075": {
+    "text": "Rivela la carta in cima al tuo stack e colloca su questo evento crediti pari al suo costo di gioco o di installazione stampato. Aggiungi la carta rivelata al tuo grip.\nEffettua un'incursione in un server qualsiasi. Puoi spendere i crediti ospitati durante quell'incursione.",
+    "flavor": "\"Concerto n. 2 di Roslavets. Vertiginoso, brillante, incantevole. Il finale perfetto per Virtuoso.\""
+  },
+  "33076": {
+    "text": "Gioca solo se hai rubato un obiettivo questo turno.\nAggiungi 1 carta Corp installata al QG. Puoi effettuare un'incursione in un server qualsiasi.",
+    "flavor": "\"Posso anche inchinarmi come se avessi compiuto l'impossibile, ma la verità è che non è poi così difficile.\""
+  },
+  "33077": {
+    "text": "Quando installi questo hardware, carica 3 segnalini potere su di esso. Quando è scarico, eliminalo.\n<strong>Segnalino potere ospitato:</strong> Infrangi fino a 2 subroutine. Usa questa capacità solo se hai già infranto una subroutine durante questo incontro.",
+    "flavor": "Il veleno taglia più a fondo della lama."
+  },
+  "33078": {
+    "text": "Quando installi questo hardware, subisci 1 danno fisico.\nOgni volta che effettui un'incursione riuscita nel QG, colloca 1 segnalino potere su questo hardware.\nOgni volta che violi la R&S, puoi rimuovere fino a 3 segnalini potere ospitati per accedere ad altrettante carte aggiuntive."
+  },
+  "33079": {
+    "text": "Quando installi questo hardware, subisci 1 danno vitale.\nLa prima volta ogni turno che un'incursione è riuscita su un server centrale, pesca 1 carta.",
+    "flavor": "\"Gli impianti Zenit ti aiutano a concentrarti sulle cose importanti.\"\n—Ologramma pubblicitario di Ampère"
+  },
+  "33080": {
+    "text": "Interfaccia → <strong>3[credit]:</strong> Infrangi fino a 2 subroutine <strong>barrier</strong>. Questa capacità costa 1[credit] in meno per ogni hardware <strong>cibernetico</strong> installato.\n<strong>2[credit]:</strong> +2 forza.",
+    "flavor": "Una nota ripetuta, l'alternarsi delle dita, il ritmo dei punti... l'intensità che ne risulta è sempre la stessa."
+  },
+  "33081": {
+    "text": "Quando il tuo turno inizia, identifica il tuo bersaglio. <em>(Se non hai un bersaglio, per questo turno il tuo bersaglio diventa un server centrale scelto a caso.)</em>\nInterfaccia → <strong>2[credit]:</strong> Infrangi fino a 2 subroutine su un ICE che protegge il tuo bersaglio.\n<strong>2[credit]:</strong> +2 forza.",
+    "flavor": "\"Come potrei sceglierne uno preferito? Sono tutti bravi cani.\"\n—Nyusha \"Zibellino\" Sintashta"
+  },
+  "33082": {
+    "text": "Quando installi questa risorsa, cerca nel tuo stack fino a 2 carte <strong>virus</strong> o <strong>arma</strong> con nomi diversi. Ospita quelle carte a faccia in su su questa risorsa. <em>(Non sono installate.)</em>\nQuando il tuo turno inizia, puoi aggiungere 1 carta ospitata al tuo grip. Se non ci sono più carte ospitate, elimina questa risorsa."
+  },
+  "33083": {
+    "text": "Quando il tuo turno inizia, identifica il tuo bersaglio. <em>(Se non hai un bersaglio, per questo turno il tuo bersaglio diventa un server centrale scelto a caso.)</em>\nLa prima volta ogni turno che un'incursione sul tuo bersaglio termina, ottieni 2[credit] se hai violato quel server durante quell'incursione.",
+    "flavor": "Fu un sollievo, in fondo, scegliere quel posto al mondo in cui non tornare mai più."
+  },
+  "33084": {
+    "text": "Metti da parte carte dalla cima del tuo stack a faccia in su finché non metti da parte un programma. Puoi installare quel programma, pagando 10[credit] in meno. Rimescola nel tuo stack le carte messe da parte.",
+    "flavor": "\"Le idee migliori salgono in superficie, se dai loro il tempo.\"\n—Ar<h1m3d3s  JAR"
+  },
+  "33085": {
+    "text": "Quando installi questo hardware, colloca 2 segnalini potere su di esso e subisci 1 danno fisico.\nHai +1 limite massimo della mano per ogni segnalino potere ospitato.",
+    "flavor": "Per chi è fuori, è ironico che nessuno in Ampère ricordi chi abbia inventato questi piccoletti. All'interno dell'azienda, la cosa è considerata normale."
+  },
+  "33086": {
+    "text": "Quando installi questo hardware, subisci 2 danni vitali.\nHai +1[click] disponibile in ogni tuo turno.",
+    "flavor": "Non è piacevole come il caffè, ma gli effetti sono di ordini di grandezza più forti."
+  },
+  "33087": {
+    "text": "Installa solo su un ICE.\nLa prima volta che infrangi una subroutine durante ogni incontro con l'ICE ospitante, puoi caricare 1 delle tue carte installate. <em>(Aggiungi 1 segnalino potere a una carta che ne ha già uno.)</em>",
+    "flavor": "\"Mi sta dicendo che si pronuncia 'gigawatt'?\"\n—Capitan Padma Isbister"
+  },
+  "33088": {
+    "text": "Quando questo programma viene disinstallato, rimuovilo dal gioco.\nQuando un obiettivo viene riscosso o rubato, rimuovi questo programma dal gioco.\nInterfaccia → <strong>2[credit]:</strong> Infrangi fino a 2 subroutine.\n1[credit]: +1 forza.",
+    "flavor": "Nanuq non se ne va mai: attende, invisibile, la prossima caccia."
+  },
+  "33089": {
+    "text": "La prima volta ogni turno che questo programma infrange completamente un ICE, puoi caricare 1 delle tue carte installate. <em>(Aggiungi 1 segnalino potere a una carta che ne ha già uno.)</em>\nInterfaccia → <strong>2[credit]:</strong> Infrangi un qualsiasi numero di subroutine <strong>sentry</strong>.\n<strong>2[credit]:</strong> +3 forza."
+  },
+  "33090": {
+    "text": "Ogni <strong>icebreaker</strong> non <strong>AI</strong> installato ha +2 forza.",
+    "flavor": "Ogni rig ha bisogno di una fonte di energia. Che ne dici di una con pale che si muovono a Mach 2?"
+  },
+  "33091": {
+    "text": "La prima volta ogni turno che effettui un'incursione riuscita, puoi eliminare 1 delle tue altre carte installate per cercare nel tuo stack 1 carta dello stesso tipo. <em>(Rimescola il tuo stack dopo averlo cercato.)</em> Installa la carta trovata, pagando 3[credit] in meno.",
+    "flavor": "Pochi costrutti raggiungono la Rete Profonda, ma questi vecchi alberi hanno steso le radici più in là di quanto si credesse possibile."
+  },
+  "33092": {
+    "text": "Quando installi questa risorsa, carica 2 segnalini potere su di essa. Quando è scarica, eliminala.\n[click], <strong>segnalino potere ospitato:</strong> Pesca 3 carte.",
+    "flavor": "\"C'è un altro mondo sotto le onde, e sta scomparendo mentre parliamo. Voglio mapparlo prima che sparisca.\""
+  },
+  "33093": {
+    "text": "Il tuo mazzo non può contenere più di 1 copia di qualsiasi carta.",
+    "flavor": "Ho trovato il mio gemello nascosto sulla Luna. Ora non saremo mai più separati."
+  },
+  "33094": {
+    "text": "Quando il tuo turno inizia, gira a faccia in su ogni carta ospitata.\n[click]<strong>:</strong> Ospita una copia di Matrioska dal tuo grip a faccia in su su questo programma. <em>(Non è installata.)</em>\nInterfaccia → <strong>X[credit]</strong>, <strong>gira a faccia in giù 1 copia ospitata di Matrioska:</strong> Infrangi X subroutine.\n<strong>1[credit]:</strong> +1 forza.\nLimite 6 per mazzo.",
+    "flavor": "Lei guida e tutti la seguono."
+  },
+  "33095": {
+    "text": "Ogni volta che Runner ruba un obiettivo, infliggi 1 danno vitale a meno che non spenda [click] e 2[credit].",
+    "flavor": "Unitevi a noi. Al sicuro, lontano dalla crisi."
+  },
+  "33096": {
+    "text": "Quest'obiettivo ha -1 requisito di progresso per ogni danno vitale che Runner ha subito in questa partita.",
+    "flavor": "Piega la mente di chi sta sotto di te così che abbia sempre bisogno di te, e la lealtà è assicurata per sempre."
+  },
+  "33097": {
+    "text": "Mentre Runner accede a questo asset in R&S, deve rivelarlo.\nQuando Runner accede a questo asset, può aggiungerlo alla propria area punteggio come obiettivo del valore di -1 punto obiettivo. Se non lo fa, infliggi 1 danno vitale e rimuovi questo asset dal gioco.",
+    "flavor": "Tutti ricordano il primo nastro che archiviano."
+  },
+  "33098": {
+    "text": "Come costo aggiuntivo per materializzare questo ICE, smaterializza un altro ICE <strong>armonico</strong>.\n[subroutine] Infliggi 1 danno vitale.\n[subroutine] Elimina 1 programma installato.\n[subroutine] Elimina 1 programma installato.",
+    "flavor": "All'unisono, ogni dispositivo di monitoraggio della nave risuonò, emettendo un suono così primordiale, così titanico, da scuotere Padma fin nel profondo.\nDaeg sibilò."
+  },
+  "33099": {
+    "text": "Quando materializzi questo ICE durante un'incursione contro questo server, Runner perde [click].\n[subroutine] Runner perde 1[credit] per ogni ICE <strong>armonico</strong> materializzato.\n[subroutine] Termina l'incursione a meno che Runner non spenda [click].",
+    "flavor": "Il suono salì dalle profondità: pulsante, martellante, sempre più forte a ogni battito dei loro cuori."
+  },
+  "33100": {
+    "text": "Come costo aggiuntivo per giocare questa operazione, spendi [click].\nGioca solo se Runner ha rubato un obiettivo durante il suo ultimo turno.\nAssegna 1 tag a Runner.",
+    "flavor": "A volte vogliono che tu sappia che loro sanno."
+  },
+  "33101": {
+    "text": "Gioca solo se Runner ha almeno 1 tag.\nInfliggi 1 danno vitale. Runner ha -1[click] disponibile per il suo prossimo turno.\nRimuovi questa operazione dal gioco.",
+    "flavor": "Pensi che quella che respiri adesso sia aria?"
+  },
+  "33102": {
+    "text": "Ogni volta che riscuoti un obiettivo dalla radice di questo server, infliggi 1 danno vitale.\nLimite 1 <strong>regione</strong> per server.",
+    "flavor": "\"Tecnicamente è al di sopra del nostro livello, ma sappiamo da dove arrivano le nostre armi. A Djupstad attendono, immerse nei loro pensieri, finché non le chiamiamo.\"\n—Aron Hendrik"
+  },
+  "33103": {
+    "text": "Quando Runner accede a questo upgrade mentre è installato, puoi pagare 2[credit] per infliggere 1 danno vitale. Se Runner ha ancora dei [click] rimanenti, può perdere tutti i suoi [click] per prevenire questo danno.",
+    "flavor": "Pochi dipendenti sanno della sua esistenza. Ancora meno sanno che in realtà sono <em>tre</em>."
+  },
+  "33104": {
+    "text": "Ogni volta che riscuoti un obiettivo che non hai installato o fatto progredire in questo turno, colloca 1 segnalino potere su questa identità.\nPer ogni segnalino potere ospitato, hai bisogno di 1 punto obiettivo in meno per vincere la partita.",
+    "flavor": "Mettere al passo Madre Natura."
+  },
+  "33105": {
+    "text": "Quando riscuoti quest'obiettivo, puoi installare 1 carta a faccia in giù dagli Archivi.",
+    "flavor": "\"Disattivando la capacità dei loro corpi di produrre vari enzimi necessari, ci siamo assicurati la loro lealtà. Se non tornano ogni mese per gli integratori, muoiono; è semplice.\"\n—Dr. Vientiane Keeling"
+  },
+  "33106": {
+    "text": "Quando materializzi questo asset e quando il tuo turno inizia, colloca 1 segnalino potere su questo asset.\nRunner ha -1 limite massimo della mano per ogni segnalino potere ospitato.",
+    "flavor": "I suoi numeri non mentono mai, ma non è lei a scrivere le parole che li accompagnano."
+  },
+  "33107": {
+    "text": "Quando il tuo turno inizia, puoi eliminare questo asset per infliggere 2 danni di rete.",
+    "flavor": "C'è eleganza nella sua lama e nel suo passo, ma con essa arriva un turbine urlante."
+  },
+  "33108": {
+    "text": "Quando materializzi questo ICE durante un'incursione contro questo server, puoi eliminare 1 carta dal QG. Se lo fai, scegli 1 carta Runner installata. Le capacità di quella carta non possono infrangere subroutine per il resto di quell'incursione.\n[subroutine] Termina l'incursione.",
+    "flavor": "Hafrún ha attraversato generazioni di cambiamenti nella Net, e ora si sussurra che qualcosa dalle profondità la renda inquieta."
+  },
+  "33109": {
+    "text": "[subroutine] Runner perde 2[credit].\n[subroutine] Ottieni 2[credit].\n[subroutine] Infliggi 2 danni di rete.\n[subroutine] Puoi pescare 1 o 2 carte.",
+    "flavor": "\"Matt, c'è qualcosa di grosso che viene verso di te. Matt, mi senti? Matt? Oh no.\"\n—Moth"
+  },
+  "33110": {
+    "text": "Elimina fino a 5 carte dal QG. Rimescola altrettante carte dagli Archivi nella R&S. Pesca altrettante carte.\nRimuovi questa operazione dal gioco.",
+    "flavor": "\"La parte peggiore degli esperimenti falliti? La coda per l'inceneritore.\"\n—Sentito nella mensa di Issuaq Adaptics."
+  },
+  "33111": {
+    "text": "Ogni volta che Runner si avvicina a questo server, puoi girare a faccia in su 1 ICE a faccia in giù negli Archivi. Se lo fai, risolvi 1 subroutine su quell'ICE.\nLimite 1 <strong>regione</strong> per server.",
+    "flavor": "Qui, ai confini del mondo abitabile, estraggono il futuro dalle ossa del passato."
+  },
+  "33112": {
+    "text": "Quest'obiettivo ha -1 requisito di progresso per ogni tag che Runner ha.",
+    "flavor": "\"Una richiesta di accesso agli atti? Nessun problema! Compili tutti i dettagli. Vorrebbe farla in forma anonima? Mi dispiace: assolutamente no.\""
+  },
+  "33113": {
+    "text": "Quando riscuoti quest'obiettivo, puoi pescare 1 carta.",
+    "flavor": "\"Ehi piccolo, ricordi cosa dice papà sulle bugie?\"\n\"'Solo quando riesci a farla franca!'\""
+  },
+  "33114": {
+    "text": "Quando il tuo turno inizia, puoi eliminare questo asset. Se lo fai, cerca un'operazione nella R&S e rivelala. <em>(Poi rimescola la R&S.)</em> Aggiungi quell'operazione al QG.",
+    "flavor": "Non ti ricordi?"
+  },
+  "33115": {
+    "text": "Ogni volta che un obiettivo viene riscosso o rubato, puoi rivelare il grip. Elimina 1 carta rivelata in questo modo.",
+    "flavor": "\"Le persone non pensano per fatti, pensano per storie. Noi ci limitiamo a riordinare quelle informazioni per accelerare il processo.\""
+  },
+  "33116": {
+    "text": "Quando materializzi questo ICE durante un'incursione contro questo server, puoi far ottenere 2[credit] a Runner. Se lo fai, scegli 1 risorsa installata. Quella risorsa perde tutte le capacità fino alla fine del tuo prossimo turno.\n[subroutine] Termina l'incursione.",
+    "flavor": "SCANSIONE... ASSEMBLAGGIO INSULTO!"
+  },
+  "33117": {
+    "text": "Quando materializzi questo ICE durante un'incursione contro questo server, puoi far ottenere 2[credit] a Runner. Se lo fai, durante ogni incontro con questo ICE per il resto di quell'incursione, Runner non può infrangere più di 1 delle sue subroutine stampate.\n[subroutine] Assegna 1 tag a Runner.\n[subroutine] Infliggi 2 danni di rete.\n[subroutine] Puoi pescare 2 carte."
+  },
+  "33118": {
+    "text": "Ottieni 5[credit]. Puoi far ottenere 2[credit] a ogni giocatore.",
+    "flavor": "\"Oh, il testo di queste è infinito. Basta toccare accetta e puoi leggerlo dopo, se vuoi.\""
+  },
+  "33119": {
+    "text": "Gioca solo se Runner ha almeno 2 tag.\nColloca un totale di 4 segnalini progresso su carte installate che puoi far progredire.",
+    "flavor": "\"Non guardare le casse.\""
+  },
+  "33120": {
+    "text": "Per ogni cattiva pubblicità che hai, fino a 4, quest'obiettivo ha −1 requisito di progresso.",
+    "flavor": "Era un reato. Ora è un'opzione per le aziende."
+  },
+  "33121": {
+    "text": "Quando riscuoti quest'obiettivo, puoi eliminare 1 delle tue carte materializzate. Se lo fai, elimina 1 carta Runner installata con un costo di installazione stampato pari o inferiore al costo di materializzazione stampato della carta Corp che hai eliminato.",
+    "flavor": "\"I diamanti sintetici della Weyland costano meno di quelli naturali... quindi cosa stanno davvero cercando qui?\"\n—Capitan Padma Isbister"
+  },
+  "33122": {
+    "text": "La prima volta ogni turno che Runner elimina una qualsiasi delle tue carte installate <em>(incluso questo asset)</em>, infliggi 2 danni fisici.",
+    "flavor": "Quando applicate su questa scala, queste pratiche possono tenere lontano molto più di qualche cittadino indesiderato."
+  },
+  "33123": {
+    "text": "Quando materializzi questo asset, carica 6 segnalini cattiva pubblicità su di esso. Quando è scarico, vinci la partita.\nQuando il tuo turno inizia, prendi 1 cattiva pubblicità da questo asset.",
+    "flavor": "\"Continuano a trivellare, qualunque cosa succeda...\"\n—Valentina Ferreira"
+  },
+  "33124": {
+    "text": "Quando Runner incontra questo ICE, puoi eliminare 1 delle tue altre carte installate. Se lo fai, Runner non può infrangere le subroutine stampate di questo ICE per il resto di questo incontro.\n[subroutine] Ottieni 1[credit]. Runner perde 1[credit].\n[subroutine] Runner elimina 1 delle sue carte installate.",
+    "flavor": "In attesa che cada il prossimo colpo."
+  },
+  "33125": {
+    "text": "Come costo aggiuntivo per giocare questa operazione, rimuovi 1 tag.\nInfliggi 4 danni fisici.",
+    "flavor": "Sotto i cieli del nord Sundog aveva vissuto tutta la vita, e sotto di essi sarebbe morto."
+  },
+  "33126": {
+    "text": "Ogni volta che un giocatore elimina una carta <em>(incluso questo upgrade)</em> dalla radice di questo server o che lo protegge, tranne durante l'installazione, ottieni 2[credit].",
+    "flavor": "Si dice che il Macellaio della Siberia tenga i tagli migliori per sé."
+  },
+  "33127": {
+    "text": "Solo server remoto.\nOgni ICE che protegge questo server ottiene \"Quando Runner incontra questo ICE, scegli 1 subroutine su di esso. Puoi eliminare questo ICE per risolvere quella subroutine.\".\nLimite 1 <strong>regione</strong> per server.",
+    "flavor": "Entrare è difficile. Uscire richiede un certificato di morte."
+  },
+  "33128": {
+    "text": "Il tuo mazzo non può contenere più di 1 copia di qualsiasi carta.\nIl tuo mazzo può includere fino a 2 obiettivi diversi di ciascuna fazione Corp.",
+    "flavor": "Conveniente, efficace e senza compromessi."
+  }
+}

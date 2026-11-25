@@ -314,4 +314,5 @@ export const IT: Record<TranslationKey, string> = {
   "homeSettingsDialog.nickname": "Soprannome",
   "homeSettingsDialog.customPhotoURL": "Immagine del profilo personalizzata (URL)",
   "homeSettingsDialog.customBackgroundURL": "Sfondo personalizzato (URL)",
+  "cardDetail.machineTranslated": "Traduzione automatica (non ufficiale)",
 };

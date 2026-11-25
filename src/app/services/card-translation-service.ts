@@ -6,6 +6,9 @@ import { I18nService } from '../i18n/i18n-service';
 
 type LanguageData = Record<string, CardTranslation>;
 
+/** Languages that have a machine-translated layer (`translations/machine/<lang>.json`). */
+const MACHINE_LANGS = ['it'];
+
 /** A translation written by the user, kept on top of the official files. */
 export interface UserTranslation extends CardTranslation {
   updatedAt: string;
@@ -19,7 +22,10 @@ const EXPORT_FORMAT = 'novanet-translations';
 
 /**
  * Card-text translations (title/text/flavor) for the current language, in layers:
- * personal translation (user, local) > official file > English (the caller's fallback).
+ * personal translation (user, local) > official file > machine translation > English (the caller's
+ * fallback). The machine layer (`translations/machine/<lang>.json`, written by hand/by Claude, never
+ * touched by the sync script) only fills fields the official file leaves empty and is flagged with
+ * `machine: true` so the UI can say so.
  *
  * Official data comes from the static files `translations/<lang>.json` (+ `index.json` with a
  * content hash per language, see scripts/sync-translations.mjs). A language file is downloaded
@@ -34,6 +40,7 @@ const EXPORT_FORMAT = 'novanet-translations';
 export class CardTranslationService {
   private i18n = inject(I18nService);
   private languages = signal<Record<string, LanguageData>>({});
+  private machineData = signal<Record<string, LanguageData>>({});
   private user = signal<UserData>({});
   private loading = new Set<string>();
 
@@ -41,7 +48,11 @@ export class CardTranslationService {
   public readonly active = computed<LanguageData | undefined>(() => this.languages()[this.i18n.lang()]);
 
   /** Changes whenever anything that affects the translations of the current language changes. */
-  public readonly revision = computed(() => [this.active(), this.user()[this.i18n.lang()]]);
+  public readonly revision = computed(() => [
+    this.active(),
+    this.machineData()[this.i18n.lang()],
+    this.user()[this.i18n.lang()],
+  ]);
 
   /** Total number of personal translations (all languages). */
   public readonly userCount = computed(() =>
@@ -64,12 +75,15 @@ export class CardTranslationService {
     const lang = this.i18n.lang();
     const official = this.languages()[lang]?.[cardId];
     const mine = this.user()[lang]?.[cardId];
-    if (!mine) return official;
+    const machine = this.machineData()[lang]?.[cardId];
+    if (!mine && !machine) return official;
+    const text = mine?.text || official?.text || machine?.text || '';
     return {
-      title: mine.title || official?.title || '',
-      text: mine.text || official?.text || '',
-      flavor: mine.flavor || official?.flavor,
-      keywords: official?.keywords,
+      title: mine?.title || official?.title || machine?.title || '',
+      text,
+      flavor: mine?.flavor || official?.flavor || machine?.flavor,
+      keywords: official?.keywords || machine?.keywords,
+      ...(!mine?.text && !official?.text && machine?.text ? { machine: true } : {}),
     };
   }
 
@@ -153,8 +167,20 @@ export class CardTranslationService {
     }
   }
 
+  /** The machine-translated layer of a language (small file, always revalidated). */
+  private async loadMachine(lang: string): Promise<void> {
+    if (!MACHINE_LANGS.includes(lang) || this.machineData()[lang]) return;
+    try {
+      const res = await fetch(`translations/machine/${lang}.json`, { cache: 'no-cache' });
+      if (!res.ok) return;
+      const data: LanguageData = await res.json();
+      this.machineData.update(all => ({ ...all, [lang]: data }));
+    } catch { /* optional layer: missing, offline or not JSON (hosting rewrite) */ }
+  }
+
   private async load(lang: string): Promise<void> {
     this.loading.add(lang);
+    void this.loadMachine(lang);
     try {
       const db = await nrdbDb;
       const key = `translations:${lang}`;

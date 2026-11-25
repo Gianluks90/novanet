@@ -113,6 +113,9 @@
         }
         <p class="section-subtitle">{{ 'cardDetail.illustrator' | t }}</p>
         <p>{{c?.illustrator_names?.join(", ") || '-'}}</p>
+        @if (machineTranslated()) {
+        <app-ui-badge icon="translate" tone="warn" [label]="'cardDetail.machineTranslated' | t"></app-ui-badge>
+        }
     </section>
     }
     @if (selectedCard()) {

@@ -17,7 +17,7 @@ export const TYPE_LABELS: Record<string, Record<string, string>> = {
     },
     'ice': {
         en: 'Ice',
-        it: 'Ghiaccio'
+        it: 'ICE'
     },
     'corp_identity': {
         en: 'Corp Identity',
@@ -45,18 +45,18 @@ export const TYPE_LABELS: Record<string, Record<string, string>> = {
     },
     'barrier': {
         en: 'Barrier',
-        it: 'Barriera'
+        it: 'Barrier'
     },
     'code-gate': {
         en: 'Code gate',
-        it: 'Portale codificato'
+        it: 'Code Gate'
     },
     'sentry': {
         en: 'Sentry',
-        it: 'Sentinella'
+        it: 'Sentry'
     },
     'icebreaker': {
         en: 'Icebreaker',
-        it: 'Rompighiaccio'
+        it: 'Icebreaker'
     }
 }

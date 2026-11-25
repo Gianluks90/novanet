@@ -8,4 +8,6 @@ export interface CardTranslation {
     text: string;
     flavor?: string;
     keywords?: string;
+    /** True when the text comes from the machine-translated layer (not an official translation). */
+    machine?: boolean;
 }
