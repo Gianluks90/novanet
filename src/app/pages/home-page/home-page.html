@@ -11,10 +11,13 @@
 
         <section class="hud-panel home-panel welcome-panel hud-in">
             <span class="hud-tab">v {{ appVersion }}</span>
-            <p [innerHTML]="'homePage.stepIntoTheDigitalNexus' | t"></p>
-            <p>{{ 'homePage.ourPlatformOffersAnIntegrated' | t }}</p>
-            <p>{{ 'homePage.novanetIsnTJustA' | t }}</p>
-            <p class="disclaimer">{{ 'homePage.novanetIsAnIndependentProject' | t }}</p>
+            <!-- only the text scrolls (the panel is clipped to its chamfered shape) -->
+            <div class="welcome-text">
+                <p [innerHTML]="'homePage.stepIntoTheDigitalNexus' | t"></p>
+                <p>{{ 'homePage.ourPlatformOffersAnIntegrated' | t }}</p>
+                <p>{{ 'homePage.novanetIsnTJustA' | t }}</p>
+                <p class="disclaimer">{{ 'homePage.novanetIsAnIndependentProject' | t }}</p>
+            </div>
         </section>
 
         @if (firebase.$user()) {

@@ -1,5 +1,5 @@
 <div class="label-container">
-    <label [for]="forId()">{{ label() | t }}</label>
+    <label class="field-label" [for]="forId()">{{ label() | t }}</label>
     <ng-content select="[field-extra]"></ng-content>
 </div>
 <ng-content></ng-content>

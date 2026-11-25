@@ -15,15 +15,27 @@
         text-shadow: 0 0 14px color-mix(in srgb, var(--accent-color) 55%, transparent);
     }
 
-    // a strip of stripes on the right of the title
+    // four slanted blocks on the right, as tall as the title bar, fading towards the left
+    // (block, gap, block, gap...): each layer is one block, a bit fainter than the one on its right
     &::after {
+        --block: 18px;
+        --step: 36px;
+
         content: '';
         position: absolute;
-        top: var(--space-2);
-        right: calc(var(--space-4) + 18px);
-        width: 44px;
-        height: 8px;
-        background: repeating-linear-gradient(-55deg, var(--accent-color) 0 3px, transparent 3px 7px);
+        top: 0;
+        bottom: 0;
+        // the top-right corner of the first block sits on the frame, the blocks lean left going down
+        right: 0;
+        width: calc(var(--block) + var(--step) * 3);
+        pointer-events: none;
+        background:
+            linear-gradient(var(--accent-color), var(--accent-color)) right 0 top 0 / var(--block) 100% no-repeat,
+            linear-gradient(color-mix(in srgb, var(--accent-color) 62%, transparent), color-mix(in srgb, var(--accent-color) 62%, transparent)) right var(--step) top 0 / var(--block) 100% no-repeat,
+            linear-gradient(color-mix(in srgb, var(--accent-color) 38%, transparent), color-mix(in srgb, var(--accent-color) 38%, transparent)) right calc(var(--step) * 2) top 0 / var(--block) 100% no-repeat,
+            linear-gradient(color-mix(in srgb, var(--accent-color) 18%, transparent), color-mix(in srgb, var(--accent-color) 18%, transparent)) right calc(var(--step) * 3) top 0 / var(--block) 100% no-repeat;
+        transform: skewX(-25deg);
+        transform-origin: top right;
     }
 }
 

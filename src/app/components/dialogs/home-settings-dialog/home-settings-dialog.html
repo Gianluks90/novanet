@@ -5,69 +5,65 @@
     <p class="p-subtitle">{{ 'homeSettingsDialog.userOptions' | t }}</p>
     @if (data.user) {
         <form class="form-container" [formGroup]="form">
-            <div class="form-group">
-                <label for="nickname">{{ 'homeSettingsDialog.nickname' | t }}</label>
+            <app-ui-field label="homeSettingsDialog.nickname" forId="nickname">
                 <input type="text" id="nickname" formControlName="nickname"
                     [placeholder]="'enterTextPlaceholder' | t" autocorrect="off" autocomplete="off">
-            </div>
+            </app-ui-field>
             @let factions = data.factions;
             @if (factions.length > 0) {
-                
-                <div class="form-group">
-                    <label for="faction-select">{{ 'homeSettingsDialog.favoriteFaction' | t }}</label>
+                <app-ui-field label="homeSettingsDialog.favoriteFaction" forId="faction-select">
                     <select name="faction" id="faction-select" formControlName="favoriteFaction">
                         <option value="">{{ 'homeSettingsDialog.none' | t }}</option>
                         @for(faction of factions; track faction.id) {
                         <option [value]="faction.id">{{ faction.id | factionLabel}}</option>
                         }
                     </select>
-                </div>
+                </app-ui-field>
             }
-            <div class="form-group">
-                <label for="customPhotoURL">{{ 'homeSettingsDialog.customPhotoURL' | t }}</label>
+            <app-ui-field label="homeSettingsDialog.customPhotoURL" forId="customPhotoURL">
                 <input type="text" id="customPhotoURL"
                     formControlName="customPhotoURL" [placeholder]="'enterURLValidPlaceholder' | t" autocorrect="off" autocomplete="off">
-            </div>
-            <div class="form-group">
-                <label for="customBackgroundURL">{{ 'homeSettingsDialog.customBackgroundURL' | t }}</label>
+            </app-ui-field>
+            <app-ui-field label="homeSettingsDialog.customBackgroundURL" forId="customBackgroundURL">
                 <input type="text" id="customBackgroundURL"
                     formControlName="customBackgroundURL" [placeholder]="'enterURLValidPlaceholder' | t" autocorrect="off" autocomplete="off">
-            </div>
+            </app-ui-field>
         </form>
         <p class="p-note p-foot-note">ID: {{data.user.uid || 'N/A'}} Ruolo: {{data.user.role || 'base user'}}</p>
     } @else {
         <p>{{ 'homeSettingsDialog.pleaseLogInToChange' | t }}</p>   
     }
     <p class="p-subtitle">{{ 'homeSettingsDialog.appOptions' | t }}</p>
-    <!-- <p>No app options at the moment.</p> -->
-    <app-ui-field label="header.language" forId="language-select">
-        <select id="language-select" (change)="setLang($any($event.target).value)">
-            @for (o of languageOptions; track o.value) {
-                <option [value]="o.value" [selected]="i18n.lang() === o.value">{{ o.label | t }}</option>
-            }
-        </select>
-    </app-ui-field>
-    @if (i18n.lang() !== 'en') {
-        <div class="option-group">
-            <app-ui-toggle label="homeSettingsDialog.translateCards" [value]="translations.enabled()"
-                (valueChange)="translations.setEnabled($event)"></app-ui-toggle>
-            <span class="field-hint">{{ 'homeSettingsDialog.translateCardsHint' | t }}</span>
-        </div>
-    }
-    <div class="option-group">
-        <span class="option-label">{{ 'homeSettingsDialog.accentColor' | t }}</span>
-        <app-ui-segmented [options]="accentOptions()" [value]="theme.accentId()" [fill]="true"
-            groupLabel="homeSettingsDialog.accentColor" (valueChange)="theme.setAccent($event)"></app-ui-segmented>
-        <span class="field-hint">{{ 'homeSettingsDialog.accentColorHint' | t }}</span>
-    </div>
-    <div class="option-group">
-        <span class="option-label">{{ 'homeSettingsDialog.cardBacks' | t }}</span>
-        @for (side of backSides; track side) {
-            <span class="field-hint">{{ (side === 'runner' ? 'cardBack.runner' : 'cardBack.corp') | t }}</span>
-            <app-card-back-picker [side]="side" [carousel]="true" [value]="cardBacks.preferredId(side)"
-                (valueChange)="cardBacks.setPreferred(side, $event!)"></app-card-back-picker>
+    <div class="settings-section">
+        <app-ui-field label="header.language" forId="language-select">
+            <select id="language-select" (change)="setLang($any($event.target).value)">
+                @for (o of languageOptions; track o.value) {
+                    <option [value]="o.value" [selected]="i18n.lang() === o.value">{{ o.label | t }}</option>
+                }
+            </select>
+        </app-ui-field>
+        @if (i18n.lang() !== 'en') {
+            <div class="option-group">
+                <app-ui-toggle label="homeSettingsDialog.translateCards" [value]="translations.enabled()"
+                    (valueChange)="translations.setEnabled($event)"></app-ui-toggle>
+                <span class="field-hint">{{ 'homeSettingsDialog.translateCardsHint' | t }}</span>
+            </div>
         }
-        <span class="field-hint">{{ 'homeSettingsDialog.cardBacksHint' | t }}</span>
+        <div class="option-group">
+            <span class="field-label">{{ 'homeSettingsDialog.accentColor' | t }}</span>
+            <app-ui-segmented [options]="accentOptions()" [value]="theme.accentId()" [fill]="true"
+                groupLabel="homeSettingsDialog.accentColor" (valueChange)="theme.setAccent($event)"></app-ui-segmented>
+            <span class="field-hint">{{ 'homeSettingsDialog.accentColorHint' | t }}</span>
+        </div>
+        <div class="option-group">
+            <span class="field-label">{{ 'homeSettingsDialog.cardBacks' | t }}</span>
+            @for (side of backSides; track side) {
+                <span class="field-hint">{{ (side === 'runner' ? 'cardBack.runner' : 'cardBack.corp') | t }}</span>
+                <app-card-back-picker [side]="side" [carousel]="true" [value]="cardBacks.preferredId(side)"
+                    (valueChange)="cardBacks.setPreferred(side, $event!)"></app-card-back-picker>
+            }
+            <span class="field-hint">{{ 'homeSettingsDialog.cardBacksHint' | t }}</span>
+        </div>
     </div>
     <p class="p-subtitle">{{ 'homeSettingsDialog.myTranslations' | t }}</p>
     <p class="p-note">{{ 'homeSettingsDialog.myTranslationsInfo' | t: [translations.userCount()] }}</p>

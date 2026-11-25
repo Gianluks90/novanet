@@ -25,13 +25,6 @@ export class CardBackPicker {
   /** Two columns of thumbnails in a box that scrolls vertically (the deck's dialog). */
   public grid = input<boolean>(false);
 
-  /** Carousel with a mouse: the wheel scrolls it sideways. */
-  public onWheel(event: WheelEvent, el: HTMLElement): void {
-    if (!this.carousel() || Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
-    el.scrollLeft += event.deltaY;
-    event.preventDefault();
-  }
-
   public options = computed(() => this.service.backs(this.side()));
   /** The player's preferred back for the side (what a deck without a choice shows). */
   public defaultBack = computed(() => this.service.resolve(this.side()));

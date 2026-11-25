@@ -1,24 +1,30 @@
+// wide enough for the longest names ("Underground") on one line
+:host {
+    --back-option-width: 120px;
+}
+
 .picker {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-3);
 }
 
-// one row that scrolls sideways, snapping to the thumbnails; no scrollbar
+// one row that scrolls sideways, snapping to the thumbnails. The mouse wheel is NOT turned into a
+// sideways scroll (that trapped the page scroll while the pointer was over the row): with a
+// mouse use the thin scrollbar or shift + wheel; touch and trackpads scroll it natively.
 .picker.carousel {
     flex-wrap: nowrap;
     overflow-x: auto;
     scroll-snap-type: x proximity;
-    scrollbar-width: none;
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--accent-color) 55%, transparent) transparent;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-x: contain;
-
-    &::-webkit-scrollbar {
-        display: none;
-    }
+    // room so the scrollbar doesn't touch the thumbnails
+    padding-bottom: var(--space-2);
 
     .option {
-        flex: 0 0 88px;
+        flex: 0 0 var(--back-option-width);
         scroll-snap-align: start;
     }
 }
@@ -39,7 +45,7 @@
     flex-direction: column;
     align-items: center;
     gap: var(--space-1);
-    width: 88px;
+    width: var(--back-option-width);
     padding: var(--space-1);
     border: 1px solid var(--border-muted);
     background: transparent;
@@ -70,6 +76,9 @@
         text-transform: uppercase;
         letter-spacing: var(--letter-spacing-caps);
         text-align: center;
+        // a very long name wraps instead of spilling out of the thumbnail
+        max-width: 100%;
+        overflow-wrap: anywhere;
     }
 
     // marks the player's preferred back, in a deck's chooser

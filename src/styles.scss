@@ -165,6 +165,8 @@ div[dialog-main-container] {
     max-height: 600px;
     overflow-y: auto;
     position: relative;
+    // same chamfer as the fill: without it the opaque title bar covers the diagonal of the outline
+    @include hud.shape(calc(var(--cut) - 0.586px), calc(var(--cut) - 0.586px));
 
     h1 {
       position: sticky;
@@ -195,6 +197,17 @@ a:has(app-ui-button) {
 }
 
 // Forms
+
+// Label of a field or of a group of options: small spaced capitals (used by app-ui-field and by
+// option groups that have no single control to point to).
+.field-label {
+  color: var(--fg-color-muted);
+  font-family: var(--font-display);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
 
 form.form-container {
   display: flex;
