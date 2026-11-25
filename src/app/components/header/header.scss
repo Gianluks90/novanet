@@ -169,6 +169,15 @@
             color: var(--on-accent);
         }
 
+        // not available yet (Play): a solid, muted block, not a see-through one
+        &.disabled {
+            --stroke: color-mix(in srgb, var(--fg-color) 28%, var(--bg-container-color));
+            --fill: var(--panel-bg-raised);
+
+            opacity: 1;
+            color: var(--fg-color-muted);
+        }
+
         .nav-label {
             position: absolute;
             width: 1px;

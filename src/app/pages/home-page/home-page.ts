@@ -5,13 +5,12 @@ import { UiImageContainer } from '../../ui';
 import { ActivatedRoute } from '@angular/router';
 import { NotificationService } from '../../services/notification-service';
 import { Faction } from '../../models/faction';
-import { FactionLabelPipe } from "../../pipes/faction-label-pipe";
 import { TranslatePipe } from '../../i18n/translate-pipe';
 import { I18nService } from '../../i18n/i18n-service';
 
 @Component({
   selector: 'app-home-page',
-  imports: [TranslatePipe, UiImageContainer, FactionLabelPipe],
+  imports: [TranslatePipe, UiImageContainer],
   templateUrl: './home-page.html',
   styleUrl: './home-page.scss',
 })

@@ -146,6 +146,7 @@ export const EN = {
   "decksListPage.edit": "Edit",
   "decksListPage.view": "View",
   "homePage.noFavoriteCaption": "No favorite caption",
+  "homePage.profile": "Profile",
   "notifications.cardsLoading": "Cards loading...",
   "notifications.favoriteCaptionUpdated": "Favorite caption updated.",
   "notifications.errorUpdatingFavoriteCaption": "Error updating favorite caption, please try again later.",

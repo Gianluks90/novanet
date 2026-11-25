@@ -148,6 +148,7 @@ export const IT: Record<TranslationKey, string> = {
   "decksListPage.edit": "Modifica",
   "decksListPage.view": "Visualizza",
   "homePage.noFavoriteCaption": "Nessuna didascalia preferita",
+  "homePage.profile": "Profilo",
   "notifications.cardsLoading": "Caricamento carte...",
   "notifications.favoriteCaptionUpdated": "Didascalia preferita aggiornata.",
   "notifications.errorUpdatingFavoriteCaption": "Errore durante l'aggiornamento della didascalia preferita, riprova più tardi.",

@@ -1,43 +1,36 @@
 <div class="home-page-main-container">
-    <div class="home-page-container">
-        <div class="welcome-container animation-fade-in">
-            <div class="side-line"></div>
-            <div class="content">
-                <!-- <h1 i18n>Welcome {{firebase.$user() ? 'back' : ''}} to <u>NovaNet</u></h1> -->
-                @if (firebase.$user()) {
-                    <h1 [innerHTML]="'homePage.welcomeBackToNovanet' | t"></h1>
-                } @else {
-                    <h1 [innerHTML]="'homePage.welcomeToNovanet' | t"></h1>
-                }
-                <p [innerHTML]="'homePage.stepIntoTheDigitalNexus' | t"></p>
+    <div class="home-stack">
+        <header class="home-hero hud-in">
+            <p class="hud-eyebrow">Android: Netrunner</p>
+            @if (firebase.$user()) {
+                <h1 class="hud-title" [innerHTML]="'homePage.welcomeBackToNovanet' | t"></h1>
+            } @else {
+                <h1 class="hud-title" [innerHTML]="'homePage.welcomeToNovanet' | t"></h1>
+            }
+        </header>
 
-                <p>{{ 'homePage.ourPlatformOffersAnIntegrated' | t }}</p>
+        <section class="hud-panel home-panel welcome-panel hud-in">
+            <span class="hud-tab">v {{ appVersion }}</span>
+            <p [innerHTML]="'homePage.stepIntoTheDigitalNexus' | t"></p>
+            <p>{{ 'homePage.ourPlatformOffersAnIntegrated' | t }}</p>
+            <p>{{ 'homePage.novanetIsnTJustA' | t }}</p>
+            <p class="disclaimer">{{ 'homePage.novanetIsAnIndependentProject' | t }}</p>
+        </section>
 
-                <p>{{ 'homePage.novanetIsnTJustA' | t }}</p>
-
-                <p class="disclaimer">{{ 'homePage.novanetIsAnIndependentProject' | t }}</p>
-                <p class="version">v {{appVersion}}</p>
-            </div>
-        </div>
-    </div>
-    @if(firebase.$user()) {
-    <div class="home-page-user-container animation-fade-in">
-        <div class="side-line"></div>
-        <div class="user-content">
-            <app-ui-image-container [width]="124" [height]="124"
-                [url]="(firebase.$user()?.customPhotoURL || firebase.$user()?.photoURL) || './images/logo/novanet.svg'"></app-ui-image-container>
-            <div class="inner-container">
-                <div class="user-info">
-                    <h3>{{ firebase.$user()?.nickname || firebase.$user()?.displayName }}</h3>
-                    @if (firebase.$user()?.favoriteFaction) {
-                    <img src="./images/faction-icons/{{firebase.$user()?.favoriteFaction}}.svg"
-                        alt="{{firebase.$user()?.favoriteFaction! | factionLabel}}">
-                    }
-                    <!-- <p>{{ firebase.$user()?.email }}</p> -->
+        @if (firebase.$user()) {
+            <section class="hud-panel is-raised home-panel user-panel hud-in">
+                <span class="hud-tab">{{ 'homePage.profile' | t }}</span>
+                <div class="avatar hud-panel is-quiet">
+                    <app-ui-image-container [width]="92" [height]="92"
+                        [url]="(firebase.$user()?.customPhotoURL || firebase.$user()?.photoURL) || './images/logo/novanet.svg'"></app-ui-image-container>
                 </div>
-                <p class="p-note">{{ firebase.$user()?.favoriteCaption?.[locale] || ('homePage.noFavoriteCaption' | t) }}</p>
-            </div>
-        </div>
+                <div class="user-info">
+                    @let name = firebase.$user()?.nickname || firebase.$user()?.displayName || '';
+                    <!-- the name shrinks to fit the width (--chars drives the size in the stylesheet), never wraps -->
+                    <h3 class="hud-title user-name" [style.--chars]="name.length || 1" [title]="name">{{ name }}</h3>
+                    <p class="caption">{{ firebase.$user()?.favoriteCaption?.[locale] || ('homePage.noFavoriteCaption' | t) }}</p>
+                </div>
+            </section>
+        }
     </div>
-    }
 </div>
