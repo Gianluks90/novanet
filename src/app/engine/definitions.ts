@@ -229,6 +229,10 @@ export function getDefinition(cardId: string): CardDefinition {
   return registry.get(cardId) ?? {};
 }
 
+export function hasDefinition(cardId: string): boolean {
+  return registry.has(cardId);
+}
+
 // ---- Reusable subroutines -------------------------------------------------------------------
 
 export const endTheRun: Subroutine = {
