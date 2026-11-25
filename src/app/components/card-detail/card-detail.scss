@@ -128,7 +128,7 @@
     align-items: center;
 
     .material-symbols-rounded {
-        cursor: default;
+        cursor: var(--cursor-default, default);
     }
 
     .card-cost {
@@ -213,7 +213,7 @@
 
     .material-symbols-rounded {
         font-size: var(--font-size-xl);
-        cursor: default;
+        cursor: var(--cursor-default, default);
     }
 
     p {
@@ -254,7 +254,7 @@
         // pushed to the right edge of the icons row, just above the effect
         margin-left: auto;
         flex-shrink: 0;
-        cursor: default;
+        cursor: var(--cursor-default, default);
         user-select: none;
 
         &>.strength-label {
@@ -312,5 +312,5 @@
 
 .unique-icon {
     font-size: 1.2rem;
-    cursor: default;
+    cursor: var(--cursor-default, default);
 }

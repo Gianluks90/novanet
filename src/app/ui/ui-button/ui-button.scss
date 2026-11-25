@@ -21,7 +21,7 @@
     font-weight: 600;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    cursor: pointer;
+    cursor: var(--cursor-pointer, pointer);
     @include hud.shape(var(--cut), var(--cut));
 
     &::before {
@@ -49,7 +49,7 @@
 
     &:disabled {
         opacity: .4;
-        cursor: not-allowed;
+        cursor: var(--cursor-disabled, not-allowed);
     }
 }
 

@@ -15,7 +15,7 @@
     background: transparent;
     color: var(--accent-color);
     font-size: var(--font-size-md);
-    cursor: pointer;
+    cursor: var(--cursor-pointer, pointer);
     transition: background-color var(--duration-base);
 
     &:hover {

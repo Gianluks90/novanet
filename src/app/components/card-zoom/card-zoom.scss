@@ -35,7 +35,7 @@
             border: 0;
             background: transparent;
             color: inherit;
-            cursor: pointer;
+            cursor: var(--cursor-pointer, pointer);
         }
     }
 

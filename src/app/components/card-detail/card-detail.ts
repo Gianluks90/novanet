@@ -15,7 +15,7 @@ import { CdkMenu, CdkMenuItem, CdkMenuTrigger } from '@angular/cdk/menu';
 import { TranslatePipe } from '../../i18n/translate-pipe';
 import { I18nService } from '../../i18n/i18n-service';
 import { Dialog } from '@angular/cdk/dialog';
-import { DIALOGS_CONFIG } from '../../const/dialogConfig';
+import { DIALOGS_CONFIG, LOCKED_DIALOG } from '../../const/dialogConfig';
 import { PersonalTranslationDialog } from '../dialogs/personal-translation-dialog/personal-translation-dialog';
 import { CardTranslationService } from '../../services/card-translation-service';
 import { CardImage } from '../card-image/card-image';
@@ -119,7 +119,7 @@ export class CardDetail {
     this.dialog.open(PersonalTranslationDialog, {
       ...DIALOGS_CONFIG,
       panelClass: 'big-dialog-container',
-      disableClose: true,
+      ...LOCKED_DIALOG,
       data: { card },
     });
   }

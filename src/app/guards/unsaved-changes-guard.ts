@@ -3,7 +3,7 @@ import { CanDeactivateFn } from '@angular/router';
 import { Dialog } from '@angular/cdk/dialog';
 import { firstValueFrom } from 'rxjs';
 import { ConfirmDialog } from '../components/dialogs/confirm-dialog/confirm-dialog';
-import { DIALOGS_CONFIG } from '../const/dialogConfig';
+import { DIALOGS_CONFIG, LOCKED_DIALOG } from '../const/dialogConfig';
 import { DialogResult } from '../models/DialogResult';
 
 /** Implemented by pages that can hold edits the user hasn't saved yet. */
@@ -20,7 +20,7 @@ export const unsavedChangesGuard: CanDeactivateFn<HasUnsavedChanges> = async (co
 
   const ref = inject(Dialog).open<DialogResult>(ConfirmDialog, {
     ...DIALOGS_CONFIG,
-    disableClose: true,
+    ...LOCKED_DIALOG,
     data: {
       title: 'unsavedChanges.title',
       message: 'unsavedChanges.message',

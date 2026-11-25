@@ -155,7 +155,7 @@ body {
   font-weight: var(--font-weight-bold);
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  cursor: pointer;
+  cursor: var(--cursor-pointer, pointer);
   @include hud.shape(var(--cut), var(--cut));
 
   &::before {

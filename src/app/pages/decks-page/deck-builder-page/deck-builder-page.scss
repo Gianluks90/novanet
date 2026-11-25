@@ -70,7 +70,7 @@ $wide-breakpoint: 1360px;
                 &>.view-only-label {
                     text-transform: uppercase;
                     color: var(--accent-color);
-                    cursor: default;
+                    cursor: var(--cursor-default, default);
                     user-select: none;
                 }
             }
@@ -152,7 +152,7 @@ $wide-breakpoint: 1360px;
         padding: 0;
         border: 0;
         background: none;
-        cursor: pointer;
+        cursor: var(--cursor-pointer, pointer);
         line-height: 0;
 
         app-deck-art {
@@ -288,7 +288,7 @@ select {
             color: inherit;
             font: inherit;
             text-align: left;
-            cursor: pointer;
+            cursor: var(--cursor-pointer, pointer);
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -373,7 +373,7 @@ select {
             border: 0;
             background: none;
             line-height: 0;
-            cursor: pointer;
+            cursor: var(--cursor-pointer, pointer);
 
             app-card-image {
                 width: 100%;
@@ -681,7 +681,7 @@ select {
         background-color: var(--surface-active);
         color: var(--on-accent);
         box-shadow: var(--shadow-md);
-        cursor: pointer;
+        cursor: var(--cursor-pointer, pointer);
 
         .material-symbols-rounded {
             font-size: 1.75rem;

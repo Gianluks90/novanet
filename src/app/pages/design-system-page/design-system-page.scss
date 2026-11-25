@@ -123,5 +123,5 @@
     color: var(--fg-color);
     font-size: var(--font-size-md);
     text-transform: uppercase;
-    cursor: pointer;
+    cursor: var(--cursor-pointer, pointer);
 }

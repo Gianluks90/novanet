@@ -34,7 +34,7 @@ form app-ui-button {
     color: var(--accent-color);
     font-size: .9rem;
     text-decoration: underline;
-    cursor: pointer;
+    cursor: var(--cursor-pointer, pointer);
 
     &:hover {
         text-decoration: none;

@@ -14,11 +14,11 @@
     // take the look of the surrounding text (buttons don't inherit it by default)
     color: inherit;
     font: inherit;
-    cursor: pointer;
+    cursor: var(--cursor-pointer, pointer);
 
     &:disabled {
         opacity: .5;
-        cursor: not-allowed;
+        cursor: var(--cursor-disabled, not-allowed);
     }
 }
 
@@ -50,6 +50,8 @@
     width: 0.9em;
     height: 0.9em;
     background-color: var(--accent-color);
+    // chamfered like the track (top-left and bottom-right)
+    @include hud.shape(0.25em, 0.25em);
     transition:
         transform var(--duration-base) var(--ease-out),
         background-color var(--duration-base);

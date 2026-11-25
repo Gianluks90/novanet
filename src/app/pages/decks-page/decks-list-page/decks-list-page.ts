@@ -7,7 +7,7 @@ import { UIButton, UiBadge, UiIconButton, UiSegmented, SegmentedOption } from '.
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { DialogResult } from '../../../models/DialogResult';
 import { NewDeckDialog } from '../../../components/dialogs/new-deck-dialog/new-deck-dialog';
-import { DIALOGS_CONFIG } from '../../../const/dialogConfig';
+import { DIALOGS_CONFIG, LOCKED_DIALOG } from '../../../const/dialogConfig';
 import { NotificationService } from '../../../services/notification-service';
 import { DeckService } from '../../../services/deck-service';
 import { FirebaseService } from '../../../services/firebase-service';
@@ -253,7 +253,7 @@ export class DecksListPage {
     this.dialogRef = this.dialog.open<DialogResult>(NewDeckDialog, {
       ...DIALOGS_CONFIG,
       panelClass: 'dialog-container',
-      disableClose: true,
+      ...LOCKED_DIALOG,
       data: {
         sides: this.sides,
         signedIn: !!this.firebase.$user(),
@@ -289,7 +289,7 @@ export class DecksListPage {
   public openConfirmDeleteDeckDialog(deck: Deck): void {
     this.dialogRef = this.dialog.open<DialogResult>(ConfirmDialog, {
       ...DIALOGS_CONFIG,
-      disableClose: true,
+      ...LOCKED_DIALOG,
     });
 
     this.dialogRef?.closed.subscribe((result: DialogResult | undefined) => {

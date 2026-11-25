@@ -17,6 +17,52 @@
   /* IE and Edge */
 }
 
+/* The site's cursor (a square with a dot, in the accent color; built by ThemeService). It is set on
+   <body> (where ThemeService defines the variables, so not on <html>) and inherited (so the text inside a button shows the button's cursor); the elements the browser gives
+   their own cursor (links, buttons, fields...) are listed below. Text fields keep
+   the text cursor; `cursor: var(--cursor-pointer, pointer)` is used over clickable things. */
+body {
+  cursor: var(--cursor-default, auto);
+}
+
+a[href],
+button:not(:disabled),
+select,
+summary,
+label[for],
+input[type="checkbox"],
+input[type="radio"],
+input[type="range"],
+input[type="file"],
+input[type="color"],
+[role="button"],
+[role="switch"],
+[role="menuitem"] {
+  cursor: var(--cursor-pointer, pointer);
+}
+
+input:not([type]),
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="search"],
+input[type="url"],
+input[type="tel"],
+textarea,
+[contenteditable="true"] {
+  cursor: var(--cursor-text, text);
+}
+
+/* Disabled controls: a prohibition sign (after the text fields, so a disabled field gets it too) */
+button:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled,
+[aria-disabled="true"] {
+  cursor: var(--cursor-disabled, not-allowed);
+}
+
 html,
 body {
   height: 100%;
@@ -128,9 +174,16 @@ p.p-foot-note {
   }
 }
 
+// The backdrop closes the dialog when clicked: the cursor is an X. A dialog that can't be closed
+// that way (LOCKED_DIALOG in const/dialogConfig.ts) keeps the normal cursor.
 .dialog-backdrop {
+  cursor: var(--cursor-close, pointer);
   backdrop-filter: blur(6px);
   background-color: rgba(5, 7, 10, 0.62);
+
+  &.dialog-backdrop-locked {
+    cursor: var(--cursor-default, auto);
+  }
 }
 
 // The dialog: an outlined, chamfered frame (the element is the stroke, ::before the fill).
@@ -268,7 +321,7 @@ input[type="color"] {
   border: none;
   padding: 0;
   background-color: transparent;
-  cursor: pointer;
+  cursor: var(--cursor-pointer, pointer);
 }
 
 textarea {
@@ -294,7 +347,7 @@ select {
     background-color: var(--bg-color);
     color: var(--fg-color);
     height: 32px;
-    cursor: pointer;
+    cursor: var(--cursor-pointer, pointer);
 }
 
 // NRIcons pipe

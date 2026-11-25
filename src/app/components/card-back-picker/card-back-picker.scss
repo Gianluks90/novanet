@@ -51,7 +51,7 @@
     background: transparent;
     color: var(--fg-color);
     font: inherit;
-    cursor: pointer;
+    cursor: var(--cursor-pointer, pointer);
     transition: border-color var(--duration-fast), background-color var(--duration-fast);
 
     &:hover {

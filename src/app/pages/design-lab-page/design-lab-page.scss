@@ -125,7 +125,7 @@
 
     .hud-btn:disabled {
         opacity: .4;
-        cursor: not-allowed;
+        cursor: var(--cursor-disabled, not-allowed);
     }
 
     .meters {

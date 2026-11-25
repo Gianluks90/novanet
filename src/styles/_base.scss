@@ -18,7 +18,7 @@ select:focus-visible {
 input[type='checkbox'],
 input[type='radio'] {
   accent-color: var(--accent-color);
-  cursor: pointer;
+  cursor: var(--cursor-pointer, pointer);
 }
 
 ::placeholder {
@@ -30,7 +30,7 @@ input:disabled,
 textarea:disabled,
 select:disabled {
   opacity: 0.5;
-  cursor: not-allowed;
+  cursor: var(--cursor-disabled, not-allowed);
 }
 
 select:hover:not(:disabled) {

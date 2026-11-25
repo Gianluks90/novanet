@@ -4,7 +4,7 @@
     display: block;
     &:hover {
         text-decoration: underline;
-        cursor: pointer;
+        cursor: var(--cursor-pointer, pointer);
         color: var(--accent-color);
         transition: color 0.3s;
     }

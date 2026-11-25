@@ -74,7 +74,7 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    cursor: pointer;
+    cursor: var(--cursor-pointer, pointer);
     transition:
         background-color var(--duration-base),
         color var(--duration-base);
@@ -90,7 +90,7 @@
     &.selected {
         background-color: var(--surface-active);
         color: var(--on-accent);
-        cursor: default;
+        cursor: var(--cursor-default, default);
     }
 
     // the ring would be clipped by the neighbours: draw it inside

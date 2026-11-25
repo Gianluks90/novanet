@@ -51,7 +51,7 @@
   text-align: left;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  cursor: pointer;
+  cursor: var(--cursor-pointer, pointer);
 
   .material-symbols-rounded {
     width: 1.25rem;
@@ -67,6 +67,6 @@
 
   &:disabled {
     opacity: 0.5;
-    cursor: not-allowed;
+    cursor: var(--cursor-disabled, not-allowed);
   }
 }

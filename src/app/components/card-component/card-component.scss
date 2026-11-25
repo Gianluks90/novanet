@@ -17,7 +17,7 @@
     aspect-ratio: 2/3;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
+    cursor: var(--cursor-pointer, pointer);
 
     // tilt: the CardTiltDirective only sets the --tilt-* variables
     transform: perspective(700px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) scale(var(--tilt-scale, 1));

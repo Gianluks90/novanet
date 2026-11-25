@@ -17,7 +17,7 @@
     background-color: transparent;
     color: var(--fg-color);
     text-decoration: none;
-    cursor: pointer;
+    cursor: var(--cursor-pointer, pointer);
     transition:
         color var(--duration-base),
         background-color var(--duration-base),
@@ -42,7 +42,7 @@
 
     &:disabled {
         opacity: .4;
-        cursor: not-allowed;
+        cursor: var(--cursor-disabled, not-allowed);
     }
 
     &.sm {
