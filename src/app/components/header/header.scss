@@ -137,8 +137,15 @@
             font-size: 2.25rem;
         }
 
-        // the active page: filled with the accent
-        &.active {
+        // The base rules (header hover/active, 14% accent) would make a touched or current tab
+        // see-through: here the block keeps its own background, and the current page is filled
+        // with the accent also while the (sticky, on touch screens) hover applies.
+        &:hover:not(.disabled) {
+            background-color: var(--bg-container-color);
+        }
+
+        &.active,
+        &.active:hover:not(.disabled) {
             background-color: var(--surface-active);
             color: var(--on-accent);
         }

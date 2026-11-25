@@ -23,13 +23,11 @@
     }
 }
 
-// two columns, as many rows as needed, scrolling inside its own box (no scrollbar)
+// two columns, as many rows as needed: the dialog around it scrolls (a second scroll box inside
+// it cut the last row and trapped the touch scroll)
 .picker.grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    max-height: 50dvh;
-    overflow-y: auto;
-    overscroll-behavior: contain;
 
     .option {
         width: auto;
