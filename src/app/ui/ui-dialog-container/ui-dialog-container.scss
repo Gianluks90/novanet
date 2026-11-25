@@ -8,7 +8,7 @@
     background-color: var(--bg-container-color);
 
     h1 {
-        font-size: var(--font-size-xl);
+        font-size: var(--font-size-heading);
         font-weight: 700;
         letter-spacing: 0.05em;
         text-transform: uppercase;
@@ -44,7 +44,7 @@
 
     ::ng-deep p {
         color: var(--fg-color);
-        font-size: var(--font-size-lg);
+        font-size: var(--font-size-body);
         margin: 0;
         line-height: 1.5;
     }

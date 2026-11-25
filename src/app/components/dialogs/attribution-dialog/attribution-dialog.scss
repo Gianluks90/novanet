@@ -1,3 +1,9 @@
+// No close button: the dialog closes by clicking outside it or with Esc. Room under the text, since
+// nothing follows it.
+.credits {
+    padding-bottom: var(--space-5);
+}
+
 // Links in the credits: the text color, underlined (not the browser's blue).
 .credits ::ng-deep a {
     color: var(--fg-color);

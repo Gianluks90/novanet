@@ -5,7 +5,7 @@
 .format-status {
     padding-top: var(--space-2);
     border-top: 1px solid var(--border-muted);
-    font-size: .9rem;
+    font-size: var(--font-size-secondary);
     color: var(--error-color);
 
     &.legal {
@@ -31,12 +31,12 @@
     .format-issues {
         margin: var(--space-1) 0 0;
         padding-left: var(--space-5);
-        font-size: .85rem;
+        font-size: var(--font-size-secondary);
     }
 
     .format-incomplete {
         margin: var(--space-1) 0 0;
-        font-size: .85rem;
+        font-size: var(--font-size-secondary);
         opacity: .85;
     }
 }

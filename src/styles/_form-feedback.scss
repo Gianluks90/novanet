@@ -12,7 +12,7 @@ input[aria-invalid='true'] {
   margin-bottom: var(--space-3);
   border-left: 3px solid var(--error-color);
   background-color: color-mix(in srgb, var(--error-color) 12%, transparent);
-  font-size: .95rem;
+  font-size: var(--font-size-secondary);
 }
 
 .form-notice {
@@ -22,7 +22,7 @@ input[aria-invalid='true'] {
 
 .field-error,
 .field-hint {
-  font-size: .85rem;
+  font-size: var(--font-size-secondary);
 }
 
 .field-error {

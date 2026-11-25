@@ -37,12 +37,26 @@
   --font-body: 'Barlow', sans-serif;
 
   // ---- type scale ----
+  // Raw sizes: the building blocks. Don't use them in components: use the roles below.
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
   --font-size-md: 1rem;
   --font-size-lg: 1.25rem;
   --font-size-xl: 1.5rem;
   --font-size-2xl: 2rem;
+  // Roles: what a piece of text IS decides its size, and each role has one value per layout (the
+  // mobile ones are set in the mobile block below). Use these in styles.
+  //   hero       page title (home)            label     spaced capitals: eyebrows, tabs, badges, menu titles
+  //   heading    dialog / panel / card title  secondary hints, notes, captions, metadata
+  //   lead       section titles, names        body      running text, buttons, menu items, nav
+  // Text fields stay at 1rem (--font-size-md) on both layouts: iOS Safari zooms the page into a
+  // field whose text is smaller than 16px.
+  --font-size-hero: 2.25rem;
+  --font-size-heading: 1.5rem;
+  --font-size-lead: 1.125rem;
+  --font-size-body: 1rem;
+  --font-size-secondary: 0.875rem;
+  --font-size-label: 0.75rem;
   --font-weight-regular: 400;
   --font-weight-bold: 700;
   --letter-spacing-caps: 0.05em;
@@ -80,6 +94,12 @@
 @include bp.mobile {
   :root {
     --control-height: 44px;
+    // text is read closer up: each role a notch down (the label stays: it is already the smallest)
+    --font-size-hero: 1.75rem;
+    --font-size-heading: 1.25rem;
+    --font-size-lead: 1rem;
+    --font-size-body: 0.9375rem;
+    --font-size-secondary: 0.8125rem;
     // a taller bar, so the 40px avatar is not cramped
     --header-height: 64px;
     // 64px of tabs plus the system home indicator area

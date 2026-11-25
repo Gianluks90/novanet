@@ -18,7 +18,7 @@
     }
 
     .meter-hint {
-        font-size: .8rem;
+        font-size: var(--font-size-secondary);
         opacity: .85;
 
         &.warn {

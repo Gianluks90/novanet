@@ -25,7 +25,7 @@
     gap: var(--space-2);
 
     .hud-title {
-        font-size: clamp(1.5rem, 4vw, 2.4rem);
+        font-size: var(--font-size-hero);
 
         // "NovaNet" in the accent color instead of underlined
         ::ng-deep u {
@@ -46,12 +46,12 @@
 
     p {
         color: var(--fg-color);
-        font-size: var(--font-size-md);
+        font-size: var(--font-size-body);
         line-height: 1.5;
     }
 
     .disclaimer {
-        font-size: var(--font-size-sm);
+        font-size: var(--font-size-secondary);
         color: var(--fg-color-muted);
     }
 }
@@ -107,7 +107,7 @@
 
     .caption {
         font-style: italic;
-        font-size: var(--font-size-md);
+        font-size: var(--font-size-body);
         color: var(--fg-color-muted);
         max-height: 4.5em;
         overflow-y: auto;
@@ -146,10 +146,6 @@
         --cut: 14px;
 
         padding: var(--space-6) var(--space-4) var(--space-3);
-
-        p {
-            font-size: var(--font-size-sm);
-        }
     }
 
     .user-panel {

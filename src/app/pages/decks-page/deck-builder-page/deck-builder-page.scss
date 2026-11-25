@@ -475,7 +475,7 @@ select {
             .title-input {
                 order: 1;
                 flex: 1 1 100%;
-                font-size: var(--font-size-lg);
+                font-size: var(--font-size-lead);
             }
 
             .title-input {
@@ -596,7 +596,7 @@ select {
                             border-radius: var(--radius-pill);
                             background-color: var(--surface-active);
                             color: var(--on-accent);
-                            font-size: var(--font-size-xs);
+                            font-size: var(--font-size-label);
                             line-height: 16px;
                             text-align: center;
                         }

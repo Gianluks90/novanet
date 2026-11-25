@@ -31,7 +31,8 @@ export class DesignSystemPage {
 
   public spacing = ['--space-1', '--space-2', '--space-3', '--space-4', '--space-5', '--space-6'];
   public radii = ['--radius-none', '--radius-sm', '--radius-md', '--radius-pill'];
-  public fontSizes = ['--font-size-xs', '--font-size-sm', '--font-size-md', '--font-size-lg', '--font-size-xl', '--font-size-2xl'];
+  /** The type scale: roles (one value per layout), not raw sizes. Shown in the order of size. */
+  public fontSizes = ['--font-size-hero', '--font-size-heading', '--font-size-lead', '--font-size-body', '--font-size-secondary', '--font-size-label'];
 
   public segmentedOptions: SegmentedOption[] = [
     { value: 'mine', label: 'decksListPage.viewPersonal' },

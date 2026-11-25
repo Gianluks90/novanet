@@ -179,7 +179,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 0.9rem;
+            font-size: var(--font-size-secondary);
             opacity: 0.8;
         }
 
@@ -189,7 +189,7 @@
             text-overflow: ellipsis;
             white-space: nowrap;
             font-family: var(--font-display);
-            font-size: var(--font-size-md);
+            font-size: var(--font-size-body);
             font-weight: 700;
             letter-spacing: 0.05em;
             text-transform: uppercase;
@@ -231,7 +231,7 @@
 
 .deck-subtitle {
     gap: var(--space-2);
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-secondary);
     opacity: .85;
 
     &>.deck-author {
@@ -260,7 +260,7 @@
         flex-shrink: 0;
         color: var(--accent-color);
         font-weight: bold;
-        font-size: var(--font-size-sm);
+        font-size: var(--font-size-secondary);
         cursor: help;
     }
 }
@@ -352,7 +352,7 @@
         }
 
         .info-container .deck-name {
-            font-size: var(--font-size-md);
+            font-size: var(--font-size-body);
         }
     }
 }

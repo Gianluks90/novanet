@@ -72,7 +72,7 @@
                 border-bottom: 1px solid var(--border-muted);
                 user-select: none;
                 font-family: var(--font-display);
-                font-size: var(--font-size-xs);
+                font-size: var(--font-size-label);
 
                 &>.control-container {
                     display: flex;
@@ -86,7 +86,7 @@
                     // the same type on every control (the count is a span, the others buttons):
                     // plain, not spaced capitals
                     font-family: var(--font-display);
-                    font-size: var(--font-size-xs);
+                    font-size: var(--font-size-label);
                     letter-spacing: normal;
                     text-transform: none;
                     cursor: var(--cursor-pointer, pointer);
@@ -116,7 +116,7 @@
                     padding: var(--space-1) var(--space-2);
                     gap: var(--space-1);
                     flex-direction: row-reverse;
-                    font-size: var(--font-size-xs);
+                    font-size: var(--font-size-label);
 
                     &>.material-symbols-rounded {
                         font-size: 1rem;
@@ -335,7 +335,7 @@ select {
                     border-radius: var(--radius-pill);
                     background-color: var(--surface-active);
                     color: var(--on-accent);
-                    font-size: var(--font-size-xs);
+                    font-size: var(--font-size-label);
                     line-height: 16px;
                     text-align: center;
                 }

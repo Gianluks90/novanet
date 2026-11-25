@@ -70,7 +70,13 @@ body {
 
   background-color: var(--bg-color);
   color: var(--fg-color);
+  // the root stays 16px (rem is relative to it)
   font-size: 16px;
+}
+
+// Text with no size of its own is body text: the size per layout comes from the type scale.
+body {
+  font-size: var(--font-size-body);
 }
 
 h1,
@@ -127,14 +133,14 @@ p {
 // Text
 
 p.p-subtitle {
-  font-size: 1.1rem;
+  font-size: var(--font-size-lead);
   color: var(--accent-color) !important;
   text-decoration: underline;
   margin-bottom: 16px;
 }
 
 p.p-note {
-  font-size: 0.9rem !important;
+  font-size: var(--font-size-secondary) !important;
   color: var(--fg-color);
   opacity: 0.7;
   margin-top: 16px;
@@ -256,7 +262,7 @@ a:has(app-ui-button) {
 .field-label {
   color: var(--fg-color-muted);
   font-family: var(--font-display);
-  font-size: var(--font-size-xs);
+  font-size: var(--font-size-label);
   font-weight: var(--font-weight-bold);
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -279,7 +285,7 @@ form.form-container {
     }
 
     &>.form-hint {
-      font-size: 0.9rem;
+      font-size: var(--font-size-secondary);
       color: var(--fg-color);
       opacity: 0.7;
       margin-bottom: 12px;

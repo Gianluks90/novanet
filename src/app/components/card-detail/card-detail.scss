@@ -26,7 +26,7 @@
 }
 
 .section-title {
-    font-size: var(--font-size-xl);
+    font-size: var(--font-size-heading);
     font-weight: bold;
     color: var(--fg-color);
     text-transform: uppercase;
@@ -154,7 +154,7 @@
     }
 
     .card-cost {
-        font-size: var(--font-size-xl);
+        font-size: var(--font-size-heading);
     }
 }
 
@@ -243,12 +243,12 @@
     flex-wrap: wrap;
 
     .material-symbols-rounded {
-        font-size: var(--font-size-xl);
+        font-size: var(--font-size-heading);
         cursor: var(--cursor-default, default);
     }
 
     p {
-        font-size: var(--font-size-xl);
+        font-size: var(--font-size-heading);
     }
 
     .faction-icon {
@@ -296,7 +296,7 @@
         }
 
         &>.strength-value {
-            font-size: var(--font-size-xl);
+            font-size: var(--font-size-heading);
             font-weight: bold;
         }
     }
@@ -304,7 +304,7 @@
 
 .section-label {
     text-transform: uppercase;
-    font-size: .8rem;
+    font-size: var(--font-size-secondary);
 }
 
 .side-container {
