@@ -1,12 +1,12 @@
 <div class="decks-list-page-main-container">
-    <div class="toolbar">
+    <!-- on mobile the toolbar itself is the one panel; on desktop each block is -->
+    <div class="toolbar" [class.hud-panel]="viewport.isMobile()" [class.is-quiet]="viewport.isMobile()">
         <div class="view-container">
-            <app-ui-segmented [options]="viewModeOptions" [value]="viewMode" [fill]="true" [borderless]="true"
+            <app-ui-segmented [options]="viewModeOptions" [value]="viewMode" [fill]="true" size="sm"
                 (valueChange)="switchViewMode($any($event))"></app-ui-segmented>
         </div>
-        <div class="filter-container">
-            <div class="side-line"></div>
-            <p class="section-title">{{ 'filtersSectionTitle' | t }}</p>
+        <div class="filter-container hud-panel is-quiet">
+            <p class="hud-eyebrow filters-title">{{ 'filtersSectionTitle' | t }}</p>
             <input #search type="text" [placeholder]="'searchTextInputPlaceholder' | t" (keyup)="onChangeTextSearch($event)">
             <button type="button" class="ghost-btn reset-btn" [class.has-text]="!!filters.text" (click)="resetFilters()"
                 [attr.aria-label]="'cardsPage.resetFilters' | t" [title]="'cardsPage.resetFilters' | t">
@@ -14,7 +14,7 @@
             </button>
         </div>
         @if (viewMode === 'mine' && decks.length > 0) {
-            <div class="import-container">
+            <div class="import-container hud-panel is-quiet">
                 <button type="button" class="ghost-btn" (click)="openImportDeckDialog()"
                     [attr.aria-label]="'decksListPage.importDeck' | t" [title]="'decksListPage.importDeck' | t">
                     <span class="material-symbols-rounded" aria-hidden="true">bottom_panel_close</span>
@@ -49,23 +49,24 @@
         </div>
     }
 
-    <div class="content-container" [class.empty-list]="decks.length <= 0">
+    <div class="content-container" [class.empty-list]="decks.length <= 0" [class.hud-panel]="decks.length <= 0"
+        [class.is-quiet]="decks.length <= 0">
         @if (decks.length > 0) {
             @for (side of deckSides; track side) {
-                <div class="deck-column" [class.inactive]="side !== activeSide">
+                <div class="deck-column hud-panel is-quiet" [class.inactive]="side !== activeSide">
                     <div class="column-header">
-                        <div class="side-line"></div>
-                        <p class="column-title">{{ (side === 'runner' ? 'runnerDecksColumnTitle' : 'corpDecksColumnTitle') | t }}</p>
+                        <p class="hud-eyebrow column-title">{{ (side === 'runner' ? 'runnerDecksColumnTitle' : 'corpDecksColumnTitle') | t }}</p>
                         @if (viewMode === 'mine') {
                             <app-ui-icon-button icon="add" size="sm" [label]="'decksListPage.newDeck' | t" (click)="openNewDeckDialog(side)"></app-ui-icon-button>
                         }
                     </div>
                     <div class="decks-list" [class.empty-list]="(decks | filterDecksBySide:side).length <= 0">
                         @for (d of decks | filterDecksBySide:side; track d.id) {
-                            <div class="deck-container">
+                            @let tooSmall = deckSize(d) < d.identity.minimum_deck_size!;
+                            <div class="deck-container hud-panel is-quiet is-raised">
                                 <app-deck-art [identity]="d.identity" [side]="d.side" [back]="d.cardBack" [title]="d.identity | cardTitle"></app-deck-art>
                                 <div class="info-container">
-                                    <p>{{d.name}} <span class="material-symbols-rounded validity-icon" [title]="(deckSize(d) < d.identity.minimum_deck_size! ? 'decksListPage.deckTooSmall' : 'decksListPage.deckSizeValid') | t">{{deckSize(d) < d.identity.minimum_deck_size! ? 'close' : 'check'}}</span></p>
+                                    <p class="deck-name">{{d.name}} <span class="material-symbols-rounded validity-icon" [class.invalid]="tooSmall" [title]="(tooSmall ? 'decksListPage.deckTooSmall' : 'decksListPage.deckSizeValid') | t">{{tooSmall ? 'close' : 'check'}}</span></p>
                                     <!-- Both pill rows are always rendered (even empty) so every deck has the same height -->
                                     @let names = formatNames(legalFormatsOf(d));
                                     <div class="deck-formats" [title]="names.length > 0 ? ('decksListPage.legalIn' | t) : ''">
@@ -86,9 +87,9 @@
                                     </div>
                                 </div>
                                 <div class="deck-actions">
-                                    <app-ui-icon-button [icon]="canEdit(d) ? 'edit' : 'visibility'" [label]="(canEdit(d) ? 'decksListPage.edit' : 'decksListPage.view') | t" [link]="['/decks/builder', d.id]"></app-ui-icon-button>
+                                    <app-ui-icon-button size="sm" [icon]="canEdit(d) ? 'edit' : 'visibility'" [label]="(canEdit(d) ? 'decksListPage.edit' : 'decksListPage.view') | t" [link]="['/decks/builder', d.id]"></app-ui-icon-button>
                                     @if (canEdit(d)) {
-                                        <app-ui-icon-button icon="delete" [label]="'decksListPage.delete' | t" (click)="openConfirmDeleteDeckDialog(d)"></app-ui-icon-button>
+                                        <app-ui-icon-button size="sm" icon="delete" [label]="'decksListPage.delete' | t" (click)="openConfirmDeleteDeckDialog(d)"></app-ui-icon-button>
                                     }
                                 </div>
                             </div>

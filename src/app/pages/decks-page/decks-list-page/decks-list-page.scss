@@ -6,35 +6,36 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding: var(--space-3);
 
     // the one gap between the toolbar and the content (same as the cards page)
     --page-gap: var(--space-2);
 
-    // toolbar: [personal/public] [filters ....] [import icon]; the blocks share the filter bar's look
+    // toolbar: [personal/public] [filters ....] [import icon]; each block is a quiet HUD panel
     &>.toolbar {
         display: flex;
         align-items: stretch;
         gap: var(--page-gap);
         width: 100%;
         max-width: 1200px;
-        height: 50px;
+        // as tall as a control plus the outline
+        height: calc(var(--control-height) + 2px);
         flex-shrink: 0;
         margin-bottom: var(--page-gap);
 
-        &>.view-container,
         &>.import-container,
         &>.filter-container {
-            border: 1px solid var(--accent-color);
-            background-color: var(--bg-container-color);
+            --cut: 8px;
+
             display: flex;
             align-items: center;
         }
 
-        // two equal-width segments
+        // two equal-width segments: the segmented control draws its own chamfered frame
         &>.view-container {
             flex-shrink: 0;
-            width: 17rem;
-            padding: 0 var(--space-2);
+            width: 15rem;
+            display: flex;
         }
 
         // icon-only import button in its own square-ish block
@@ -47,14 +48,20 @@
             flex: 1;
             min-width: 0;
             position: relative;
-            gap: 8px;
-            // the reset button is square: only the bar's natural padding after it
-            padding-right: var(--space-2);
+            // no gap: the reset button sits right against the search box
+            gap: 0;
+            // room for the chamfer on the left
+            padding: 0 0 0 var(--space-3);
 
-            &>.line-divider {
-                border-left: 1px solid var(--accent-color);
-                height: 80%;
-                opacity: .5;
+            &>.filters-title {
+                flex-shrink: 0;
+                margin-right: var(--space-2);
+            }
+
+            // the search box takes what is left (look from the global input styles)
+            &>input[type="text"] {
+                flex: 1;
+                min-width: 0;
             }
         }
     }
@@ -64,55 +71,53 @@
         width: 100%;
         max-width: 1200px;
 
+        min-width: 0;
+        min-height: 0;
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        // minmax(0, ...): a long deck name must not widen the column and push the page sideways
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
         gap: var(--page-gap);
 
-        // no frame around the two columns: they are the containers; the empty state keeps one
+        // no frame around the two columns: each is a panel; the empty state is one panel
         &.empty-list {
-            border: 1px solid var(--accent-color);
-            background-color: var(--bg-container-color);
-            padding: 16px;
+            --cut: 14px;
+
+            padding: var(--space-3);
         }
 
+        // a column: a panel with a title row (title on the left, "new deck" on the right) over
+        // the scrolling list
         .deck-column {
-            border: 1px solid var(--accent-color);
-            background-color: var(--bg-container-color);
+            --cut: 14px;
+
             display: flex;
             flex-direction: column;
             height: 100%;
+            min-width: 0;
+            padding: 0;
+            // lets the list scroll instead of growing the page
+            min-height: 0;
 
             &>.column-header {
-                background-color: var(--bg-color);
-                border-bottom: 1px solid var(--accent-color);
-                font-weight: bold;
-                text-align: center;
-                text-transform: uppercase;
                 display: flex;
-                position: relative;
-
-                &>p {
-                    flex-grow: 1;
-                    padding: 8px;
-                }
-
-                &>app-ui-icon-button {
-                    position: absolute;
-                    right: 8px;
-                    top: 50%;
-                    transform: translateY(-50%);
-                }
+                align-items: center;
+                justify-content: space-between;
+                gap: var(--space-2);
+                // room for the chamfer on the left
+                padding: var(--space-1) var(--space-2) var(--space-1) var(--space-4);
+                border-bottom: 1px solid var(--border-muted);
+                min-height: calc(var(--control-height) + var(--space-1) * 2);
             }
 
             &>.decks-list {
                 flex-grow: 1;
+                min-height: 0;
                 overflow-y: auto;
                 display: flex;
                 flex-direction: column;
-                gap: 8px;
-                padding: 16px;
+                gap: var(--space-2);
+                padding: var(--space-3);
             }
-
         }
 
         &>.empty-message-container {
@@ -133,45 +138,6 @@
     }
 }
 
-.side-line {
-    width: 20px;
-    background-color: var(--accent-color);
-    height: 100%;
-    background: repeating-linear-gradient(to right,
-            var(--accent-color) 1px,
-            var(--accent-color) 1px,
-            transparent 4px,
-            transparent 4px)
-}
-
-.section-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: var(--fg-color);
-    text-transform: uppercase;
-    padding: 0 8px;
-
-}
-
-input[type="text"],
-input[type="number"] {
-    flex-grow: 1;
-    padding: 4px 8px;
-    border: 1px solid var(--accent-color);
-    border-radius: 4px;
-    background-color: var(--bg-color);
-    color: var(--fg-color);
-    height: 32px;
-
-    &::placeholder {
-        color: var(--text-secondary-color);
-    }
-}
-
-input[type="number"] {
-    max-width: 100px;
-}
-
 // the icon-only reset button of the filter bar (shape and hover come from .ghost-btn)
 .reset-btn {
     flex-shrink: 0;
@@ -183,30 +149,26 @@ input[type="number"] {
     align-items: center;
 }
 
+// A deck row: a raised, quiet panel; the outline lights up on hover.
 .deck-container {
-    border: 1px solid var(--fg-color);
-    border-left: 8px solid var(--fg-color);
-    padding: 8px;
+    --cut: 8px;
+
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    // a row never shrinks when the list is taller than the column
+    flex-shrink: 0;
     user-select: none;
 
     &>.deck-actions {
         display: flex;
-        gap: 8px;
-
-        &>.material-symbols-rounded {
-            cursor: pointer;
-        }
+        gap: var(--space-2);
     }
-    
+
     &:hover {
-        background-color: var(--bg-color);
-        border: 1px solid var(--accent-color);
-        border-left: 8px solid var(--accent-color);
-        transition: background-color 0.3s, border 0.3s;
-        // cursor: pointer;
+        --stroke: var(--accent-color);
     }
 
     .info-container {
@@ -221,18 +183,36 @@ input[type="number"] {
             opacity: 0.8;
         }
 
+        .deck-name {
+            margin: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-family: var(--font-display);
+            font-size: var(--font-size-md);
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        // deck size check: accent when valid, red when too small
         .validity-icon {
-            font-size: .8rem;
+            font-size: .9rem;
             vertical-align: middle;
+            color: var(--accent-color);
+
+            &.invalid {
+                color: var(--error-color);
+            }
         }
 
     }
 
     // identity over the deck's card back (the back sticks out on the right: room in the margin)
     app-deck-art {
-        height: 52px;
+        height: 44px;
         flex-shrink: 0;
-        margin-right: var(--space-4);
+        margin-right: var(--space-3);
     }
 }
 
@@ -244,8 +224,8 @@ input[type="number"] {
     display: flex;
     align-items: center;
     flex-wrap: nowrap;
-    height: 1.5rem;
-    margin-top: var(--space-1);
+    height: 1.3rem;
+    margin-top: 2px;
     overflow: hidden;
 }
 
@@ -301,9 +281,10 @@ input[type="number"] {
             height: auto;
             align-items: center;
             gap: var(--space-1);
+            --cut: 12px;
+
+            // the toolbar is one panel (hud-panel is on it only on mobile): its blocks lose theirs
             padding: var(--space-1) var(--space-2);
-            border: 1px solid var(--accent-color);
-            background-color: var(--bg-container-color);
 
             &>.view-container,
             &>.import-container {
@@ -311,12 +292,15 @@ input[type="number"] {
             }
 
             &>.filter-container {
-                border: 0;
                 background: none;
+                clip-path: none;
                 padding: 0;
 
-                &>.side-line,
-                &>.section-title {
+                &::before {
+                    display: none;
+                }
+
+                &>.filters-title {
                     display: none;
                 }
 
@@ -338,8 +322,6 @@ input[type="number"] {
             width: 100%;
             flex-shrink: 0;
             margin-bottom: var(--page-gap);
-            border: 1px solid var(--accent-color);
-            background-color: var(--bg-container-color);
         }
 
         &>.content-container {
@@ -355,7 +337,7 @@ input[type="number"] {
                 }
 
                 &>.decks-list {
-                    padding: var(--space-2);
+                    padding: var(--space-3);
                 }
             }
         }
@@ -369,8 +351,8 @@ input[type="number"] {
             margin-right: var(--space-3);
         }
 
-        .info-container>p {
-            font-size: var(--font-size-lg);
+        .info-container .deck-name {
+            font-size: var(--font-size-md);
         }
     }
 }
