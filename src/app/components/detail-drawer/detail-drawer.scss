@@ -17,8 +17,8 @@ $wide-breakpoint: 1360px;
     width: 320px;
     display: none;
     flex-direction: column;
-    background-color: var(--bg-container-color);
-    border-left: 1px solid var(--accent-color);
+    background-color: var(--panel-bg);
+    border-left: 1px solid color-mix(in srgb, var(--accent-color) 45%, transparent);
     box-shadow: -4px 0 8px rgba(0, 0, 0, .25);
 
     &.open {
@@ -30,7 +30,7 @@ $wide-breakpoint: 1360px;
         display: flex;
         justify-content: flex-end;
         padding: var(--space-1) var(--space-2);
-        border-bottom: 1px solid var(--accent-color);
+        border-bottom: 1px solid var(--border-muted);
     }
 
     &>.drawer-body {
@@ -41,6 +41,10 @@ $wide-breakpoint: 1360px;
         app-card-detail {
             flex: 1;
             height: auto;
+            // as a drawer over the list the aside already has the outline: no frame of its own
+            // (the wide column and the mobile sheet below turn it back on)
+            --cut: 0px;
+            --stroke: transparent;
         }
     }
 }
@@ -60,6 +64,11 @@ $wide-breakpoint: 1360px;
 
     .detail-drawer>.drawer-header {
         display: none;
+    }
+
+    .detail-drawer>.drawer-body app-card-detail {
+        --cut: 14px;
+        --stroke: color-mix(in srgb, var(--accent-color) 45%, transparent);
     }
 }
 
@@ -124,13 +133,17 @@ $wide-breakpoint: 1360px;
         &>.drawer-body {
             position: relative;
             margin-left: var(--space-5);
-            background-color: var(--bg-color);
             transform: translateX(100%);
             transition: transform var(--duration-base) var(--ease-out);
         }
 
         &.open>.drawer-body {
             transform: translateX(0);
+        }
+
+        &>.drawer-body app-card-detail {
+            --cut: 14px;
+            --stroke: color-mix(in srgb, var(--accent-color) 45%, transparent);
         }
     }
 }

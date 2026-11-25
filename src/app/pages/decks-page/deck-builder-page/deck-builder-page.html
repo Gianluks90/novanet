@@ -87,8 +87,7 @@
 
 <div class="deck-builder-page-main-container">
     <!-- One toolbar for the whole page: name, format and the deck's actions -->
-    <header class="page-toolbar">
-        <div class="side-line"></div>
+    <header class="page-toolbar hud-panel is-quiet">
         <div class="toolbar-content">
             <app-ui-icon-button class="back-btn" icon="arrow_back" [label]="'deckBuilderPage.backToDecks' | t" [link]="['/decks']"></app-ui-icon-button>
             @if (isOwner) {
@@ -142,8 +141,8 @@
         </div>
     </header>
         @if (isOwner && mode === 'visibility') {
-        <div class="visibility-panel">
-            <p class="section-label">{{ 'deckBuilderPage.deckVisibility' | t }}</p>
+        <div class="visibility-panel hud-panel is-quiet">
+            <p class="hud-eyebrow">{{ 'deckBuilderPage.deckVisibility' | t }}</p>
             <app-ui-segmented [options]="visibilityOptions" [value]="visibilityShown ?? deck?.visibility ?? 'private'"
                 (valueChange)="setVisibility($any($event))"></app-ui-segmented>
             <p class="p-note visibility-hint">{{ visibilityHint | t }}</p>
@@ -154,7 +153,7 @@
         @if (deck) {
         <div class="view-content">
             @if (deck.identity) {
-            <section class="deck-list-section">
+            <section class="deck-list-section hud-panel is-quiet">
                 @if (deck.originalAuthorName && deck.originalAuthorId !== firebase.$user()?.uid) {
                     <p class="p-note deck-author">{{ 'deckBuilderPage.originalAuthor' | t: [deck.originalAuthorName] }}</p>
                 }
@@ -191,7 +190,7 @@
                         [violations]="formatViolations" [describe]="violationLabel"></app-deck-format-status>
                 }
                 <div class="cards-container-title">
-                    <span>{{ 'deckBuilderPage.cards' | t }}</span>
+                    <span class="hud-eyebrow">{{ 'deckBuilderPage.cards' | t }}</span>
                     <div class="title-actions">
                         @if (locale !== 'en') {
                             <app-ui-icon-button icon="translate" size="sm" [active]="showTranslated"
@@ -230,8 +229,8 @@
             }
             @if (isOwner) {
                 <!-- mobile only: the format moved here from the toolbar -->
-                <section class="format-box" [formGroup]="form">
-                    <label class="section-label" for="format-select-mobile">{{ 'deckBuilderPage.format' | t }}</label>
+                <section class="format-box hud-panel is-quiet" [formGroup]="form">
+                    <label class="field-label" for="format-select-mobile">{{ 'deckBuilderPage.format' | t }}</label>
                     <select id="format-select-mobile" name="format" formControlName="format">
                         <option value="">{{ 'deckBuilderPage.selectFormat' | t }}</option>
                         @for (f of formatService.formats(); track f.id) {
@@ -252,7 +251,7 @@
     </section>
     @if (isOwner) {
     <!-- desktop: the right column; mobile: a sheet that slides up over the deck (add-cards button) -->
-    <section class="search-panel search-sheet" [class.open]="searchOpen">
+    <section class="search-panel search-sheet hud-panel is-quiet" [class.open]="searchOpen">
             <div class="search-bar" [formGroup]="cardForm">
                 <button type="button" class="ghost-btn sheet-close" (click)="closeSearch()"
                     [attr.aria-label]="'deckBuilderPage.backToDeck' | t" [title]="'deckBuilderPage.backToDeck' | t">
@@ -326,7 +325,7 @@
             </div>
     </section>
     } @else {
-    <section class="search-panel read-only-container">
+    <section class="search-panel read-only-container hud-panel is-quiet">
             @if (deck) {
                 <p>{{ 'deckBuilderPage.youReViewingSomeoneElse' | t }}</p>
                 <app-ui-button [text]="'deckBuilderPage.copyToMyAccount' | t" icon="content_copy" (click)="cloneDeck()"></app-ui-button>
@@ -343,7 +342,7 @@
     }
     </div>
     @if (isOwner && deck) {
-    <button type="button" class="add-cards-fab" (click)="openSearch()"
+    <button type="button" class="add-cards-fab hud-btn is-primary" (click)="openSearch()"
         [attr.aria-label]="'deckBuilderPage.searchCard' | t" [title]="'deckBuilderPage.searchCard' | t">
         <span class="material-symbols-rounded" aria-hidden="true">add</span>
     </button>

@@ -20,6 +20,10 @@ export class DeckMeters {
   public agendaPoints = input<number>(0);
 
   public minimumSize = computed(() => this.identity().minimum_deck_size ?? 0);
+  /** How full the size meter is, 0 to 100 (no minimum: full). */
+  public sizeShare = computed(() => this.share(this.totalCards(), this.minimumSize()));
+  /** How full the influence meter is, 0 to 100. */
+  public influenceShare = computed(() => this.share(this.totalInfluence(), this.influenceLimit() ?? 0));
   public missingCards = computed(() => Math.max(0, this.minimumSize() - this.totalCards()));
   /** The identity's influence limit (`null`: unlimited). */
   public influenceLimit = computed(() => this.identity().influence_limit ?? null);
@@ -36,4 +40,8 @@ export class DeckMeters {
     const { min, max } = this.agendaNeeded();
     return this.agendaPoints() >= min && this.agendaPoints() <= max;
   });
+
+  private share(value: number, limit: number): number {
+    return limit > 0 ? Math.min(100, Math.round((value / limit) * 100)) : 100;
+  }
 }

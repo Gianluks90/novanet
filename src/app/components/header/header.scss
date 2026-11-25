@@ -38,36 +38,65 @@
     flex-grow: 1;
 }
 
+// A tab of the main navigation: a block of the HUD kit, outlined with two corners chamfered (the
+// element is the stroke, ::before the fill). At rest the outline is quiet; on hover it lights up
+// and the block gets a faint accent; the current page is filled with the accent.
 .nav-link {
+    --cut: 8px;
+    --stroke: color-mix(in srgb, var(--accent-color) 45%, transparent);
+    --fill: var(--panel-bg-raised);
+
+    position: relative;
+    isolation: isolate;
     display: inline-flex;
     align-items: center;
     gap: var(--space-2);
-    // same shape and hover as the other header buttons (see styles/_ghost-btn.scss)
     height: var(--control-height);
-    padding: 0 var(--space-3);
-    border-radius: var(--radius-sm);
+    padding: 0 var(--space-4);
+    border: 0;
+    border-radius: 0;
+    background-color: var(--stroke);
     color: var(--accent-color);
+    font-family: var(--font-display);
     font-size: var(--font-size-body);
+    font-weight: var(--font-weight-bold);
     text-decoration: none;
     text-transform: uppercase;
-    letter-spacing: var(--letter-spacing-caps);
-    transition: background-color var(--duration-base);
+    letter-spacing: 0.12em;
+    @include hud.shape(var(--cut), var(--cut));
+
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 1px;
+        z-index: -1;
+        background: var(--fill);
+        transition: background-color var(--duration-fast);
+        @include hud.shape(calc(var(--cut) - 0.586px), calc(var(--cut) - 0.586px));
+    }
 
     .material-symbols-rounded {
         font-size: 1.25rem;
     }
 
     &:hover:not(.disabled) {
-        background-color: var(--surface-hover);
+        --stroke: var(--accent-color);
+        --fill: color-mix(in srgb, var(--accent-color) 18%, var(--panel-bg-raised));
     }
 
-    // current page: kept highlighted as if hovered
-    &.active {
-        background-color: var(--surface-hover);
+    // current page
+    &.active,
+    &.active:hover:not(.disabled) {
+        --stroke: var(--accent-color);
+        --fill: var(--accent-color);
+        color: var(--on-accent);
     }
 
+    // not available yet (Play): a solid, muted block
     &.disabled {
-        opacity: .6;
+        --stroke: color-mix(in srgb, var(--fg-color) 28%, var(--bg-container-color));
+
+        color: var(--fg-color-muted);
         cursor: var(--cursor-disabled, not-allowed);
     }
 }
@@ -78,21 +107,50 @@
     gap: var(--space-3);
 }
 
+// The avatar: a small chamfered frame (same shape as the tabs) around the picture or the icon.
 .avatar-btn {
-    padding: 0;
-    border-radius: 50%;
-    overflow: hidden;
+    --cut: 8px;
+    --stroke: var(--accent-color);
+
+    position: relative;
+    isolation: isolate;
+    width: var(--control-height);
+    height: var(--control-height);
+    min-width: 0;
+    padding: 1px;
+    // the ghost button's own hover background would replace the outline's color
+    background-color: var(--stroke);
+    @include hud.shape(var(--cut), var(--cut));
+
+    &:hover {
+        background-color: var(--stroke);
+    }
+
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 1px;
+        z-index: -1;
+        background: var(--panel-bg-raised);
+        transition: background-color var(--duration-fast);
+        @include hud.shape(calc(var(--cut) - 0.586px), calc(var(--cut) - 0.586px));
+    }
+
+    &:hover::before {
+        background: color-mix(in srgb, var(--accent-color) 18%, var(--panel-bg-raised));
+    }
+
+    .material-symbols-rounded {
+        font-size: calc(var(--control-height) - 8px);
+    }
 }
 
-.avatar-btn .material-symbols-rounded {
-    font-size: calc(var(--control-height) - 4px);
-}
-
+// the picture follows the inner chamfer, so it doesn't cover the outline's diagonal
 .avatar {
-    width: calc(var(--control-height) - 4px);
-    height: calc(var(--control-height) - 4px);
-    border-radius: 50%;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
+    @include hud.shape(calc(var(--cut) - 0.586px), calc(var(--cut) - 0.586px));
 }
 
 // Mobile layout: the logo and the actions stay on top, the main navigation becomes a bottom tab
@@ -123,59 +181,25 @@
         pointer-events: none; // only the blocks catch touches
     }
 
-    // Each tab is a block of the HUD kit: outlined, two corners chamfered, filled with the accent
-    // while it is the current page (the fill is the ::before, the stroke the element itself).
+    // Each tab is the same block as on desktop (see .nav-link), here a bit bigger, filling its
+    // share of the bar, with only an icon.
     .nav-link {
         --cut: 10px;
         --stroke: var(--accent-color);
-        --fill: var(--panel-bg-raised);
 
-        position: relative;
-        isolation: isolate;
         flex: 1;
         justify-content: center;
         height: 100%;
         padding: 0;
-        border: 0;
-        border-radius: 0;
-        background-color: var(--stroke);
-        color: var(--accent-color);
         pointer-events: auto;
-        @include hud.shape(var(--cut), var(--cut));
-
-        &::before {
-            content: '';
-            position: absolute;
-            inset: 1px;
-            z-index: -1;
-            background: var(--fill);
-            @include hud.shape(calc(var(--cut) - 0.586px), calc(var(--cut) - 0.586px));
-        }
 
         .material-symbols-rounded {
             font-size: 2.25rem;
         }
 
-        // the header's own hover/active backgrounds (14% accent) must not show through
-        &:hover:not(.disabled),
-        &.active,
-        &.active:hover:not(.disabled) {
-            background-color: var(--stroke);
-        }
-
-        &.active,
-        &.active:hover:not(.disabled) {
-            --fill: var(--accent-color);
-            color: var(--on-accent);
-        }
-
-        // not available yet (Play): a solid, muted block, not a see-through one
+        // not available yet (Play): the muted block of desktop, at the size of the tabs
         &.disabled {
             --stroke: color-mix(in srgb, var(--fg-color) 28%, var(--bg-container-color));
-            --fill: var(--panel-bg-raised);
-
-            opacity: 1;
-            color: var(--fg-color-muted);
         }
 
         .nav-label {

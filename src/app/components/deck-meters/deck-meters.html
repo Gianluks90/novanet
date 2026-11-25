@@ -3,7 +3,7 @@
         <span>{{ 'deckBuilderPage.deckSizeMinimumDeckSize' | t }}</span>
         <span>{{ totalCards() }} / {{ identity().minimum_deck_size }}</span>
     </div>
-    <progress [class.warn]="missingCards() > 0" [value]="totalCards()" [max]="identity().minimum_deck_size" min="0"></progress>
+    <div class="hud-meter" [class.is-warn]="missingCards() > 0" [style.--v]="sizeShare() + '%'" aria-hidden="true"></div>
     @if (missingCards() > 0) {
         <span class="meter-hint warn">{{ 'deckBuilderPage.missingCards' | t: [missingCards()] }}</span>
     }
@@ -14,7 +14,7 @@
         <span>{{ totalInfluence() }} / {{ identity().influence_limit ?? '∞' }}</span>
     </div>
     @if (influenceLimit() !== null) {
-        <progress [class.error]="influenceOver() > 0" [value]="totalInfluence()" [max]="influenceLimit()" min="0"></progress>
+        <div class="hud-meter" [class.is-error]="influenceOver() > 0" [style.--v]="influenceShare() + '%'" aria-hidden="true"></div>
     }
     @if (influenceOver() > 0) {
         <span class="meter-hint error">{{ 'deckBuilderPage.influenceOver' | t: [influenceOver()] }}</span>

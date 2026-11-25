@@ -11,10 +11,24 @@
     gap: var(--space-1);
     margin-bottom: var(--space-2);
 
+    // small muted capitals for the name, the display font for the number
     .meter-labels {
         display: flex;
         justify-content: space-between;
-        font-size: 0.9em;
+        align-items: baseline;
+        gap: var(--space-2);
+        font-family: var(--font-display);
+        font-size: var(--font-size-label);
+        font-weight: var(--font-weight-bold);
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--fg-color-muted);
+
+        &>span:last-child {
+            font-size: var(--font-size-secondary);
+            letter-spacing: 0.04em;
+            color: var(--fg-color);
+        }
     }
 
     .meter-hint {
