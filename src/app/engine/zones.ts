@@ -22,6 +22,8 @@ export const Z = {
   heap: 'runner.heap',
   runnerScore: 'runner.score',
   rig: 'runner.rig',
+  /** Events/operations while they resolve. */
+  play: 'play',
   runnerIdentity: 'runner.identity',
   ice: (server: ServerId) => `ice:${server}`,
   root: (server: ServerId) => `root:${server}`,

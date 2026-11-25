@@ -93,6 +93,8 @@ export interface EncounterState {
   ice: ObjectId;
   /** Per subroutine (in order): broken during this encounter. */
   broken: boolean[];
+  /** The unbroken subroutines are being resolved (or have been). */
+  resolving: boolean;
 }
 
 export interface RunState {
@@ -127,7 +129,8 @@ export type PendingKind =
   | 'trash'
   | 'memory'
   | 'rez'
-  | 'encounter';
+  | 'encounter'
+  | 'choice';
 
 export interface Pending {
   player: Side;
@@ -139,6 +142,35 @@ export interface TurnState {
   number: number;
   active: Side;
   phase: 'draw' | 'action' | 'discard';
+}
+
+/** An effect being resolved: its position and the answers given so far (all JSON). */
+export interface Resolving {
+  kind: 'play' | 'score' | 'steal' | 'subroutine';
+  cardId: string;
+  source: ObjectId;
+  /** Controller of the ability (the card's owner). */
+  player: Side;
+  /** Subroutine index for kind 'subroutine'. */
+  key: string;
+  step: number;
+  vars: Record<string, string | number | boolean | null>;
+}
+
+export interface ChoiceSpec {
+  player: Side;
+  name: string;
+  options: { value: number | string; label?: string }[];
+}
+
+/** Things that happened this turn, for "this turn" / "last turn" conditions. */
+export interface TurnStats {
+  successfulRun: boolean;
+  /** Printed agenda points of the agendas the Corp scored this turn. */
+  scoredPoints: number;
+  cannotScore: boolean;
+  /** Objects installed this turn. */
+  installed: ObjectId[];
 }
 
 export type WinReason = 'agenda' | 'flatline' | 'decked' | 'draw';
@@ -156,6 +188,11 @@ export interface GameState {
   turn: TurnState;
   run: RunState | null;
   breach: BreachState | null;
+  /** Effects waiting to resolve or paused for a choice (head first). */
+  effects: Resolving[];
+  choice: ChoiceSpec | null;
+  turnStats: TurnStats;
+  prevTurnStats: TurnStats;
   pending: Pending | null;
   winner: Side | 'draw' | null;
   winReason: WinReason | null;
@@ -194,7 +231,9 @@ export type Command =
   | { type: 'rez'; player: 'corp'; objectId: ObjectId }
   | { type: 'pass'; player: 'corp' }
   // encounter: an icebreaker's ability (index into its definition's abilities)
-  | { type: 'break'; player: 'runner'; objectId: ObjectId; ability: number; subroutine?: number }
+  | { type: 'break'; player: 'runner'; objectId: ObjectId; ability: number; subroutines?: number[] }
+  // an answer to a choice an effect is waiting for
+  | { type: 'choose'; player: Side; value: number | string }
   | { type: 'boost'; player: 'runner'; objectId: ObjectId; ability: number };
 
 export type CommandType = Command['type'];

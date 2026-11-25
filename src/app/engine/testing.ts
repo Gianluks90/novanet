@@ -3,6 +3,7 @@
  * finds a legal command by (type, card) and applies it.
  */
 import { defineCard, endTheRun, netDamage } from './definitions';
+import { SYSTEM_GATEWAY_CATALOG } from './cards';
 import { advance, apply, emptyState, legalCommands } from './engine';
 import { CardData, Catalog, Command, GameState, ObjectId, ServerId, Side } from './types';
 import {
@@ -52,7 +53,10 @@ defineCard('fracter', {
 });
 defineCard('ai-all', { abilities: [{ kind: 'break', breaks: 'any', subs: 'all', cost: 2 }] });
 
-export const TEST_CATALOG: Catalog = Object.fromEntries(cards.map((c) => [c.cardId, c]));
+export const TEST_CATALOG: Catalog = {
+  ...Object.fromEntries(cards.map((c) => [c.cardId, c])),
+  ...SYSTEM_GATEWAY_CATALOG,
+};
 
 export interface PlacedCard {
   cardId: string;
@@ -83,6 +87,8 @@ export interface SideSetup {
 
 export interface Setup {
   active?: Side;
+  corpIdentity?: string;
+  runnerIdentity?: string;
   seed?: number;
   corp?: SideSetup & { servers?: Record<ServerId, ServerSetup> };
   runner?: SideSetup & { rig?: string[] };
@@ -92,8 +98,10 @@ export interface Setup {
 export function scenario(setup: Setup = {}): GameState {
   const s = emptyState(setup.seed ?? 7);
   s.turn = { number: 1, active: setup.active ?? 'corp', phase: 'action' };
-  createObject(s, 'corp-id', 'corp', Z.corpIdentity, { faceUp: true });
-  createObject(s, 'runner-id', 'runner', Z.runnerIdentity, { faceUp: true });
+  createObject(s, setup.corpIdentity ?? 'corp-id', 'corp', Z.corpIdentity, { faceUp: true });
+  createObject(s, setup.runnerIdentity ?? 'runner-id', 'runner', Z.runnerIdentity, {
+    faceUp: true,
+  });
 
   for (const side of ['corp', 'runner'] as const) {
     const cfg: SideSetup = setup[side] ?? {};
@@ -143,7 +151,7 @@ export function findCommand(s: GameState, want: Partial_): Command | undefined {
       const id = rec['objectId'] as ObjectId | undefined;
       if (id === undefined || obj(s, id).cardId !== card) return false;
     }
-    return Object.entries(rest).every(([k, v]) => rec[k] === v);
+    return Object.entries(rest).every(([k, v]) => JSON.stringify(rec[k]) === JSON.stringify(v));
   });
 }
 
@@ -161,4 +169,30 @@ export function play(s: GameState, type: Command['type'], extra: Record<string, 
 
 export function cardsIn(s: GameState, zoneKey: string): string[] {
   return zone(s, zoneKey).map((id) => obj(s, id).cardId);
+}
+
+/** Copies a state, lets `fn` change it and re-advances (for test setup that has no command). */
+export function withState(s: GameState, fn: (draft: GameState) => void): GameState {
+  const d = structuredClone(s);
+  fn(d);
+  advance(d, TEST_CATALOG, []);
+  return d;
+}
+
+/** Answers the pending choice with `value` (or the first option). */
+export function choose(s: GameState, value?: number | string): GameState {
+  const options = legalCommands(s, TEST_CATALOG).filter((c) => c.type === 'choose');
+  if (options.length === 0) throw new Error(`No choice pending: ${JSON.stringify(s.pending)}`);
+  const cmd = value === undefined ? options[0] : options.find((c) => (c as { value: unknown }).value === value);
+  if (!cmd) throw new Error(`Option ${value} not offered: ${JSON.stringify(options)}`);
+  const r = apply(s, cmd, TEST_CATALOG);
+  if (!r.ok) throw new Error(r.error);
+  return r.state;
+}
+
+/** Object id of the first card with this card id in a zone. */
+export function idOf(s: GameState, zoneKey: string, cardId: string): ObjectId {
+  const id = zone(s, zoneKey).find((x) => obj(s, x).cardId === cardId);
+  if (id === undefined) throw new Error(`${cardId} not in ${zoneKey}`);
+  return id;
 }

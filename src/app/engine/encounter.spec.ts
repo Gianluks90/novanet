@@ -110,7 +110,7 @@ describe('breaking subroutines', () => {
     s = play(s, 'boost', { card: 'fracter' });
     expect(s.players.runner.credits).toBe(4);
     expect(strengthOf(s, CAT, zone(s, Z.rig)[0])).toBe(2);
-    expect(findCommand(s, { type: 'break', subroutine: 0 })).toBeDefined();
+    expect(findCommand(s, { type: 'break', subroutines: [0] })).toBeDefined();
     // no further boost is offered once the strength is enough
     expect(findCommand(s, { type: 'boost' })).toBeUndefined();
   });
@@ -119,7 +119,7 @@ describe('breaking subroutines', () => {
     let s = runOn(['barrier-2']);
     s = play(s, 'rez', { card: 'barrier-2' });
     s = play(s, 'boost', { card: 'fracter' });
-    s = play(s, 'break', { card: 'fracter', subroutine: 0 });
+    s = play(s, 'break', { card: 'fracter', subroutines: [0] });
     expect(s.players.runner.credits).toBe(3);
     s = play(s, 'continue');
     expect(zone(s, Z.grip)).toHaveLength(2); // 1 net damage
@@ -130,8 +130,8 @@ describe('breaking subroutines', () => {
     let s = runOn(['barrier-2']);
     s = play(s, 'rez', { card: 'barrier-2' });
     s = play(s, 'boost', { card: 'fracter' });
-    s = play(s, 'break', { card: 'fracter', subroutine: 0 });
-    s = play(s, 'break', { card: 'fracter', subroutine: 1 });
+    s = play(s, 'break', { card: 'fracter', subroutines: [0] });
+    s = play(s, 'break', { card: 'fracter', subroutines: [1] });
     expect(s.pending).toEqual({ player: 'runner', kind: 'movement' });
     expect(zone(s, Z.grip)).toHaveLength(3);
     s = play(s, 'continue');
@@ -142,8 +142,8 @@ describe('breaking subroutines', () => {
     let s = runOn(['barrier-2', 'ice-blank']);
     s = play(s, 'rez', { card: 'barrier-2' });
     s = play(s, 'boost', { card: 'fracter' });
-    s = play(s, 'break', { card: 'fracter', subroutine: 0 });
-    s = play(s, 'break', { card: 'fracter', subroutine: 1 });
+    s = play(s, 'break', { card: 'fracter', subroutines: [0] });
+    s = play(s, 'break', { card: 'fracter', subroutines: [1] });
     expect(strengthOf(s, CAT, zone(s, Z.rig)[0])).toBe(1);
   });
 
@@ -174,7 +174,7 @@ describe('breaking subroutines', () => {
     let s = runOn(['barrier-2'], { runner: { credits: 0 }, corp: { badPublicity: 2 } });
     s = play(s, 'rez', { card: 'barrier-2' });
     s = play(s, 'boost', { card: 'fracter' });
-    s = play(s, 'break', { card: 'fracter', subroutine: 0 });
+    s = play(s, 'break', { card: 'fracter', subroutines: [0] });
     expect(s.players.runner.fund).toBe(0);
   });
 });
@@ -184,7 +184,7 @@ describe('subroutine damage and runs through several ice', () => {
     let s = runOn(['barrier-2'], { runner: { hand: [] } });
     s = play(s, 'rez', { card: 'barrier-2' });
     s = play(s, 'boost', { card: 'fracter' });
-    s = play(s, 'break', { card: 'fracter', subroutine: 0 });
+    s = play(s, 'break', { card: 'fracter', subroutines: [0] });
     s = play(s, 'continue');
     expect(s).toMatchObject({ status: 'ended', winner: 'corp', winReason: 'flatline' });
   });

@@ -16,11 +16,20 @@ import {
   GameState,
   ObjectId,
   PlayerState,
+  Resolving,
   ServerId,
+  TurnStats,
   Side,
   other,
 } from './types';
-import { EffectContext, IcebreakerAbility, getDefinition } from './definitions';
+import {
+  BreakAbility,
+  ChoiceOption,
+  EffectContext,
+  IcebreakerAbility,
+  Instruction,
+  getDefinition,
+} from './definitions';
 import {
   Z,
   createObject,
@@ -71,6 +80,13 @@ const newPlayer = (): PlayerState => ({
   mulliganDone: false,
 });
 
+const newTurnStats = (): TurnStats => ({
+  successfulRun: false,
+  scoredPoints: 0,
+  cannotScore: false,
+  installed: [],
+});
+
 /** An empty game state (no cards), the base of `createGame` and of test scenarios. */
 export function emptyState(seed = 1): GameState {
   return {
@@ -84,6 +100,10 @@ export function emptyState(seed = 1): GameState {
     turn: { number: 0, active: 'corp', phase: 'action' },
     run: null,
     breach: null,
+    effects: [],
+    choice: null,
+    turnStats: newTurnStats(),
+    prevTurnStats: newTurnStats(),
     pending: null,
     winner: null,
     winReason: null,
@@ -92,8 +112,23 @@ export function emptyState(seed = 1): GameState {
 
 // ---- Derived values -------------------------------------------------------------------------
 
+/** Objects whose static abilities apply to `side` (identity, score area, rig, rezzed cards). */
+function activeObjects(s: GameState, side: Side): ObjectId[] {
+  const ids = [...zone(s, identityZone(side)), ...zone(s, scoreZone(side))];
+  if (side === 'runner') ids.push(...zone(s, Z.rig));
+  else ids.push(...installedCorpCards(s).filter((id) => obj(s, id).faceUp));
+  return ids;
+}
+
+function staticSum(s: GameState, side: Side, key: 'handSize' | 'memory'): number {
+  return activeObjects(s, side).reduce(
+    (n, id) => n + (getDefinition(obj(s, id).cardId).static?.[key] ?? 0),
+    0,
+  );
+}
+
 export const handLimit = (s: GameState, side: Side) =>
-  BASE_HAND_SIZE + s.players[side].handSizeMod;
+  BASE_HAND_SIZE + s.players[side].handSizeMod + staticSum(s, side, 'handSize');
 
 export function agendaPoints(s: GameState, cat: Catalog, side: Side): number {
   return zone(s, scoreZone(side)).reduce((n, id) => n + (data(s, cat, id).agendaPoints ?? 0), 0);
@@ -109,7 +144,7 @@ export function memoryUsed(s: GameState, cat: Catalog): number {
 export function memoryLimit(s: GameState, cat: Catalog): number {
   const idId = zone(s, Z.runnerIdentity)[0];
   const base = idId === undefined ? BASE_MEMORY : (data(s, cat, idId).memoryLimit ?? BASE_MEMORY);
-  return base + s.players.runner.memoryMod;
+  return base + s.players.runner.memoryMod + staticSum(s, 'runner', 'memory');
 }
 
 /** Credits a player can spend now (the runner also has the bad publicity fund during a run). */
@@ -134,6 +169,28 @@ function iceCount(s: GameState, server: ServerId): number {
 export function strengthOf(s: GameState, cat: Catalog, id: ObjectId): number {
   const base = data(s, cat, id).strength ?? 0;
   return obj(s, id).strengthMods.reduce((n, m) => n + m.amount, base);
+}
+
+/** Install cost for the Runner, with the card's own modifier. */
+export function runnerInstallCost(s: GameState, cat: Catalog, id: ObjectId): number {
+  const d = data(s, cat, id);
+  const mod = getDefinition(d.cardId).installCostMod?.(s, cat) ?? 0;
+  return Math.max(0, (d.cost ?? 0) + mod);
+}
+
+const abilityCost = (s: GameState, ab: BreakAbility) =>
+  typeof ab.cost === 'function' ? ab.cost(s) : ab.cost;
+
+/** Non-empty subsets of `items` with at most `max` elements, in order. */
+function subsets(items: number[], max: number): number[][] {
+  const out: number[][] = [];
+  const walk = (start: number, cur: number[]) => {
+    if (cur.length > 0) out.push([...cur]);
+    if (cur.length === max) return;
+    for (let i = start; i < items.length; i++) walk(i + 1, [...cur, items[i]]);
+  };
+  walk(0, []);
+  return out;
 }
 
 const rezCost = (s: GameState, cat: Catalog, id: ObjectId) => data(s, cat, id).cost ?? 0;
@@ -179,17 +236,17 @@ function encounterCommands(s: GameState, cat: Catalog): Command[] {
     const strength = strengthOf(s, cat, breaker);
     const canBreakThis = abilities.some((a) => breaksIce(cat, a, s, enc.ice));
     abilities.forEach((ab, ability) => {
-      if (ab.cost > credits) return;
       if (ab.kind === 'break') {
+        if (abilityCost(s, ab) > credits) return;
         if (!breaksIce(cat, ab, s, enc.ice) || strength < iceStrength) return;
         if (ab.subs === 'all') {
           out.push({ type: 'break', player: 'runner', objectId: breaker, ability });
         } else {
-          for (const subroutine of unbroken) {
-            out.push({ type: 'break', player: 'runner', objectId: breaker, ability, subroutine });
+          for (const subroutines of subsets(unbroken, ab.subs)) {
+            out.push({ type: 'break', player: 'runner', objectId: breaker, ability, subroutines });
           }
         }
-      } else if (canBreakThis && strength < iceStrength) {
+      } else if (ab.cost <= credits && canBreakThis && strength < iceStrength) {
         // Only boosts that are still needed to interface with this ice.
         out.push({ type: 'boost', player: 'runner', objectId: breaker, ability });
       }
@@ -205,10 +262,10 @@ function sameCommand(a: Command, b: Command): boolean {
   const eb = Object.entries(b).filter(([, v]) => v !== undefined);
   if (ea.length !== eb.length) return false;
   const rec = b as unknown as Record<string, unknown>;
-  return ea.every(([k, v]) => rec[k] === v);
+  return ea.every(([k, v]) => JSON.stringify(rec[k]) === JSON.stringify(v));
 }
 
-function installedCorpCards(s: GameState): ObjectId[] {
+export function installedCorpCards(s: GameState): ObjectId[] {
   return Object.keys(s.zones)
     .filter((k) => k.startsWith('root:') || k.startsWith('ice:'))
     .flatMap((k) => zone(s, k));
@@ -229,7 +286,11 @@ function actionCommands(s: GameState, cat: Catalog): Command[] {
     for (const id of hand) {
       const d = data(s, cat, id);
       if (player === 'corp') {
-        if (d.type === 'operation' && (d.cost ?? 0) <= credits) {
+        if (
+          d.type === 'operation' &&
+          (d.cost ?? 0) <= credits &&
+          (getDefinition(d.cardId).canPlay?.(s, cat, player) ?? true)
+        ) {
           out.push({ type: 'play', player, objectId: id });
         }
         if (d.type === 'agenda' || d.type === 'asset') {
@@ -251,12 +312,16 @@ function actionCommands(s: GameState, cat: Catalog): Command[] {
           out.push({ type: 'install', player, objectId: id, server: 'new' });
         }
       } else {
-        if (d.type === 'event' && (d.cost ?? 0) <= credits) {
+        if (
+          d.type === 'event' &&
+          (d.cost ?? 0) <= credits &&
+          (getDefinition(d.cardId).canPlay?.(s, cat, player) ?? true)
+        ) {
           out.push({ type: 'play', player, objectId: id });
         }
         if (
           (d.type === 'program' || d.type === 'hardware' || d.type === 'resource') &&
-          (d.cost ?? 0) <= credits
+          runnerInstallCost(s, cat, id) <= credits
         ) {
           out.push({ type: 'install', player, objectId: id });
         }
@@ -289,7 +354,7 @@ function actionCommands(s: GameState, cat: Catalog): Command[] {
   }
 
   // Scoring does not cost a click: it can happen whenever the Corp has priority in its turn.
-  if (player === 'corp') {
+  if (player === 'corp' && !s.turnStats.cannotScore) {
     for (const sv of servers(s).filter((x) => !isCentral(x))) {
       for (const id of zone(s, Z.root(sv))) {
         const d = data(s, cat, id);
@@ -363,6 +428,10 @@ export function legalCommands(s: GameState, cat: Catalog): Command[] {
       ];
     case 'encounter':
       return encounterCommands(s, cat);
+    case 'choice':
+      return (s.choice?.options ?? []).map(
+        (o) => ({ type: 'choose', player, value: o.value }) as Command,
+      );
     case 'memory':
       return zone(s, Z.rig)
         .filter((id) => data(s, cat, id).type === 'program')
@@ -428,8 +497,14 @@ export function draw(s: GameState, side: Side, n: number, events: GameEvent[]): 
 export type DamageKind = 'meat' | 'net' | 'core';
 
 /** Damage to the Runner (CR 10.4): random cards from the grip; more than the grip = flatline. */
-export function dealDamage(s: GameState, kind: DamageKind, amount: number, events: GameEvent[]) {
-  if (amount <= 0) return;
+export function dealDamage(
+  s: GameState,
+  kind: DamageKind,
+  amount: number,
+  events: GameEvent[],
+): string[] {
+  const trashed: string[] = [];
+  if (amount <= 0) return trashed;
   const gripSize = zone(s, Z.grip).length;
   const n = Math.min(amount, gripSize);
   for (let i = 0; i < n; i++) {
@@ -437,10 +512,12 @@ export function dealDamage(s: GameState, kind: DamageKind, amount: number, event
     const id = g[randomInt(s, g.length)];
     const cardId = obj(s, id).cardId;
     discardObject(s, id);
+    trashed.push(cardId);
     events.push({ type: 'damage', player: 'runner', cardId, detail: kind });
   }
   if (kind === 'core') s.players.runner.handSizeMod -= amount;
   if (amount > gripSize) declareWin(s, 'corp', 'flatline');
+  return trashed;
 }
 
 function execute(s: GameState, cat: Catalog, c: Command, events: GameEvent[]): void {
@@ -472,10 +549,9 @@ function execute(s: GameState, cat: Catalog, c: Command, events: GameEvent[]): v
       spendClicks(s, c.player, 1);
       const d = data(s, cat, c.objectId);
       pay(s, c.player, d.cost ?? 0);
-      const cardId = obj(s, c.objectId).cardId;
-      // No card abilities yet: the card resolves with no effect and is trashed.
-      discardObject(s, c.objectId, true);
-      events.push({ type: 'play', player: c.player, cardId });
+      const id = moveObject(s, c.objectId, Z.play, { faceUp: true });
+      events.push({ type: 'play', player: c.player, objectId: id, cardId: d.cardId });
+      queueEffect(s, 'play', id);
       return;
     }
     case 'advance':
@@ -486,9 +562,11 @@ function execute(s: GameState, cat: Catalog, c: Command, events: GameEvent[]): v
       return;
     case 'score': {
       const o = obj(s, c.objectId);
-      const cardId = o.cardId;
+      const d = data(s, cat, c.objectId);
       const id = moveObject(s, c.objectId, scoreZone('corp'), { faceUp: true });
-      events.push({ type: 'score', player: 'corp', objectId: id, cardId });
+      s.turnStats.scoredPoints += d.agendaPoints ?? 0;
+      events.push({ type: 'score', player: 'corp', objectId: id, cardId: o.cardId });
+      queueEffect(s, 'score', id);
       return;
     }
     case 'trashResource':
@@ -533,7 +611,7 @@ function execute(s: GameState, cat: Catalog, c: Command, events: GameEvent[]): v
       return;
     }
     case 'continue':
-      if (s.pending?.kind === 'encounter') return finishEncounter(s, cat, events);
+      if (s.pending?.kind === 'encounter') return finishEncounter(s);
       return moveInward(s);
     case 'rez':
       pay(s, 'corp', rezCost(s, cat, c.objectId));
@@ -553,15 +631,21 @@ function execute(s: GameState, cat: Catalog, c: Command, events: GameEvent[]): v
       if (!enc) return;
       const ab = (getDefinition(obj(s, c.objectId).cardId).abilities ?? [])[c.ability];
       if (!ab || ab.kind !== 'break') return;
-      pay(s, 'runner', ab.cost);
-      if (c.subroutine === undefined) enc.broken = enc.broken.map(() => true);
-      else enc.broken[c.subroutine] = true;
+      pay(s, 'runner', abilityCost(s, ab));
+      if (c.subroutines === undefined) enc.broken = enc.broken.map(() => true);
+      else for (const i of c.subroutines) enc.broken[i] = true;
       events.push({
         type: 'break',
         player: 'runner',
         objectId: c.objectId,
-        detail: String(c.subroutine ?? 'all'),
+        detail: (c.subroutines ?? ['all']).join(','),
       });
+      return;
+    }
+    case 'choose': {
+      const eff = s.effects[0];
+      if (eff && s.choice) eff.vars[s.choice.name] = c.value;
+      s.choice = null;
       return;
     }
     case 'boost': {
@@ -611,8 +695,9 @@ function install(
   spendClicks(s, c.player, 1);
 
   if (c.player === 'runner') {
-    pay(s, 'runner', d.cost ?? 0);
+    pay(s, 'runner', runnerInstallCost(s, cat, c.objectId));
     const id = moveObject(s, c.objectId, Z.rig, { faceUp: true });
+    s.turnStats.installed.push(id);
     events.push({ type: 'install', player: 'runner', objectId: id, cardId: d.cardId });
     return;
   }
@@ -624,6 +709,7 @@ function install(
     // Install cost: 1 credit per ice already protecting the server (CR 8.5.x).
     pay(s, 'corp', iceCount(s, server));
     const id = moveObject(s, c.objectId, Z.ice(server), { faceUp: false, position: 'top' });
+    s.turnStats.installed.push(id);
     events.push({ type: 'install', player: 'corp', objectId: id, cardId: d.cardId, server });
     return;
   }
@@ -639,6 +725,7 @@ function install(
     }
   }
   const id = moveObject(s, c.objectId, Z.root(server), { faceUp: false, position: 'top' });
+  s.turnStats.installed.push(id);
   events.push({ type: 'install', player: 'corp', objectId: id, cardId: d.cardId, server });
 }
 
@@ -659,37 +746,175 @@ function moveInward(s: GameState): void {
   setPhase(run, run.position < iceCount(s, run.server) ? 'approach' : 'server');
 }
 
-function makeContext(s: GameState, events: GameEvent[], source: ObjectId): EffectContext {
+function queueEffect(s: GameState, kind: Resolving['kind'], source: ObjectId, key = ''): void {
+  const o = obj(s, source);
+  const def = getDefinition(o.cardId);
+  const steps =
+    kind === 'play'
+      ? def.onPlay
+      : kind === 'score'
+        ? def.onScore
+        : kind === 'steal'
+          ? def.onSteal
+          : def.subroutines?.[Number(key)]?.steps;
+  // Plays always queue (the card must be trashed afterwards), the rest only with something to do.
+  if (kind !== 'play' && (!steps || steps.length === 0)) return;
+  s.effects.push({ kind, cardId: o.cardId, source, player: o.owner, key, step: 0, vars: {} });
+}
+
+function stepsOf(eff: Resolving): Instruction[] {
+  const def = getDefinition(eff.cardId);
+  switch (eff.kind) {
+    case 'play':
+      return def.onPlay ?? [];
+    case 'score':
+      return def.onScore ?? [];
+    case 'steal':
+      return def.onSteal ?? [];
+    case 'subroutine':
+      return def.subroutines?.[Number(eff.key)]?.steps ?? [];
+  }
+}
+
+/** The API an instruction sees. `paused` receives the choice it is waiting for, if any. */
+function makeContext(
+  s: GameState,
+  cat: Catalog,
+  events: GameEvent[],
+  eff: Resolving,
+  paused: { choice: GameState['choice'] },
+): EffectContext {
   return {
     state: s,
+    cat,
     events,
-    source,
+    source: eff.source,
+    player: eff.player,
+    vars: eff.vars,
+    choose(name: string, who: Side, options: ChoiceOption[]) {
+      if (name in eff.vars) return eff.vars[name] as number | string | null;
+      if (options.length === 0) {
+        eff.vars[name] = null;
+        return null;
+      }
+      if (options.length === 1) {
+        eff.vars[name] = options[0].value;
+        return options[0].value;
+      }
+      paused.choice = { player: who, name, options };
+      return undefined;
+    },
     endTheRun: () => {
-      events.push({ type: 'endTheRun', player: 'corp', objectId: source });
+      events.push({ type: 'endTheRun', player: 'corp', objectId: eff.source });
+      endRun(s, events);
+    },
+    jackOut: () => {
+      events.push({ type: 'jackOut', player: 'runner' });
       endRun(s, events);
     },
     gainCredits: (side, amount) => {
       s.players[side].credits += amount;
       events.push({ type: 'gainCredits', player: side, amount });
     },
+    loseCredits: (side, amount) => {
+      const lost = Math.min(amount, s.players[side].credits);
+      s.players[side].credits -= lost;
+      events.push({ type: 'loseCredits', player: side, amount: lost });
+      return lost;
+    },
+    draw: (side, amount) => draw(s, side, amount, events),
+    giveTag: (amount) => {
+      s.players.runner.tags += amount;
+      events.push({ type: 'tag', player: 'runner', amount });
+    },
+    gainClicks: (side, amount) => {
+      s.players[side].clicks += amount;
+    },
+    loseClicks: (side, amount) => {
+      s.players[side].clicks = Math.max(0, s.players[side].clicks - amount);
+    },
     damage: (kind, amount) => dealDamage(s, kind, amount, events),
+    trash: (id) => {
+      const o = obj(s, id);
+      events.push({ type: 'trash', player: o.owner, cardId: o.cardId });
+      discardObject(s, id, o.faceUp);
+    },
+    addToHand: (id) => {
+      const o = obj(s, id);
+      moveObject(s, id, handZone(o.owner), { faceUp: false });
+    },
+    moveToDeck: (id) => {
+      const o = obj(s, id);
+      moveObject(s, id, deckZone(o.owner), { faceUp: false, position: 'top' });
+    },
+    shuffleDeck: (side) => shuffleZone(s, deckZone(side)),
+    addAdvancement: (id, amount) => {
+      obj(s, id).counters.advancement += amount;
+    },
+    rez: (id, opts) => {
+      if (!opts?.ignoreCost) pay(s, 'corp', rezCost(s, cat, id));
+      obj(s, id).faceUp = true;
+      events.push({ type: 'rez', player: 'corp', objectId: id, cardId: obj(s, id).cardId });
+    },
+    installRunner: (id) => {
+      pay(s, 'runner', runnerInstallCost(s, cat, id));
+      const nid = moveObject(s, id, Z.rig, { faceUp: true });
+      s.turnStats.installed.push(nid);
+      events.push({ type: 'install', player: 'runner', objectId: nid, cardId: obj(s, nid).cardId });
+    },
+    zone: (key) => [...zone(s, key)],
+    cardOf: (id) => {
+      const d = data(s, cat, id);
+      return { cardId: d.cardId, type: d.type, cost: d.cost, subtypes: d.subtypes ?? [] };
+    },
   };
 }
 
-/** The Corp resolves each unbroken subroutine in order, then the Runner passes the ice. */
-function finishEncounter(s: GameState, cat: Catalog, events: GameEvent[]): void {
+/**
+ * Runs queued effects (head first) until the queue is empty or one pauses for a choice.
+ * Returns true when paused (`s.choice` and `s.pending` are set).
+ */
+function runEffects(s: GameState, cat: Catalog, events: GameEvent[]): boolean {
+  while (s.effects.length > 0) {
+    const eff = s.effects[0];
+    const steps = stepsOf(eff);
+    while (eff.step < steps.length) {
+      const paused: { choice: GameState['choice'] } = { choice: null };
+      steps[eff.step](makeContext(s, cat, events, eff, paused));
+      if (paused.choice) {
+        s.choice = paused.choice;
+        s.pending = { player: paused.choice.player, kind: 'choice' };
+        return true;
+      }
+      if (s.status === 'ended') return false;
+      if (!s.effects.includes(eff)) break; // dropped (the run ended)
+      eff.step += 1;
+    }
+    if (s.effects.includes(eff)) {
+      s.effects = s.effects.filter((e) => e !== eff);
+      if (eff.kind === 'play' && eff.source in s.objects) discardObject(s, eff.source, true);
+    }
+  }
+  return false;
+}
+
+/** The Runner is done breaking: the Corp resolves each unbroken subroutine in order. */
+function finishEncounter(s: GameState): void {
+  const enc = s.run?.encounter;
+  if (!s.run || !enc) return;
+  enc.resolving = true;
+  if (!(enc.ice in s.objects)) return;
+  const subs = getDefinition(obj(s, enc.ice).cardId).subroutines ?? [];
+  for (let i = 0; i < subs.length; i++) {
+    if (!enc.broken[i]) queueEffect(s, 'subroutine', enc.ice, String(i));
+  }
+}
+
+/** All subroutines resolved without ending the run: the Runner passes the ice. */
+function completeEncounter(s: GameState, events: GameEvent[]): void {
   const run = s.run;
   const enc = run?.encounter;
   if (!run || !enc) return;
-  if (enc.ice in s.objects) {
-    const subs = getDefinition(obj(s, enc.ice).cardId).subroutines ?? [];
-    for (let i = 0; i < subs.length; i++) {
-      if (enc.broken[i]) continue;
-      events.push({ type: 'subroutine', player: 'corp', objectId: enc.ice, detail: subs[i].text });
-      subs[i].resolve(makeContext(s, events, enc.ice));
-      if (!s.run || s.status === 'ended') return; // the run ended
-    }
-  }
   run.encounter = null;
   for (const o of Object.values(s.objects)) {
     o.strengthMods = o.strengthMods.filter((m) => m.until !== 'encounter');
@@ -734,6 +959,7 @@ function doAccess(
   if (d.type === 'agenda') {
     const stolen = moveObject(s, id, scoreZone('runner'), { faceUp: true });
     events.push({ type: 'steal', player: 'runner', objectId: stolen, cardId: d.cardId });
+    queueEffect(s, 'steal', stolen);
     return;
   }
   const installed = obj(s, id).zone.startsWith('root:');
@@ -751,6 +977,7 @@ function endRun(s: GameState, events: GameEvent[]): void {
   if (!run) return;
   s.players.runner.fund = 0;
   s.players.runner.extraAccess = 0;
+  s.effects = s.effects.filter((e) => e.kind !== 'subroutine');
   for (const o of Object.values(s.objects)) o.strengthMods = [];
   s.breach = null;
   s.run = null;
@@ -774,6 +1001,8 @@ function checkpoint(s: GameState, cat: Catalog): void {
 function startTurn(s: GameState, side: Side, events: GameEvent[]): void {
   s.turn = { number: s.turn.number + 1, active: side, phase: side === 'corp' ? 'draw' : 'action' };
   s.players[side].clicks = CLICKS[side];
+  s.prevTurnStats = s.turnStats;
+  s.turnStats = newTurnStats();
   events.push({ type: 'turnBegins', player: side, amount: s.turn.number });
   if (side === 'corp') {
     draw(s, 'corp', 1, events);
@@ -803,6 +1032,11 @@ export function advance(s: GameState, cat: Catalog, events: GameEvent[]): void {
       }
       s.status = 'playing';
       startTurn(s, 'corp', events);
+      continue;
+    }
+
+    if (s.effects.length > 0) {
+      if (runEffects(s, cat, events)) return;
       continue;
     }
 
@@ -859,6 +1093,7 @@ export function advance(s: GameState, cat: Catalog, events: GameEvent[]): void {
           run.encounter = {
             ice,
             broken: (getDefinition(obj(s, ice).cardId).subroutines ?? []).map(() => false),
+            resolving: false,
           };
           events.push({ type: 'encounter', player: 'runner', objectId: ice, server: run.server });
           setPhase(run, 'encounter');
@@ -871,11 +1106,17 @@ export function advance(s: GameState, cat: Catalog, events: GameEvent[]): void {
         continue;
       }
       if (run.phase === 'encounter') {
-        if (encounterCommands(s, cat).length > 1) {
+        const enc = run.encounter;
+        if (enc?.resolving) {
+          completeEncounter(s, events);
+          continue;
+        }
+        if (enc && encounterCommands(s, cat).length > 1) {
           s.pending = { player: 'runner', kind: 'encounter' };
           return;
         }
-        finishEncounter(s, cat, events);
+        if (enc) finishEncounter(s);
+        else setPhase(run, 'movement');
         continue;
       }
       if (run.phase === 'server') {
@@ -885,6 +1126,7 @@ export function advance(s: GameState, cat: Catalog, events: GameEvent[]): void {
         }
         run.phase = 'success';
         run.successful = true;
+        s.turnStats.successfulRun = true;
         events.push({ type: 'runSuccessful', player: 'runner', server: run.server });
         beginBreach(s, events);
         continue;
