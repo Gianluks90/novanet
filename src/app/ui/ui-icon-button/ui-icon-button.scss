@@ -29,9 +29,15 @@
         transform: scale(1.15);
     }
 
+    // on (toggle buttons): filled with the accent, like the other selected controls
     &.active {
-        color: var(--accent-color);
+        background-color: var(--surface-active);
+        color: var(--on-accent);
         border-color: var(--border-color);
+    }
+
+    &.active:hover:not(:disabled) {
+        color: var(--on-accent);
     }
 
     &:disabled {

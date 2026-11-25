@@ -1,3 +1,5 @@
+@use '../../../styles/breakpoints' as bp;
+
 // Width from which the card detail is a column next to the deck list (same as the deck builder page).
 $wide-breakpoint: 1360px;
 
@@ -68,5 +70,67 @@ $wide-breakpoint: 1360px;
 
     to {
         transform: translateX(0);
+    }
+}
+
+.drawer-backdrop {
+    display: none;
+}
+
+// Mobile layout: the detail slides in from the right over a dimmed page, leaving a strip on the
+// left that closes it (same as on the cards page); no header with a close button.
+@include bp.mobile {
+    .detail-drawer {
+        display: flex;
+        position: fixed;
+        top: calc(var(--header-height) + var(--safe-top));
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: auto;
+        z-index: calc(var(--z-nav) + 20);
+        padding-bottom: var(--safe-bottom);
+        background: transparent;
+        border-left: 0;
+        box-shadow: none;
+        visibility: hidden;
+        pointer-events: none;
+        transition: visibility 0s linear var(--duration-base);
+
+        &.open {
+            visibility: visible;
+            pointer-events: auto;
+            transition-delay: 0s;
+            animation: none;
+        }
+
+        &>.drawer-header {
+            display: none;
+        }
+
+        &>.drawer-backdrop {
+            display: block;
+            position: absolute;
+            inset: 0;
+            background-color: rgba(0, 0, 0, .45);
+            opacity: 0;
+            transition: opacity var(--duration-base);
+        }
+
+        &.open>.drawer-backdrop {
+            opacity: 1;
+        }
+
+        &>.drawer-body {
+            position: relative;
+            margin-left: var(--space-5);
+            background-color: var(--bg-color);
+            transform: translateX(100%);
+            transition: transform var(--duration-base) var(--ease-out);
+        }
+
+        &.open>.drawer-body {
+            transform: translateX(0);
+        }
     }
 }

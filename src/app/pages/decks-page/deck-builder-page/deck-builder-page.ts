@@ -33,6 +33,7 @@ import { UIButton } from '../../../ui';
 import { TranslatePipe } from '../../../i18n/translate-pipe';
 import { I18nService } from '../../../i18n/i18n-service';
 import { CardTranslationService } from '../../../services/card-translation-service';
+import { ViewportService } from '../../../services/viewport-service';
 import { CardTitlePipe } from '../../../pipes/card-title-pipe';
 import { AuthService } from '../../../services/auth-service';
 import { getAuth } from 'firebase/auth';
@@ -167,6 +168,27 @@ export class DeckBuilderPage implements AfterViewInit {
   }
 
   public mode: 'edit' | 'visibility' = 'edit';
+
+  /** Mobile: the card search is a sheet over the deck, opened by the add-cards button. */
+  public searchOpen = false;
+  /** Mobile: the search filters panel. */
+  public searchFiltersOpen = false;
+  private viewport = inject(ViewportService);
+
+  public openSearch() {
+    this.searchOpen = true;
+  }
+
+  public closeSearch() {
+    this.searchOpen = false;
+    this.searchFiltersOpen = false;
+  }
+
+  /** How many search filters are not at their default (shown on the mobile filters button). */
+  public get activeSearchFilters(): number {
+    const v = this.filtersForm.value;
+    return [v.faction, v.pack, v.type].filter(x => x && x !== 'all').length;
+  }
   public deck: Deck | null = null;
   private i18n = inject(I18nService);
   private translations = inject(CardTranslationService);
@@ -397,10 +419,13 @@ export class DeckBuilderPage implements AfterViewInit {
     });
     this.applyFilters();
 
-    // focus sull'input
-    setTimeout(() => {
-      this.cardInputEl.nativeElement.focus();
-    }, 0);
+    this.searchFiltersOpen = false;
+    // focus sull'input (not on mobile: it would open the keyboard)
+    if (!this.viewport.isMobile()) {
+      setTimeout(() => {
+        this.cardInputEl.nativeElement.focus();
+      }, 0);
+    }
   }
 
   private dialog = inject(Dialog);
@@ -547,6 +572,7 @@ export class DeckBuilderPage implements AfterViewInit {
     if (document.querySelector('.dialog-container')) return;
     if (this.cardZoomed) this.cardZoomed = false;
     else if (this.selectedCard) this.selectedCard = null;
+    else if (this.searchOpen) this.closeSearch();
   }
 
   public get totalCards(): number {

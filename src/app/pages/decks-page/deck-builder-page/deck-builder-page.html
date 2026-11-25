@@ -56,12 +56,41 @@
     </div>
 </ng-template>
 
+<!-- Mobile: the deck's less frequent actions behind one icon. -->
+<ng-template #toolbarMenu>
+    <div class="ui-menu" cdkMenu>
+        <button type="button" class="ui-menu-item" cdkMenuItem (cdkMenuItemTriggered)="importCardList()">
+            <span class="material-symbols-rounded" aria-hidden="true">bottom_panel_close</span>
+            {{ 'importExportCardListDialog.importCardList' | t }}
+        </button>
+        <button type="button" class="ui-menu-item" cdkMenuItem (cdkMenuItemTriggered)="exportCardList()">
+            <span class="material-symbols-rounded" aria-hidden="true">bottom_panel_open</span>
+            {{ 'deckBuilderPage.exportCardList' | t }}
+        </button>
+        <button type="button" class="ui-menu-item" cdkMenuItem (cdkMenuItemTriggered)="openCardBackDialog()">
+            <span class="material-symbols-rounded" aria-hidden="true">palette</span>
+            {{ 'cardBack.deckButton' | t }}
+        </button>
+        @if (deck?.local) {
+            <button type="button" class="ui-menu-item" cdkMenuItem (cdkMenuItemTriggered)="uploadDeck()">
+                <span class="material-symbols-rounded" aria-hidden="true">cloud_upload</span>
+                {{ 'deckBuilderPage.saveOnline' | t }}
+            </button>
+        } @else {
+            <button type="button" class="ui-menu-item" cdkMenuItem (cdkMenuItemTriggered)="mode = mode === 'edit' ? 'visibility' : 'edit'">
+                <span class="material-symbols-rounded" aria-hidden="true">{{ mode === 'edit' ? 'share' : 'close' }}</span>
+                {{ (mode === 'edit' ? 'deckBuilderPage.manageVisibility' : 'deckBuilderPage.backToEditing') | t }}
+            </button>
+        }
+    </div>
+</ng-template>
+
 <div class="deck-builder-page-main-container">
     <!-- One toolbar for the whole page: name, format and the deck's actions -->
     <header class="page-toolbar">
         <div class="side-line"></div>
         <div class="toolbar-content">
-            <app-ui-icon-button icon="arrow_back" [label]="'deckBuilderPage.backToDecks' | t" [link]="['/decks']"></app-ui-icon-button>
+            <app-ui-icon-button class="back-btn" icon="arrow_back" [label]="'deckBuilderPage.backToDecks' | t" [link]="['/decks']"></app-ui-icon-button>
             @if (isOwner) {
                 <input type="text" class="title-input" [formControl]="nameControl" [attr.aria-label]="'nameLabel' | t"
                     [placeholder]="'enterTextPlaceholder' | t" autocorrect="off" autocomplete="off">
@@ -77,7 +106,7 @@
             } @else {
                 <h1>{{ nameControl.value }}</h1>
             }
-            <div class="actions-container">
+            <div class="actions-container desktop-actions">
                 @if (isOwner) {
                     <app-ui-icon-button icon="bottom_panel_close" [label]="'importExportCardListDialog.importCardList' | t" (click)="importCardList()"></app-ui-icon-button>
                     <app-ui-icon-button icon="bottom_panel_open" [label]="'deckBuilderPage.exportCardList' | t" (click)="exportCardList()"></app-ui-icon-button>
@@ -98,6 +127,16 @@
                 } @else {
                     <span class="view-only-label">{{ 'deckBuilderPage.viewOnly' | t }}</span>
                     <app-ui-button [text]="'deckBuilderPage.copyToMyAccount' | t" icon="content_copy" size="small" (click)="cloneDeck()"></app-ui-button>
+                }
+            </div>
+            <div class="mobile-actions">
+                @if (isOwner) {
+                    <app-ui-icon-button icon="save" [indicator]="dirty"
+                        [label]="dirty ? (('saveChangesButton' | t) + ' — ' + ('unsavedChanges.title' | t)) : ('saveChangesButton' | t)"
+                        (click)="saveDeck()"></app-ui-icon-button>
+                    <app-ui-icon-button icon="more_vert" [label]="'deckBuilderPage.moreActions' | t" [cdkMenuTriggerFor]="toolbarMenu"></app-ui-icon-button>
+                } @else {
+                    <app-ui-icon-button icon="content_copy" [label]="'deckBuilderPage.copyToMyAccount' | t" (click)="cloneDeck()"></app-ui-icon-button>
                 }
             </div>
         </div>
@@ -189,6 +228,19 @@
                 </div>
             </section>
             }
+            @if (isOwner) {
+                <!-- mobile only: the format moved here from the toolbar -->
+                <section class="format-box" [formGroup]="form">
+                    <label class="section-label" for="format-select-mobile">{{ 'deckBuilderPage.format' | t }}</label>
+                    <select id="format-select-mobile" name="format" formControlName="format">
+                        <option value="">{{ 'deckBuilderPage.selectFormat' | t }}</option>
+                        @for (f of formatService.formats(); track f.id) {
+                            <option [value]="f.id">{{ f.name }}{{ formatMark(f.id) }}</option>
+                        }
+                        <option [value]="casualFormat">{{ 'deckBuilderPage.formatCasual' | t }}</option>
+                    </select>
+                </section>
+            }
             <!-- Wide window: a column next to the list (empty until a card is selected). Narrower: it only
                  exists while a card is selected and slides in from the right over the list (button or Esc to close). -->
             <div class="detail-column">
@@ -199,51 +251,74 @@
         }
     </section>
     @if (isOwner) {
-    <section class="search-panel">
+    <!-- desktop: the right column; mobile: a sheet that slides up over the deck (add-cards button) -->
+    <section class="search-panel search-sheet" [class.open]="searchOpen">
             <div class="search-bar" [formGroup]="cardForm">
+                <button type="button" class="ghost-btn sheet-close" (click)="closeSearch()"
+                    [attr.aria-label]="'deckBuilderPage.backToDeck' | t" [title]="'deckBuilderPage.backToDeck' | t">
+                    <span class="material-symbols-rounded" aria-hidden="true">arrow_back</span>
+                </button>
                 <input #cardInputEl type="text" formControlName="cardInput"
                     [attr.aria-label]="'deckBuilderPage.searchCard' | t"
                     [placeholder]="'deckBuilderPage.searchCardPlaceholder' | t"
-                    autocorrect="off" autocomplete="off"
+                    autocorrect="off" autocomplete="off" (focus)="searchFiltersOpen = false"
                     (keydown.enter)="addFirstResult()" (keydown.escape)="clearSearch($event)">
                 <button type="button" class="ghost-btn reset-btn" (click)="resetFilters()"
                     [attr.aria-label]="'cardsPage.resetFilters' | t" [title]="'cardsPage.resetFilters' | t">
                     <span class="material-symbols-rounded" aria-hidden="true">refresh</span>
                 </button>
+                <button type="button" class="ghost-btn filters-toggle" [class.has-active]="activeSearchFilters > 0"
+                    [attr.aria-expanded]="searchFiltersOpen" [attr.aria-label]="'filtersSectionTitle' | t"
+                    [title]="'filtersSectionTitle' | t" (click)="searchFiltersOpen = !searchFiltersOpen">
+                    <span class="material-symbols-rounded" aria-hidden="true">tune</span>
+                    @if (activeSearchFilters > 0) {
+                    <span class="filters-count">{{ activeSearchFilters }}</span>
+                    }
+                </button>
             </div>
-            <div class="filters-container" [formGroup]="filtersForm">
-                <select id="faction-select" formControlName="faction" [attr.aria-label]="'cardsPage.allFactions' | t">
-                    <option value="all">{{ 'cardsPage.allFactions' | t }}</option>
-                    @for (f of factions; track $index) {
-                        <option  [value]="f.id">{{f.id | factionLabel}}</option>
-                    }
-                </select>
-                <select id="pack-select" formControlName="pack" [attr.aria-label]="'cardsPage.allPacks' | t">
-                    <option value="all">{{ 'cardsPage.allPacks' | t }}</option>
-                    @for(cycle of cycles; track cycle.id) {
-                    <optgroup [label]="cycle.name">
-                        @for (pack of packs; track pack.id) {
-                        @if (pack.card_cycle_id === cycle.id) {
-                        <option [value]="pack.id">
-                            {{ pack.name }}
-                        </option>
-                        }
-                        }
-                    </optgroup>
-                    }
-                </select>
-                <select id="type-select" formControlName="type" [attr.aria-label]="'cardsPage.allTypes' | t">
-                    <option value="all">{{ 'cardsPage.allTypes' | t }}</option>
-                    @for (t of types; track $index) {
-                        <option  [value]="t.id">{{t.id | typeLabel }}</option>
-                    }
-                </select>
-            </div>
-            @if (currentFormat) {
-                <div class="legal-toggle">
-                    <app-ui-toggle label="deckBuilderPage.onlyLegalCards" [value]="onlyLegal" (valueChange)="setOnlyLegal($event)"></app-ui-toggle>
-                </div>
+            @if (searchFiltersOpen) {
+            <div class="filters-backdrop" (click)="searchFiltersOpen = false"></div>
             }
+            <!-- desktop: in the column; mobile: a panel hanging from the search bar, one field per row -->
+            <div class="filters-extra" [class.open]="searchFiltersOpen">
+                <div class="filters-container" [formGroup]="filtersForm">
+                    <select id="faction-select" formControlName="faction" [attr.aria-label]="'cardsPage.allFactions' | t">
+                        <option value="all">{{ 'cardsPage.allFactions' | t }}</option>
+                        @for (f of factions; track $index) {
+                            <option  [value]="f.id">{{f.id | factionLabel}}</option>
+                        }
+                    </select>
+                    <select id="pack-select" formControlName="pack" [attr.aria-label]="'cardsPage.allPacks' | t">
+                        <option value="all">{{ 'cardsPage.allPacks' | t }}</option>
+                        @for(cycle of cycles; track cycle.id) {
+                        <optgroup [label]="cycle.name">
+                            @for (pack of packs; track pack.id) {
+                            @if (pack.card_cycle_id === cycle.id) {
+                            <option [value]="pack.id">
+                                {{ pack.name }}
+                            </option>
+                            }
+                            }
+                        </optgroup>
+                        }
+                    </select>
+                    <select id="type-select" formControlName="type" [attr.aria-label]="'cardsPage.allTypes' | t">
+                        <option value="all">{{ 'cardsPage.allTypes' | t }}</option>
+                        @for (t of types; track $index) {
+                            <option  [value]="t.id">{{t.id | typeLabel }}</option>
+                        }
+                    </select>
+                </div>
+                @if (currentFormat) {
+                    <div class="legal-toggle">
+                        <app-ui-toggle label="deckBuilderPage.onlyLegalCards" [value]="onlyLegal" (valueChange)="setOnlyLegal($event)"></app-ui-toggle>
+                    </div>
+                }
+                <button type="button" class="ghost-btn reset-labelled" (click)="resetFilters()">
+                    <span class="material-symbols-rounded" aria-hidden="true">refresh</span>
+                    {{ 'cardsPage.resetFilters' | t }}
+                </button>
+            </div>
             <div class="cards-container">
                 @for (c of filteredCards; track c.id) {
                     <ng-container *ngTemplateOutlet="cardRow; context: { $implicit: c, inDeckList: false }"></ng-container>
@@ -267,6 +342,12 @@
     </section>
     }
     </div>
+    @if (isOwner && deck) {
+    <button type="button" class="add-cards-fab" (click)="openSearch()"
+        [attr.aria-label]="'deckBuilderPage.searchCard' | t" [title]="'deckBuilderPage.searchCard' | t">
+        <span class="material-symbols-rounded" aria-hidden="true">add</span>
+    </button>
+    }
 </div>
 
 @if(selectedCard && cardZoomed) {

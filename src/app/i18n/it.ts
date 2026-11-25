@@ -206,6 +206,8 @@ export const IT: Record<TranslationKey, string> = {
   "cardsPage.translatedOnly": "Solo tradotte",
   "decksListPage.viewPersonal": "Personali",
   "decksListPage.viewPublic": "Pubblici",
+  "deckBuilderPage.moreActions": "Altre azioni",
+  "deckBuilderPage.backToDeck": "Torna al mazzo",
   "decksListPage.showingPersonal": "Mostro: i miei mazzi",
   "decksListPage.showingPublic": "Mostro: i mazzi pubblici",
   "decksListPage.by": "di {0}",

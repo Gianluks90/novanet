@@ -18,5 +18,12 @@
 @include bp.mobile {
     .decks-page-main-container {
         padding: var(--space-2);
+        // from the top: not centered in the page (it left a blank above short pages)
+        align-items: flex-start;
+
+        &>.router-outlet-container {
+            height: auto;
+            min-height: 100%;
+        }
     }
 }

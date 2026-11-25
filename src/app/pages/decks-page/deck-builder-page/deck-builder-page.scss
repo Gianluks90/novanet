@@ -1,3 +1,5 @@
+@use '../../../../styles/breakpoints' as bp;
+
 // Width from which the card detail is a column next to the deck list; below it, a drawer over the list.
 $wide-breakpoint: 1360px;
 
@@ -433,4 +435,256 @@ select {
 .sign-in-action {
     width: 200px;
     margin-top: var(--space-3);
+}
+
+// Desktop: none of the mobile-only controls.
+.mobile-actions,
+.format-box,
+.sheet-close,
+.filters-toggle,
+.filters-backdrop,
+.reset-labelled,
+.add-cards-fab {
+    display: none;
+}
+
+.filters-extra {
+    display: contents;
+}
+
+// Mobile layout: the page scrolls as one column. The toolbar is [back, name, save, more] with the
+// format under it; the card search is a sheet that slides up from the add-cards button (its filters
+// fold into a panel under the search bar); the card detail is the sheet of the cards page (see
+// detail-drawer); rows lose the faction icon and get touch-sized steppers.
+@include bp.mobile {
+    .deck-builder-page-main-container {
+        height: auto;
+        min-height: 100%;
+
+        // no striped side line (it only took 20px of the narrow bar), tight padding
+        &>.page-toolbar>.side-line {
+            display: none;
+        }
+
+        &>.page-toolbar>.toolbar-content {
+            gap: 0 var(--space-1);
+            padding: 2px var(--space-1);
+
+            // the title alone on the first line; under it: back, then save and more on the right
+            h1,
+            .title-input {
+                order: 1;
+                flex: 1 1 100%;
+                font-size: var(--font-size-lg);
+            }
+
+            .title-input {
+                height: 40px;
+                padding-left: var(--space-2);
+            }
+
+            h1 {
+                padding: var(--space-2) var(--space-2) 0;
+            }
+
+            .back-btn {
+                order: 2;
+            }
+
+            .format-picker {
+                display: none;
+            }
+
+            .desktop-actions {
+                display: none;
+            }
+
+            .mobile-actions {
+                display: flex;
+                order: 3;
+                align-items: center;
+                gap: var(--space-1);
+                margin-left: auto;
+            }
+        }
+
+        &>.page-body {
+            display: block;
+
+            &>section {
+                min-height: 0;
+            }
+
+            // room under the last row for the add-cards button
+            &>.deck-view-container {
+                padding-bottom: 72px;
+
+                &>.view-content {
+                    display: block;
+
+                    &>.deck-list-section {
+                        overflow: visible;
+                        padding: var(--space-2);
+                    }
+
+                    // the format, last under the list of cards
+                    &>.format-box {
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--space-1);
+                        margin-top: var(--page-gap);
+                        padding: var(--space-3);
+                        background-color: var(--bg-container-color);
+                        border: 1px solid var(--accent-color);
+                    }
+                }
+            }
+
+            // the search: a sheet over the page, slid up while it is open
+            &>.search-sheet {
+                position: fixed;
+                top: calc(var(--header-height) + var(--safe-top));
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: calc(var(--z-nav) + 5);
+                padding: var(--space-2);
+                padding-bottom: calc(var(--space-2) + var(--safe-bottom));
+                background-color: var(--bg-color);
+                border: 0;
+                border-top: 1px solid var(--accent-color);
+                visibility: hidden;
+                transform: translateY(100%);
+                transition:
+                    transform var(--duration-base) var(--ease-out),
+                    visibility 0s linear var(--duration-base);
+
+                &.open {
+                    visibility: visible;
+                    transform: translateY(0);
+                    transition-delay: 0s;
+                }
+
+                .search-bar {
+                    position: relative;
+                    z-index: calc(var(--z-sticky) + 2);
+
+                    &>.reset-btn {
+                        display: none;
+                    }
+
+                    &>.sheet-close,
+                    &>.filters-toggle {
+                        display: inline-flex;
+                        flex-shrink: 0;
+                    }
+
+                    &>.filters-toggle {
+                        position: relative;
+
+                        &.has-active {
+                            background-color: var(--surface-hover);
+                        }
+
+                        &>.filters-count {
+                            position: absolute;
+                            top: 2px;
+                            right: 2px;
+                            min-width: 16px;
+                            height: 16px;
+                            padding: 0 4px;
+                            border-radius: var(--radius-pill);
+                            background-color: var(--surface-active);
+                            color: var(--on-accent);
+                            font-size: var(--font-size-xs);
+                            line-height: 16px;
+                            text-align: center;
+                        }
+                    }
+                }
+
+                // touching the results closes the panel
+                .filters-backdrop {
+                    display: block;
+                    position: absolute;
+                    inset: 0;
+                    z-index: calc(var(--z-sticky) + 1);
+                }
+
+                .filters-extra {
+                    display: none;
+
+                    &.open {
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--space-2);
+                        position: absolute;
+                        top: calc(var(--space-2) + var(--control-height) + var(--space-1));
+                        left: var(--space-2);
+                        right: var(--space-2);
+                        z-index: calc(var(--z-sticky) + 2);
+                        max-height: 70%;
+                        overflow-y: auto;
+                        padding: var(--space-3);
+                        border: 1px solid var(--accent-color);
+                        background-color: var(--bg-container-color);
+                    }
+
+                    .filters-container {
+                        grid-template-columns: minmax(0, 1fr);
+                    }
+
+                    .reset-labelled {
+                        display: inline-flex;
+                        width: 100%;
+                        gap: var(--space-2);
+                        border: 1px solid var(--border-color);
+                        text-transform: uppercase;
+                    }
+                }
+            }
+        }
+    }
+
+    // the deck list is part of the page, which scrolls
+    .deck-list-section .cards-container {
+        flex: none;
+        overflow: visible;
+    }
+
+    .identity-strip {
+        grid-template-columns: 72px 1fr;
+        gap: var(--space-3);
+    }
+
+    .cards-container .card-item>.card-item-meta {
+        grid-template-columns: auto 1.25rem auto;
+
+        .meta-faction {
+            display: none;
+        }
+    }
+
+    .add-cards-fab {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        right: var(--space-3);
+        bottom: calc(var(--bottom-nav-height) + var(--space-3));
+        z-index: calc(var(--z-nav) - 1);
+        width: 56px;
+        height: 56px;
+        padding: 0;
+        border: 1px solid var(--accent-color);
+        border-radius: 50%;
+        background-color: var(--surface-active);
+        color: var(--on-accent);
+        box-shadow: var(--shadow-md);
+        cursor: pointer;
+
+        .material-symbols-rounded {
+            font-size: 1.75rem;
+        }
+    }
 }

@@ -50,6 +50,7 @@ export const routes: Routes = [
                 title: 'routeTitle.deckBuilder',
                 loadComponent: () => import('./pages/decks-page/deck-builder-page/deck-builder-page').then(m => m.DeckBuilderPage),
                 canDeactivate: [unsavedChangesGuard],
+                data: { responsive: true },
                 resolve: {
                     deck: deckResolver,
                 }

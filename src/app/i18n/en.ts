@@ -204,6 +204,8 @@ export const EN = {
   "cardsPage.translatedOnly": "Translated only",
   "decksListPage.viewPersonal": "Personal",
   "decksListPage.viewPublic": "Public",
+  "deckBuilderPage.moreActions": "More actions",
+  "deckBuilderPage.backToDeck": "Back to the deck",
   "decksListPage.showingPersonal": "Showing: my decks",
   "decksListPage.showingPublic": "Showing: public decks",
   "decksListPage.by": "by {0}",

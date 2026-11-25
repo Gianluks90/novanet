@@ -1,4 +1,6 @@
 <aside class="detail-drawer" [class.open]="open()">
+    <!-- mobile: the strip beside the sheet; touching it closes the detail -->
+    <div class="drawer-backdrop" (click)="closed.emit()"></div>
     <div class="drawer-header">
         <app-ui-icon-button icon="close" size="sm" [label]="'closeButton' | t" (click)="closed.emit()"></app-ui-icon-button>
     </div>
