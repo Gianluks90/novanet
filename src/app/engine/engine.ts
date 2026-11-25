@@ -59,6 +59,16 @@ export const STARTING_HAND = 5;
 export const BASE_HAND_SIZE = 5;
 export const BASE_MEMORY = 4;
 export const AGENDA_POINTS_TO_WIN = 7;
+/** Points needed in the first games, when both players use the learning identities. */
+export const LEARNING_AGENDA_POINTS_TO_WIN = 6;
+const LEARNING_IDENTITIES = ['the_catalyst_convention_breaker', 'the_syndicate_profit_over_principle'];
+
+/** 6 agenda points when both players use the learning identities (starter game), 7 otherwise. */
+export function agendaPointsToWin(s: GameState): number {
+  const ids = [Z.corpIdentity, Z.runnerIdentity].map((z) => zone(s, z)[0]);
+  const learning = ids.every((id) => id !== undefined && LEARNING_IDENTITIES.includes(obj(s, id).cardId));
+  return learning ? LEARNING_AGENDA_POINTS_TO_WIN : AGENDA_POINTS_TO_WIN;
+}
 export const CLICKS: Record<Side, number> = { corp: 3, runner: 4 };
 
 export interface DeckList {
@@ -1329,8 +1339,9 @@ function checkpoint(s: GameState, cat: Catalog): void {
       });
     }
   }
-  const corp = agendaPoints(s, cat, 'corp') >= AGENDA_POINTS_TO_WIN;
-  const runner = agendaPoints(s, cat, 'runner') >= AGENDA_POINTS_TO_WIN;
+  const goal = agendaPointsToWin(s);
+  const corp = agendaPoints(s, cat, 'corp') >= goal;
+  const runner = agendaPoints(s, cat, 'runner') >= goal;
   if (corp && runner) declareWin(s, 'draw', 'draw');
   else if (corp) declareWin(s, 'corp', 'agenda');
   else if (runner) declareWin(s, 'runner', 'agenda');

@@ -3,8 +3,9 @@ import { EN } from '../i18n/en';
 import { SYSTEM_GATEWAY_CATALOG as CAT } from './cards';
 import { STARTER_CORP, STARTER_RUNNER, stackDeck } from './cards/starter-decks';
 import { unsupportedCards } from './deck-adapter';
-import { createGame } from './engine';
+import { agendaPointsToWin, createGame } from './engine';
 import { LocalSession } from './session';
+import { play, scenario } from './testing';
 import { TutorialStep } from './tutorial';
 import { TUTORIALS, TutorialId, createTutorial } from './tutorials';
 import { Z, obj, zone } from './zones';
@@ -154,5 +155,32 @@ describe('what each tutorial leaves on the table', () => {
     expect(stolen).toEqual(['offworld_office']);
     expect(zone(t.state, Z.rig).map((i) => obj(t.state, i).cardId)).toEqual(['cleaver']);
     expect(t.state.run).toBeNull();
+  });
+});
+
+describe('winning score of the first games', () => {
+  const scoreWith = (corpIdentity: string, runnerIdentity: string) =>
+    play(
+      scenario({
+        corpIdentity,
+        runnerIdentity,
+        corp: {
+          score: ['agenda-4-3'],
+          servers: { remote1: { root: [{ cardId: 'agenda-4-3', advancement: 4 }] } },
+        },
+      }),
+      'score',
+      { card: 'agenda-4-3' },
+    );
+
+  it('is 6 agenda points when both players use the learning identities', () => {
+    const s = scoreWith('the_syndicate_profit_over_principle', 'the_catalyst_convention_breaker');
+    expect(s).toMatchObject({ status: 'ended', winner: 'corp', winReason: 'agenda' });
+  });
+
+  it('is still 7 with any other identity', () => {
+    const s = scoreWith('the_syndicate_profit_over_principle', 'rene_loup_arcemont_party_animal');
+    expect(s.status).toBe('playing');
+    expect(agendaPointsToWin(s)).toBe(7);
   });
 });
