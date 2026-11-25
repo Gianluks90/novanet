@@ -1,90 +1,17 @@
-@use 'sass:math';
 @use '../styles/breakpoints' as bp;
 
-$logo-path: 'M23.2997 0L52.0461 28.6301V44H38.6311V34.1553L17.7522 13.3607L13.415 13.3607L13.415 44H0L0 0L23.2997 0ZM38.6311 15.2694V0L52.0461 0V15.2694L38.6311 15.2694Z';
-
-// Background texture: a square grid of logos laid out in a layer that is rotated by 45°, so the
-// logos end up tilted and the grid rows run along the diagonal. Even and odd rows live in two
-// separate layers (::before / ::after) that slide in opposite directions along the rows.
-// Cell = 36px * sqrt(2); one mask tile is 2x2 cells (two logos on the even row, two on the odd
-// row), so shifting a layer by exactly one tile loops seamlessly.
-$cell: 36 * math.sqrt(2);
-$tile: 2 * $cell;
-$logo-size: .4;
-$scroll-duration: 14s;
-
-@function logo-use($col, $row, $scale) {
-    @return "%3Cpath transform='translate(#{($col + .5) * $cell} #{($row + .5) * $cell}) scale(#{$scale}) translate(-26.5 -22)' d='#{$logo-path}'/%3E";
-}
-
-@function row-texture($paths) {
-    @return url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='#{$tile}' height='#{$tile}' viewBox='0 0 #{$tile} #{$tile}'%3E#{$paths}%3C/svg%3E");
-}
-
-@keyframes texture-slide-down {
-    from { transform: translate(-50%, -50%) rotate(45deg) translateX(0); }
-    to { transform: translate(-50%, -50%) rotate(45deg) translateX(#{$tile}px); }
-}
-
-@keyframes texture-slide-up {
-    from { transform: translate(-50%, -50%) rotate(45deg) translateX(0); }
-    to { transform: translate(-50%, -50%) rotate(45deg) translateX(#{-$tile}px); }
-}
-
+// The shell. Without a custom background the page has the HUD grid (`.hud-grid-bg`, styles/_hud.scss:
+// static, a faint grid with crosses); with one (the user's URL) the image covers the page.
 .app-main-container {
     display: flex;
     flex-direction: column;
     height: 100dvh;
     width: 100dvw;
 
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-
-    // Default background (signed out, or no custom background). The masks follow the accent
-    // color of the current theme.
-    &.with-texture {
-        position: relative;
-        isolation: isolate;
-        overflow: hidden;
-
-        &::before,
-        &::after {
-            content: '';
-            position: absolute;
-            z-index: -1;
-            pointer-events: none;
-            // Square layer, centered and rotated: big enough to cover the viewport at any
-            // angle plus one tile of slack for the sliding.
-            top: 50%;
-            left: 50%;
-            width: calc(150vmax + #{$tile * 2}px);
-            height: calc(150vmax + #{$tile * 2}px);
-            transform: translate(-50%, -50%) rotate(45deg);
-            background-color: color-mix(in srgb, var(--accent-color) 9%, transparent);
-            -webkit-mask-size: #{$tile}px #{$tile}px;
-            mask-size: #{$tile}px #{$tile}px;
-            -webkit-mask-repeat: repeat;
-            mask-repeat: repeat;
-            will-change: transform;
-            animation-duration: $scroll-duration;
-            animation-timing-function: linear;
-            animation-iteration-count: infinite;
-        }
-
-        // Even rows (1st, 3rd, ...): sliding down.
-        &::before {
-            -webkit-mask-image: #{row-texture(logo-use(0, 0, $logo-size) + logo-use(1, 0, $logo-size))};
-            mask-image: #{row-texture(logo-use(0, 0, $logo-size) + logo-use(1, 0, $logo-size))};
-            animation-name: texture-slide-down;
-        }
-
-        // Odd rows (2nd, 4th, ...): sliding up.
-        &::after {
-            -webkit-mask-image: #{row-texture(logo-use(0, 1, $logo-size) + logo-use(1, 1, $logo-size))};
-            mask-image: #{row-texture(logo-use(0, 1, $logo-size) + logo-use(1, 1, $logo-size))};
-            animation-name: texture-slide-up;
-        }
+    &:not(.hud-grid-bg) {
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
     }
 
     .app-page-container {
@@ -109,18 +36,10 @@ $scroll-duration: 14s;
     gap: 8px;
 }
 
-// Mobile layout: room for the bottom navigation bar, a still background (saves battery) and
-// notifications that use the whole width.
+// Mobile layout: room for the bottom navigation bar and notifications that use the whole width.
 @include bp.mobile {
-    .app-main-container {
-        .app-page-container {
-            padding-bottom: var(--bottom-nav-height);
-        }
-
-        &.with-texture::before,
-        &.with-texture::after {
-            animation: none;
-        }
+    .app-main-container .app-page-container {
+        padding-bottom: var(--bottom-nav-height);
     }
 
     .notification-container {

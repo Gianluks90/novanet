@@ -8,4 +8,14 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    // small spaced capitals, like the eyebrow of the kit
+    label {
+        color: var(--fg-color-muted);
+        font-family: var(--font-display);
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-bold);
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+    }
 }

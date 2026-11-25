@@ -1,3 +1,5 @@
+@use '../../../styles/hud-mixins' as hud;
+
 :host {
     display: inline-block;
 }
@@ -20,24 +22,33 @@
     }
 }
 
+// The track is a small chamfered frame (the element is the stroke, ::before the fill).
 .track {
     position: relative;
+    isolation: isolate;
     flex-shrink: 0;
-    width: 2.2em;
-    height: 1.1em;
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
-    background-color: var(--bg-color);
-    transition: background-color var(--duration-base);
+    width: 2.4em;
+    height: 1.2em;
+    background: var(--accent-color);
+    @include hud.shape(0.3em, 0.3em);
+
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 1px;
+        z-index: -1;
+        background: var(--bg-color);
+        transition: background-color var(--duration-base);
+        @include hud.shape(calc(0.3em - 0.586px), calc(0.3em - 0.586px));
+    }
 }
 
 .thumb {
     position: absolute;
-    top: 0.125em;
-    left: 0.125em;
-    width: 0.75em;
-    height: 0.75em;
-    border-radius: 2px;
+    top: 0.15em;
+    left: 0.15em;
+    width: 0.9em;
+    height: 0.9em;
     background-color: var(--accent-color);
     transition:
         transform var(--duration-base) var(--ease-out),
@@ -45,12 +56,12 @@
 }
 
 .ui-toggle.on {
-    .track {
-        background-color: var(--surface-active);
+    .track::before {
+        background: var(--accent-color);
     }
 
     .thumb {
-        transform: translateX(1.1em);
+        transform: translateX(1.2em);
         background-color: var(--on-accent);
     }
 }

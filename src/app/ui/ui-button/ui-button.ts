@@ -12,6 +12,8 @@ export class UIButton {
   public icon = input<string>('');
   public pipeIcon = input<string>('');
   public disabled = input<boolean>(false);
+  /** Filled with the accent (the main action of a dialog or page). */
+  public primary = input<boolean>(false);
   public size = input<'normal' | 'small'>('normal');
   /** Where the icon + label sit inside the button. */
   public align = input<'start' | 'center'>('start');

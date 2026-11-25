@@ -19,7 +19,7 @@
 
 body {
   // surfaces: two levels of dark with a hint of blue
-  --panel-bg: #0f1219;
+  --panel-bg: var(--bg-container-color);
   --panel-bg-raised: #151a24;
   --hud-line: 1px;
 }

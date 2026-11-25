@@ -5,7 +5,8 @@
 @use './styles/ghost-btn';
 @use './styles/form-feedback';
 @use './styles/breakpoints' as bp;
-@use './styles/hud';
+@use './styles/hud' as kit;
+@use './styles/hud-mixins' as hud;
 
 * {
   font-family: var(--font-body);
@@ -71,10 +72,10 @@ p {
 }
 
 .dark {
-  --fg-color: #ffffff;
-  --bg-color: #272931;
-  --accent-color: #FCF552;
-  --bg-container-color: #1B1C21;
+  --fg-color: #e8eef6;
+  --bg-color: #090c11;
+  --accent-color: #4FD8EB;
+  --bg-container-color: #0f1219;
 }
 
 // Text
@@ -100,19 +101,20 @@ p.p-foot-note {
 
 // Dialogs
 
-// Dialogs never touch the sides of the screen: at least 12px of margin each side.
-.dialog-container {
-  background-color: var(--bg-color);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+// Dialogs never touch the sides of the screen: at least 12px of margin each side. The frame (a
+// chamfered outline) is drawn by div[dialog-main-container] below, so the pane itself is plain.
+.dialog-container,
+.big-dialog-container {
+  background-color: transparent;
   overflow: auto;
+}
+
+.dialog-container {
   max-width: min(600px, calc(100vw - var(--space-5))) !important;
   max-height: 650px !important;
 }
 
 .big-dialog-container {
-  background-color: var(--bg-color);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  overflow: auto;
   max-width: min(1000px, calc(100vw - var(--space-5))) !important;
   max-height: 800px !important;
 }
@@ -127,25 +129,33 @@ p.p-foot-note {
 }
 
 .dialog-backdrop {
-  backdrop-filter: blur(8px);
-  background-color: rgba(39, 41, 49, 0.4);
+  backdrop-filter: blur(6px);
+  background-color: rgba(5, 7, 10, 0.62);
 }
 
+// The dialog: an outlined, chamfered frame (the element is the stroke, ::before the fill).
 div[dialog-main-container] {
-  display: grid;
-  grid-template-columns: 24px auto;
-  position: relative;
-  border: 1px solid var(--accent-color);
+  --cut: 18px;
 
+  position: relative;
+  isolation: isolate;
+  display: block;
+  padding: 1px;
+  background: var(--accent-color);
+  @include hud.shape(var(--cut), var(--cut));
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 1px;
+    z-index: -1;
+    background: var(--bg-container-color);
+    @include hud.shape(calc(var(--cut) - 0.586px), calc(var(--cut) - 0.586px));
+  }
+
+  // the striped side line of the old look is gone
   div[dialog-side-line] {
-    width: 100%;
-    background-color: var(--accent-color);
-    height: 100%;
-    background: repeating-linear-gradient(to right,
-        var(--accent-color) 1px,
-        var(--accent-color) 1px,
-        transparent 4px,
-        transparent 4px)
+    display: none;
   }
 
   div[dialog-content-container] {
@@ -159,7 +169,7 @@ div[dialog-main-container] {
     h1 {
       position: sticky;
       top: 0;
-      background-color: var(--bg-color);
+      background-color: var(--bg-container-color);
     }
   }
 
@@ -171,8 +181,8 @@ div[dialog-main-container] {
     position: sticky;
     bottom: 0;
     padding-top: 16px;
-    background-color: var(--bg-color);
-    border-top: 1px solid var(--accent-color);
+    background-color: var(--bg-container-color);
+    border-top: 1px solid var(--border-muted);
     padding-bottom: 16px;
   }
 }
@@ -215,8 +225,8 @@ form.form-container {
 
 input[type="text"], input[type="number"], input[type="email"], input[type="password"] {
   padding: 8px;
-  border: 1px solid var(--accent-color);
-  border-radius: 4px;
+  border: 1px solid color-mix(in srgb, var(--accent-color) 55%, transparent);
+  border-radius: 0;
   font-size: 1rem;
   background-color: var(--bg-color);
   color: var(--fg-color);
@@ -250,8 +260,8 @@ input[type="color"] {
 
 textarea {
   padding: 8px;
-  border: 1px solid var(--accent-color);
-  border-radius: 4px;
+  border: 1px solid color-mix(in srgb, var(--accent-color) 55%, transparent);
+  border-radius: 0;
   font-size: 1rem;
   background-color: var(--bg-color);
   color: var(--fg-color);
@@ -266,8 +276,8 @@ select {
     width: 128px;
     font-size: 1rem;
     padding: 4px 8px;
-    border: 1px solid var(--accent-color);
-    border-radius: 4px;
+    border: 1px solid color-mix(in srgb, var(--accent-color) 55%, transparent);
+    border-radius: 0;
     background-color: var(--bg-color);
     color: var(--fg-color);
     height: 32px;

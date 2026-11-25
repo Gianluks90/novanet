@@ -1,10 +1,30 @@
 .header-title {
     padding: var(--space-4);
-    background-color: var(--bg-color);
     position: sticky;
     top: 0;
     z-index: var(--z-sticky);
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-muted);
+    // background of the frame (the sticky title must hide what scrolls under it)
+    background-color: var(--bg-container-color);
+
+    h1 {
+        font-size: var(--font-size-xl);
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        text-shadow: 0 0 14px color-mix(in srgb, var(--accent-color) 55%, transparent);
+    }
+
+    // a strip of stripes on the right of the title
+    &::after {
+        content: '';
+        position: absolute;
+        top: var(--space-2);
+        right: calc(var(--space-4) + 18px);
+        width: 44px;
+        height: 8px;
+        background: repeating-linear-gradient(-55deg, var(--accent-color) 0 3px, transparent 3px 7px);
+    }
 }
 
 .inner-content {

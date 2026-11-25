@@ -1,4 +1,4 @@
-<button class="ui-standard-btn" [class.icon-button]="icon() || pipeIcon()" [class.small]="size() === 'small'" [class.center]="align() === 'center'" [disabled]="disabled()">
+<button class="ui-standard-btn" [class.icon-button]="icon() || pipeIcon()" [class.primary]="primary()" [class.small]="size() === 'small'" [class.center]="align() === 'center'" [disabled]="disabled()">
     @if (icon() != null) {
         <span class="material-symbols-rounded">{{ icon() }}</span>
     }

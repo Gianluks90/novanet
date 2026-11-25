@@ -1,10 +1,26 @@
+@use '../../../styles/hud-mixins' as hud;
+
 :host {
     display: inline-block;
 }
 
+// Outlined and chamfered (the element is the stroke, ::before the fill); the segments sit inside.
 .ui-segmented {
+    position: relative;
+    isolation: isolate;
     display: inline-flex;
-    border: 1px solid var(--border-color);
+    padding: 1px;
+    background: var(--accent-color);
+    @include hud.shape(8px, 8px);
+
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 1px;
+        z-index: -1;
+        background: var(--bg-container-color);
+        @include hud.shape(calc(8px - 0.586px), calc(8px - 0.586px));
+    }
 }
 
 .ui-segmented.fill {
@@ -25,7 +41,13 @@
 }
 
 .ui-segmented.borderless {
-    border: 0;
+    padding: 0;
+    background: none;
+    clip-path: none;
+
+    &::before {
+        display: none;
+    }
 
     .segment {
         border-left: 0;
@@ -44,12 +66,14 @@
     min-height: var(--control-height);
     padding: var(--space-1) var(--space-4);
     border: 0;
-    border-left: 1px solid var(--border-color);
-    background-color: var(--bg-color);
+    border-left: 1px solid color-mix(in srgb, var(--accent-color) 40%, transparent);
+    background-color: transparent;
     color: var(--fg-color);
+    font-family: var(--font-display);
     font-size: var(--font-size-md);
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: var(--letter-spacing-caps);
+    letter-spacing: 0.08em;
     cursor: pointer;
     transition:
         background-color var(--duration-base),

@@ -1,24 +1,54 @@
+@use '../../../styles/hud-mixins' as hud;
+
+// The standard button: outlined, chamfered on two corners (the element is the stroke, ::before the
+// fill). `primary` fills it with the accent.
 .ui-standard-btn {
-    border: 1px solid var(--border-color);
-    color: var(--fg-color);
-    background-color: var(--bg-color);
-    text-transform: uppercase;
-    padding: var(--space-2) var(--space-4);
-    font-size: var(--font-size-md);
+    --cut: 9px;
+    --line: 1px;
+    --stroke: var(--accent-color);
+    --fill: var(--bg-container-color);
+
+    position: relative;
+    isolation: isolate;
     width: 100%;
     min-height: var(--control-height);
+    padding: var(--space-2) var(--space-4);
+    border: 0;
+    background: var(--stroke);
+    color: var(--accent-color);
+    font-family: var(--font-display);
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    @include hud.shape(var(--cut), var(--cut));
 
-    &:hover {
-        background-color: var(--surface-active);
+    &::before {
+        content: '';
+        position: absolute;
+        inset: var(--line);
+        z-index: -1;
+        background: var(--fill);
+        transition: background-color var(--duration-fast);
+        @include hud.shape(calc(var(--cut) - var(--line) * 0.586), calc(var(--cut) - var(--line) * 0.586));
+    }
+
+    &:hover:not(:disabled)::before {
+        background: color-mix(in srgb, var(--accent-color) 18%, var(--bg-container-color));
+    }
+
+    &.primary {
+        --fill: var(--accent-color);
         color: var(--on-accent);
-        cursor: pointer;
-        transition: background-color var(--duration-base), color var(--duration-base);
+
+        &:hover:not(:disabled)::before {
+            background: color-mix(in srgb, var(--accent-color) 82%, white);
+        }
     }
 
     &:disabled {
-        background-color: var(--bg-color-muted);
-        color: var(--fg-color-muted);
-        border-color: var(--fg-color);
+        opacity: .4;
         cursor: not-allowed;
     }
 }
@@ -34,6 +64,9 @@
 }
 
 .small {
+    --cut: 6px;
+
+    min-height: 0;
     padding: calc(var(--space-1) / 2) var(--space-2);
     font-size: var(--font-size-xs);
 
