@@ -1,3 +1,5 @@
+@use '../../../../styles/breakpoints' as bp;
+
 .reset-span {
     display: block;
     &:hover {
@@ -15,6 +17,16 @@ select {
     display: flex;
     gap: 8px;
     margin: 8px 0;
+
+    // mobile: the buttons one under the other, each as wide as the dialog
+    @include bp.mobile {
+        flex-direction: column;
+    }
+}
+
+.admin-link {
+    display: block;
+    margin-bottom: var(--space-3);
 }
 
 .option-group {

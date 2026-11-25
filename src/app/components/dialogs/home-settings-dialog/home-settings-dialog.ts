@@ -2,7 +2,7 @@ import { Component, computed, inject } from '@angular/core';
 import { CardTranslationService } from '../../../services/card-translation-service';
 import { NotificationService } from '../../../services/notification-service';
 import { I18nService, Lang, SUPPORTED_LANGS } from '../../../i18n/i18n-service';
-import { SegmentedOption, UIButton, UiDialogContainer, UiSegmented } from '../../../ui';
+import { SegmentedOption, UIButton, UiDialogContainer, UiField, UiSegmented, UiToggle } from '../../../ui';
 import { ThemeService } from '../../../services/theme-service';
 import { APP_VERSION } from '../../../const/appVersion';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
@@ -20,7 +20,7 @@ import { CardBackPicker } from '../../card-back-picker/card-back-picker';
 
 @Component({
   selector: 'app-home-settings-dialog',
-  imports: [TranslatePipe, UiDialogContainer, UIButton, UiSegmented, CardBackPicker, FormsModule, ReactiveFormsModule, FactionLabelPipe],
+  imports: [TranslatePipe, UiDialogContainer, UIButton, UiField, UiSegmented, UiToggle, CardBackPicker, FormsModule, ReactiveFormsModule, FactionLabelPipe],
   templateUrl: './home-settings-dialog.html',
   styleUrl: './home-settings-dialog.scss',
 })

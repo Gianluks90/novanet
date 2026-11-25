@@ -40,16 +40,27 @@
     }
     <p class="p-subtitle">{{ 'homeSettingsDialog.appOptions' | t }}</p>
     <!-- <p>No app options at the moment.</p> -->
-    <div class="option-group">
-        <span class="option-label">{{ 'header.language' | t }}</span>
-        <app-ui-segmented [options]="languageOptions" [value]="i18n.lang()" [fill]="true"
-            groupLabel="header.language" (valueChange)="setLang($event)"></app-ui-segmented>
-    </div>
-    <div class="option-group">
-        <span class="option-label">{{ 'homeSettingsDialog.theme' | t }}</span>
-        <app-ui-segmented [options]="themeOptions" [value]="theme.theme()" [fill]="true"
-            groupLabel="homeSettingsDialog.theme" (valueChange)="setTheme($event)"></app-ui-segmented>
-    </div>
+    <app-ui-field label="header.language" forId="language-select">
+        <select id="language-select" (change)="setLang($any($event.target).value)">
+            @for (o of languageOptions; track o.value) {
+                <option [value]="o.value" [selected]="i18n.lang() === o.value">{{ o.label | t }}</option>
+            }
+        </select>
+    </app-ui-field>
+    @if (i18n.lang() !== 'en') {
+        <div class="option-group">
+            <app-ui-toggle label="homeSettingsDialog.translateCards" [value]="translations.enabled()"
+                (valueChange)="translations.setEnabled($event)"></app-ui-toggle>
+            <span class="field-hint">{{ 'homeSettingsDialog.translateCardsHint' | t }}</span>
+        </div>
+    }
+    <app-ui-field label="homeSettingsDialog.theme" forId="theme-select">
+        <select id="theme-select" (change)="setTheme($any($event.target).value)">
+            @for (o of themeOptions; track o.value) {
+                <option [value]="o.value" [selected]="theme.theme() === o.value">{{ o.label | t }}</option>
+            }
+        </select>
+    </app-ui-field>
     <div class="option-group">
         <span class="option-label">{{ 'homeSettingsDialog.accentColor' | t }}</span>
         <app-ui-segmented [options]="accentOptions()" [value]="theme.accentId()" [fill]="true"
@@ -60,7 +71,7 @@
         <span class="option-label">{{ 'homeSettingsDialog.cardBacks' | t }}</span>
         @for (side of backSides; track side) {
             <span class="field-hint">{{ (side === 'runner' ? 'cardBack.runner' : 'cardBack.corp') | t }}</span>
-            <app-card-back-picker [side]="side" [value]="cardBacks.preferredId(side)"
+            <app-card-back-picker [side]="side" [carousel]="true" [value]="cardBacks.preferredId(side)"
                 (valueChange)="cardBacks.setPreferred(side, $event!)"></app-card-back-picker>
         }
         <span class="field-hint">{{ 'homeSettingsDialog.cardBacksHint' | t }}</span>
@@ -72,13 +83,15 @@
         <app-ui-button [text]="'importButton' | t" icon="upload" (click)="fileInput.click()"></app-ui-button>
         <input #fileInput type="file" accept="application/json,.json" hidden (change)="importTranslations($event)">
     </div>
-    <div dialog-actions-container>
-        @if(data.user && data.user.role === 'admin') {
-            <a href="https://console.firebase.google.com/project/novanet-2026/overview" target="_blank" rel="noopener">
-                <app-ui-button text="Firebase" icon="local_fire_department"></app-ui-button>
-            </a>
-        }
-        <app-ui-button [text]="'saveChangesButton' | t" icon="save" [disabled]="!form.valid || form.pristine" (click)="onSubmit()"></app-ui-button>
-        <app-ui-button [text]="'closeButton' | t" icon="close" (click)="dialogRef.close()"></app-ui-button>
-    </div>
+    @if (data.user && data.user.role === 'admin') {
+        <p class="p-subtitle">{{ 'homeSettingsDialog.admin' | t }}</p>
+        <a class="admin-link" href="https://console.firebase.google.com/project/novanet-2026/overview" target="_blank" rel="noopener">
+            <app-ui-button text="Firebase" icon="local_fire_department"></app-ui-button>
+        </a>
+    }
+    @if (data.user) {
+        <div dialog-actions-container>
+            <app-ui-button [text]="'saveChangesButton' | t" icon="save" [disabled]="!form.valid || form.pristine" (click)="onSubmit()"></app-ui-button>
+        </div>
+    }
 </app-ui-dialog-container>

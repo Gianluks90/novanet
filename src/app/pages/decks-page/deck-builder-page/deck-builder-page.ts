@@ -607,16 +607,13 @@ export class DeckBuilderPage implements AfterViewInit {
       }));
   }
 
-  /** `null`: follow the app language (translated unless it is English); the button overrides it. */
-  private translatedOverride: boolean | null = null;
-
-  /** Card titles and texts in the app language (when translations exist) or English only. */
+  /** Card titles and texts in the app language (when translations exist) or English only: the device setting. */
   public get showTranslated(): boolean {
-    return this.translatedOverride ?? this.locale !== 'en';
+    return this.locale !== 'en' && this.translations.enabled();
   }
 
   public toggleTranslated() {
-    this.translatedOverride = !this.showTranslated;
+    this.translations.setEnabled(!this.translations.enabled());
   }
 
   /** How the deck's cards are shown; remembered on this device. */

@@ -4,6 +4,25 @@
     gap: var(--space-3);
 }
 
+// one row that scrolls sideways, snapping to the thumbnails; no scrollbar
+.picker.carousel {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    .option {
+        flex: 0 0 88px;
+        scroll-snap-align: start;
+    }
+}
+
 .option {
     display: flex;
     flex-direction: column;

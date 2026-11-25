@@ -20,6 +20,15 @@ export class CardBackPicker {
   public side = input.required<'runner' | 'corp'>();
   public value = model<string | null>(null);
   public allowDefault = input<boolean>(false);
+  /** One horizontal row that scrolls (no scrollbar) instead of wrapping onto several rows. */
+  public carousel = input<boolean>(false);
+
+  /** Carousel with a mouse: the wheel scrolls it sideways. */
+  public onWheel(event: WheelEvent, el: HTMLElement): void {
+    if (!this.carousel() || Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+    el.scrollLeft += event.deltaY;
+    event.preventDefault();
+  }
 
   public options = computed(() => this.service.backs(this.side()));
   /** The player's preferred back for the side (what a deck without a choice shows). */

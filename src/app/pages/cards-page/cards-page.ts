@@ -70,7 +70,7 @@ export class CardsPage {
   private i18n = inject(I18nService);
   private dialog = inject(Dialog);
   public viewport = inject(ViewportService);
-  private translations = inject(CardTranslationService);
+  public translations = inject(CardTranslationService);
   public get locale(): string { return this.i18n.lang(); }
 
   /** Thumbnail resolution matching the grid zoom (card widths: ~75-110px, 100-150px, 170-250px, 220px+). */
@@ -96,14 +96,13 @@ export class CardsPage {
     faction: 'all',
     side: 'all',
     type: 'all',
-    translated: 'none' as 'none' | 'only',
     cost: null as number | null
   };
 
   /** How many of the filters besides the search text are not at their default (shown on the mobile toggle). */
   public get activeFilters(): number {
     const f = this.filters;
-    return [f.cost !== null, f.pack !== 'all', f.faction !== 'all', f.side !== 'all', f.type !== 'all', f.translated === 'only']
+    return [f.cost !== null, f.pack !== 'all', f.faction !== 'all', f.side !== 'all', f.type !== 'all']
       .filter(Boolean).length;
   }
 
@@ -113,7 +112,7 @@ export class CardsPage {
     public firebase: FirebaseService,
     private notification: NotificationService,
     private cardService: CardService) {
-    // Translations load lazily: re-apply the filters (title search / "translated only") once they are in.
+    // Translations load lazily: re-apply the filters (title search) once they are in or the setting changes.
     effect(() => {
       this.translations.revision();
       if (this.allCards.length) {
@@ -157,11 +156,6 @@ export class CardsPage {
   /** Credits for the images, the data and the translations. */
   openAttribution() {
     this.dialog.open(AttributionDialog, { ...DIALOGS_CONFIG });
-  }
-
-  setTranslatedOnly(only: boolean) {
-    this.filters.translated = only ? 'only' : 'none';
-    this.applyFilters();
   }
 
   zoomRotation() {
@@ -319,11 +313,6 @@ export class CardsPage {
       ) {
         return false;
       }
-      if (this.filters.translated === 'only') {
-        if (!this.translations.translation(card.id)?.title) {
-          return false;
-        }
-      }
       if (
         this.filters.pack !== 'all' &&
         card.card_set_id !== this.filters.pack
@@ -368,7 +357,6 @@ export class CardsPage {
       side: 'all',
       type: 'all',
       cost: null,
-      translated: 'none'
     };
 
     this.sortBy = 'default';

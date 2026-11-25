@@ -9,6 +9,8 @@ type LanguageData = Record<string, CardTranslation>;
 /** Languages that have a machine-translated layer (`translations/machine/<lang>.json`). */
 const MACHINE_LANGS = ['it'];
 
+const TRANSLATIONS_ENABLED_KEY = 'cardTranslations';
+
 /** A translation written by the user, kept on top of the official files. */
 export interface UserTranslation extends CardTranslation {
   updatedAt: string;
@@ -44,11 +46,23 @@ export class CardTranslationService {
   private user = signal<UserData>({});
   private loading = new Set<string>();
 
+  /**
+   * Device setting (kept in localStorage): show the cards translated into the app language, or
+   * always in English. Not a filter: it applies to every page and survives reloads.
+   */
+  public readonly enabled = signal(localStorage.getItem(TRANSLATIONS_ENABLED_KEY) !== 'off');
+
+  public setEnabled(on: boolean): void {
+    localStorage.setItem(TRANSLATIONS_ENABLED_KEY, on ? 'on' : 'off');
+    this.enabled.set(on);
+  }
+
   /** Official translations (by card id) for the current language; undefined for English or while loading. */
   public readonly active = computed<LanguageData | undefined>(() => this.languages()[this.i18n.lang()]);
 
   /** Changes whenever anything that affects the translations of the current language changes. */
   public readonly revision = computed(() => [
+    this.enabled(),
     this.active(),
     this.machineData()[this.i18n.lang()],
     this.user()[this.i18n.lang()],
@@ -72,6 +86,7 @@ export class CardTranslationService {
 
   /** Effective translation for the current language (personal fields override official ones). */
   public translation(cardId: string): CardTranslation | undefined {
+    if (!this.enabled()) return undefined;
     const lang = this.i18n.lang();
     const official = this.languages()[lang]?.[cardId];
     const mine = this.user()[lang]?.[cardId];

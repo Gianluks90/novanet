@@ -85,10 +85,12 @@
                 }
                 <button type="button" [innerHTML]="'cardsPage.sortSortByFound' | t: [(sortBy | sortByLabel), cards.length]" class="control-container sort-control" (click)="sortRotation()"></button>
                 <span class="control-container found-count">{{ 'cardsPage.found' | t: [cards.length] }}</span>
+                @if (locale !== 'en') {
                 <div class="control-container translated-control">
-                    <app-ui-toggle label="cardsPage.translatedOnly" [value]="filters.translated === 'only'"
-                        (valueChange)="setTranslatedOnly($event)"></app-ui-toggle>
+                    <app-ui-toggle label="homeSettingsDialog.translateCards" [value]="translations.enabled()"
+                        (valueChange)="translations.setEnabled($event)"></app-ui-toggle>
                 </div>
+                }
             </div>
             <div #grid class="cards-container" [class.small-size]="zoomLevel === 'small-size'"
                 [class.medium-size]="zoomLevel === 'medium-size'" [class.large-size]="zoomLevel === 'large-size'"
@@ -106,11 +108,13 @@
                     }
                 }
             </div>
-            <button type="button" class="translate-circle" [class.active]="filters.translated === 'only'"
-                [attr.aria-pressed]="filters.translated === 'only'" [attr.aria-label]="'cardsPage.translatedOnly' | t"
-                [title]="'cardsPage.translatedOnly' | t" (click)="setTranslatedOnly(filters.translated !== 'only')">
+            @if (locale !== 'en') {
+            <button type="button" class="translate-circle" [class.active]="translations.enabled()"
+                [attr.aria-pressed]="translations.enabled()" [attr.aria-label]="'homeSettingsDialog.translateCards' | t"
+                [title]="'homeSettingsDialog.translateCards' | t" (click)="translations.setEnabled(!translations.enabled())">
                 <span class="material-symbols-rounded" aria-hidden="true">translate</span>
             </button>
+            }
             <div class="footer-container">
                 <button type="button" class="info-circle" [attr.aria-label]="'cardsPage.attribution' | t"
                     [title]="'cardsPage.attribution' | t" (click)="openAttribution()">
