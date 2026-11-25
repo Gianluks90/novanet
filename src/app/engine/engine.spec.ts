@@ -340,7 +340,7 @@ describe('runs and breach', () => {
     let s = scenario({
       active: 'runner',
       runner: { credits: 3 },
-      corp: { servers: { remote1: { root: ['asset-t3'] } } },
+      corp: { credits: 0, servers: { remote1: { root: ['asset-t3'] } } },
     });
     s = play(s, 'run', { server: 'remote1' });
     s = play(s, 'continue');
@@ -356,7 +356,7 @@ describe('runs and breach', () => {
     let s = scenario({
       active: 'runner',
       runner: { credits: 3 },
-      corp: { servers: { remote1: { root: ['asset-t3'] } } },
+      corp: { credits: 0, servers: { remote1: { root: ['asset-t3'] } } },
     });
     s = play(s, 'run', { server: 'remote1' });
     s = play(s, 'continue');
@@ -366,7 +366,7 @@ describe('runs and breach', () => {
     let poor = scenario({
       active: 'runner',
       runner: { credits: 2 },
-      corp: { servers: { remote1: { root: ['asset-t3'] } } },
+      corp: { credits: 0, servers: { remote1: { root: ['asset-t3'] } } },
     });
     poor = play(poor, 'run', { server: 'remote1' });
     poor = play(poor, 'continue');
@@ -378,7 +378,7 @@ describe('runs and breach', () => {
     let s = scenario({
       active: 'runner',
       runner: { credits: 0 },
-      corp: { servers: { remote1: { root: ['agenda-3-2', 'asset-t9'] } } },
+      corp: { credits: 0, servers: { remote1: { root: ['agenda-3-2', 'asset-t9'] } } },
     });
     s = play(s, 'run', { server: 'remote1' });
     s = play(s, 'continue');
@@ -391,7 +391,7 @@ describe('runs and breach', () => {
   it('R&D and root cards can be accessed in the Runner\'s chosen order', () => {
     let s = scenario({
       active: 'runner',
-      corp: { deck: ['agenda-3-2'], servers: { rd: { root: ['upgrade-t2'] } } },
+      corp: { credits: 0, deck: ['agenda-3-2'], servers: { rd: { root: ['upgrade-t2'] } } },
       runner: { credits: 0 },
     });
     s = play(s, 'run', { server: 'rd' });
@@ -434,7 +434,7 @@ describe('runs and breach', () => {
     let s = scenario({
       active: 'runner',
       runner: { credits: 1 },
-      corp: { badPublicity: 2, servers: { remote1: { root: ['asset-t3'] } } },
+      corp: { credits: 0, badPublicity: 2, servers: { remote1: { root: ['asset-t3'] } } },
     });
     s = play(s, 'run', { server: 'remote1' });
     expect(s.players.runner.fund).toBe(2);
@@ -448,7 +448,7 @@ describe('runs and breach', () => {
   it('passes through unrezzed ice and lets the Runner jack out after each one', () => {
     let s = scenario({
       active: 'runner',
-      corp: { deck: ['agenda-3-2'], servers: { rd: { ice: ['ice-a', 'ice-b'] } } },
+      corp: { credits: 0, deck: ['agenda-3-2'], servers: { rd: { ice: ['ice-a', 'ice-b'] } } },
     });
     s = play(s, 'run', { server: 'rd' });
     expect(s.run).toMatchObject({ phase: 'movement', position: 0, passedIce: true });
@@ -462,7 +462,7 @@ describe('runs and breach', () => {
   it('jacking out after ice ends the run unsuccessfully with no breach', () => {
     let s = scenario({
       active: 'runner',
-      corp: { deck: ['agenda-3-2'], servers: { rd: { ice: ['ice-a'] } } },
+      corp: { credits: 0, deck: ['agenda-3-2'], servers: { rd: { ice: ['ice-a'] } } },
     });
     s = play(s, 'run', { server: 'rd' });
     s = play(s, 'jackOut');

@@ -58,6 +58,8 @@ export interface CardObject {
   /** Corp installed cards: faceup = rezzed/active. Archives: faceup or facedown. Runner: always up. */
   faceUp: boolean;
   counters: { advancement: number; virus: number; power: number; agenda: number };
+  /** Temporary strength modifiers (e.g. an icebreaker's boost) with their duration. */
+  strengthMods: { amount: number; until: 'encounter' | 'run' }[];
 }
 
 /** Server ids: the three centrals and `remote1`, `remote2`, … */
@@ -79,7 +81,19 @@ export interface PlayerState {
   mulliganDone: boolean;
 }
 
-export type RunPhase = 'approach' | 'movement' | 'success';
+export type RunPhase =
+  | 'initiation'
+  | 'approach'
+  | 'encounter'
+  | 'movement'
+  | 'server'
+  | 'success';
+
+export interface EncounterState {
+  ice: ObjectId;
+  /** Per subroutine (in order): broken during this encounter. */
+  broken: boolean[];
+}
 
 export interface RunState {
   server: ServerId;
@@ -89,6 +103,9 @@ export interface RunState {
   /** The run arrived at the Movement Phase after passing a piece of ice. */
   passedIce: boolean;
   successful: boolean;
+  /** The Corp has passed priority in the current (R) window. */
+  windowPassed: boolean;
+  encounter: EncounterState | null;
 }
 
 export interface BreachState {
@@ -108,7 +125,9 @@ export type PendingKind =
   | 'movement'
   | 'access'
   | 'trash'
-  | 'memory';
+  | 'memory'
+  | 'rez'
+  | 'encounter';
 
 export interface Pending {
   player: Side;
@@ -170,7 +189,13 @@ export type Command =
   | { type: 'trash'; player: 'runner' }
   | { type: 'decline'; player: 'runner' }
   // memory over the limit: trash an installed program
-  | { type: 'trashProgram'; player: 'runner'; objectId: ObjectId };
+  | { type: 'trashProgram'; player: 'runner'; objectId: ObjectId }
+  // rezzing (free action in the Corp's turn; in the (R) windows of a run)
+  | { type: 'rez'; player: 'corp'; objectId: ObjectId }
+  | { type: 'pass'; player: 'corp' }
+  // encounter: an icebreaker's ability (index into its definition's abilities)
+  | { type: 'break'; player: 'runner'; objectId: ObjectId; ability: number; subroutine?: number }
+  | { type: 'boost'; player: 'runner'; objectId: ObjectId; ability: number };
 
 export type CommandType = Command['type'];
 

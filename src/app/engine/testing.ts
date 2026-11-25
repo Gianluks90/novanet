@@ -2,6 +2,7 @@
  * Helpers for engine tests: a small generic catalog, a scenario builder and a `play` function that
  * finds a legal command by (type, card) and applies it.
  */
+import { defineCard, endTheRun, netDamage } from './definitions';
 import { advance, apply, emptyState, legalCommands } from './engine';
 import { CardData, Catalog, Command, GameState, ObjectId, ServerId, Side } from './types';
 import {
@@ -33,8 +34,23 @@ const cards: CardData[] = [
   { cardId: 'hw', title: 'Hardware', side: 'runner', type: 'hardware', cost: 1 },
   { cardId: 'res', title: 'Resource', side: 'runner', type: 'resource', cost: 1 },
   { cardId: 'event-1', title: 'Event 1', side: 'runner', type: 'event', cost: 1 },
+  { cardId: 'barrier-2', title: 'Barrier 2', side: 'corp', type: 'ice', cost: 3, strength: 2, subtypes: ['barrier'] },
+  { cardId: 'gate-1', title: 'Code Gate 1', side: 'corp', type: 'ice', cost: 2, strength: 1, subtypes: ['code_gate'] },
+  { cardId: 'ice-blank', title: 'Ice no subs', side: 'corp', type: 'ice', cost: 1, strength: 0, subtypes: ['sentry'] },
+  { cardId: 'fracter', title: 'Fracter', side: 'runner', type: 'program', cost: 1, memory: 1, strength: 1, subtypes: ['icebreaker', 'fracter'] },
+  { cardId: 'ai-all', title: 'AI', side: 'runner', type: 'program', cost: 1, memory: 1, strength: 3, subtypes: ['icebreaker', 'ai'] },
   { cardId: 'event-0', title: 'Event 0', side: 'runner', type: 'event', cost: 0 },
 ];
+
+defineCard('barrier-2', { subroutines: [endTheRun, netDamage(1)] });
+defineCard('gate-1', { subroutines: [endTheRun] });
+defineCard('fracter', {
+  abilities: [
+    { kind: 'break', breaks: 'barrier', subs: 1, cost: 1 },
+    { kind: 'boost', cost: 1, amount: 1, until: 'encounter' },
+  ],
+});
+defineCard('ai-all', { abilities: [{ kind: 'break', breaks: 'any', subs: 'all', cost: 2 }] });
 
 export const TEST_CATALOG: Catalog = Object.fromEntries(cards.map((c) => [c.cardId, c]));
 

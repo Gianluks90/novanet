@@ -20,6 +20,7 @@ import {
   Side,
   other,
 } from './types';
+import { EffectContext, IcebreakerAbility, getDefinition } from './definitions';
 import {
   Z,
   createObject,
@@ -129,6 +130,74 @@ function iceCount(s: GameState, server: ServerId): number {
   return zone(s, Z.ice(server)).length;
 }
 
+/** Current strength: printed value plus the temporary modifiers. */
+export function strengthOf(s: GameState, cat: Catalog, id: ObjectId): number {
+  const base = data(s, cat, id).strength ?? 0;
+  return obj(s, id).strengthMods.reduce((n, m) => n + m.amount, base);
+}
+
+const rezCost = (s: GameState, cat: Catalog, id: ObjectId) => data(s, cat, id).cost ?? 0;
+
+const isUnrezzedRezzable = (s: GameState, cat: Catalog, id: ObjectId, withIce: boolean) => {
+  const o = obj(s, id);
+  if (o.faceUp || !(o.zone.startsWith('root:') || o.zone.startsWith('ice:'))) return false;
+  const t = data(s, cat, id).type;
+  return t === 'asset' || t === 'upgrade' || (withIce && t === 'ice');
+};
+
+/** Cards the Corp could rez now (assets/upgrades; the ice at the run position if `withIce`). */
+function rezOptions(s: GameState, cat: Catalog, withIce: boolean): ObjectId[] {
+  const credits = s.players.corp.credits;
+  const out = installedCorpCards(s).filter(
+    (id) => isUnrezzedRezzable(s, cat, id, false) && rezCost(s, cat, id) <= credits,
+  );
+  if (withIce && s.run) {
+    const ice = zone(s, Z.ice(s.run.server))[s.run.position];
+    if (ice !== undefined && isUnrezzedRezzable(s, cat, ice, true) && rezCost(s, cat, ice) <= credits) {
+      out.push(ice);
+    }
+  }
+  return out;
+}
+
+function breaksIce(cat: Catalog, ab: IcebreakerAbility, s: GameState, ice: ObjectId): boolean {
+  if (ab.kind !== 'break') return false;
+  return ab.breaks === 'any' || (data(s, cat, ice).subtypes ?? []).includes(ab.breaks);
+}
+
+/** Runner commands during the 'encounter' window (always includes `continue`). */
+function encounterCommands(s: GameState, cat: Catalog): Command[] {
+  const enc = s.run?.encounter;
+  const out: Command[] = [{ type: 'continue', player: 'runner' }];
+  if (!enc || !(enc.ice in s.objects)) return out;
+  const unbroken = enc.broken.flatMap((b, i) => (b ? [] : [i]));
+  if (unbroken.length === 0) return out;
+  const credits = availableCredits(s, 'runner');
+  const iceStrength = strengthOf(s, cat, enc.ice);
+  for (const breaker of zone(s, Z.rig)) {
+    const abilities = getDefinition(obj(s, breaker).cardId).abilities ?? [];
+    const strength = strengthOf(s, cat, breaker);
+    const canBreakThis = abilities.some((a) => breaksIce(cat, a, s, enc.ice));
+    abilities.forEach((ab, ability) => {
+      if (ab.cost > credits) return;
+      if (ab.kind === 'break') {
+        if (!breaksIce(cat, ab, s, enc.ice) || strength < iceStrength) return;
+        if (ab.subs === 'all') {
+          out.push({ type: 'break', player: 'runner', objectId: breaker, ability });
+        } else {
+          for (const subroutine of unbroken) {
+            out.push({ type: 'break', player: 'runner', objectId: breaker, ability, subroutine });
+          }
+        }
+      } else if (canBreakThis && strength < iceStrength) {
+        // Only boosts that are still needed to interface with this ice.
+        out.push({ type: 'boost', player: 'runner', objectId: breaker, ability });
+      }
+    });
+  }
+  return out;
+}
+
 // ---- Legal commands -------------------------------------------------------------------------
 
 function sameCommand(a: Command, b: Command): boolean {
@@ -212,6 +281,13 @@ function actionCommands(s: GameState, cat: Catalog): Command[] {
     }
   }
 
+  // Rezzing assets/upgrades is free (no click) in the Corp's own turn.
+  if (player === 'corp') {
+    for (const id of rezOptions(s, cat, false)) {
+      out.push({ type: 'rez', player: 'corp', objectId: id });
+    }
+  }
+
   // Scoring does not cost a click: it can happen whenever the Corp has priority in its turn.
   if (player === 'corp') {
     for (const sv of servers(s).filter((x) => !isCentral(x))) {
@@ -278,6 +354,15 @@ export function legalCommands(s: GameState, cat: Catalog): Command[] {
         { type: 'trash', player: 'runner' },
         { type: 'decline', player: 'runner' },
       ];
+    case 'rez':
+      return [
+        ...rezOptions(s, cat, s.run?.phase === 'approach').map(
+          (objectId) => ({ type: 'rez', player: 'corp', objectId }) as Command,
+        ),
+        { type: 'pass', player: 'corp' } as Command,
+      ];
+    case 'encounter':
+      return encounterCommands(s, cat);
     case 'memory':
       return zone(s, Z.rig)
         .filter((id) => data(s, cat, id).type === 'program')
@@ -427,13 +512,14 @@ function execute(s: GameState, cat: Catalog, c: Command, events: GameEvent[]): v
       spendClicks(s, 'runner', 1);
       s.run = {
         server: c.server,
-        phase: 'movement',
+        phase: 'initiation',
         position: 0,
         passedIce: false,
         successful: false,
+        windowPassed: false,
+        encounter: null,
       };
       s.players.runner.fund = s.players.corp.badPublicity;
-      s.run.phase = iceCount(s, c.server) > 0 ? 'approach' : 'movement';
       events.push({ type: 'runBegins', player: 'runner', server: c.server });
       return;
     case 'endTurn':
@@ -447,7 +533,45 @@ function execute(s: GameState, cat: Catalog, c: Command, events: GameEvent[]): v
       return;
     }
     case 'continue':
-      return moveInward(s, events);
+      if (s.pending?.kind === 'encounter') return finishEncounter(s, cat, events);
+      return moveInward(s);
+    case 'rez':
+      pay(s, 'corp', rezCost(s, cat, c.objectId));
+      obj(s, c.objectId).faceUp = true;
+      events.push({
+        type: 'rez',
+        player: 'corp',
+        objectId: c.objectId,
+        cardId: obj(s, c.objectId).cardId,
+      });
+      return;
+    case 'pass':
+      if (s.run) s.run.windowPassed = true;
+      return;
+    case 'break': {
+      const enc = s.run?.encounter;
+      if (!enc) return;
+      const ab = (getDefinition(obj(s, c.objectId).cardId).abilities ?? [])[c.ability];
+      if (!ab || ab.kind !== 'break') return;
+      pay(s, 'runner', ab.cost);
+      if (c.subroutine === undefined) enc.broken = enc.broken.map(() => true);
+      else enc.broken[c.subroutine] = true;
+      events.push({
+        type: 'break',
+        player: 'runner',
+        objectId: c.objectId,
+        detail: String(c.subroutine ?? 'all'),
+      });
+      return;
+    }
+    case 'boost': {
+      const ab = (getDefinition(obj(s, c.objectId).cardId).abilities ?? [])[c.ability];
+      if (!ab || ab.kind !== 'boost') return;
+      pay(s, 'runner', ab.cost);
+      obj(s, c.objectId).strengthMods.push({ amount: ab.amount, until: ab.until });
+      events.push({ type: 'boost', player: 'runner', objectId: c.objectId, amount: ab.amount });
+      return;
+    }
     case 'jackOut':
       events.push({ type: 'jackOut', player: 'runner' });
       return endRun(s, events);
@@ -520,20 +644,59 @@ function install(
 
 // ---- Runs and breach ------------------------------------------------------------------------
 
-function moveInward(s: GameState, events: GameEvent[]): void {
+type Run = NonNullable<GameState['run']>;
+
+function setPhase(run: Run, phase: Run['phase']) {
+  run.phase = phase;
+  run.windowPassed = false;
+}
+
+function moveInward(s: GameState): void {
   const run = s.run;
   if (!run) return;
   if (run.passedIce) run.position += 1;
   run.passedIce = false;
-  if (run.position < iceCount(s, run.server)) {
-    run.phase = 'approach';
-    return;
+  setPhase(run, run.position < iceCount(s, run.server) ? 'approach' : 'server');
+}
+
+function makeContext(s: GameState, events: GameEvent[], source: ObjectId): EffectContext {
+  return {
+    state: s,
+    events,
+    source,
+    endTheRun: () => {
+      events.push({ type: 'endTheRun', player: 'corp', objectId: source });
+      endRun(s, events);
+    },
+    gainCredits: (side, amount) => {
+      s.players[side].credits += amount;
+      events.push({ type: 'gainCredits', player: side, amount });
+    },
+    damage: (kind, amount) => dealDamage(s, kind, amount, events),
+  };
+}
+
+/** The Corp resolves each unbroken subroutine in order, then the Runner passes the ice. */
+function finishEncounter(s: GameState, cat: Catalog, events: GameEvent[]): void {
+  const run = s.run;
+  const enc = run?.encounter;
+  if (!run || !enc) return;
+  if (enc.ice in s.objects) {
+    const subs = getDefinition(obj(s, enc.ice).cardId).subroutines ?? [];
+    for (let i = 0; i < subs.length; i++) {
+      if (enc.broken[i]) continue;
+      events.push({ type: 'subroutine', player: 'corp', objectId: enc.ice, detail: subs[i].text });
+      subs[i].resolve(makeContext(s, events, enc.ice));
+      if (!s.run || s.status === 'ended') return; // the run ended
+    }
   }
-  // The Runner approaches the server and the run is successful.
-  run.phase = 'success';
-  run.successful = true;
-  events.push({ type: 'runSuccessful', player: 'runner', server: run.server });
-  beginBreach(s, events);
+  run.encounter = null;
+  for (const o of Object.values(s.objects)) {
+    o.strengthMods = o.strengthMods.filter((m) => m.until !== 'encounter');
+  }
+  run.passedIce = true;
+  setPhase(run, 'movement');
+  events.push({ type: 'passIce', player: 'runner', objectId: enc.ice, server: run.server });
 }
 
 function beginBreach(s: GameState, events: GameEvent[]): void {
@@ -588,6 +751,7 @@ function endRun(s: GameState, events: GameEvent[]): void {
   if (!run) return;
   s.players.runner.fund = 0;
   s.players.runner.extraAccess = 0;
+  for (const o of Object.values(s.objects)) o.strengthMods = [];
   s.breach = null;
   s.run = null;
   events.push({
@@ -672,21 +836,57 @@ export function advance(s: GameState, cat: Catalog, events: GameEvent[]): void {
         endRun(s, events);
         continue;
       }
+      if (run.phase === 'initiation') {
+        if (!run.windowPassed && rezOptions(s, cat, false).length > 0) {
+          s.pending = { player: 'corp', kind: 'rez' };
+          return;
+        }
+        setPhase(run, iceCount(s, run.server) > 0 ? 'approach' : 'movement');
+        continue;
+      }
       if (run.phase === 'approach') {
         const ice = zone(s, Z.ice(run.server))[run.position];
         if (ice === undefined) {
-          run.phase = 'movement';
           run.passedIce = false;
+          setPhase(run, 'movement');
           continue;
         }
-        if (obj(s, ice).faceUp) {
-          // Rezzing and encounters arrive with phase 2 of the engine plan.
-          throw new Error('Encounters with rezzed ice are not implemented yet');
+        if (!run.windowPassed && rezOptions(s, cat, true).length > 0) {
+          s.pending = { player: 'corp', kind: 'rez' };
+          return;
         }
-        // Unrezzed ice: nothing happens at the approach, the Runner passes it.
+        if (obj(s, ice).faceUp) {
+          run.encounter = {
+            ice,
+            broken: (getDefinition(obj(s, ice).cardId).subroutines ?? []).map(() => false),
+          };
+          events.push({ type: 'encounter', player: 'runner', objectId: ice, server: run.server });
+          setPhase(run, 'encounter');
+          continue;
+        }
+        // Unrezzed ice: the Runner passes it without an encounter.
         events.push({ type: 'passIce', player: 'runner', objectId: ice, server: run.server });
-        run.phase = 'movement';
         run.passedIce = true;
+        setPhase(run, 'movement');
+        continue;
+      }
+      if (run.phase === 'encounter') {
+        if (encounterCommands(s, cat).length > 1) {
+          s.pending = { player: 'runner', kind: 'encounter' };
+          return;
+        }
+        finishEncounter(s, cat, events);
+        continue;
+      }
+      if (run.phase === 'server') {
+        if (!run.windowPassed && rezOptions(s, cat, false).length > 0) {
+          s.pending = { player: 'corp', kind: 'rez' };
+          return;
+        }
+        run.phase = 'success';
+        run.successful = true;
+        events.push({ type: 'runSuccessful', player: 'runner', server: run.server });
+        beginBreach(s, events);
         continue;
       }
       s.pending = { player: 'runner', kind: 'movement' };

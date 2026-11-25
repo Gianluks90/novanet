@@ -114,6 +114,7 @@ export function createObject(
     zone: zoneKey,
     faceUp: opts.faceUp ?? false,
     counters: { advancement: 0, virus: 0, power: 0, agenda: 0 },
+    strengthMods: [],
   };
   const arr = (state.zones[zoneKey] ??= []);
   if (opts.position === 'bottom') arr.push(objectId);
