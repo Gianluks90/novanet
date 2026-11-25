@@ -24,6 +24,8 @@ export const Z = {
   rig: 'runner.rig',
   /** Events/operations while they resolve. */
   play: 'play',
+  /** Cards removed from the game. */
+  removed: 'removed',
   runnerIdentity: 'runner.identity',
   ice: (server: ServerId) => `ice:${server}`,
   root: (server: ServerId) => `root:${server}`,
@@ -115,7 +117,7 @@ export function createObject(
     owner,
     zone: zoneKey,
     faceUp: opts.faceUp ?? false,
-    counters: { advancement: 0, virus: 0, power: 0, agenda: 0 },
+    counters: { advancement: 0, virus: 0, power: 0, agenda: 0, credit: 0 },
     strengthMods: [],
   };
   const arr = (state.zones[zoneKey] ??= []);

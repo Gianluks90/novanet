@@ -57,7 +57,11 @@ export interface CardObject {
   zone: string;
   /** Corp installed cards: faceup = rezzed/active. Archives: faceup or facedown. Runner: always up. */
   faceUp: boolean;
-  counters: { advancement: number; virus: number; power: number; agenda: number };
+  counters: { advancement: number; virus: number; power: number; agenda: number; credit: number };
+  /** Runner programs installed on ice: the ice they are hosted on. */
+  host?: ObjectId;
+  /** Credits were loaded onto the card (it is trashed when they run out). */
+  loaded?: boolean;
   /** Temporary strength modifiers (e.g. an icebreaker's boost) with their duration. */
   strengthMods: { amount: number; until: 'encounter' | 'run' }[];
 }
@@ -105,6 +109,18 @@ export interface RunState {
   /** The run arrived at the Movement Phase after passing a piece of ice. */
   passedIce: boolean;
   successful: boolean;
+  /** Effects from the card that started the run, applied when it succeeds. */
+  hooks: { cardId: string; key: string; source: ObjectId }[];
+  /** Added to the rez cost of every piece of ice during this run. */
+  iceRezMod: number;
+  /** Cards accessed / agendas stolen during this run. */
+  accesses: number;
+  stolen: number;
+  /** The Runner cannot steal or trash Corp cards for the rest of the run. */
+  noSteal: boolean;
+  /** Cards to trash when the run ends. */
+  trashAtEnd: ObjectId[];
+  breached: boolean;
   /** The Corp has passed priority in the current (R) window. */
   windowPassed: boolean;
   encounter: EncounterState | null;
@@ -146,13 +162,15 @@ export interface TurnState {
 
 /** An effect being resolved: its position and the answers given so far (all JSON). */
 export interface Resolving {
-  kind: 'play' | 'score' | 'steal' | 'subroutine';
+  kind: 'play' | 'score' | 'steal' | 'subroutine' | 'trigger' | 'ability' | 'hook';
   cardId: string;
   source: ObjectId;
   /** Controller of the ability (the card's owner). */
   player: Side;
-  /** Subroutine index for kind 'subroutine'. */
+  /** Subroutine / trigger / ability index, or hook key. */
   key: string;
+  /** The game event that fired a trigger. */
+  event?: GameEvent;
   step: number;
   vars: Record<string, string | number | boolean | null>;
 }
@@ -171,6 +189,10 @@ export interface TurnStats {
   cannotScore: boolean;
   /** Objects installed this turn. */
   installed: ObjectId[];
+  /** Once-per-turn abilities already used (`<objectId>:<kind><n>`). */
+  fired: string[];
+  /** Servers the Runner has run on this turn. */
+  serversRun: ServerId[];
 }
 
 export type WinReason = 'agenda' | 'flatline' | 'decked' | 'draw';
@@ -188,6 +210,8 @@ export interface GameState {
   turn: TurnState;
   run: RunState | null;
   breach: BreachState | null;
+  /** Cards whose abilities still apply for the rest of the run after being trashed (Persistent). */
+  persist: { objectId: ObjectId; cardId: string; server: ServerId }[];
   /** Effects waiting to resolve or paused for a choice (head first). */
   effects: Resolving[];
   choice: ChoiceSpec | null;
@@ -205,7 +229,8 @@ export type Command =
   // basic actions (both)
   | { type: 'gainCredit'; player: Side }
   | { type: 'drawCard'; player: Side }
-  | { type: 'install'; player: Side; objectId: ObjectId; server?: ServerId | 'new' }
+  | { type: 'install'; player: Side; objectId: ObjectId; server?: ServerId | 'new'; host?: ObjectId }
+  | { type: 'useAbility'; player: Side; objectId: ObjectId; ability: number }
   | { type: 'play'; player: Side; objectId: ObjectId }
   // corp
   | { type: 'advance'; player: 'corp'; objectId: ObjectId }
@@ -246,6 +271,7 @@ export interface GameEvent {
   amount?: number;
   server?: ServerId;
   detail?: string;
+  data?: Record<string, number | string | boolean>;
 }
 
 export type ApplyResult =

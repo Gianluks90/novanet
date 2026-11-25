@@ -25,7 +25,10 @@ import {
 import {
   BreakAbility,
   ChoiceOption,
+  Cost,
+  CounterType,
   EffectContext,
+  RunOptions,
   IcebreakerAbility,
   Instruction,
   getDefinition,
@@ -40,10 +43,12 @@ import {
   handZone,
   identityZone,
   isCentral,
+  isInstalledZone,
   moveObject,
   obj,
   randomInt,
   scoreZone,
+  serverOfZone,
   servers,
   shuffleZone,
   zone,
@@ -85,6 +90,8 @@ const newTurnStats = (): TurnStats => ({
   scoredPoints: 0,
   cannotScore: false,
   installed: [],
+  fired: [],
+  serversRun: [],
 });
 
 /** An empty game state (no cards), the base of `createGame` and of test scenarios. */
@@ -100,6 +107,7 @@ export function emptyState(seed = 1): GameState {
     turn: { number: 0, active: 'corp', phase: 'action' },
     run: null,
     breach: null,
+    persist: [],
     effects: [],
     choice: null,
     turnStats: newTurnStats(),
@@ -168,14 +176,20 @@ function iceCount(s: GameState, server: ServerId): number {
 /** Current strength: printed value plus the temporary modifiers. */
 export function strengthOf(s: GameState, cat: Catalog, id: ObjectId): number {
   const base = data(s, cat, id).strength ?? 0;
-  return obj(s, id).strengthMods.reduce((n, m) => n + m.amount, base);
+  const bonus = getDefinition(obj(s, id).cardId).strengthBonus?.(s, cat, id) ?? 0;
+  return obj(s, id).strengthMods.reduce((n, m) => n + m.amount, base + bonus);
 }
 
 /** Install cost for the Runner, with the card's own modifier. */
 export function runnerInstallCost(s: GameState, cat: Catalog, id: ObjectId): number {
   const d = data(s, cat, id);
   const mod = getDefinition(d.cardId).installCostMod?.(s, cat) ?? 0;
-  return Math.max(0, (d.cost ?? 0) + mod);
+  const discounts = zone(s, Z.rig).reduce(
+    (n, other) =>
+      n + (getDefinition(obj(s, other).cardId).installDiscount?.(s, cat, id, other) ?? 0),
+    0,
+  );
+  return Math.max(0, (d.cost ?? 0) + mod - discounts);
 }
 
 const abilityCost = (s: GameState, ab: BreakAbility) =>
@@ -193,7 +207,10 @@ function subsets(items: number[], max: number): number[][] {
   return out;
 }
 
-const rezCost = (s: GameState, cat: Catalog, id: ObjectId) => data(s, cat, id).cost ?? 0;
+const rezCost = (s: GameState, cat: Catalog, id: ObjectId) => {
+  const d = data(s, cat, id);
+  return (d.cost ?? 0) + (d.type === 'ice' && s.run ? s.run.iceRezMod : 0);
+};
 
 const isUnrezzedRezzable = (s: GameState, cat: Catalog, id: ObjectId, withIce: boolean) => {
   const o = obj(s, id);
@@ -222,23 +239,66 @@ function breaksIce(cat: Catalog, ab: IcebreakerAbility, s: GameState, ice: Objec
   return ab.breaks === 'any' || (data(s, cat, ice).subtypes ?? []).includes(ab.breaks);
 }
 
+function canPayCost(s: GameState, player: Side, id: ObjectId, cost: Cost): boolean {
+  if ((cost.clicks ?? 0) > s.players[player].clicks) return false;
+  if ((cost.credits ?? 0) > availableCredits(s, player)) return false;
+  if (cost.hosted && obj(s, id).counters[cost.hosted.counter] < cost.hosted.n) return false;
+  return true;
+}
+
+function payCost(s: GameState, player: Side, id: ObjectId, cost: Cost): void {
+  spendClicks(s, player, cost.clicks ?? 0);
+  pay(s, player, cost.credits ?? 0);
+  if (cost.hosted) obj(s, id).counters[cost.hosted.counter] -= cost.hosted.n;
+  if (cost.trashSelf) discardObject(s, id, obj(s, id).faceUp);
+  else if (cost.removeFromGame) moveObject(s, id, Z.removed, { faceUp: true });
+}
+
+const firedKey = (id: ObjectId, kind: string, n: number | string) => `${id}:${kind}${n}`;
+
+/** `useAbility` commands for the paid abilities of `player`'s active cards usable `during`. */
+function paidAbilityCommands(
+  s: GameState,
+  cat: Catalog,
+  player: Side,
+  during: 'action' | 'encounter' | 'access',
+): Command[] {
+  const out: Command[] = [];
+  for (const id of activeObjects(s, player)) {
+    (getDefinition(obj(s, id).cardId).paid ?? []).forEach((ab, ability) => {
+      if ((ab.during ?? 'action') !== during) return;
+      if (ab.oncePerTurn && s.turnStats.fired.includes(firedKey(id, 'ab', ability))) return;
+      if (!canPayCost(s, player, id, ab.cost)) return;
+      if (ab.canUse && !ab.canUse(s, cat, id)) return;
+      out.push({ type: 'useAbility', player, objectId: id, ability });
+    });
+  }
+  return out;
+}
+
 /** Runner commands during the 'encounter' window (always includes `continue`). */
 function encounterCommands(s: GameState, cat: Catalog): Command[] {
   const enc = s.run?.encounter;
   const out: Command[] = [{ type: 'continue', player: 'runner' }];
   if (!enc || !(enc.ice in s.objects)) return out;
+  out.push(...paidAbilityCommands(s, cat, 'runner', 'encounter'));
   const unbroken = enc.broken.flatMap((b, i) => (b ? [] : [i]));
   if (unbroken.length === 0) return out;
   const credits = availableCredits(s, 'runner');
+  const clicks = s.players.runner.clicks;
   const iceStrength = strengthOf(s, cat, enc.ice);
-  for (const breaker of zone(s, Z.rig)) {
+  for (const breaker of [...zone(s, Z.rig), enc.ice]) {
+    const isIce = breaker === enc.ice;
     const abilities = getDefinition(obj(s, breaker).cardId).abilities ?? [];
     const strength = strengthOf(s, cat, breaker);
     const canBreakThis = abilities.some((a) => breaksIce(cat, a, s, enc.ice));
     abilities.forEach((ab, ability) => {
       if (ab.kind === 'break') {
-        if (abilityCost(s, ab) > credits) return;
-        if (!breaksIce(cat, ab, s, enc.ice) || strength < iceStrength) return;
+        if (ab.scope === 'self' ? !isIce : ab.scope === 'host' ? obj(s, breaker).host !== enc.ice : isIce) return;
+        if (abilityCost(s, ab) > credits || (ab.clicks ?? 0) > clicks) return;
+        if (ab.hostedCounter && obj(s, breaker).counters[ab.hostedCounter] < 1) return;
+        if (!breaksIce(cat, ab, s, enc.ice)) return;
+        if (!ab.ignoreStrength && strength < iceStrength) return;
         if (ab.subs === 'all') {
           out.push({ type: 'break', player: 'runner', objectId: breaker, ability });
         } else {
@@ -246,13 +306,24 @@ function encounterCommands(s: GameState, cat: Catalog): Command[] {
             out.push({ type: 'break', player: 'runner', objectId: breaker, ability, subroutines });
           }
         }
-      } else if (ab.cost <= credits && canBreakThis && strength < iceStrength) {
+      } else if (!isIce && ab.cost <= credits && canBreakThis && strength < iceStrength) {
         // Only boosts that are still needed to interface with this ice.
         out.push({ type: 'boost', player: 'runner', objectId: breaker, ability });
       }
     });
   }
   return out;
+}
+
+/** Can the Runner trash the card being accessed by paying its trash cost? */
+function canTrashNormally(s: GameState, cat: Catalog, id: ObjectId): boolean {
+  const d = data(s, cat, id);
+  return (
+    !s.run?.noSteal &&
+    obj(s, id).zone.startsWith('root:') &&
+    d.trashCost !== undefined &&
+    availableCredits(s, 'runner') >= d.trashCost
+  );
 }
 
 // ---- Legal commands -------------------------------------------------------------------------
@@ -323,7 +394,13 @@ function actionCommands(s: GameState, cat: Catalog): Command[] {
           (d.type === 'program' || d.type === 'hardware' || d.type === 'resource') &&
           runnerInstallCost(s, cat, id) <= credits
         ) {
-          out.push({ type: 'install', player, objectId: id });
+          if (getDefinition(d.cardId).installOnIce) {
+            for (const host of installedCorpCards(s).filter((x) => data(s, cat, x).type === 'ice')) {
+              out.push({ type: 'install', player, objectId: id, host });
+            }
+          } else {
+            out.push({ type: 'install', player, objectId: id });
+          }
         }
       }
     }
@@ -345,6 +422,8 @@ function actionCommands(s: GameState, cat: Catalog): Command[] {
       if (credits >= 2 && p.tags >= 1) out.push({ type: 'removeTag', player: 'runner' });
     }
   }
+
+  out.push(...paidAbilityCommands(s, cat, player, 'action'));
 
   // Rezzing assets/upgrades is free (no click) in the Corp's own turn.
   if (player === 'corp') {
@@ -414,11 +493,14 @@ export function legalCommands(s: GameState, cat: Catalog): Command[] {
       return accessCandidates(s).map(
         (c) => ({ type: 'access', player: 'runner', objectId: c.objectId }) as Command,
       );
-    case 'trash':
-      return [
-        { type: 'trash', player: 'runner' },
-        { type: 'decline', player: 'runner' },
-      ];
+    case 'trash': {
+      const cur = s.breach?.current;
+      const out: Command[] = [{ type: 'decline', player: 'runner' }];
+      if (cur !== null && cur !== undefined && canTrashNormally(s, cat, cur)) {
+        out.unshift({ type: 'trash', player: 'runner' });
+      }
+      return [...out, ...paidAbilityCommands(s, cat, 'runner', 'access')];
+    }
     case 'rez':
       return [
         ...rezOptions(s, cat, s.run?.phase === 'approach').map(
@@ -539,10 +621,21 @@ function execute(s: GameState, cat: Catalog, c: Command, events: GameEvent[]): v
       s.players[c.player].credits += 1;
       events.push({ type: 'gainCredits', player: c.player, amount: 1 });
       return;
-    case 'drawCard':
+    case 'drawCard': {
       spendClicks(s, c.player, 1);
-      draw(s, c.player, 1, events);
+      let n = 1;
+      if (c.player === 'runner') {
+        for (const id of zone(s, Z.rig)) {
+          const bonus = getDefinition(obj(s, id).cardId).basicDrawBonus ?? 0;
+          if (bonus > 0 && !s.turnStats.fired.includes(firedKey(id, 'draw', 0))) {
+            s.turnStats.fired.push(firedKey(id, 'draw', 0));
+            n += bonus;
+          }
+        }
+      }
+      draw(s, c.player, n, events);
       return;
+    }
     case 'install':
       return install(s, cat, c, events);
     case 'play': {
@@ -557,15 +650,26 @@ function execute(s: GameState, cat: Catalog, c: Command, events: GameEvent[]): v
     case 'advance':
       spendClicks(s, 'corp', 1);
       pay(s, 'corp', 1);
+      events.push({
+        type: 'advance',
+        player: 'corp',
+        objectId: c.objectId,
+        amount: obj(s, c.objectId).counters.advancement,
+      });
       obj(s, c.objectId).counters.advancement += 1;
-      events.push({ type: 'advance', player: 'corp', objectId: c.objectId });
       return;
     case 'score': {
       const o = obj(s, c.objectId);
       const d = data(s, cat, c.objectId);
       const id = moveObject(s, c.objectId, scoreZone('corp'), { faceUp: true });
       s.turnStats.scoredPoints += d.agendaPoints ?? 0;
-      events.push({ type: 'score', player: 'corp', objectId: id, cardId: o.cardId });
+      events.push({
+        type: 'score',
+        player: 'corp',
+        objectId: id,
+        cardId: o.cardId,
+        server: serverOfZone(o.zone) ?? undefined,
+      });
       queueEffect(s, 'score', id);
       return;
     }
@@ -588,17 +692,7 @@ function execute(s: GameState, cat: Catalog, c: Command, events: GameEvent[]): v
       return;
     case 'run':
       spendClicks(s, 'runner', 1);
-      s.run = {
-        server: c.server,
-        phase: 'initiation',
-        position: 0,
-        passedIce: false,
-        successful: false,
-        windowPassed: false,
-        encounter: null,
-      };
-      s.players.runner.fund = s.players.corp.badPublicity;
-      events.push({ type: 'runBegins', player: 'runner', server: c.server });
+      beginRun(s, c.server, events, {});
       return;
     case 'endTurn':
       s.players[c.player].clicks = 0;
@@ -612,7 +706,7 @@ function execute(s: GameState, cat: Catalog, c: Command, events: GameEvent[]): v
     }
     case 'continue':
       if (s.pending?.kind === 'encounter') return finishEncounter(s);
-      return moveInward(s);
+      return moveInward(s, events);
     case 'rez':
       pay(s, 'corp', rezCost(s, cat, c.objectId));
       obj(s, c.objectId).faceUp = true;
@@ -632,6 +726,9 @@ function execute(s: GameState, cat: Catalog, c: Command, events: GameEvent[]): v
       const ab = (getDefinition(obj(s, c.objectId).cardId).abilities ?? [])[c.ability];
       if (!ab || ab.kind !== 'break') return;
       pay(s, 'runner', abilityCost(s, ab));
+      spendClicks(s, 'runner', ab.clicks ?? 0);
+      if (ab.hostedCounter) obj(s, c.objectId).counters[ab.hostedCounter] -= 1;
+      if (ab.trashAtRunEnd && s.run) s.run.trashAtEnd.push(c.objectId);
       if (c.subroutines === undefined) enc.broken = enc.broken.map(() => true);
       else for (const i of c.subroutines) enc.broken[i] = true;
       events.push({
@@ -652,8 +749,9 @@ function execute(s: GameState, cat: Catalog, c: Command, events: GameEvent[]): v
       const ab = (getDefinition(obj(s, c.objectId).cardId).abilities ?? [])[c.ability];
       if (!ab || ab.kind !== 'boost') return;
       pay(s, 'runner', ab.cost);
-      obj(s, c.objectId).strengthMods.push({ amount: ab.amount, until: ab.until });
-      events.push({ type: 'boost', player: 'runner', objectId: c.objectId, amount: ab.amount });
+      const amount = typeof ab.amount === 'function' ? ab.amount(s, cat, c.objectId) : ab.amount;
+      obj(s, c.objectId).strengthMods.push({ amount, until: ab.until });
+      events.push({ type: 'boost', player: 'runner', objectId: c.objectId, amount });
       return;
     }
     case 'jackOut':
@@ -664,13 +762,28 @@ function execute(s: GameState, cat: Catalog, c: Command, events: GameEvent[]): v
     case 'trash': {
       const b = s.breach;
       if (!b || b.current === null) return;
-      const d = data(s, cat, b.current);
-      pay(s, 'runner', d.trashCost ?? 0);
-      const cardId = obj(s, b.current).cardId;
-      // Cards the Runner trashes are visible: they go to Archives faceup.
-      discardObject(s, b.current, true);
-      events.push({ type: 'trash', player: 'runner', cardId });
-      b.current = null;
+      pay(s, 'runner', data(s, cat, b.current).trashCost ?? 0);
+      trashAccessedCard(s, events);
+      return;
+    }
+    case 'useAbility': {
+      const o = obj(s, c.objectId);
+      const ab = (getDefinition(o.cardId).paid ?? [])[c.ability];
+      if (!ab) return;
+      const snap: Record<string, number> = {};
+      for (const [k, v] of Object.entries(o.counters)) snap[`snap.${k}`] = v;
+      payCost(s, c.player, c.objectId, ab.cost);
+      if (ab.oncePerTurn) s.turnStats.fired.push(firedKey(c.objectId, 'ab', c.ability));
+      events.push({ type: 'useAbility', player: c.player, objectId: c.objectId, cardId: o.cardId, detail: ab.name });
+      s.effects.push({
+        kind: 'ability',
+        cardId: o.cardId,
+        source: c.objectId,
+        player: c.player,
+        key: String(c.ability),
+        step: 0,
+        vars: snap,
+      });
       return;
     }
     case 'decline':
@@ -691,24 +804,45 @@ function install(
   c: Extract<Command, { type: 'install' }>,
   events: GameEvent[],
 ): void {
-  const d = data(s, cat, c.objectId);
   spendClicks(s, c.player, 1);
+  doInstall(s, cat, c.player, c.objectId, c.server, c.host, events, false);
+}
 
-  if (c.player === 'runner') {
-    pay(s, 'runner', runnerInstallCost(s, cat, c.objectId));
-    const id = moveObject(s, c.objectId, Z.rig, { faceUp: true });
+/** Installation (CR 8.5.16) without the click: used by the basic action and by card effects. */
+function doInstall(
+  s: GameState,
+  cat: Catalog,
+  player: Side,
+  objectId: ObjectId,
+  destination: ServerId | 'new' | undefined,
+  host: ObjectId | undefined,
+  events: GameEvent[],
+  ignoreCost: boolean,
+): void {
+  const d = data(s, cat, objectId);
+
+  if (player === 'runner') {
+    if (!ignoreCost) pay(s, 'runner', runnerInstallCost(s, cat, objectId));
+    // Only one console per player: the new one replaces the old.
+    if ((d.subtypes ?? []).includes('console')) {
+      for (const other of [...zone(s, Z.rig)]) {
+        if ((data(s, cat, other).subtypes ?? []).includes('console')) discardObject(s, other);
+      }
+    }
+    const id = moveObject(s, objectId, Z.rig, { faceUp: true });
+    if (host !== undefined) obj(s, id).host = host;
     s.turnStats.installed.push(id);
-    events.push({ type: 'install', player: 'runner', objectId: id, cardId: d.cardId });
+    events.push({ type: 'install', player: 'runner', objectId: id, cardId: d.cardId, detail: d.type });
     return;
   }
 
-  let server = c.server as ServerId;
+  let server = destination as ServerId;
   if (server === 'new') server = `remote${++s.nextRemote}`;
 
   if (d.type === 'ice') {
     // Install cost: 1 credit per ice already protecting the server (CR 8.5.x).
-    pay(s, 'corp', iceCount(s, server));
-    const id = moveObject(s, c.objectId, Z.ice(server), { faceUp: false, position: 'top' });
+    if (!ignoreCost) pay(s, 'corp', iceCount(s, server));
+    const id = moveObject(s, objectId, Z.ice(server), { faceUp: false, position: 'top' });
     s.turnStats.installed.push(id);
     events.push({ type: 'install', player: 'corp', objectId: id, cardId: d.cardId, server });
     return;
@@ -724,7 +858,7 @@ function install(
       }
     }
   }
-  const id = moveObject(s, c.objectId, Z.root(server), { faceUp: false, position: 'top' });
+  const id = moveObject(s, objectId, Z.root(server), { faceUp: false, position: 'top' });
   s.turnStats.installed.push(id);
   events.push({ type: 'install', player: 'corp', objectId: id, cardId: d.cardId, server });
 }
@@ -738,12 +872,77 @@ function setPhase(run: Run, phase: Run['phase']) {
   run.windowPassed = false;
 }
 
-function moveInward(s: GameState): void {
+function moveInward(s: GameState, events: GameEvent[]): void {
   const run = s.run;
   if (!run) return;
   if (run.passedIce) run.position += 1;
   run.passedIce = false;
-  setPhase(run, run.position < iceCount(s, run.server) ? 'approach' : 'server');
+  if (run.position < iceCount(s, run.server)) setPhase(run, 'approach');
+  else {
+    setPhase(run, 'server');
+    events.push({ type: 'approachServer', player: 'runner', server: run.server });
+  }
+}
+
+/** Where an installed card is: the server of its `root:`/`ice:` zone, or null. */
+const serverOfObject = (s: GameState, id: ObjectId): ServerId | null =>
+  id in s.objects ? serverOfZone(obj(s, id).zone) : null;
+
+/**
+ * Conditional abilities (CR 9.6): for each new game event, every active card (the active
+ * player's first) whose trigger matches queues its effect.
+ */
+function processTriggers(s: GameState, cat: Catalog, events: GameEvent[], from: number): void {
+  for (let i = from; i < events.length; i++) {
+    const ev = events[i];
+    const cards = [...activeObjects(s, s.turn.active), ...activeObjects(s, other(s.turn.active))];
+    const candidates: {
+      id: ObjectId;
+      cardId: string;
+      owner: Side;
+      server: ServerId | null;
+      unrezzedOnly?: boolean;
+    }[] =
+      cards.map((id) => ({
+        id,
+        cardId: obj(s, id).cardId,
+        owner: obj(s, id).owner,
+        server: serverOfObject(s, id),
+      }));
+    for (const id of installedCorpCards(s)) {
+      const o = obj(s, id);
+      if (!o.faceUp) {
+        candidates.push({ id, cardId: o.cardId, owner: o.owner, server: serverOfObject(s, id), unrezzedOnly: true });
+      }
+    }
+    for (const p of s.persist) {
+      candidates.push({ id: p.objectId, cardId: p.cardId, owner: 'corp', server: p.server });
+    }
+    for (const cand of candidates) {
+      (getDefinition(cand.cardId).triggers ?? []).forEach((t, idx) => {
+        const types = Array.isArray(t.on) ? t.on : [t.on];
+        if (cand.unrezzedOnly && !t.whileUnrezzed) return;
+        if (!types.includes(ev.type)) return;
+        if (t.when && !t.when({ s, cat, ev, self: cand.id, server: cand.server })) return;
+        if (t.oncePerTurn) {
+          const key = firedKey(cand.id, 'tr', idx);
+          if (s.turnStats.fired.includes(key)) return;
+          s.turnStats.fired.push(key);
+        }
+        s.effects.push({
+          kind: 'trigger',
+          cardId: cand.cardId,
+          source: cand.id,
+          player: cand.owner,
+          key: String(idx),
+          step: 0,
+          vars: {},
+          event: ev,
+        });
+      });
+    }
+    if (ev.type === 'runEnds' || ev.type === 'runUnsuccessful') s.persist = [];
+  }
 }
 
 function queueEffect(s: GameState, kind: Resolving['kind'], source: ObjectId, key = ''): void {
@@ -773,6 +972,14 @@ function stepsOf(eff: Resolving): Instruction[] {
       return def.onSteal ?? [];
     case 'subroutine':
       return def.subroutines?.[Number(eff.key)]?.steps ?? [];
+    case 'trigger':
+      return eff.key === 'empty'
+        ? (def.emptySteps ?? [(c) => c.trash(c.source)])
+        : (def.triggers?.[Number(eff.key)]?.steps ?? []);
+    case 'ability':
+      return def.paid?.[Number(eff.key)]?.steps ?? [];
+    case 'hook':
+      return def.runHooks?.[eff.key]?.onSuccess ?? [];
   }
 }
 
@@ -791,6 +998,7 @@ function makeContext(
     source: eff.source,
     player: eff.player,
     vars: eff.vars,
+    event: eff.event,
     choose(name: string, who: Side, options: ChoiceOption[]) {
       if (name in eff.vars) return eff.vars[name] as number | string | null;
       if (options.length === 0) {
@@ -856,11 +1064,59 @@ function makeContext(
       obj(s, id).faceUp = true;
       events.push({ type: 'rez', player: 'corp', objectId: id, cardId: obj(s, id).cardId });
     },
-    installRunner: (id) => {
-      pay(s, 'runner', runnerInstallCost(s, cat, id));
-      const nid = moveObject(s, id, Z.rig, { faceUp: true });
+    derez: (id) => {
+      obj(s, id).faceUp = false;
+    },
+    installRunner: (id) => doInstall(s, cat, 'runner', id, undefined, undefined, events, false),
+    installCorp: (id, server, o) => doInstall(s, cat, 'corp', id, server, undefined, events, !!o?.ignoreCost),
+    installIceInward: (id) => {
+      const run = s.run;
+      if (!run) return;
+      const nid = moveObject(s, id, Z.ice(run.server), { faceUp: false, position: 'bottom' });
+      const arr = zone(s, Z.ice(run.server));
+      arr.splice(arr.indexOf(nid), 1);
+      arr.splice(run.position + 1, 0, nid);
       s.turnStats.installed.push(nid);
-      events.push({ type: 'install', player: 'runner', objectId: nid, cardId: obj(s, nid).cardId });
+      events.push({ type: 'install', player: 'corp', objectId: nid, cardId: obj(s, nid).cardId, server: run.server });
+    },
+    swapIce: (a, b) => {
+      const oa = obj(s, a);
+      const ob = obj(s, b);
+      const za = s.zones[oa.zone];
+      const zb = s.zones[ob.zone];
+      const ia = za.indexOf(a);
+      const ib = zb.indexOf(b);
+      za[ia] = b;
+      zb[ib] = a;
+      [oa.zone, ob.zone] = [ob.zone, oa.zone];
+    },
+    addCounter: (id, type: CounterType, amount) => {
+      const o = obj(s, id);
+      o.counters[type] = Math.max(0, o.counters[type] + amount);
+    },
+    counter: (id, type: CounterType) => obj(s, id).counters[type],
+    sourceCounter: (type: CounterType) =>
+      eff.source in s.objects
+        ? obj(s, eff.source).counters[type]
+        : Number(eff.vars[`snap.${type}`] ?? 0),
+    load: (id, amount) => {
+      const o = obj(s, id);
+      o.counters.credit = amount;
+      o.loaded = true;
+    },
+    takeCredits: (id, amount) => {
+      const o = obj(s, id);
+      const taken = Math.min(amount, o.counters.credit);
+      o.counters.credit -= taken;
+      s.players[o.owner].credits += taken;
+      events.push({ type: 'gainCredits', player: o.owner, amount: taken });
+      return taken;
+    },
+    startRun: (server, o?: RunOptions) =>
+      beginRun(s, server, events, { ...o, cardId: eff.cardId, source: eff.source }),
+    trashAccessed: () => trashAccessedCard(s, events),
+    forbidStealAndTrash: () => {
+      if (s.run) s.run.noSteal = true;
     },
     zone: (key) => [...zone(s, key)],
     cardOf: (id) => {
@@ -931,7 +1187,16 @@ function beginBreach(s: GameState, events: GameEvent[]): void {
   if (server === 'archives') {
     for (const id of zone(s, Z.archives)) obj(s, id).faceUp = true;
   }
-  const accesses = server === 'hq' || server === 'rd' ? 1 + s.players.runner.extraAccess : 0;
+  let bonus = 0;
+  for (const id of zone(s, Z.rig)) {
+    const n = getDefinition(obj(s, id).cardId).breachBonus?.(s, server, id) ?? 0;
+    if (n > 0 && !s.turnStats.fired.includes(firedKey(id, 'breach', 0))) {
+      s.turnStats.fired.push(firedKey(id, 'breach', 0));
+      bonus += n;
+    }
+  }
+  const accesses =
+    server === 'hq' || server === 'rd' ? 1 + s.players.runner.extraAccess + bonus : 0;
   s.breach = { server, slotsLeft: accesses, accessed: [], current: null };
   events.push({ type: 'breach', player: 'runner', server });
 }
@@ -953,23 +1218,37 @@ function doAccess(
     b.slotsLeft -= 1;
   }
   b.accessed.push(id);
+  if (s.run) s.run.accesses += 1;
   const d: CardData = data(s, cat, id);
-  events.push({ type: 'access', player: 'runner', objectId: id, cardId: d.cardId });
+  events.push({ type: 'access', player: 'runner', objectId: id, cardId: d.cardId, server: b.server });
 
+  if (s.run?.noSteal) return;
   if (d.type === 'agenda') {
     const stolen = moveObject(s, id, scoreZone('runner'), { faceUp: true });
-    events.push({ type: 'steal', player: 'runner', objectId: stolen, cardId: d.cardId });
+    if (s.run) s.run.stolen += 1;
+    events.push({ type: 'steal', player: 'runner', objectId: stolen, cardId: d.cardId, server: b.server });
     queueEffect(s, 'steal', stolen);
     return;
   }
-  const installed = obj(s, id).zone.startsWith('root:');
-  if (
-    installed &&
-    d.trashCost !== undefined &&
-    availableCredits(s, 'runner') >= d.trashCost
-  ) {
-    b.current = id;
+  // A card can be trashed by paying its trash cost, or by a mid-access ability.
+  b.current = id;
+  if (!canTrashNormally(s, cat, id) && paidAbilityCommands(s, cat, 'runner', 'access').length === 0) {
+    b.current = null;
   }
+}
+
+/** The Runner trashes the card being accessed (paid or by an ability). */
+function trashAccessedCard(s: GameState, events: GameEvent[]): void {
+  const b = s.breach;
+  if (!b || b.current === null || !(b.current in s.objects)) return;
+  const o = obj(s, b.current);
+  if (getDefinition(o.cardId).triggers?.some((t) => t.persistent)) {
+    s.persist.push({ objectId: o.objectId, cardId: o.cardId, server: b.server });
+  }
+  // Cards the Runner trashes are visible: they go to Archives faceup.
+  discardObject(s, b.current, true);
+  events.push({ type: 'trash', player: 'runner', cardId: o.cardId, detail: 'accessed' });
+  b.current = null;
 }
 
 function endRun(s: GameState, events: GameEvent[]): void {
@@ -977,20 +1256,75 @@ function endRun(s: GameState, events: GameEvent[]): void {
   if (!run) return;
   s.players.runner.fund = 0;
   s.players.runner.extraAccess = 0;
-  s.effects = s.effects.filter((e) => e.kind !== 'subroutine');
+  s.effects = s.effects.filter((e) => e.kind !== 'subroutine' && e.kind !== 'hook');
   for (const o of Object.values(s.objects)) o.strengthMods = [];
+  for (const id of run.trashAtEnd) {
+    if (id in s.objects) {
+      events.push({ type: 'trash', player: 'runner', cardId: obj(s, id).cardId, detail: 'runEnd' });
+      discardObject(s, id);
+    }
+  }
   s.breach = null;
   s.run = null;
   events.push({
     type: run.successful ? 'runEnds' : 'runUnsuccessful',
     player: 'runner',
     server: run.server,
+    data: { accesses: run.accesses, stolen: run.stolen },
   });
+}
+
+/** Starts a run (the click, if any, was paid by the caller). */
+function beginRun(
+  s: GameState,
+  server: ServerId,
+  events: GameEvent[],
+  opts: RunOptions & { cardId?: string; source?: ObjectId },
+): void {
+  s.run = {
+    server,
+    phase: 'initiation',
+    position: 0,
+    passedIce: false,
+    successful: false,
+    hooks: opts.hook && opts.cardId ? [{ cardId: opts.cardId, key: opts.hook, source: opts.source ?? 0 }] : [],
+    iceRezMod: opts.iceRezMod ?? 0,
+    accesses: 0,
+    stolen: 0,
+    noSteal: false,
+    trashAtEnd: [],
+    breached: false,
+    windowPassed: false,
+    encounter: null,
+  };
+  s.players.runner.fund = s.players.corp.badPublicity + (opts.fund ?? 0);
+  s.turnStats.serversRun.push(server);
+  events.push({ type: 'runBegins', player: 'runner', server });
 }
 
 // ---- Game flow ------------------------------------------------------------------------------
 
 function checkpoint(s: GameState, cat: Catalog): void {
+  // Programs hosted on ice that left are trashed.
+  for (const id of [...zone(s, Z.rig)]) {
+    const host = obj(s, id).host;
+    if (host !== undefined && !(host in s.objects)) discardObject(s, id);
+  }
+  // Loaded cards that ran out of credits.
+  for (const o of Object.values(s.objects)) {
+    if (o.loaded && o.counters.credit <= 0 && isInstalledZone(o.zone)) {
+      o.loaded = false;
+      s.effects.push({
+        kind: 'trigger',
+        cardId: o.cardId,
+        source: o.objectId,
+        player: o.owner,
+        key: 'empty',
+        step: 0,
+        vars: {},
+      });
+    }
+  }
   const corp = agendaPoints(s, cat, 'corp') >= AGENDA_POINTS_TO_WIN;
   const runner = agendaPoints(s, cat, 'runner') >= AGENDA_POINTS_TO_WIN;
   if (corp && runner) declareWin(s, 'draw', 'draw');
@@ -1015,10 +1349,16 @@ function startTurn(s: GameState, side: Side, events: GameEvent[]): void {
  * ends. Priority windows without options are passed automatically.
  */
 export function advance(s: GameState, cat: Catalog, events: GameEvent[]): void {
+  let seen = 0;
   for (let guard = 0; guard < 10_000; guard++) {
     s.pending = null;
     checkpoint(s, cat);
     if (s.status === 'ended') return;
+    if (seen < events.length) {
+      const from = seen;
+      seen = events.length;
+      processTriggers(s, cat, events, from);
+    }
 
     if (s.status === 'mulligan') {
       const who: Side | null = !s.players.corp.mulliganDone
@@ -1067,6 +1407,11 @@ export function advance(s: GameState, cat: Catalog, events: GameEvent[]): void {
     if (s.run) {
       const run = s.run;
       if (run.phase === 'success') {
+        if (!run.breached) {
+          run.breached = true;
+          beginBreach(s, events);
+          continue;
+        }
         endRun(s, events);
         continue;
       }
@@ -1128,7 +1473,17 @@ export function advance(s: GameState, cat: Catalog, events: GameEvent[]): void {
         run.successful = true;
         s.turnStats.successfulRun = true;
         events.push({ type: 'runSuccessful', player: 'runner', server: run.server });
-        beginBreach(s, events);
+        for (const h of run.hooks) {
+          s.effects.push({
+            kind: 'hook',
+            cardId: h.cardId,
+            source: h.source,
+            player: 'runner',
+            key: h.key,
+            step: 0,
+            vars: {},
+          });
+        }
         continue;
       }
       s.pending = { player: 'runner', kind: 'movement' };
@@ -1156,6 +1511,7 @@ export function advance(s: GameState, cat: Catalog, events: GameEvent[]): void {
         return;
       }
       s.players[side].clicks = 0;
+      events.push({ type: 'discardPhaseEnds', player: side });
       events.push({ type: 'turnEnds', player: side, amount: s.turn.number });
       startTurn(s, other(side), events);
       continue;

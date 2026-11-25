@@ -477,7 +477,14 @@ describe('runs and breach', () => {
     const b = apply(a.state, { type: 'continue', player: 'runner' }, CAT);
     if (!b.ok) throw new Error(b.error);
     const types = [...a.events, ...b.events].map((e: GameEvent) => e.type);
-    expect(types).toEqual(['runBegins', 'runSuccessful', 'breach', 'access', 'runEnds']);
+    expect(types).toEqual([
+      'runBegins',
+      'approachServer',
+      'runSuccessful',
+      'breach',
+      'access',
+      'runEnds',
+    ]);
   });
 });
 
