@@ -1,3 +1,5 @@
+@use 'breakpoints' as bp;
+
 // =====================================================================
 // NovaNet design tokens
 //
@@ -54,12 +56,31 @@
   // ---- layering ----
   --z-raised: 1;
   --z-sticky: 2;
+  --z-nav: 50;
   --z-overlay: 1000;
 
   // ---- controls ----
   --control-height: 32px;
   --focus-ring-width: 2px;
   --focus-ring-offset: 2px;
+
+  // ---- layout (see styles/_breakpoints.scss: two layouts, mobile <= 1024px and desktop) ----
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  // height of the bottom navigation bar (mobile layout only)
+  --bottom-nav-height: 0px;
+  --header-height: 48px;
+}
+
+// Mobile layout: touch-sized controls and room for the bottom navigation bar.
+@include bp.mobile {
+  :root {
+    --control-height: 44px;
+    // a taller bar, so the 40px avatar is not cramped
+    --header-height: 64px;
+    // 56px of tabs plus the system home indicator area
+    --bottom-nav-height: calc(56px + var(--safe-bottom));
+  }
 }
 
 body {

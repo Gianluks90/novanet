@@ -4,4 +4,7 @@
         [style.-webkit-mask]="'url(./images/logo/novanet.svg) no-repeat center / contain'"></div>
     <p>{{ 'unsupportedPage.title' | t }}</p>
     <p [innerHTML]="'unsupportedPage.message' | t"></p>
+    <div class="back">
+        <app-ui-button [text]="'unsupportedPage.backHome' | t" icon="home" [routerLink]="'/'"></app-ui-button>
+    </div>
 </div>

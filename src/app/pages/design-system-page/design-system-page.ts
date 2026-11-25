@@ -1,5 +1,6 @@
 import { ACCENT_PRESETS } from '../../const/accent-colors';
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
+import { ViewportService } from '../../services/viewport-service';
 import { CdkMenu, CdkMenuItem, CdkMenuTrigger } from '@angular/cdk/menu';
 import { UIButton, UiBadge, UiField, UiIconButton, UiSegmented, UiStepper, UiToggle, SegmentedOption } from '../../ui';
 
@@ -15,6 +16,7 @@ import { UIButton, UiBadge, UiField, UiIconButton, UiSegmented, UiStepper, UiTog
   styleUrl: './design-system-page.scss',
 })
 export class DesignSystemPage {
+  public viewport = inject(ViewportService);
   public colors = [
     { token: '--accent-color', note: 'Signature color: borders, active states, links' },
     { token: '--fg-color', note: 'Text' },

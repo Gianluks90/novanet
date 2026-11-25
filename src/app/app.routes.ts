@@ -9,6 +9,7 @@ export const routes: Routes = [
         path: '',
         title: 'routeTitle.home',
         loadComponent: () => import('./pages/home-page/home-page').then(m => m.HomePage),
+        data: { responsive: true },
         resolve: {
             nrdb: nrdbResolver,
             configs: cardsConfigResolver

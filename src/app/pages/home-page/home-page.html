@@ -1,6 +1,6 @@
 <div class="home-page-main-container">
     <div class="home-page-container">
-        <div class="welcome-container animation-fade-in" [style.animation-delay]="'.5s'">
+        <div class="welcome-container animation-fade-in">
             <div class="side-line"></div>
             <div class="content">
                 <!-- <h1 i18n>Welcome {{firebase.$user() ? 'back' : ''}} to <u>NovaNet</u></h1> -->
@@ -16,27 +16,12 @@
                 <p>{{ 'homePage.novanetIsnTJustA' | t }}</p>
 
                 <p class="disclaimer">{{ 'homePage.novanetIsAnIndependentProject' | t }}</p>
-            </div>
-        </div>
-        <div class="menu-container animation-fade-in" [style.animation-delay]="'1s'">
-            <div class="side-line"></div>
-            <div class="content">
-                <div class="title-container">
-                    <h2>Menu</h2>
-                    <app-ui-icon-button icon="settings" size="sm" [label]="'header.settings' | t" (click)="openDialog()"></app-ui-icon-button>
-                </div>
-                <app-ui-button [text]="'homePage.cards' | t" icon="cards_stack" [routerLink]="'/cards'"></app-ui-button>
-                <app-ui-button [text]="'homePage.deckBuilder' | t" icon="stack_hexagon"
-                    [routerLink]="'/decks/list'"></app-ui-button>
-                <app-ui-button [text]="'homePage.play' | t" [disabled]="true" icon="group"></app-ui-button>
-                <app-ui-button [text]="(firebase.$user() ? 'header.signOut' : 'header.signIn') | t"
-                    [icon]="firebase.$user() ? 'logout' : 'login'" (click)="toggleSession()"></app-ui-button>
                 <p class="version">v {{appVersion}}</p>
             </div>
         </div>
     </div>
     @if(firebase.$user()) {
-    <div class="home-page-user-container animation-fade-in" [style.animation-delay]="'2s'">
+    <div class="home-page-user-container animation-fade-in">
         <div class="side-line"></div>
         <div class="user-content">
             <app-ui-image-container [width]="124" [height]="124"

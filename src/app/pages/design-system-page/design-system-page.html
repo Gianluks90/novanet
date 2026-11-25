@@ -5,6 +5,19 @@
         <code>src/app/ui/</code>.</p>
 
     <section>
+        <h2>Responsive layouts</h2>
+        <p class="p-note">Only two layouts: <strong>mobile</strong> (portrait phones and tablets, width up to 1024px: iPad
+            portrait included) and <strong>desktop</strong> (everything wider, iPad landscape included). The breakpoint
+            lives in <code>src/styles/_breakpoints.scss</code> (<code>bp.mobile</code> / <code>bp.desktop</code> mixins) and
+            <code>src/app/const/viewport.ts</code>; templates that must differ read <code>ViewportService.isMobile()</code>.</p>
+        <p>Current layout: <strong>{{ viewport.isMobile() ? 'mobile' : 'desktop' }}</strong></p>
+        <p class="p-note">Mobile: controls are 44px (<code>--control-height</code>), the main navigation is a bottom tab bar
+            (<code>--bottom-nav-height</code>), dialogs use the whole width, notches are respected
+            (<code>--safe-top</code>, <code>--safe-bottom</code>). A route opts in with <code>data: {{ '{' }} responsive: true {{ '}' }}</code>;
+            the others show a notice on mobile until they are adapted.</p>
+    </section>
+
+    <section>
         <h2>Colors</h2>
         <p class="p-note">Defined per theme on <code>body</code> (<code>.light</code> / <code>.dark</code>). Never use raw hex values in components.</p>
         <div class="swatches">

@@ -6,6 +6,7 @@
     padding: var(--space-2) var(--space-4);
     font-size: var(--font-size-md);
     width: 100%;
+    min-height: var(--control-height);
 
     &:hover {
         background-color: var(--surface-active);

@@ -16,7 +16,17 @@
         height: 128px;
     }
 
-    p, .logo {
+    p {
+        text-align: center;
+    }
+
+    .back {
+        width: 100%;
+        max-width: 280px;
+        margin-top: var(--space-4);
+    }
+
+    p, .logo, .back {
         opacity: 0;
         animation: fadeIn 3s forwards;
     }

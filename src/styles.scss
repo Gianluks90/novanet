@@ -4,6 +4,7 @@
 @use './styles/menu';
 @use './styles/ghost-btn';
 @use './styles/form-feedback';
+@use './styles/breakpoints' as bp;
 
 * {
   font-family: 'Genos', sans-serif;
@@ -112,6 +113,16 @@ p.p-foot-note {
   overflow: auto;
   max-width: 1000px !important;
   max-height: 800px !important;
+}
+
+// On mobile dialogs use the whole width and most of the height.
+@include bp.mobile {
+  .dialog-container,
+  .big-dialog-container {
+    width: 100vw;
+    max-width: 100vw !important;
+    max-height: 90dvh !important;
+  }
 }
 
 .dialog-backdrop {

@@ -1,0 +1,28 @@
+// =====================================================================
+// Layouts
+//
+// The app has two layouts, no more:
+//   - mobile : portrait phones and tablets, up to iPad portrait (width <= 1024px)
+//   - desktop: everything wider (iPad landscape included)
+//
+// Use these mixins instead of raw media queries so the breakpoint lives in one place.
+// The same number is in src/app/const/viewport.ts (used by ViewportService for templates):
+// keep both in sync.
+//
+//   @use '../../../styles/breakpoints' as bp;   // path relative to the component
+//   .thing { ... @include bp.mobile { flex-direction: column; } }
+// =====================================================================
+
+$mobile-max: 1024px;
+
+@mixin mobile {
+  @media (max-width: $mobile-max) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: $mobile-max + 1px) {
+    @content;
+  }
+}

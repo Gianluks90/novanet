@@ -6,15 +6,15 @@
     </a>
 
     <nav class="main-nav">
-        <a class="nav-link" routerLink="/cards" routerLinkActive="active">
+        <a class="nav-link nav-cards" routerLink="/cards" routerLinkActive="active">
             <span class="material-symbols-rounded" aria-hidden="true">cards_stack</span>
             {{ 'nav.cards' | t }}
         </a>
-        <a class="nav-link" routerLink="/decks" routerLinkActive="active">
+        <a class="nav-link nav-decks" routerLink="/decks" routerLinkActive="active">
             <span class="material-symbols-rounded" aria-hidden="true">stack_hexagon</span>
             {{ 'nav.decks' | t }}
         </a>
-        <span class="nav-link disabled" aria-disabled="true">
+        <span class="nav-link nav-play disabled" aria-disabled="true">
             <span class="material-symbols-rounded" aria-hidden="true">group</span>
             {{ 'nav.play' | t }}
             <app-ui-badge [label]="'header.comingSoon' | t"></app-ui-badge>
@@ -38,7 +38,7 @@
             </button>
         }
 
-        <button type="button" class="ghost-btn" (click)="openSettings()"
+        <button type="button" class="ghost-btn settings-btn" (click)="openSettings()"
             [attr.aria-label]="'header.settings' | t" [title]="'header.settings' | t">
             <span class="material-symbols-rounded" aria-hidden="true">settings</span>
         </button>

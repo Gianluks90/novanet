@@ -1,5 +1,9 @@
+@use '../../../styles/breakpoints' as bp;
+
 .header-main-container {
-    height: 48px;
+    // the top safe area (notch) is part of the bar
+    height: calc(var(--header-height) + var(--safe-top));
+    padding-top: var(--safe-top);
     display: flex;
     align-items: center;
     gap: var(--space-5);
@@ -92,4 +96,85 @@
     text-transform: uppercase;
     letter-spacing: var(--letter-spacing-caps);
     white-space: nowrap;
+}
+
+// Mobile layout: the logo and the actions stay on top, the main navigation becomes a bottom tab
+// bar (thumb reach). The disabled "coming soon" badge is dropped to save room.
+@include bp.mobile {
+    .header-main-container {
+        gap: var(--space-3);
+    }
+
+    .action-section {
+        margin-left: auto;
+    }
+
+    // Settings leave the top bar: a round button floating over the tab bar, on the right.
+    .settings-btn {
+        position: fixed;
+        right: var(--space-3);
+        bottom: calc(var(--bottom-nav-height) + var(--space-3));
+        z-index: var(--z-nav);
+        width: 48px;
+        height: 48px;
+        border: 1px solid var(--border-color);
+        border-radius: 50%;
+        background-color: var(--bg-container-color);
+        box-shadow: var(--shadow-md);
+    }
+
+    .sign-in-btn {
+        padding: 0;
+
+        .sign-in-label {
+            display: none;
+        }
+    }
+
+    .main-nav {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: var(--z-nav);
+        box-sizing: border-box;
+        height: var(--bottom-nav-height);
+        // keep the tabs clear of the system home indicator (iPhone)
+        padding-bottom: var(--safe-bottom);
+        gap: 0;
+        background-color: var(--bg-container-color);
+        border-top: 1px solid var(--border-color);
+    }
+
+    .nav-link {
+        flex: 1;
+        flex-direction: column;
+        justify-content: center;
+        gap: 2px;
+        height: 100%;
+        padding: 0 var(--space-1);
+        border-radius: 0;
+        font-size: var(--font-size-xs);
+
+        .material-symbols-rounded {
+            font-size: 1.5rem;
+        }
+
+        app-ui-badge {
+            display: none;
+        }
+    }
+
+    // Tabs: Cards on the left, Play in the middle, Decks on the right.
+    .nav-cards {
+        order: 1;
+    }
+
+    .nav-play {
+        order: 2;
+    }
+
+    .nav-decks {
+        order: 3;
+    }
 }

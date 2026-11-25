@@ -1,3 +1,5 @@
+@use '../../../styles/breakpoints' as bp;
+
 .home-page-main-container {
     display: flex;
     align-items: center;
@@ -39,40 +41,11 @@
             font-size: var(--font-size-xs);
             opacity: .9;
         }
-    }
-}
-
-.menu-container {
-    opacity: 0;
-    width: 100%;
-    height: 200px;
-    min-height: 300px;
-    max-width: 250px;
-    border: 1px solid var(--border-color);
-    display: flex;
-    background-color: var(--bg-container-color);
-    position: relative;
-
-    .content {
-        flex: 1;
-        padding: var(--space-4);
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        gap: var(--space-3);
-
-        &>.title-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
 
         &>.version {
             font-size: var(--font-size-xs);
             opacity: .9;
-            position: absolute;
-            bottom: var(--space-2);
-            right: var(--space-5);
+            text-align: right;
         }
     }
 }
@@ -153,5 +126,52 @@
     to {
         scale: 1;
         opacity: 1;
+    }
+}
+
+// Mobile layout: one column, the cards become siblings so they can be reordered: who you are,
+// then the welcome text. The page scrolls.
+@include bp.mobile {
+    .home-page-main-container {
+        justify-content: flex-start;
+        height: auto;
+        min-height: 100%;
+        padding: var(--space-3);
+        gap: var(--space-3);
+
+        .home-page-container {
+            display: contents;
+        }
+    }
+
+    .home-page-user-container {
+        order: 0;
+        width: 100%;
+        max-width: none;
+        height: auto;
+        min-height: 128px;
+
+        .user-content .inner-container {
+            flex: 1;
+            min-width: 0;
+        }
+    }
+
+    .welcome-container {
+        order: 1;
+        max-width: none;
+        height: auto;
+
+        .content {
+            overflow: visible;
+
+            h1 {
+                font-size: var(--font-size-xl);
+            }
+        }
+    }
+
+    .side-line {
+        width: 8px;
     }
 }
