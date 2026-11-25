@@ -22,6 +22,8 @@ export class CardBackPicker {
   public allowDefault = input<boolean>(false);
   /** One horizontal row that scrolls (no scrollbar) instead of wrapping onto several rows. */
   public carousel = input<boolean>(false);
+  /** Two columns of thumbnails in a box that scrolls vertically (the deck's dialog). */
+  public grid = input<boolean>(false);
 
   /** Carousel with a mouse: the wheel scrolls it sideways. */
   public onWheel(event: WheelEvent, el: HTMLElement): void {

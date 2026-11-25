@@ -42,6 +42,11 @@ export class NrIconsPipe implements PipeTransform {
     if (!text) return '';
 
     return text
+      // the translation files use their own tags: <trace> (a trace test) and <errata>
+      .replace(/<trace>/gi, '<strong class="trace">')
+      .replace(/<\/trace>/gi, '</strong>')
+      .replace(/<errata>/gi, '<em class="errata">')
+      .replace(/<\/errata>/gi, '</em>')
       .replace(/\r\n|\n|\r|↵/g, '<br />')
       .replace(/\[([^\]]+)\]/g, (match, token) => {
         const trimmed = token.trim();

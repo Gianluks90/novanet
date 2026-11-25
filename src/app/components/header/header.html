@@ -8,15 +8,15 @@
     <nav class="main-nav">
         <a class="nav-link nav-cards" routerLink="/cards" routerLinkActive="active">
             <span class="material-symbols-rounded" aria-hidden="true">cards_stack</span>
-            {{ 'nav.cards' | t }}
+            <span class="nav-label">{{ 'nav.cards' | t }}</span>
         </a>
         <a class="nav-link nav-decks" routerLink="/decks" routerLinkActive="active">
             <span class="material-symbols-rounded" aria-hidden="true">stack_hexagon</span>
-            {{ 'nav.decks' | t }}
+            <span class="nav-label">{{ 'nav.decks' | t }}</span>
         </a>
         <span class="nav-link nav-play disabled" aria-disabled="true">
             <span class="material-symbols-rounded" aria-hidden="true">group</span>
-            {{ 'nav.play' | t }}
+            <span class="nav-label">{{ 'nav.play' | t }}</span>
             <app-ui-badge [label]="'header.comingSoon' | t"></app-ui-badge>
         </span>
     </nav>

@@ -87,7 +87,7 @@
             <p class="section-subtitle effect-subtitle">{{ 'cardDetail.effect' | t }}</p>
             <div class="card-text" [innerHTML]="c?.text | nrIcons"></div>
             <hr>
-            <div class="flavor-text">{{c?.flavor}}</div>
+            <div class="flavor-text" [innerHTML]="c?.flavor | nrIcons"></div>
         </div>
         @if (c?.influence_cost && c?.influence_cost! > 0) {
         <p class="section-label">{{ 'cardDetail.influenceCost' | t: [(c?.faction_id! | factionLabel)] }}</p>

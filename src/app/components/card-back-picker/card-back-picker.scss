@@ -23,6 +23,19 @@
     }
 }
 
+// two columns, as many rows as needed, scrolling inside its own box (no scrollbar)
+.picker.grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-height: 50dvh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+
+    .option {
+        width: auto;
+    }
+}
+
 .option {
     display: flex;
     flex-direction: column;

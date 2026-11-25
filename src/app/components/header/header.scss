@@ -105,6 +105,8 @@
         margin-left: auto;
     }
 
+    // The tab bar: three separate blocks with a slim gap, only the top right corner of each one
+    // rounded, a big icon and no visible label (it stays for screen readers).
     .main-nav {
         position: fixed;
         left: 0;
@@ -113,25 +115,41 @@
         z-index: var(--z-nav);
         box-sizing: border-box;
         height: var(--bottom-nav-height);
-        // keep the tabs clear of the system home indicator (iPhone)
-        padding-bottom: var(--safe-bottom);
-        gap: 0;
-        background-color: var(--bg-container-color);
-        border-top: 1px solid var(--border-color);
+        // keep the blocks clear of the system home indicator (iPhone)
+        padding: 0 var(--space-1) var(--safe-bottom);
+        gap: var(--space-1);
+        background: none;
+        pointer-events: none; // only the blocks catch touches
     }
 
     .nav-link {
         flex: 1;
-        flex-direction: column;
         justify-content: center;
-        gap: 2px;
         height: 100%;
-        padding: 0 var(--space-1);
-        border-radius: 0;
-        font-size: var(--font-size-xs);
+        padding: 0;
+        border: 1px solid var(--border-color);
+        border-bottom: 0;
+        border-radius: 0 var(--radius-md) 0 0;
+        background-color: var(--bg-container-color);
+        pointer-events: auto;
 
         .material-symbols-rounded {
-            font-size: 1.5rem;
+            font-size: 2.25rem;
+        }
+
+        // the active page: filled with the accent
+        &.active {
+            background-color: var(--surface-active);
+            color: var(--on-accent);
+        }
+
+        .nav-label {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip-path: inset(50%);
+            white-space: nowrap;
         }
 
         app-ui-badge {

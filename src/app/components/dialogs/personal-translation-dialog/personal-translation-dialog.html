@@ -8,7 +8,7 @@
             <div class="effect-container">
                 <div class="card-text" [innerHTML]="c.text | nrIcons"></div>
                 @if (c.flavor) {
-                    <div class="flavor-text">{{ c.flavor }}</div>
+                    <div class="flavor-text" [innerHTML]="c.flavor | nrIcons"></div>
                 }
             </div>
         </section>

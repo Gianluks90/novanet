@@ -1,4 +1,4 @@
-<div #row class="picker" [class.carousel]="carousel()" role="group" (wheel)="onWheel($event, row)">
+<div #row class="picker" [class.carousel]="carousel()" [class.grid]="grid()" role="group" (wheel)="onWheel($event, row)">
     @for (back of options(); track back.id) {
         <button type="button" class="option" [class.selected]="isSelected(back)" [attr.aria-pressed]="isSelected(back)"
             [title]="service.name(back)" (click)="pick(back)">

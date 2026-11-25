@@ -1,6 +1,6 @@
 {
   "name": "novanet",
-  "version": "0.3.2 (2026-11)",
+  "version": "0.3.3 (2026-11)",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

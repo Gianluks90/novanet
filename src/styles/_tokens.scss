@@ -78,8 +78,8 @@
     --control-height: 44px;
     // a taller bar, so the 40px avatar is not cramped
     --header-height: 64px;
-    // 56px of tabs plus the system home indicator area
-    --bottom-nav-height: calc(56px + var(--safe-bottom));
+    // 64px of tabs plus the system home indicator area
+    --bottom-nav-height: calc(64px + var(--safe-bottom));
   }
 }
 
