@@ -1,3 +1,5 @@
+@use '../../../../styles/breakpoints' as bp;
+
 .decks-list-page-main-container {
     height: 100%;
     display: flex;
@@ -280,5 +282,95 @@ input[type="number"] {
         font-weight: bold;
         font-size: var(--font-size-sm);
         cursor: help;
+    }
+}
+
+// Desktop: no mobile-only blocks.
+.mobile-actions,
+.side-tabs {
+    display: none;
+}
+
+// Mobile layout: one bar with the search box and icons (personal/public, import, new deck) in
+// place of the three blocks, a Runner/Corp switch instead of two columns, tighter deck rows.
+@include bp.mobile {
+    .decks-list-page-main-container {
+        justify-content: flex-start;
+
+        &>.toolbar {
+            height: auto;
+            align-items: center;
+            gap: var(--space-1);
+            padding: var(--space-1) var(--space-2);
+            border: 1px solid var(--accent-color);
+            background-color: var(--bg-container-color);
+
+            &>.view-container,
+            &>.import-container {
+                display: none;
+            }
+
+            &>.filter-container {
+                border: 0;
+                background: none;
+                padding: 0;
+
+                &>.side-line,
+                &>.section-title {
+                    display: none;
+                }
+
+                // only worth a button once there is something to clear
+                &>.reset-btn:not(.has-text) {
+                    display: none;
+                }
+            }
+
+            &>.mobile-actions {
+                display: flex;
+                flex-shrink: 0;
+                gap: var(--space-1);
+            }
+        }
+
+        &>.side-tabs {
+            display: block;
+            width: 100%;
+            flex-shrink: 0;
+            margin-bottom: var(--page-gap);
+            border: 1px solid var(--accent-color);
+            background-color: var(--bg-container-color);
+        }
+
+        &>.content-container {
+            grid-template-columns: minmax(0, 1fr);
+
+            .deck-column {
+                &.inactive {
+                    display: none;
+                }
+
+                &>.column-header {
+                    display: none;
+                }
+
+                &>.decks-list {
+                    padding: var(--space-2);
+                }
+            }
+        }
+    }
+
+    .deck-container {
+        padding: var(--space-2);
+
+        app-deck-art {
+            height: 48px;
+            margin-right: var(--space-3);
+        }
+
+        .info-container>p {
+            font-size: var(--font-size-lg);
+        }
     }
 }

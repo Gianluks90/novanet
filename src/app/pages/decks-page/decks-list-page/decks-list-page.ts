@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, computed, effect, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, computed, effect, inject, viewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Deck } from '../../../models/deck';
 import { FormsModule } from '@angular/forms';
@@ -27,6 +27,7 @@ import { CardTitlePipe } from '../../../pipes/card-title-pipe';
 import { parseCardList } from '../../../utils/card-list';
 
 import { FormatService } from '../../../services/format-service';
+import { ViewportService } from '../../../services/viewport-service';
 
 @Component({
   selector: 'app-decks-list-page',
@@ -36,6 +37,8 @@ import { FormatService } from '../../../services/format-service';
 })
 export class DecksListPage {
   private i18n = inject(I18nService);
+  public viewport = inject(ViewportService);
+  private searchBox = viewChild<ElementRef<HTMLInputElement>>('search');
   public authService = inject(AuthService);
   public sides: Side[] = [];
 
@@ -47,6 +50,13 @@ export class DecksListPage {
   public readonly viewModeOptions: SegmentedOption[] = [
     { value: 'mine', label: 'decksListPage.viewPersonal' },
     { value: 'public', label: 'decksListPage.viewPublic' },
+  ];
+  /** The two columns of the desktop layout; mobile shows one at a time (`activeSide`). */
+  public readonly deckSides = ['runner', 'corp'] as const;
+  public activeSide: 'runner' | 'corp' = 'runner';
+  public readonly sideTabOptions: SegmentedOption[] = [
+    { value: 'runner', label: 'runnerDecksColumnTitle' },
+    { value: 'corp', label: 'corpDecksColumnTitle' },
   ];
   private myDecks: Deck[] = [];
   private publicDecks: Deck[] = [];
@@ -116,6 +126,14 @@ export class DecksListPage {
     this.refreshList();
   }
 
+  /** Mobile: the personal/public switch is an icon; a notification says what is shown now. */
+  public toggleViewMode() {
+    this.switchViewMode(this.viewMode === 'mine' ? 'public' : 'mine');
+    this.notification.notify(
+      this.i18n.t(this.viewMode === 'mine' ? 'decksListPage.showingPersonal' : 'decksListPage.showingPublic'),
+      'info');
+  }
+
   private refreshList() {
     const source = this.viewMode === 'mine' ? this.myDecks : this.publicDecks;
     this.allDesks = source;
@@ -169,6 +187,8 @@ export class DecksListPage {
     };
 
     this.decks = [...this.originalDecks];
+    const search = this.searchBox();
+    if (search) search.nativeElement.value = '';
   }
 
   // DIALOG
@@ -221,7 +241,9 @@ export class DecksListPage {
 
   /** Display names of formats, in the order of the format list. */
   /** Format pills shown on a deck before collapsing the rest into a "+N". */
-  public readonly maxFormatPills = 3;
+  public get maxFormatPills(): number {
+    return this.viewport.isMobile() ? 1 : 3;
+  }
 
   public formatNames(ids: string[]): string[] {
     return this.formatService.formats().filter(f => ids.includes(f.id)).map(f => f.name);

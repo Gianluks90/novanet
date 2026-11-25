@@ -1,47 +1,67 @@
 <div class="decks-list-page-main-container">
     <div class="toolbar">
-    <div class="view-container">
-        <app-ui-segmented [options]="viewModeOptions" [value]="viewMode" [fill]="true" [borderless]="true"
-            (valueChange)="switchViewMode($any($event))"></app-ui-segmented>
-    </div>
-    <div class="filter-container">
-        <div class="side-line"></div>
-        <p class="section-title">{{ 'filtersSectionTitle' | t }}</p>
-        <input type="text" [placeholder]="'searchTextInputPlaceholder' | t" (keyup)="onChangeTextSearch($event)">
-        <!-- @if (sides.length > 0) {
-        <select name="side" id="side-select" [(ngModel)]="filters.side" (change)="onChangeSideFilter($event)">
-            <option i18n value="all">All Sides</option>
-            @for(side of sides; track side.id) {
-            <option [value]="side.id">{{ side.name }}</option>
-            }
-        </select>
-        } -->
-        <button type="button" class="ghost-btn reset-btn" (click)="resetFilters()"
-            [attr.aria-label]="'cardsPage.resetFilters' | t" [title]="'cardsPage.resetFilters' | t">
-            <span class="material-symbols-rounded" aria-hidden="true">refresh</span>
-        </button>
-    </div>
-    @if (viewMode === 'mine' && decks.length > 0) {
-        <div class="import-container">
-            <button type="button" class="ghost-btn" (click)="openImportDeckDialog()"
-                [attr.aria-label]="'decksListPage.importDeck' | t" [title]="'decksListPage.importDeck' | t">
-                <span class="material-symbols-rounded" aria-hidden="true">bottom_panel_close</span>
+        <div class="view-container">
+            <app-ui-segmented [options]="viewModeOptions" [value]="viewMode" [fill]="true" [borderless]="true"
+                (valueChange)="switchViewMode($any($event))"></app-ui-segmented>
+        </div>
+        <div class="filter-container">
+            <div class="side-line"></div>
+            <p class="section-title">{{ 'filtersSectionTitle' | t }}</p>
+            <input #search type="text" [placeholder]="'searchTextInputPlaceholder' | t" (keyup)="onChangeTextSearch($event)">
+            <button type="button" class="ghost-btn reset-btn" [class.has-text]="!!filters.text" (click)="resetFilters()"
+                [attr.aria-label]="'cardsPage.resetFilters' | t" [title]="'cardsPage.resetFilters' | t">
+                <span class="material-symbols-rounded" aria-hidden="true">refresh</span>
             </button>
         </div>
-    }
+        @if (viewMode === 'mine' && decks.length > 0) {
+            <div class="import-container">
+                <button type="button" class="ghost-btn" (click)="openImportDeckDialog()"
+                    [attr.aria-label]="'decksListPage.importDeck' | t" [title]="'decksListPage.importDeck' | t">
+                    <span class="material-symbols-rounded" aria-hidden="true">bottom_panel_close</span>
+                </button>
+            </div>
+        }
+        <!-- mobile: the blocks of the desktop toolbar as icons -->
+        <div class="mobile-actions">
+            <button type="button" class="ghost-btn" (click)="toggleViewMode()"
+                [attr.aria-label]="(viewMode === 'mine' ? 'decksListPage.viewPersonal' : 'decksListPage.viewPublic') | t"
+                [title]="(viewMode === 'mine' ? 'decksListPage.viewPersonal' : 'decksListPage.viewPublic') | t">
+                <span class="material-symbols-rounded" aria-hidden="true">{{ viewMode === 'mine' ? 'person' : 'public' }}</span>
+            </button>
+            @if (viewMode === 'mine') {
+                <button type="button" class="ghost-btn" (click)="openImportDeckDialog()"
+                    [attr.aria-label]="'decksListPage.importDeck' | t" [title]="'decksListPage.importDeck' | t">
+                    <span class="material-symbols-rounded" aria-hidden="true">bottom_panel_close</span>
+                </button>
+                <button type="button" class="ghost-btn" (click)="openNewDeckDialog(activeSide)"
+                    [attr.aria-label]="'decksListPage.newDeck' | t" [title]="'decksListPage.newDeck' | t">
+                    <span class="material-symbols-rounded" aria-hidden="true">add</span>
+                </button>
+            }
+        </div>
     </div>
+
+    @if (decks.length > 0) {
+        <!-- mobile: one side at a time -->
+        <div class="side-tabs">
+            <app-ui-segmented [options]="sideTabOptions" [value]="activeSide" [fill]="true"
+                (valueChange)="activeSide = $any($event)"></app-ui-segmented>
+        </div>
+    }
+
     <div class="content-container" [class.empty-list]="decks.length <= 0">
-            @if (decks.length > 0) {
-                <div class="deck-column">
+        @if (decks.length > 0) {
+            @for (side of deckSides; track side) {
+                <div class="deck-column" [class.inactive]="side !== activeSide">
                     <div class="column-header">
                         <div class="side-line"></div>
-                        <p class="column-title">{{ 'runnerDecksColumnTitle' | t }}</p>
+                        <p class="column-title">{{ (side === 'runner' ? 'runnerDecksColumnTitle' : 'corpDecksColumnTitle') | t }}</p>
                         @if (viewMode === 'mine') {
-                            <app-ui-icon-button icon="add" size="sm" [label]="'decksListPage.newDeck' | t" (click)="openNewDeckDialog('runner')"></app-ui-icon-button>
+                            <app-ui-icon-button icon="add" size="sm" [label]="'decksListPage.newDeck' | t" (click)="openNewDeckDialog(side)"></app-ui-icon-button>
                         }
                     </div>
-                    <div class="decks-list" [class.empty-list]="(decks | filterDecksBySide:'runner').length <= 0">
-                        @for(d of decks | filterDecksBySide:'runner'; track d.id) {
+                    <div class="decks-list" [class.empty-list]="(decks | filterDecksBySide:side).length <= 0">
+                        @for (d of decks | filterDecksBySide:side; track d.id) {
                             <div class="deck-container">
                                 <app-deck-art [identity]="d.identity" [side]="d.side" [back]="d.cardBack" [title]="d.identity | cardTitle"></app-deck-art>
                                 <div class="info-container">
@@ -58,13 +78,12 @@
                                     </div>
                                     <div class="deck-subtitle">
                                         @if (canEdit(d)) {
-                                            <app-ui-badge [icon]="d.local ? 'computer' : 'cloud'" [label]="(d.local ? 'decksListPage.thisDevice' : 'decksListPage.myAccount') | t"></app-ui-badge>
+                                            <app-ui-badge [icon]="d.local ? 'computer' : 'cloud'" [iconOnly]="viewport.isMobile()" [label]="(d.local ? 'decksListPage.thisDevice' : 'decksListPage.myAccount') | t"></app-ui-badge>
                                         }
                                         @if (authorOf(d); as author) {
                                             <span class="deck-author">{{ 'decksListPage.by' | t: [author] }}</span>
                                         }
                                     </div>
-                                    <!-- <p i18n class="info-line">Influence limit: {{d.cards | checkInfluence:cardsMap:d.identity.faction_id! }}/{{d.identity.influence_limit}} Agenda points: {{ d.cards | checkAgendaPoints:cardsMap }}</p> -->
                                 </div>
                                 <div class="deck-actions">
                                     <app-ui-icon-button [icon]="canEdit(d) ? 'edit' : 'visibility'" [label]="(canEdit(d) ? 'decksListPage.edit' : 'decksListPage.view') | t" [link]="['/decks/builder', d.id]"></app-ui-icon-button>
@@ -74,58 +93,13 @@
                                 </div>
                             </div>
                         } @empty {
-                            <p [innerHTML]="'noRunnerDecksMessage' | t" class="empty-column-message"></p>
+                            <p [innerHTML]="(side === 'runner' ? 'noRunnerDecksMessage' : 'noCorpDecksMessage') | t" class="empty-column-message"></p>
                         }
                     </div>
                 </div>
-                <div class="deck-column">
-                    <div class="column-header">
-                        <div class="side-line"></div>
-                        <p class="column-title">{{ 'corpDecksColumnTitle' | t }}</p>
-                        @if (viewMode === 'mine') {
-                            <app-ui-icon-button icon="add" size="sm" [label]="'decksListPage.newDeck' | t" (click)="openNewDeckDialog('corp')"></app-ui-icon-button>
-                        }
-                    </div>
-                    <div class="decks-list" [class.empty-list]="(decks | filterDecksBySide:'corp').length <= 0">
-                        @for(d of decks | filterDecksBySide:'corp'; track d.id) {
-                            <div class="deck-container">
-                                <app-deck-art [identity]="d.identity" [side]="d.side" [back]="d.cardBack" [title]="d.identity | cardTitle"></app-deck-art>
-                                <div class="info-container">
-                                    <p>{{d.name}} <span class="material-symbols-rounded validity-icon" [title]="(deckSize(d) < d.identity.minimum_deck_size! ? 'decksListPage.deckTooSmall' : 'decksListPage.deckSizeValid') | t">{{deckSize(d) < d.identity.minimum_deck_size! ? 'close' : 'check'}}</span></p>
-                                    <!-- Both pill rows are always rendered (even empty) so every deck has the same height -->
-                                    @let names = formatNames(legalFormatsOf(d));
-                                    <div class="deck-formats" [title]="names.length > 0 ? ('decksListPage.legalIn' | t) : ''">
-                                        @for (name of names.slice(0, maxFormatPills); track name) {
-                                            <app-ui-badge [label]="name" tone="accent"></app-ui-badge>
-                                        }
-                                        @if (names.length > maxFormatPills) {
-                                            <span class="more-formats" [title]="names.slice(maxFormatPills).join(', ')">+{{ names.length - maxFormatPills }}</span>
-                                        }
-                                    </div>
-                                    <div class="deck-subtitle">
-                                        @if (canEdit(d)) {
-                                            <app-ui-badge [icon]="d.local ? 'computer' : 'cloud'" [label]="(d.local ? 'decksListPage.thisDevice' : 'decksListPage.myAccount') | t"></app-ui-badge>
-                                        }
-                                        @if (authorOf(d); as author) {
-                                            <span class="deck-author">{{ 'decksListPage.by' | t: [author] }}</span>
-                                        }
-                                    </div>
-                                    <!-- <p i18n class="info-line">Influence limit: {{d.cards | checkInfluence:cardsMap:d.identity.faction_id! }}/{{d.identity.influence_limit}} Agenda points: {{ d.cards | checkAgendaPoints:cardsMap }}</p> -->
-                                </div>
-                                <div class="deck-actions">
-                                    <app-ui-icon-button [icon]="canEdit(d) ? 'edit' : 'visibility'" [label]="(canEdit(d) ? 'decksListPage.edit' : 'decksListPage.view') | t" [link]="['/decks/builder', d.id]"></app-ui-icon-button>
-                                    @if (canEdit(d)) {
-                                        <app-ui-icon-button icon="delete" [label]="'decksListPage.delete' | t" (click)="openConfirmDeleteDeckDialog(d)"></app-ui-icon-button>
-                                    }
-                                </div>
-                            </div>
-                        } @empty {
-                            <p [innerHTML]="'noCorpDecksMessage' | t" class="empty-column-message"></p>
-                        }
-                    </div>
-                </div>
-            } @else {
-                <div class="empty-message-container">
+            }
+        } @else {
+            <div class="empty-message-container">
                 @if (viewMode === 'mine') {
                     <p>{{ 'noDecksMessage' | t }}</p>
                     <div class="empty-actions">
@@ -141,6 +115,6 @@
                     <p>{{ 'decksListPage.noPublicDecksYet' | t }}</p>
                 }
             </div>
-            }
+        }
     </div>
 </div>

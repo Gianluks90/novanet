@@ -43,6 +43,7 @@ export const routes: Routes = [
                 path: 'list',
                 title: 'routeTitle.decksList',
                 loadComponent: () => import('./pages/decks-page/decks-list-page/decks-list-page').then(m => m.DecksListPage),
+                data: { responsive: true },
             },
             {
                 path: 'builder/:id',
