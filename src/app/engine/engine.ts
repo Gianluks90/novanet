@@ -71,6 +71,10 @@ export interface NewGameOptions {
   corp: DeckList;
   runner: DeckList;
   seed?: number;
+  /** Do not shuffle: the first card of each list is the top of the deck (tutorials). */
+  stacked?: boolean;
+  /** Skip the mulligan decisions (both players keep their hand). */
+  skipMulligan?: boolean;
 }
 
 const newPlayer = (): PlayerState => ({
@@ -1529,8 +1533,13 @@ export function createGame(cat: Catalog, opts: NewGameOptions): GameState {
   for (const side of ['corp', 'runner'] as const) {
     const deck = side === 'corp' ? opts.corp : opts.runner;
     createObject(s, deck.identity, side, identityZone(side), { faceUp: true });
-    for (const cardId of deck.cards) createObject(s, cardId, side, deckZone(side));
-    shuffleZone(s, deckZone(side));
+    for (const cardId of deck.cards) {
+      createObject(s, cardId, side, deckZone(side), {
+        position: opts.stacked ? 'bottom' : 'top',
+      });
+    }
+    if (!opts.stacked) shuffleZone(s, deckZone(side));
+    if (opts.skipMulligan) s.players[side].mulliganDone = true;
     draw(s, side, STARTING_HAND, []);
   }
   advance(s, cat, []);

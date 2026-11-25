@@ -26,6 +26,8 @@ export interface LocalSessionOptions {
   seed?: number;
   /** Sides played by the bot. */
   bots?: Side[];
+  /** Decks are not shuffled (first card = top) and nobody mulligans: for tutorials. */
+  stacked?: boolean;
 }
 
 /** Small deterministic generator for the bot (separate from the engine's own). */
@@ -54,6 +56,8 @@ export class LocalSession implements GameSession {
       seed: this.seed,
       corp: opts.corp,
       runner: opts.runner,
+      stacked: opts.stacked,
+      skipMulligan: opts.stacked,
     });
     this.runBots([]);
   }
@@ -106,7 +110,13 @@ export class LocalSession implements GameSession {
 
 /** Replays a game from its seed and decks: used to resume a saved game or to review it. */
 export function replay(opts: LocalSessionOptions, commands: readonly Command[]): GameState {
-  let s = createGame(opts.catalog, { seed: opts.seed ?? 1, corp: opts.corp, runner: opts.runner });
+  let s = createGame(opts.catalog, {
+    seed: opts.seed ?? 1,
+    corp: opts.corp,
+    runner: opts.runner,
+    stacked: opts.stacked,
+    skipMulligan: opts.stacked,
+  });
   for (const c of commands) {
     const r = apply(s, c, opts.catalog);
     if (!r.ok) throw new Error(`Replay failed: ${r.error}`);
