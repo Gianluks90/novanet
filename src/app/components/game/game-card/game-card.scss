@@ -1,0 +1,93 @@
+:host {
+    position: relative;
+    display: block;
+    flex-shrink: 0;
+    width: var(--card-w, 84px);
+    aspect-ratio: 2 / 3;
+    --card-image-radius: 6px;
+}
+
+// the picture (or back) fills the face, which is the card's box
+.face {
+    width: 100%;
+    height: 100%;
+}
+
+app-card-back {
+    border-radius: 6px;
+}
+
+// on its side: the host is a 3:2 box and the face, still 2:3, is turned inside it
+:host(.landscape) {
+    width: calc(var(--card-w, 84px) * 1.5);
+    aspect-ratio: 3 / 2;
+
+    .face {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: var(--card-w, 84px);
+        height: calc(var(--card-w, 84px) * 1.5);
+        transform: translate(-50%, -50%) rotate(90deg);
+    }
+}
+
+// a Corp card the viewer knows but that is not rezzed yet: dimmed, with a mark
+:host(.unrezzed) .face {
+    opacity: .55;
+    filter: saturate(.5);
+}
+
+.unrezzed-mark {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    padding: 1px;
+    border-radius: 3px;
+    background: var(--panel-bg);
+    color: var(--accent-color);
+    font-size: 1rem;
+}
+
+:host(.selected) {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+// counters, along the bottom edge of the card
+.counters {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 3px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2px;
+    pointer-events: none;
+}
+
+.counter {
+    display: inline-flex;
+    align-items: center;
+    gap: 1px;
+    padding: 0 4px 0 2px;
+    background: var(--panel-bg);
+    border: 1px solid var(--accent-color);
+    color: var(--fg-color);
+    font-family: var(--font-display);
+    font-size: var(--font-size-label);
+    font-weight: var(--font-weight-bold);
+    line-height: 1.4;
+
+    .material-symbols-rounded {
+        font-size: .875rem;
+        color: var(--accent-color);
+    }
+
+    .nr-icon {
+        width: .875rem;
+        height: .875rem;
+        background-color: var(--accent-color);
+    }
+}

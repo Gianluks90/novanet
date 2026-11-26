@@ -1,0 +1,16 @@
+<!-- The controls sit over the app header (see the stylesheet), so the board has the whole page. -->
+<div class="lab">
+    <div class="lab-bar" role="group" aria-label="Game lab">
+        <select [value]="viewer()" aria-label="Viewer" (change)="viewer.set($any($event.target).value)">
+            <option value="runner">Runner</option>
+            <option value="corp">Corp</option>
+        </select>
+        <input type="number" class="seed" [value]="seed()" aria-label="Seed" title="Seed" (change)="setSeed($any($event.target).value)">
+        <button type="button" class="hud-btn" aria-label="Previous command" (click)="step.set(step() - 1 < 0 ? 0 : step() - 1)">−</button>
+        <input type="range" min="0" [max]="history().length" [value]="step()" aria-label="Command"
+            (input)="setStep($any($event.target).value)">
+        <button type="button" class="hud-btn" aria-label="Next command" (click)="step.set(step() + 1 > history().length ? step() : step() + 1)">+</button>
+        <span class="count">{{ step() }} / {{ history().length }}</span>
+    </div>
+    <app-game-board [view]="view()"></app-game-board>
+</div>

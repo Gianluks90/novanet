@@ -1,0 +1,57 @@
+:host {
+    display: block;
+    height: 100%;
+}
+
+.lab {
+    height: 100%;
+
+    app-game-board {
+        height: 100%;
+    }
+}
+
+// The controls live in the app header: laid over it, between the navigation and the avatar. (A
+// developer page: this is the one place that reaches outside its own box.)
+.lab-bar {
+    position: fixed;
+    top: 0;
+    left: 30rem;
+    right: 5rem;
+    height: var(--header-height);
+    z-index: calc(var(--z-nav) + 1);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+
+    select {
+        width: 7rem;
+        flex-shrink: 0;
+    }
+
+    .seed {
+        width: 5rem;
+        flex-shrink: 0;
+    }
+
+    input[type="range"] {
+        flex: 1;
+        min-width: 6rem;
+    }
+
+    .hud-btn {
+        min-width: var(--control-height);
+        padding: 0;
+        flex-shrink: 0;
+    }
+
+    .count {
+        flex-shrink: 0;
+        min-width: 5.5rem;
+        font-family: var(--font-display);
+        font-size: var(--font-size-secondary);
+        font-weight: var(--font-weight-bold);
+        letter-spacing: 0.08em;
+        color: var(--fg-color-muted);
+    }
+}

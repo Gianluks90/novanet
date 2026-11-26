@@ -1,0 +1,24 @@
+<div class="face">
+    @if (card(); as c) {
+        <app-card-image [card]="c" size="small" [title]="c.title"></app-card-image>
+    } @else {
+        <app-card-back [side]="object().owner"></app-card-back>
+    }
+</div>
+@if (unrezzed()) {
+    <span class="unrezzed-mark material-symbols-rounded" role="img" [attr.aria-label]="'game.unrezzed' | t"
+        [title]="'game.unrezzed' | t">visibility_off</span>
+}
+@if (counters().length > 0) {
+    <div class="counters">
+        @for (counter of counters(); track counter.kind) {
+            <span class="counter" [title]="counter.label | t" [attr.aria-label]="(counter.label | t) + ': ' + counter.amount">
+                @if (counter.nr) {
+                    <span class="nr-icon" [class]="'nr-icon ' + counter.nr" aria-hidden="true"></span>
+                } @else {
+                    <span class="material-symbols-rounded" aria-hidden="true">{{ counter.icon }}</span>
+                }{{ counter.amount }}
+            </span>
+        }
+    </div>
+}

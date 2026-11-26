@@ -1,0 +1,225 @@
+<!-- One card pile: the card on top if it can be shown, else a back; the count on a badge. -->
+<ng-template #pileTpl let-pile let-label="label">
+    <div class="pile">
+        <div class="pile-card">
+            @if (pile.top) {
+                <app-game-card [object]="pile.top" [landscape]="pile.topSideways"></app-game-card>
+            } @else if (pile.count > 0) {
+                <div class="pile-back"><app-card-back [side]="pile.side"></app-card-back></div>
+            } @else {
+                <div class="pile-empty"></div>
+            }
+            @if (pile.count > 0) {
+                <span class="pile-badge hud-num">{{ pile.count }}</span>
+            }
+        </div>
+        @if (label) {
+            <span class="pile-label">{{ pile.label | t }}</span>
+        }
+    </div>
+</ng-template>
+
+<!-- A player's panel: the bar at the foot of their half, with credits, clicks and the other numbers. -->
+<ng-template #panelTpl let-panel>
+    <div class="player-panel hud-panel is-quiet" [class.is-turn]="view().turn.active === panel.side">
+        <span class="hud-tab">{{ (panel.side === viewer() ? 'game.you' : 'game.opponent') | t }}</span>
+        <!-- label above, the game's own icon and the value under it -->
+        <dl class="stats">
+            <div class="stat" [title]="'game.credits' | t">
+                <dt>{{ 'game.credits' | t }}</dt>
+                <dd class="hud-num"><span class="nr-icon nr-credit" aria-hidden="true"></span>{{ panel.credits }}</dd>
+            </div>
+            <div class="stat" [title]="'game.clicks' | t">
+                <dt>{{ 'game.clicks' | t }}</dt>
+                <dd class="clicks" [attr.aria-label]="clicksLeft(panel) + ' / ' + panel.clicks.length" role="img">
+                    @for (left of panel.clicks; track $index) {
+                        <span class="nr-icon nr-click" [class.spent]="!left"></span>
+                    }
+                </dd>
+            </div>
+            <div class="stat" [title]="'game.agendaPoints' | t">
+                <dt>{{ 'game.agendaPoints' | t }}</dt>
+                <dd><span class="nr-icon nr-agenda" aria-hidden="true"></span>{{ panel.points }} / {{ panel.pointsToWin }}</dd>
+            </div>
+            @if (panel.side === 'runner') {
+                <div class="stat" [title]="'game.memory' | t">
+                    <dt>{{ 'game.memory' | t }}</dt>
+                    <dd [class.over]="panel.memoryUsed > panel.memoryLimit"><span class="nr-icon nr-mu" aria-hidden="true"></span>{{ panel.memoryUsed }} / {{ panel.memoryLimit }}</dd>
+                </div>
+                @if (panel.tags > 0) {
+                    <div class="stat warn">
+                        <dt>{{ 'game.tags' | t }}</dt>
+                        <dd>{{ panel.tags }}</dd>
+                    </div>
+                }
+            } @else if (panel.badPublicity > 0) {
+                <div class="stat warn">
+                    <dt>{{ 'game.badPublicity' | t }}</dt>
+                    <dd>{{ panel.badPublicity }}</dd>
+                </div>
+            }
+        </dl>
+    </div>
+</ng-template>
+
+<!-- The Corp's side (the left half): a column per server, side by side along the foot of the half (the
+     Corp's edge). At the bottom the head (Archives, R&D, the identity that marks HQ) and the root; above
+     it the ice, laid on its side, rising towards the Runner: the outermost at the very top (CR 3.4.2a).
+     The name is the caption under the server. -->
+<ng-template #corpTpl>
+    <div class="side corp-side">
+        <div class="servers">
+            @for (server of servers(); track server.id) {
+                <div class="server" [class.being-run]="view().run?.server === server.id">
+                    <!-- DOM order: innermost first; the column is turned over, so the innermost is the lowest -->
+                    <div class="ice-column">
+                        @for (card of server.ice; track card.objectId) {
+                            <app-game-card [object]="card" [landscape]="true"></app-game-card>
+                        }
+                    </div>
+                    <div class="server-head">
+                        @if (server.head) {
+                            <ng-container *ngTemplateOutlet="pileTpl; context: { $implicit: server.head, label: false }"></ng-container>
+                        }
+                        @if (server.identity) {
+                            <div class="pile-card">
+                                <app-game-card [object]="server.identity"></app-game-card>
+                            </div>
+                        }
+                        @if (server.root.length > 0) {
+                            <div class="root">
+                                @for (card of server.root; track card.objectId) {
+                                    <app-game-card [object]="card"></app-game-card>
+                                }
+                            </div>
+                        }
+                    </div>
+                    <span class="server-name pile-label">{{ server.name.key | t: server.name.args }}</span>
+                </div>
+            }
+        </div>
+    </div>
+</ng-template>
+
+<!-- The Runner's side (the right half): the rig in a row per type; under it the identity, the stack,
+     the heap and the stolen agendas. -->
+<ng-template #runnerTpl>
+    <div class="side runner-side">
+        <div class="rig hud-panel is-quiet">
+            <span class="hud-tab">{{ 'game.rig' | t }}</span>
+            @for (group of rig(); track group.label) {
+                <div class="rig-row">
+                    <span class="rig-label hud-eyebrow">{{ group.label | t }}</span>
+                    <div class="rig-cards">
+                        @for (card of group.cards; track card.objectId) {
+                            <app-game-card [object]="card"></app-game-card>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="runner-bottom">
+            <div class="runner-piles">
+                @if (runnerIdentity(); as identity) {
+                    <div class="pile">
+                        <div class="pile-card">
+                            <app-game-card [object]="identity"></app-game-card>
+                        </div>
+                    </div>
+                }
+                @for (pile of runnerPiles(); track pile.label) {
+                    <ng-container *ngTemplateOutlet="pileTpl; context: { $implicit: pile, label: true }"></ng-container>
+                }
+            </div>
+
+        </div>
+    </div>
+</ng-template>
+
+<!-- A player's hand (Grip for the Runner, HQ for the Corp), above their bar: bigger than the cards of
+     the board, hanging half hidden behind the bar. The viewer's cards are face up; the opponent's
+     are backs. -->
+<ng-template #handTpl let-side>
+    <div class="tray hand-tray">
+        <span class="hud-eyebrow">{{ (side === 'runner' ? 'game.grip' : 'game.hq') | t }}</span>
+        <div class="tucked" [class.raise]="side === viewer()" [attr.aria-label]="'game.hand' | t">
+            @if (side === viewer()) {
+                @for (card of hand(); track card.objectId) {
+                    <app-game-card [object]="card"></app-game-card>
+                }
+            } @else {
+                @for (card of handBacks(side); track $index) {
+                    <app-card-back [side]="side"></app-card-back>
+                }
+            }
+        </div>
+    </div>
+</ng-template>
+
+<!-- A player's agenda points: the agendas scored (Corp) or stolen (Runner), tucked behind the bar like
+     the hand, beside it. -->
+<ng-template #scoreTpl let-side>
+    <div class="tray score-area">
+        <span class="hud-eyebrow">{{ 'game.agendaPoints' | t }}</span>
+        <div class="tucked raise">
+            @for (card of scored(side); track card.objectId) {
+                <app-game-card [object]="card"></app-game-card>
+            } @empty {
+                <app-ui-badge [label]="'game.noAgendasYet' | t"></app-ui-badge>
+            }
+        </div>
+    </div>
+</ng-template>
+
+<!-- The board: the Corp on the left, the Runner on the right (whoever is looking), the turn, the
+     run and the card under the pointer in the middle. -->
+<div class="board">
+    <section class="half corp-half">
+        <ng-container *ngTemplateOutlet="corpTpl"></ng-container>
+        <div class="bottom">
+            <ng-container *ngTemplateOutlet="handTpl; context: { $implicit: 'corp' }"></ng-container>
+            <ng-container *ngTemplateOutlet="scoreTpl; context: { $implicit: 'corp' }"></ng-container>
+        </div>
+        <ng-container *ngTemplateOutlet="panelTpl; context: { $implicit: panels().corp }"></ng-container>
+    </section>
+
+    <aside class="center hud-panel is-quiet">
+        <div class="turn">
+            <span class="turn-number">{{ turnLabel().key | t: turnLabel().args }}</span>
+            @if (phaseKey(); as phase) {
+                <span class="turn-phase">{{ phase | t }}</span>
+            }
+        </div>
+
+        <!-- the run: from which server, how far in -->
+        <div class="run" [class.active]="!!run()">
+            @if (run(); as r) {
+                <span class="run-title">{{ r.server.key | t: r.server.args }}</span>
+                <div class="lane" aria-hidden="true">
+                    @for (step of r.lane; track $index) {
+                        <span class="step" [class.is-server]="step.server" [attr.data-state]="step.state"></span>
+                    }
+                </div>
+                <span class="run-phase">{{ r.phase | t: r.args }}</span>
+            } @else {
+                <span class="run-title">{{ 'game.noRun' | t }}</span>
+            }
+        </div>
+
+        <!-- the card under the pointer, large -->
+        <div class="preview">
+            @if (preview(); as card) {
+                <app-card-image [card]="card" size="large" [title]="card.title"></app-card-image>
+            }
+        </div>
+    </aside>
+
+    <section class="half runner-half">
+        <ng-container *ngTemplateOutlet="runnerTpl"></ng-container>
+        <div class="bottom">
+            <ng-container *ngTemplateOutlet="handTpl; context: { $implicit: 'runner' }"></ng-container>
+            <ng-container *ngTemplateOutlet="scoreTpl; context: { $implicit: 'runner' }"></ng-container>
+        </div>
+        <ng-container *ngTemplateOutlet="panelTpl; context: { $implicit: panels().runner }"></ng-container>
+    </section>
+</div>

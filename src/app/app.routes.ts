@@ -64,6 +64,11 @@ export const routes: Routes = [
         data: { responsive: true },
     },
     {
+        path: 'game-lab',
+        title: 'Game Lab', // developer page, not translated
+        loadComponent: () => import('./pages/game-lab-page/game-lab-page').then(m => m.GameLabPage),
+    },
+    {
         path: 'design-system',
         title: 'Design System', // developer page, not translated
         loadComponent: () => import('./pages/design-system-page/design-system-page').then(m => m.DesignSystemPage),
